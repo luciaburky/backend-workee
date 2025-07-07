@@ -17,8 +17,7 @@ import com.example.demo.entities.Base;
 import com.example.demo.services.BaseServiceImpl;
 
 @RestController
-public abstract class BaseControllerImpl<E extends Base, S extends BaseServiceImpl<E, Long> 
-    > implements BaseController<E, Long> {
+public abstract class BaseControllerImpl<E extends Base, S extends BaseServiceImpl<E, Long>> implements BaseController<E, Long> {
     
     protected final S servicio;
 
