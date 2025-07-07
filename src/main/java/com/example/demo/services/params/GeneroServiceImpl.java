@@ -9,7 +9,7 @@ import com.example.demo.services.BaseServiceImpl;
 @Service
 public class GeneroServiceImpl extends BaseServiceImpl<Genero,Long> implements GeneroService {
 
-    private GeneroRepository generoRepository;
+    private final GeneroRepository generoRepository;
 
     public GeneroServiceImpl(GeneroRepository generoRepository) {
         super(generoRepository);

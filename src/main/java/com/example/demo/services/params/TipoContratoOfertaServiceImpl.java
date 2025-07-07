@@ -9,7 +9,7 @@ import com.example.demo.services.BaseServiceImpl;
 @Service
 public class TipoContratoOfertaServiceImpl extends BaseServiceImpl<TipoContratoOferta,Long> implements TipoContratoOfertaService {
 
-    private TipoContratoOfertaRepository tipoContratoOfertaRepository;
+    private final TipoContratoOfertaRepository tipoContratoOfertaRepository;
 
     public TipoContratoOfertaServiceImpl(TipoContratoOfertaRepository tipoContratoOfertaRepository) {
         super(tipoContratoOfertaRepository);

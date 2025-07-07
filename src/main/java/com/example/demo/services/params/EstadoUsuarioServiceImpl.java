@@ -9,7 +9,7 @@ import com.example.demo.services.BaseServiceImpl;
 
 @Service
 public class EstadoUsuarioServiceImpl extends BaseServiceImpl<EstadoUsuario,Long> implements EstadoUsuarioService {
-    private EstadoUsuarioRepository estadoUsuarioRepository;
+    private final EstadoUsuarioRepository estadoUsuarioRepository;
 
     public EstadoUsuarioServiceImpl(EstadoUsuarioRepository estadoUsuarioRepository) {
         super(estadoUsuarioRepository);

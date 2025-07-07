@@ -5,17 +5,16 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entities.params.Provincia;
-import com.example.demo.repositories.BaseRepository;
 import com.example.demo.repositories.params.ProvinciaRepository;
 import com.example.demo.services.BaseServiceImpl;
 
 @Service
 public class ProvinciaServiceImpl extends BaseServiceImpl<Provincia,Long> implements ProvinciaService{
 
-    private ProvinciaRepository provinciaRepository;
+    private final ProvinciaRepository provinciaRepository;
 
-    public ProvinciaServiceImpl(BaseRepository<Provincia, Long> baseRepository, ProvinciaRepository provinciaRepository) {
-        super(baseRepository);
+    public ProvinciaServiceImpl(ProvinciaRepository provinciaRepository) {
+        super(provinciaRepository);
         this.provinciaRepository = provinciaRepository;
     }
 

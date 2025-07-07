@@ -12,9 +12,11 @@ import com.example.demo.repositories.BaseRepository;
 @Repository
 public interface ProvinciaRepository extends BaseRepository<Provincia, Long> {
     
-    @Query(
+    /*@Query(
         value = "SELECT * FROM provincia p WHERE p.id_pais = :idPais ",
         nativeQuery = true
     )
-    List<Provincia> findProvinciaByPaisId(@Param("idPais") Long idPais);
+    List<Provincia> findProvinciaByPaisId(@Param("idPais") Long idPais);*/
+
+    List<Provincia> findProvinciaByPaisId(Long idPais);
 }
