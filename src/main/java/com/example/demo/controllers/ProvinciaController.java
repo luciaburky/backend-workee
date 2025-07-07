@@ -11,6 +11,7 @@ import com.example.demo.entities.params.Provincia;
 import com.example.demo.services.params.ProvinciaService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +19,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 
 @RestController
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 @RequestMapping("/provincias")
+@Tag(name = "Provincias")
 public class ProvinciaController {
 
     private final ProvinciaService provinciaService;
@@ -28,7 +30,7 @@ public class ProvinciaController {
         this.provinciaService = provinciaService;
     }
 
-    @Operation(summary = "Obtiene las provincias según el País")
+    @Operation(summary = "Obtiene las provincias según el id de País")
     @GetMapping("/por-pais/{idPais}") 
     public ResponseEntity<List<Provincia>> getProvinciasByPais(@PathVariable Long idPais) {
        try { 
