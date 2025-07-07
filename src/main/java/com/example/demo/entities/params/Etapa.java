@@ -24,11 +24,11 @@ public class Etapa extends Base {
     private String descripcionEtapa;
     
     @NotNull
-    @Column(name = "fecha_etapa")
+    @Column(name = "fecha_hora_alta_etapa")
     private Date fechaHoraAltaEtapa;
     
     @NotNull
-    @Column(name = "fecha_etapa")
+    @Column(name = "fecha_hora_baja_etapa")
     private Date fechaHoraBajaEtapa;
 
 }

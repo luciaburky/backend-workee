@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotNull;
 import com.example.demo.entities.Base;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Builder;
 
@@ -19,11 +21,14 @@ public class Habilidad extends Base {
     private String nombreHabilidad;
  
     @NotNull
-    @Column(name = "fecha_habilidad")
+    @Column(name = "fecha_hora_alta_habilidad")
     private Date fechaHoraAltaHabilidad;
     
     @NotNull
-    @Column(name = "fecha_habilidad")
+    @Column(name = "fecha_hora_baja_habilidad")
     private Date fechaHoraBajaHabilidad;
     
+    @ManyToOne
+    @JoinColumn(name = "tipo_habilidad_id", nullable = false)
+    private TipoHabilidad tipoHabilidad;
 }

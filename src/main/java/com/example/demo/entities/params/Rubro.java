@@ -19,11 +19,11 @@ public class Rubro extends Base {
     private String nombreRubro;
  
     @NotNull
-    @Column(name = "fecha_rubro")
+    @Column(name = "fecha_hora_alta_rubro")
     private Date fechaHoraAltaRubro;
     
     @NotNull
-    @Column(name = "fecha_rubro")
+    @Column(name = "fecha_hora_baja_rubro")
     private Date fechaHoraBajaRubro;
     
 }

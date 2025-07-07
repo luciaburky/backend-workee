@@ -19,10 +19,10 @@ public class EstadoBusqueda extends Base {
     private String nombreEstadoBusqueda;
  
     @NotNull
-    @Column(name = "fecha_estado_busqueda")
+    @Column(name = "fecha_hora_alta_estado_busqueda")
     private Date fechaHoraAltaEstadoBusqueda;
     
     @NotNull
-    @Column(name = "fecha_estado_busqueda")
+    @Column(name = "fecha_hora_baja_estado_busqueda")
     private Date fechaHoraBajaEstadoBusqueda;
 }
