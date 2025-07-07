@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entities.Base;
-import com.example.demo.services.BaseServiceImpl;
+import com.example.demo.services.BaseService;
 
 @RestController
-public abstract class BaseControllerImpl<E extends Base, S extends BaseServiceImpl<E, Long> 
+public abstract class BaseControllerImpl<E extends Base, S extends BaseService<E, Long> 
     > implements BaseController<E, Long> {
     
-    protected final S servicio;
+    private final S servicio;
 
     public BaseControllerImpl(S servicio) {
         this.servicio = servicio;   
