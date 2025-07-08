@@ -9,11 +9,19 @@ import com.example.demo.entities.Base;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "etapa")
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class Etapa extends Base {
     @NotNull
     @Column(name = "nombre_etapa")
@@ -24,11 +32,11 @@ public class Etapa extends Base {
     private String descripcionEtapa;
     
     @NotNull
-    @Column(name = "fecha_etapa")
+    @Column(name = "fecha_hora_alta_etapa")
     private Date fechaHoraAltaEtapa;
     
     @NotNull
-    @Column(name = "fecha_etapa")
+    @Column(name = "fecha_hora_baja_etapa")
     private Date fechaHoraBajaEtapa;
 
 }

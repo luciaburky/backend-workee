@@ -10,10 +10,14 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "estado_oferta")
 @Builder
+@Getter
+@Setter
 public class EstadoOferta extends Base {
     @NotNull
     @Column(name = "nombre_estado_oferta")

@@ -17,9 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.entities.Base;
 import com.example.demo.services.BaseService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
-public abstract class BaseControllerImpl<E extends Base, S extends BaseService<E, Long> 
-    > implements BaseController<E, Long> {
+@Tag(name = "Base", description = "Controller base para operaciones CRUD genéricas")
+public abstract class BaseControllerImpl<E extends Base, S extends BaseService<E, Long>> implements BaseController<E, Long> {
     
     private final S servicio;
 
@@ -27,6 +32,11 @@ public abstract class BaseControllerImpl<E extends Base, S extends BaseService<E
         this.servicio = servicio;   
     }
 
+    @Operation(summary = "Obtener todas las entidades", description = "Recupera una lista de todas las entidades")
+    @ApiResponses( value = {
+        @ApiResponse(responseCode = "200", description = "Lista de entidades recuperada exitosamente"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
     @GetMapping("")
     public ResponseEntity<?> getAll() {
         try {
@@ -36,6 +46,11 @@ public abstract class BaseControllerImpl<E extends Base, S extends BaseService<E
         }
     }
 
+    @Operation(summary = "Obtener una entidad por ID", description = "Recupera una única entidad por su ID")
+    @ApiResponses( value = {
+        @ApiResponse(responseCode = "200", description = "Entidad recuperada exitosamente"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
     @GetMapping("/{id}")
     public ResponseEntity<?> getOne(@PathVariable Long id) {
         try {
@@ -45,6 +60,11 @@ public abstract class BaseControllerImpl<E extends Base, S extends BaseService<E
         }
     }
 
+    @Operation(summary = "Crear una nueva entidad", description = "Crea y guarda una nueva entidad en la base de datos")
+    @ApiResponses( value = {
+        @ApiResponse(responseCode = "201", description = "Entidad creada exitosamente"),
+        @ApiResponse(responseCode = "400", description = "Solicitud inválida")
+    })
     @PostMapping("")
     public ResponseEntity<?> save(@RequestBody E entity) {
         try {
@@ -54,6 +74,11 @@ public abstract class BaseControllerImpl<E extends Base, S extends BaseService<E
         }
     }
 
+    @Operation(summary = "Modificar una entidad", description = "Actualiza una entidad existente utilizando su ID")
+    @ApiResponses( value = {
+        @ApiResponse(responseCode = "200", description = "Entidad modificada exitosamente"),
+        @ApiResponse(responseCode = "400", description = "Solicitud inválida")
+    })
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody E entity) {
         try {
@@ -63,6 +88,11 @@ public abstract class BaseControllerImpl<E extends Base, S extends BaseService<E
         }
     }
 
+    @Operation(summary = "Eliminar una entidad", description = "Elimina una entidad específica utilizando su ID")
+    @ApiResponses( value = {
+        @ApiResponse(responseCode = "200", description = "Entidad eliminada exitosamente"),
+        @ApiResponse(responseCode = "400", description = "Solicitud inválida")
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         try {
