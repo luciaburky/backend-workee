@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -76,6 +77,8 @@ public abstract class BaseControllerImpl<E extends Base, S extends BaseService<E
     protected ResponseEntity<Map<String, String>> errorResponse(String message, HttpStatus status) {
         Map<String, String> error = new HashMap<>();
         error.put("error", message);
+        error.put("status", String.valueOf(status.value()));
+        error.put("timestamp", LocalDateTime.now().toString());
         return ResponseEntity.status(status).body(error);
     }
 }
