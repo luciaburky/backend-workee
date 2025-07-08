@@ -3,7 +3,8 @@ package com.example.demo.controllers;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entities.params.Habilidad;
-import com.example.demo.services.HabilidadService;
+import com.example.demo.services.params.HabilidadService;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

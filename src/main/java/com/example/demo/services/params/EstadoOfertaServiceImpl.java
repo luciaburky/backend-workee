@@ -1,9 +1,10 @@
-package com.example.demo.services;
+package com.example.demo.services.params;
 
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entities.params.EstadoOferta;
-import com.example.demo.repositories.EstadoOfertaRepository;
+import com.example.demo.repositories.params.EstadoOfertaRepository;
+import com.example.demo.services.BaseServiceImpl;
 
 @Service
 public class EstadoOfertaServiceImpl extends BaseServiceImpl<EstadoOferta, Long> implements EstadoOfertaService {

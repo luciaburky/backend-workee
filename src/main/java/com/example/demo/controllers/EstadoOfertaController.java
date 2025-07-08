@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entities.params.EstadoOferta;
-import com.example.demo.services.EstadoOfertaService;
+import com.example.demo.services.params.EstadoOfertaService;
 
 @RestController
 @RequestMapping("/estado-oferta")

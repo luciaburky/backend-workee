@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entities.params.TipoHabilidad;
-import com.example.demo.services.TipoHabilidadService;
+import com.example.demo.services.params.TipoHabilidadService;
 
 @RestController
 @RequestMapping("/tipoHabilidades")
