@@ -20,7 +20,7 @@ public class DemoApplication {
 		SpringApplication.run(DemoApplication.class, args);
 	}
 
-	//TODO: VERIFICAR SI ESTO ES NECESARIO, SEGUN EL VIDEO SI PARA PERMITIR QUE DESDE DISTINTOS LUGARES SE PUEDA HACER PETICIONES, PERO ESTO ES PARA LA API NO LA BD, ASI QUE CAPAZ NO SEA NECESARIO
+	//TODO: VERIFICAR SI ESTO ES NECESARIO
 	@Configuration
 	public static class Myconfiguration{
 		@Bean

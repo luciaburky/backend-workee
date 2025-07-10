@@ -12,8 +12,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
@@ -21,6 +23,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Empresa extends Base{
  
     @NotNull
@@ -50,14 +54,6 @@ public class Empresa extends Base{
     @NotNull
     @Column(name = "sitio_web_empresa")
     private String sitioWebEmpresa;
-
-    @NotNull
-    @Column(name = "fecha_hora_alta_empresa")
-    private Date fechaHoraAltaEmpresa;
-    
-    @NotNull
-    @Column(name = "fecha_hora_baja_empresa")
-    private Date fechaHoraBajaEmpresa;
 
     @ManyToOne()
     @JoinColumn(name = "id_provincia")
