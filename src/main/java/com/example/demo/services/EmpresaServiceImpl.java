@@ -22,41 +22,7 @@ public class EmpresaServiceImpl extends BaseServiceImpl<Empresa, Long> implement
         this.rubroService = rubroService;
     }
 
-    public Empresa modificarEmpresa(ModificarEmpresaDTO modificarEmpresaDTO, Long idEmpresa) throws Exception{
-        try{
-            Empresa empresaOriginal = empresaRepository.findById(idEmpresa)
-                .orElseThrow(() -> new NotFoundException());
-
-            if(modificarEmpresaDTO.getNombreEmpresa() != null) {
-                empresaOriginal.setNombreEmpresa(modificarEmpresaDTO.getNombreEmpresa());
-            }
-            if(modificarEmpresaDTO.getDescripcionEmpresa() != null) {
-                empresaOriginal.setDescripcionEmpresa(modificarEmpresaDTO.getDescripcionEmpresa());
-            }
-            if(modificarEmpresaDTO.getTelefonoEmpresa() != null) {
-                empresaOriginal.setTelefonoEmpresa(modificarEmpresaDTO.getTelefonoEmpresa());
-            }
-            if(modificarEmpresaDTO.getDireccionEmpresa() != null) {
-                empresaOriginal.setDireccionEmpresa(modificarEmpresaDTO.getDireccionEmpresa());
-            }
-            if(modificarEmpresaDTO.getIdRubro() != null) {
-                Rubro rubroEmpresa = rubroService.findById(modificarEmpresaDTO.getIdRubro());
-                if(rubroEmpresa != null) {
-                    empresaOriginal.setRubro(rubroEmpresa);
-                } else {
-                    throw new NotFoundException();
-                }
-            }
-            return empresaRepository.save(empresaOriginal);
-            
-        } catch (DataAccessException e) {
-            throw new Exception("Error de base de datos al modificar la empresa: " + e.getMessage());
-        } catch (Exception e) {
-            throw new Exception("Error inesperado al modificar la empresa: " + e.getMessage());
-        }
-        
-        
-    }
+    
 }
 
 
