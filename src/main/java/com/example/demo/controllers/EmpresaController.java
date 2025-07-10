@@ -28,22 +28,7 @@ public class EmpresaController extends BaseControllerImpl<Empresa, EmpresaServic
         this.empresaService = empresaService;
     }
 
-    @Operation(summary = "Actualiza datos del administrador de una empresa")
-    @PutMapping("/actualizarEmpresa/{id}")
-    public ResponseEntity<Empresa> actualizarEmpresa(@PathVariable Long id, @RequestBody ModificarEmpresaDTO dtoModificarEmpresa) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(empresaService.modificarEmpresa(dtoModificarEmpresa, id));
-            
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        } catch(MethodArgumentNotValidException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
+    
 }
 
 
