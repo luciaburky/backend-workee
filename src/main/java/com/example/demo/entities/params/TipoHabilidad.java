@@ -24,14 +24,5 @@ import lombok.Setter;
 public class TipoHabilidad extends Base {
     @NotNull
     @Column(name = "nombre_tipo_habilidad")
-    private String nombreTipoHabilidad;
- 
-    @NotNull
-    @Column(name = "fecha_hora_alta_tipo_habilidad")
-    private Date fechaHoraAltaTipoHabilidad;
-    
-    @NotNull
-    @Column(name = "fecha_hora_baja_tipo_habilidad")
-    private Date fechaHoraBajaTipoHabilidad;
-    
+    private String nombreTipoHabilidad; 
 }
