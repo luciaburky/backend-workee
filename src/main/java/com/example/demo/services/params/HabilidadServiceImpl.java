@@ -1,9 +1,11 @@
-package com.example.demo.services;
+package com.example.demo.services.params;
 
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entities.params.Habilidad;
-import com.example.demo.repositories.HabilidadRepository;
+import com.example.demo.repositories.params.HabilidadRepository;
+import com.example.demo.services.BaseServiceImpl;
+
 import java.util.List;
 
 
