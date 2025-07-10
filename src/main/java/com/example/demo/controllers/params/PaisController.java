@@ -31,7 +31,7 @@ public class PaisController extends BaseControllerImpl<Pais, PaisService> {
 
 
     @Operation(summary = "Obtiene las provincias según el id de País")
-    @GetMapping("//{idPais}") 
+    @GetMapping("/{idPais}/provincias") 
     public ResponseEntity<List<Provincia>> getProvinciasByPais(@PathVariable Long idPais) {
        try { 
             List<Provincia> provincias = paisService.getProvinciasByPaisId(idPais);
