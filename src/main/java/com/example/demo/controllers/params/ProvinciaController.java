@@ -32,15 +32,5 @@ public class ProvinciaController extends BaseControllerImpl<Provincia, Provincia
         this.provinciaService = provinciaService;
     }
 
-    @Operation(summary = "Obtiene las provincias según el id de País")
-    @GetMapping("/por-pais/{idPais}") 
-    public ResponseEntity<List<Provincia>> getProvinciasByPais(@PathVariable Long idPais) {
-       try { 
-            List<Provincia> provincias = provinciaService.findProvinciaByPaisId(idPais);
-            return ResponseEntity.ok(provincias);
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
+    
 }
