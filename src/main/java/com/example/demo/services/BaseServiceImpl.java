@@ -46,8 +46,10 @@ public abstract class BaseServiceImpl <E extends Base, ID extends Serializable> 
     @Transactional
     public boolean delete(ID id) throws Exception {
         try{
-            if(baseRepository.existsById(id)){
-                baseRepository.deleteById(id);
+            Optional<E> entityOptional = baseRepository.findById(id);
+            if(entityOptional.isPresent()) {
+                entityOptional.get().setFechaHoraBaja(new Date());
+                baseRepository.save(entityOptional.get());
                 return true;
             }
             else {
