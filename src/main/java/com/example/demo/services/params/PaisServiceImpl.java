@@ -22,12 +22,12 @@ public class PaisServiceImpl extends BaseServiceImpl<Pais,Long> implements PaisS
         this.provinciaService = provinciaService;
     }
 
-    public List<Provincia> getProvinciasByPaisId(Long paisId) {
-        try{
-            List<Provincia> provincias = provinciaService.findProvinciaByPaisId(paisId);
-            return provincias;
-        } catch (Exception e){
-            throw new RuntimeException("Error al acceder a los datos de provincias.", e);
-        }
-    }
+    // public List<Provincia> getProvinciasByPaisId(Long paisId) {
+    //     try{
+    //         List<Provincia> provincias = provinciaService.findProvinciaByPaisId(paisId);
+    //         return provincias;
+    //     } catch (Exception e){
+    //         throw new RuntimeException("Error al acceder a los datos de provincias.", e);
+    //     }
+    // }
 }
