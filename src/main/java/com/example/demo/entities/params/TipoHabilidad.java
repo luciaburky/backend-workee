@@ -27,19 +27,11 @@ public class TipoHabilidad extends Base {
     private String nombreTipoHabilidad;
  
     @NotNull
-<<<<<<< HEAD
-    @Column(name = "fecha_hora_alta_habilidad")
-    private Date fechaHoraAltaTipoHabilidad;
-    
-    @NotNull
-    @Column(name = "fecha_hora_baja_habilidad")
-=======
     @Column(name = "fecha_hora_alta_tipo_habilidad")
     private Date fechaHoraAltaTipoHabilidad;
     
     @NotNull
     @Column(name = "fecha_hora_baja_tipo_habilidad")
->>>>>>> 84eaa5ec7945682cbd2f74cdd1df956678f0a100
     private Date fechaHoraBajaTipoHabilidad;
     
 }
