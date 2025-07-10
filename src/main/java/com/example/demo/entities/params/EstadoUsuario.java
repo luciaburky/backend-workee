@@ -26,11 +26,5 @@ public class EstadoUsuario extends Base {
     @Column(name = "nombre_estado_usuario")
     private String nombreEstadoUsuario;
  
-    @NotNull
-    @Column(name = "fecha_hora_alta_estado_usuario")
-    private Date fechaHoraAltaEstadoUsuario;
-    
-    @NotNull
-    @Column(name = "fecha_hora_baja_estado_usuario")
-    private Date fechaHoraBajaEstadoUsuario;
+   
 }

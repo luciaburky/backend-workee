@@ -27,15 +27,7 @@ public class Habilidad extends Base {
     @NotNull
     @Column(name = "nombre_habilidad")
     private String nombreHabilidad;
- 
-    @NotNull
-    @Column(name = "fecha_hora_alta_habilidad")
-    private Date fechaHoraAltaHabilidad;
-    
-    @NotNull
-    @Column(name = "fecha_hora_baja_habilidad")
-    private Date fechaHoraBajaHabilidad;
-    
+
     @ManyToOne
     @JoinColumn(name = "tipo_habilidad_id", nullable = false)
     private TipoHabilidad tipoHabilidad;

@@ -25,13 +25,4 @@ public class Rubro extends Base {
     @NotNull
     @Column(name = "nombre_rubro")
     private String nombreRubro;
- 
-    @NotNull
-    @Column(name = "fecha_hora_alta_rubro")
-    private Date fechaHoraAltaRubro;
-    
-    @NotNull
-    @Column(name = "fecha_hora_baja_rubro")
-    private Date fechaHoraBajaRubro;
-    
 }

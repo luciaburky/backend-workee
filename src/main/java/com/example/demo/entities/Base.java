@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.io.Serializable;
+import java.util.Date;
 
 @MappedSuperclass
 @Getter
@@ -15,5 +16,13 @@ public class Base implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull
+    @Column(name = "fecha_hora_alta")
+    private Date fechaHoraAlta;
+    
+    @NotNull
+    @Column(name = "fecha_hora_baja")
+    private Date fechaHoraBaja;
 
 }

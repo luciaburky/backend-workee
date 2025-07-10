@@ -25,12 +25,4 @@ public class EstadoBusqueda extends Base {
     @NotNull
     @Column(name = "nombre_estado_busqueda")
     private String nombreEstadoBusqueda;
- 
-    @NotNull
-    @Column(name = "fecha_hora_alta_estado_busqueda")
-    private Date fechaHoraAltaEstadoBusqueda;
-    
-    @NotNull
-    @Column(name = "fecha_hora_baja_estado_busqueda")
-    private Date fechaHoraBajaEstadoBusqueda;
 }
