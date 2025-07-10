@@ -25,13 +25,4 @@ public class ModalidadOferta extends Base {
     @NotNull
     @Column(name = "nombre_modalidad_oferta")
     private String nombreModalidadOferta;
-    
-    @NotNull
-    @Column(name = "fecha_hora_alta_modalidad_oferta")
-    private Date fechaHoraAltaModalidadOferta;
-    
-    @NotNull
-    @Column(name = "fecha_hora_baja_modalidad_oferta")
-    private Date fechaHoraBajaModalidadOferta;
-
 }

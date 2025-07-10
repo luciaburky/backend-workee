@@ -25,13 +25,5 @@ public class Pais extends Base {
     @NotNull
     @Column(name = "nombre_pais")
     private String nombrePais;
- 
-    @NotNull
-    @Column(name = "fecha_hora_alta_pais")
-    private Date fechaHoraAltaPais;
-    
-    @NotNull
-    @Column(name = "fecha_hora_baja_pais")
-    private Date fechaHoraBajaPais;
 
 }

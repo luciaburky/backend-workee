@@ -27,12 +27,5 @@ public class Genero extends Base {
     @Column(name = "nombre_genero")
     private String nombreGenero;
     
-    @NotNull
-    @Column(name = "fecha_hora_alta_genero")
-    private Date fechaHoraAltaGenero;
-    
-    @NotNull
-    @Column(name = "fecha_hora_baja_genero")
-    private Date fechaHoraBajaGenero;
 
 }

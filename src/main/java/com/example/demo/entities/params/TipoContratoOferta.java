@@ -25,13 +25,5 @@ public class TipoContratoOferta extends Base {
     @NotNull
     @Column(name = "nombre_tipo_contrato_oferta")
     private String nombreTipoContratoOferta;
-    
-    @NotNull
-    @Column(name = "fecha_hora_alta_tipo_contrato_oferta")
-    private Date fechaHoraAltaTipoContratoOferta;
-    
-    @NotNull
-    @Column(name = "fecha_hora_baja_tipo_contrato_oferta")
-    private Date fechaHoraBajaTipoContratoOferta;
 
 }

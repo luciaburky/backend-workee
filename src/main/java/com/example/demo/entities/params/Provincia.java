@@ -27,14 +27,6 @@ public class Provincia extends Base {
     @NotNull
     @Column(name = "nombre_provincia")
     private String nombreProvincia;
- 
-    @NotNull
-    @Column(name = "fecha_hora_alta_provincia")
-    private Date fechaHoraAltaProvincia;
-    
-    @NotNull
-    @Column(name = "fecha_hora_baja_provincia")
-    private Date fechaHoraBajaProvincia;
 
 
     @ManyToOne()

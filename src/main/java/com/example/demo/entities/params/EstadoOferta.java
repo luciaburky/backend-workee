@@ -22,13 +22,5 @@ public class EstadoOferta extends Base {
     @NotNull
     @Column(name = "nombre_estado_oferta")
     private String nombreEstadoOferta;
-    
-    @NotNull
-    @Column(name = "fecha_hora_alta_estado_oferta")
-    private Date fechaHoraAltaEstadoOferta;
-    
-    @NotNull
-    @Column(name = "fecha_hora_baja_estado_oferta")
-    private Date fechaHoraBajaEstadoOferta;
 
 }
