@@ -31,37 +31,7 @@ public class EmpleadoEmpresaController extends BaseControllerImpl<EmpleadoEmpres
         this.empleadoEmpresaService = empleadoEmpresaService;
     }
 
-    @Operation(summary = "Crea un nuevo empleado de empresa")
-    @PostMapping("/crearEmpleado")
-    public ResponseEntity<EmpleadoEmpresa> crearEmpleadoEmpresa(@Valid @RequestBody CrearEmpleadoEmpresaDTO empleadoEmpresaRequestDTO) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(empleadoEmpresaService.crearEmpleadoEmpresa(empleadoEmpresaRequestDTO));
-
-            /*EmpleadoEmpresa nuevoEmpleado = empleadoEmpresaService.crearEmpleadoEmpresa(empleadoEmpresaRequestDTO);
-            return ResponseEntity.ok(nuevoEmpleado);*/
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        } catch(MethodArgumentNotValidException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
-
-    @Operation(summary = "Actualiza un empleado de una empresa")
-    @PutMapping("/actualizarEmpleado/{id}")
-    public ResponseEntity<EmpleadoEmpresa> actualizarEmpleadoEmpresa(@PathVariable Long id, @Valid @RequestBody ModificarEmpleadoEmpresaDTO modificarEmpleadoEmpresaDTO) {
-        try {
-            EmpleadoEmpresa empleadoActualizado = empleadoEmpresaService.actualizarEmpleado(modificarEmpleadoEmpresaDTO, id);
-            return ResponseEntity.status(HttpStatus.OK).body(empleadoActualizado);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        } catch(MethodArgumentNotValidException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
+   
 
 }
 
