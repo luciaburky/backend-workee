@@ -19,5 +19,5 @@ public interface TipoEventoRepository extends BaseRepository<TipoEvento, Long> {
 
     Optional<TipoEvento> findByNombreTipoEventoIgnoreCase(String NombreTipoEvento);
 
-    List<TipoEvento> findAllByOrderByNombreTipoEventoOfertaAsc();
+    List<TipoEvento> findAllByOrderByNombreTipoEventoAsc();
 }

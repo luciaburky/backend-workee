@@ -64,7 +64,9 @@ public class PaisController  {
     @Operation(summary = "Obtiene un pais por su ID")
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerPais(@PathVariable Long id) {
-        Pais pais = paisService.buscarPaisPorId(id);
+        //Pais pais = paisService.buscarPaisPorId(id);
+        Pais pais = paisService.findById(id);
+
         if (pais != null) {
             return ResponseEntity.status(HttpStatus.OK).body(pais);
         } else {
@@ -76,7 +78,7 @@ public class PaisController  {
     @Operation(summary = "Deshabilita un pais")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deshabilitarPais(@PathVariable Long id) {
-        boolean eliminado = paisService.deshabilitarPais(id);
+        boolean eliminado = paisService.delete(id);//paisService.deshabilitarPais(id);
         if (eliminado) {
             return ResponseEntity.status(HttpStatus.OK).build();
         } else {

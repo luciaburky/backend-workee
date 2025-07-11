@@ -7,6 +7,8 @@ import java.util.Optional;
 
 import com.example.demo.entities.Base;
 import com.example.demo.repositories.BaseRepository;
+import com.example.exceptions.EntityAlreadyDisabledException;
+import com.example.exceptions.EntityNotFoundException;
 
 import jakarta.transaction.Transactional;
 
@@ -45,8 +47,8 @@ public abstract class BaseServiceImpl <E extends Base, ID extends Serializable> 
 
     @Override
     @Transactional
-    public boolean delete(ID id) throws Exception {
-        try{
+    public boolean delete(ID id) /*throws Exception*/ {
+        /*try{
             Optional<E> entityOptional = baseRepository.findById(id);
             if(entityOptional.isPresent()) {
                 entityOptional.get().setFechaHoraBaja(new Date());
@@ -59,7 +61,14 @@ public abstract class BaseServiceImpl <E extends Base, ID extends Serializable> 
         }
         catch(Exception e ){
             throw new Exception(e.getMessage());
+        }*/
+        E entity = findById(id);
+        if(entity.getFechaHoraBaja() != null){
+            throw new EntityAlreadyDisabledException("La entidad ya se encuentra deshabilitada");
         }
+        entity.setFechaHoraBaja(new Date());
+        baseRepository.save(entity);
+        return true;
     }
 
     @Override
@@ -74,7 +83,7 @@ public abstract class BaseServiceImpl <E extends Base, ID extends Serializable> 
     }
 
 
-    @Override
+    /*@Override
     @Transactional
     public E findById(ID id) throws Exception {
         try {
@@ -85,7 +94,14 @@ public abstract class BaseServiceImpl <E extends Base, ID extends Serializable> 
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
+    }*/
+    @Transactional
+    @Override
+    public E findById(ID id) {
+        return baseRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Entidad no encontrada con ID: " + id));
     }
+
 
     @Override
     @Transactional

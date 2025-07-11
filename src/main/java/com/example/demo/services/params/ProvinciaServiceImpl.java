@@ -53,7 +53,9 @@ public class ProvinciaServiceImpl extends BaseServiceImpl<Provincia,Long> implem
         if(provinciaRequestDTO.getIdPais() == null) {
             throw new IllegalArgumentException("El ID del país no puede ser nulo");
         }
-        Pais paisBuscado = paisService.buscarPaisPorId(provinciaRequestDTO.getIdPais());
+        //Pais paisBuscado = paisService.buscarPaisPorId(provinciaRequestDTO.getIdPais());
+        Pais paisBuscado = paisService.findById(provinciaRequestDTO.getIdPais());
+
         nuevaProvincia.setPais(paisBuscado);
 
         return provinciaRepository.save(nuevaProvincia);

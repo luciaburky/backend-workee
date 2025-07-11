@@ -12,7 +12,7 @@ public interface PaisService extends BaseService<Pais, Long> {
 
     public Pais actualizarPais(Long id, PaisRequestDTO paisRequestDTO);
 
-    public Pais buscarPaisPorId(Long id);
+    //public Pais buscarPaisPorId(Long id);
 
     public List<Pais> obtenerPaises();
 
@@ -20,6 +20,6 @@ public interface PaisService extends BaseService<Pais, Long> {
 
     public Boolean habilitarPais(Long id);
 
-    public Boolean deshabilitarPais(Long id);
+    //public Boolean deshabilitarPais(Long id);
 
 }
