@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.example.exceptions.EntityAlreadyDisabledException;
-import com.example.exceptions.EntityAlreadyEnabledException;
-import com.example.exceptions.EntityAlreadyExistsException;
-import com.example.exceptions.EntityNotFoundException;
-import com.example.exceptions.EntityNotValidException;
-import com.example.exceptions.ErrorResponse;
+import com.example.demo.exceptions.EntityAlreadyDisabledException;
+import com.example.demo.exceptions.EntityAlreadyEnabledException;
+import com.example.demo.exceptions.EntityAlreadyExistsException;
+import com.example.demo.exceptions.EntityNotFoundException;
+import com.example.demo.exceptions.EntityNotValidException;
+import com.example.demo.exceptions.ErrorResponse;
 
 @RestControllerAdvice
 public class ExceptionHandlerController {

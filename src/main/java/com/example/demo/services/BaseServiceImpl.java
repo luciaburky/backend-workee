@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.demo.entities.Base;
+import com.example.demo.exceptions.EntityAlreadyDisabledException;
+import com.example.demo.exceptions.EntityNotFoundException;
 import com.example.demo.repositories.BaseRepository;
-import com.example.exceptions.EntityAlreadyDisabledException;
-import com.example.exceptions.EntityNotFoundException;
 
 import jakarta.transaction.Transactional;
 
