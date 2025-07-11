@@ -46,7 +46,7 @@ public class PaisServiceImpl extends BaseServiceImpl<Pais,Long> implements PaisS
     @Transactional
     @Override
     public Pais actualizarPais(Long id, PaisRequestDTO paisRequestDTO){
-        Pais paisOriginal = buscarPaisPorId(id);
+        Pais paisOriginal = this.findById(id); //buscarPaisPorId(id);
         
         if (yaExistePais(paisRequestDTO.getNombrePais())) {
             throw new EntityAlreadyExistsException("Ya existe un país con ese nombre");
@@ -62,7 +62,7 @@ public class PaisServiceImpl extends BaseServiceImpl<Pais,Long> implements PaisS
         if(id == null) {
             throw new IllegalArgumentException("El ID del país no puede ser nulo");
         }
-        Pais paisOriginal = buscarPaisPorId(id);
+        Pais paisOriginal = this.findById(id); //buscarPaisPorId(id);
         if (paisOriginal.getFechaHoraBaja() == null) {
             throw new EntityAlreadyEnabledException("El país ya está habilitado");
         }
@@ -71,26 +71,26 @@ public class PaisServiceImpl extends BaseServiceImpl<Pais,Long> implements PaisS
         return true;
     }
 
-    @Override
+    /*@Override
     @Transactional
     public Boolean deshabilitarPais(Long id) {
         if(id == null) {
             throw new IllegalArgumentException("El ID del país no puede ser nulo");
         }
-        Pais paisOriginal = buscarPaisPorId(id);
+        Pais paisOriginal = this.findById(id); //buscarPaisPorId(id);
         if (paisOriginal.getFechaHoraBaja() != null) {
             throw new EntityAlreadyDisabledException("El país ya está deshabilitado");
         }
         paisOriginal.setFechaHoraBaja(new Date());
         paisRepository.save(paisOriginal);
         return true;
-    }
+    }*/
 
-    @Override
+    /*@Override
     public Pais buscarPaisPorId(Long id) {
         return paisRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("País no encontrado con ID: " + id));
-    }
+    }*/
 
     @Override
     public List<Pais> obtenerPaises() {

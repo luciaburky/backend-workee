@@ -56,7 +56,7 @@ public class TipoEventoServiceImpl extends BaseServiceImpl<TipoEvento,Long> impl
 
     @Override
     public List<TipoEvento> obtenerTiposEventos() {
-        return tipoEventoRepository.findAllByOrderByNombreTipoEventoOfertaAsc();
+        return tipoEventoRepository.findAllByOrderByNombreTipoEventoAsc();
     }
 
     @Override
