@@ -90,13 +90,13 @@ public class PaisServiceImpl extends BaseServiceImpl<Pais,Long> implements PaisS
     @Override
     @Transactional
     public List<Pais> obtenerPaises() {
-        return paisRepository.findAll();
+        return paisRepository.findAllByOrderByNombrePaisAsc();
     }
 
     @Override
     @Transactional
     public List<Pais> obtenerPaisesActivos() {
-        return paisRepository.findByFechaHoraBajaIsNull();
+        return paisRepository.buscarPaisesActivos();
     }
 
 
