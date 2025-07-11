@@ -9,4 +9,17 @@ import com.example.demo.services.BaseService;
 
 public interface PaisService extends BaseService<Pais, Long> {
     public Pais guardarPais(PaisRequestDTO paisRequestDTO);
+
+    public Pais actualizarPais(Long id, PaisRequestDTO paisRequestDTO);
+
+    public Pais buscarPaisPorId(Long id);
+
+    public List<Pais> obtenerPaises();
+
+    public List<Pais> obtenerPaisesActivos();
+
+    public Boolean habilitarPais(Long id);
+
+    public Boolean deshabilitarPais(Long id);
+
 }
