@@ -12,12 +12,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping("/estados-usuario")
 @Tag(name = "EstadoUsuario", description = "Controlador para operaciones CRUD de EstadoUsuario")
-public class EstadoUsuarioController extends BaseControllerImpl<EstadoUsuario, EstadoUsuarioService> {
+public class EstadoUsuarioController {
     
     private final EstadoUsuarioService estadoUsuarioService;
 
     public EstadoUsuarioController(EstadoUsuarioService estadoUsuarioService) {
-        super(estadoUsuarioService);
         this.estadoUsuarioService = estadoUsuarioService;
     }
 }

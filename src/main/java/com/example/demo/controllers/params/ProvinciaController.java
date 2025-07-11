@@ -23,12 +23,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 //@CrossOrigin(origins = "*")
 @RequestMapping("/provincias")
 @Tag(name = "Provincia", description = "Controlador para operaciones CRUD de Provincias")
-public class ProvinciaController extends BaseControllerImpl<Provincia, ProvinciaService> {
+public class ProvinciaController {
 
     private final ProvinciaService provinciaService;
     
     public ProvinciaController(ProvinciaService provinciaService) {
-        super(provinciaService);
         this.provinciaService = provinciaService;
     }
 

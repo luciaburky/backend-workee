@@ -21,8 +21,8 @@ public abstract class BaseServiceImpl <E extends Base, ID extends Serializable> 
     @Transactional
     public E save(E entity) throws Exception {
         try{
-            entity = baseRepository.save(entity);
-            return entity;
+            entity.setFechaHoraAlta(new Date());
+            return baseRepository.save(entity);
         }
         catch(Exception e ){
             throw new Exception(e.getMessage());
@@ -80,6 +80,17 @@ public abstract class BaseServiceImpl <E extends Base, ID extends Serializable> 
         try {
             Optional<E> entityOptional = baseRepository.findById(id);
             return entityOptional.get();
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    @Override
+    @Transactional
+    public List<E> traerSoloActivos() throws Exception {
+        try {
+           List<E> entities = baseRepository.findByFechaHoraBajaIsNull();
+           return entities;
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
