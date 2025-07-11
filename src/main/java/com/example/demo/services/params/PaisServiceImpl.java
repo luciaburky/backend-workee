@@ -11,7 +11,10 @@ import com.example.demo.entities.params.Pais;
 import com.example.demo.entities.params.Provincia;
 import com.example.demo.repositories.params.PaisRepository;
 import com.example.demo.services.BaseServiceImpl;
+import com.example.exceptions.EntityAlreadyDisabled;
+import com.example.exceptions.EntityAlreadyEnabled;
 import com.example.exceptions.EntityAlreadyExistsException;
+import com.example.exceptions.EntityNotFoundException;
 
 import jakarta.transaction.Transactional;
 
@@ -29,8 +32,7 @@ public class PaisServiceImpl extends BaseServiceImpl<Pais,Long> implements PaisS
     @Override
     @Transactional
     public Pais guardarPais(PaisRequestDTO paisRequestDTO) {
-        Optional<Pais> paisExistente = paisRepository.findByNombrePaisIgnoreCase(paisRequestDTO.getNombrePais());
-        if (paisExistente.isPresent()) {
+        if (yaExistePais(paisRequestDTO.getNombrePais())) {
             throw new EntityAlreadyExistsException("Ya existe un país con ese nombre");
         }
 
@@ -41,6 +43,66 @@ public class PaisServiceImpl extends BaseServiceImpl<Pais,Long> implements PaisS
         return paisRepository.save(nuevoPais);
     }
 
-    
+    @Transactional
+    @Override
+    public Pais actualizarPais(Long id, PaisRequestDTO paisRequestDTO){
+        Pais paisOriginal = buscarPaisPorId(id);
+        
+        if (yaExistePais(paisRequestDTO.getNombrePais())) {
+            throw new EntityAlreadyExistsException("Ya existe un país con ese nombre");
+        }
+
+        paisOriginal.setNombrePais(paisRequestDTO.getNombrePais());
+        return paisRepository.save(paisOriginal);
+    }
+
+    @Transactional
+    @Override
+    public Boolean habilitarPais(Long id) {
+        Pais paisOriginal = buscarPaisPorId(id);
+        if (paisOriginal.getFechaHoraBaja() == null) {
+            throw new EntityAlreadyEnabled("El país ya está habilitado");
+        }
+        paisOriginal.setFechaHoraBaja(null);
+        paisRepository.save(paisOriginal);
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public Boolean deshabilitarPais(Long id) {
+        Pais paisOriginal = buscarPaisPorId(id);
+        if (paisOriginal.getFechaHoraBaja() != null) {
+            throw new EntityAlreadyDisabled("El país ya está deshabilitado");
+        }
+        paisOriginal.setFechaHoraBaja(new Date());
+        paisRepository.save(paisOriginal);
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public Pais buscarPaisPorId(Long id) {
+        return paisRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("País no encontrado con ID: " + id));
+    }
+
+    @Override
+    @Transactional
+    public List<Pais> obtenerPaises() {
+        return paisRepository.findAll();
+    }
+
+    @Override
+    @Transactional
+    public List<Pais> obtenerPaisesActivos() {
+        return paisRepository.findByFechaHoraBajaIsNull();
+    }
+
+
+    private Boolean yaExistePais(String nombrePais) {
+        Optional<Pais> paisExistente = paisRepository.findByNombrePaisIgnoreCase(nombrePais);
+        return paisExistente.isPresent();
+    }
     
 }

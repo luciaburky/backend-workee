@@ -9,16 +9,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.controllers.BaseControllerImpl;
 import com.example.demo.dtos.params.PaisRequestDTO;
 import com.example.demo.entities.params.Pais;
 import com.example.demo.services.params.PaisService;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -35,34 +34,63 @@ public class PaisController  {
 
 
     @Operation(summary = "Crea un pais")
-    @PostMapping
+    @PostMapping("")
     public ResponseEntity<?> crearPais(@Valid @RequestBody PaisRequestDTO paisRequestDTO) {
-        
-        return ResponseEntity.status(HttpStatus.CREATED).body(paisService.guardarPais(paisRequestDTO));
+        Pais nuevoPais = paisService.guardarPais(paisRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(nuevoPais);
     }
 
-    /*@Operation(summary = "Actualiza un pais")
+    @Operation(summary = "Actualiza un pais")
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizarPais(@PathVariable Long id, @RequestBody PaisRequestDTO paisRequestDTO) {
-        return 
+        Pais paisActualizado = paisService.actualizarPais(id, paisRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(paisActualizado);
     }
 
     @Operation(summary = "Obtiene todos los paises")
     @GetMapping("")
     public ResponseEntity<?> obtenerPaises() {
-        
+        List<Pais> paises = paisService.obtenerPaises();
+        return ResponseEntity.status(HttpStatus.CREATED).body(paises);
+    }
+
+    @Operation(summary = "Obtiene todos los paises ACTIVOS")
+    @GetMapping("/activos")
+    public ResponseEntity<?> obtenerPaisesActivos() {
+        List<Pais> paises = paisService.obtenerPaisesActivos();
+        return ResponseEntity.status(HttpStatus.CREATED).body(paises);
     }
 
     @Operation(summary = "Obtiene un pais por su ID")
     @GetMapping("/{id}")
-    public ResponseEntity<?> obtenerPais() {
-        
+    public ResponseEntity<?> obtenerPais(@PathVariable Long id) {
+        Pais pais = paisService.buscarPaisPorId(id);
+        return ResponseEntity.status(HttpStatus.CREATED).body(pais);
     }
-    @Operation(summary = "Obtiene un pais por su ID")
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminarPais(){
 
-    }*/
+
+    @Operation(summary = "Deshabilita un pais")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deshabilitarPais(@PathVariable Long id) {
+        boolean eliminado = paisService.deshabilitarPais(id);
+        if (eliminado) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Pais no encontrado");
+        }
+
+    }
+
+    @Operation(summary = "Habilita un pais")
+    @PutMapping("/habilitar/{id}")
+    public ResponseEntity<?> habilitarPais(@PathVariable Long id) {
+        boolean habilitado = paisService.habilitarPais(id);
+        if (habilitado) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Pais no encontrado");
+        }
+    }
 
     
 }
