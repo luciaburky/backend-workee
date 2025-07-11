@@ -7,12 +7,12 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.params.TipoEventoRequestDTO;
 import com.example.demo.entities.params.TipoEvento;
+import com.example.demo.exceptions.EntityAlreadyDisabledException;
+import com.example.demo.exceptions.EntityAlreadyEnabledException;
+import com.example.demo.exceptions.EntityAlreadyExistsException;
+import com.example.demo.exceptions.EntityNotFoundException;
 import com.example.demo.repositories.params.TipoEventoRepository;
 import com.example.demo.services.BaseServiceImpl;
-import com.example.exceptions.EntityAlreadyDisabledException;
-import com.example.exceptions.EntityAlreadyEnabledException;
-import com.example.exceptions.EntityAlreadyExistsException;
-import com.example.exceptions.EntityNotFoundException;
 
 import jakarta.transaction.Transactional;
 
