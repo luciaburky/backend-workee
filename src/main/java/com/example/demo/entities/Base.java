@@ -22,7 +22,6 @@ public class Base implements Serializable {
     @Column(name = "fecha_hora_alta")
     private Date fechaHoraAlta;
     
-    @NotNull
     @Column(name = "fecha_hora_baja")
     private Date fechaHoraBaja;
 

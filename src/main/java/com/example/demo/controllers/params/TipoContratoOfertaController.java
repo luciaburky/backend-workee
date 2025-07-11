@@ -12,12 +12,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping("/tipos-contrato-oferta")
 @Tag(name = "TipoContratoOferta", description = "Controlador para operaciones CRUD de TipoContratoOferta")
-public class TipoContratoOfertaController extends BaseControllerImpl<TipoContratoOferta, TipoContratoOfertaService> {
+public class TipoContratoOfertaController {
 
     private final TipoContratoOfertaService tipoContratoOfertaService;
 
     public TipoContratoOfertaController(TipoContratoOfertaService tipoContratoOfertaService) {
-        super(tipoContratoOfertaService);
         this.tipoContratoOfertaService = tipoContratoOfertaService;
     }
 

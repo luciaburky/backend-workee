@@ -12,12 +12,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping("/tipos-evento")
 @Tag(name = "TipoEvento", description = "Controlador para operaciones CRUD de TipoEvento")
-public class TipoEventoController extends BaseControllerImpl<TipoEvento, TipoEventoService> {
+public class TipoEventoController  {
 
     private final TipoEventoService tipoEventoService;
 
     public TipoEventoController(TipoEventoService tipoEventoService) {
-        super(tipoEventoService);
         this.tipoEventoService = tipoEventoService;
     }
 
