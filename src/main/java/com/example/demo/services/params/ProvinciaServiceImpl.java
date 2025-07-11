@@ -11,7 +11,7 @@ import com.example.demo.entities.params.Pais;
 import com.example.demo.entities.params.Provincia;
 import com.example.demo.repositories.params.ProvinciaRepository;
 import com.example.demo.services.BaseServiceImpl;
-import com.example.exceptions.EntityAlreadyEnabled;
+import com.example.exceptions.EntityAlreadyEnabledException;
 import com.example.exceptions.EntityAlreadyExistsException;
 import com.example.exceptions.EntityNotFoundException;
 
@@ -101,7 +101,7 @@ public class ProvinciaServiceImpl extends BaseServiceImpl<Provincia,Long> implem
         }
         Provincia provinciaOriginal = buscarProvinciaPorId(id);
         if(provinciaOriginal.getFechaHoraBaja() == null) {
-            throw new EntityAlreadyEnabled("La provincia ya está habilitada");
+            throw new EntityAlreadyEnabledException("La provincia ya está habilitada");
         }
         provinciaOriginal.setFechaHoraBaja(null);
         provinciaRepository.save(provinciaOriginal);
@@ -116,7 +116,7 @@ public class ProvinciaServiceImpl extends BaseServiceImpl<Provincia,Long> implem
         }
         Provincia provinciaOriginal = buscarProvinciaPorId(id);
         if(provinciaOriginal.getFechaHoraBaja() != null) {
-            throw new EntityAlreadyEnabled("La provincia ya está deshabilitada");
+            throw new EntityAlreadyEnabledException("La provincia ya está deshabilitada");
         }
         provinciaOriginal.setFechaHoraBaja(new Date());
         provinciaRepository.save(provinciaOriginal);

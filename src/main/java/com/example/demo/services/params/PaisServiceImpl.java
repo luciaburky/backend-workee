@@ -11,8 +11,8 @@ import com.example.demo.entities.params.Pais;
 import com.example.demo.entities.params.Provincia;
 import com.example.demo.repositories.params.PaisRepository;
 import com.example.demo.services.BaseServiceImpl;
-import com.example.exceptions.EntityAlreadyDisabled;
-import com.example.exceptions.EntityAlreadyEnabled;
+import com.example.exceptions.EntityAlreadyDisabledException;
+import com.example.exceptions.EntityAlreadyEnabledException;
 import com.example.exceptions.EntityAlreadyExistsException;
 import com.example.exceptions.EntityNotFoundException;
 
@@ -64,7 +64,7 @@ public class PaisServiceImpl extends BaseServiceImpl<Pais,Long> implements PaisS
         }
         Pais paisOriginal = buscarPaisPorId(id);
         if (paisOriginal.getFechaHoraBaja() == null) {
-            throw new EntityAlreadyEnabled("El país ya está habilitado");
+            throw new EntityAlreadyEnabledException("El país ya está habilitado");
         }
         paisOriginal.setFechaHoraBaja(null);
         paisRepository.save(paisOriginal);
@@ -79,7 +79,7 @@ public class PaisServiceImpl extends BaseServiceImpl<Pais,Long> implements PaisS
         }
         Pais paisOriginal = buscarPaisPorId(id);
         if (paisOriginal.getFechaHoraBaja() != null) {
-            throw new EntityAlreadyDisabled("El país ya está deshabilitado");
+            throw new EntityAlreadyDisabledException("El país ya está deshabilitado");
         }
         paisOriginal.setFechaHoraBaja(new Date());
         paisRepository.save(paisOriginal);

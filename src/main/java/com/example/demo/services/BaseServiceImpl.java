@@ -78,8 +78,10 @@ public abstract class BaseServiceImpl <E extends Base, ID extends Serializable> 
     @Transactional
     public E findById(ID id) throws Exception {
         try {
+            E entity;
             Optional<E> entityOptional = baseRepository.findById(id);
-            return entityOptional.get();
+            entity = entityOptional.get();
+            return entity;
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }

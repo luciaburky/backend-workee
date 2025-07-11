@@ -110,6 +110,6 @@ public abstract class BaseControllerImpl<E extends Base, S extends BaseService<E
         error.put("status", String.valueOf(status.value()));
         error.put("timestamp", LocalDateTime.now().toString());
         return ResponseEntity.status(status).body(error);
-    }
+      }
 }
 
