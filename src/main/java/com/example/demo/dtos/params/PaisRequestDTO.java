@@ -10,8 +10,6 @@ import lombok.Setter;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 public class PaisRequestDTO {
     @NotBlank(message = "El nombre del país no puede estar vacío")
     private String nombrePais;

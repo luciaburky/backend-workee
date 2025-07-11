@@ -59,6 +59,9 @@ public class PaisServiceImpl extends BaseServiceImpl<Pais,Long> implements PaisS
     @Transactional
     @Override
     public Boolean habilitarPais(Long id) {
+        if(id == null) {
+            throw new IllegalArgumentException("El ID del país no puede ser nulo");
+        }
         Pais paisOriginal = buscarPaisPorId(id);
         if (paisOriginal.getFechaHoraBaja() == null) {
             throw new EntityAlreadyEnabled("El país ya está habilitado");
@@ -71,6 +74,9 @@ public class PaisServiceImpl extends BaseServiceImpl<Pais,Long> implements PaisS
     @Override
     @Transactional
     public Boolean deshabilitarPais(Long id) {
+        if(id == null) {
+            throw new IllegalArgumentException("El ID del país no puede ser nulo");
+        }
         Pais paisOriginal = buscarPaisPorId(id);
         if (paisOriginal.getFechaHoraBaja() != null) {
             throw new EntityAlreadyDisabled("El país ya está deshabilitado");
@@ -81,20 +87,17 @@ public class PaisServiceImpl extends BaseServiceImpl<Pais,Long> implements PaisS
     }
 
     @Override
-    @Transactional
     public Pais buscarPaisPorId(Long id) {
         return paisRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("País no encontrado con ID: " + id));
     }
 
     @Override
-    @Transactional
     public List<Pais> obtenerPaises() {
         return paisRepository.findAllByOrderByNombrePaisAsc();
     }
 
     @Override
-    @Transactional
     public List<Pais> obtenerPaisesActivos() {
         return paisRepository.buscarPaisesActivos();
     }
