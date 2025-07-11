@@ -62,28 +62,32 @@ public class ProvinciaController {
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizarProvincia(@PathVariable Long id, @RequestBody ProvinciaRequestDTO provinciaRequestDTO) {
         Provincia provinciaActualizada = provinciaService.actualizarProvincia(id, provinciaRequestDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(provinciaActualizada);
+        return ResponseEntity.status(HttpStatus.OK).body(provinciaActualizada);
     }
 
     @Operation(summary = "Obtiene todas las provincias")
     @GetMapping("")
     public ResponseEntity<?> obtenerProvincias() {
         List<Provincia> provincias = provinciaService.obtenerProvincias();
-        return ResponseEntity.status(HttpStatus.CREATED).body(provincias);
+        return ResponseEntity.status(HttpStatus.OK).body(provincias);
     }
 
     @Operation(summary = "Obtiene todas las provincias ACTIVAS")
     @GetMapping("/activas")
     public ResponseEntity<?> obtenerProvinciasActivas() {
         List<Provincia> provincias = provinciaService.obtenerProvinciasActivas();
-        return ResponseEntity.status(HttpStatus.CREATED).body(provincias);
+        return ResponseEntity.status(HttpStatus.OK).body(provincias);
     }
 
     @Operation(summary = "Obtiene una provincia por su ID")
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerProvincia(@PathVariable Long id) {
         Provincia provincia = provinciaService.buscarProvinciaPorId(id);
-        return ResponseEntity.status(HttpStatus.CREATED).body(provincia);
+        if (provincia != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(provincia);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Provincia no encontrada");
+        }
     }
 
 
@@ -92,7 +96,7 @@ public class ProvinciaController {
     public ResponseEntity<?> deshabilitarProvincia(@PathVariable Long id) {
         boolean eliminada = provinciaService.deshabilitarProvincia(id);
         if (eliminada) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return ResponseEntity.status(HttpStatus.OK).build();
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Provincia no encontrada");
         }
@@ -104,7 +108,7 @@ public class ProvinciaController {
     public ResponseEntity<?> habilitarProvincia(@PathVariable Long id) {
         boolean habilitada = provinciaService.habilitarProvincia(id);
         if (habilitada) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return ResponseEntity.status(HttpStatus.OK).build();
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Provincia no encontrada");
         }

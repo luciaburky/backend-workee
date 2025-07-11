@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.example.exceptions.EntityAlreadyEnabled;
+import com.example.exceptions.EntityAlreadyEnabledException;
 import com.example.exceptions.EntityAlreadyExistsException;
 import com.example.exceptions.EntityNotFoundException;
 import com.example.exceptions.EntityNotValidException;
@@ -44,9 +44,9 @@ public class ExceptionHandlerController {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(EntityAlreadyEnabled.class)
+    @ExceptionHandler(EntityAlreadyEnabledException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ErrorResponse> handleEntityAlreadyEnabledException(EntityAlreadyEnabled ex) {
+    public ResponseEntity<ErrorResponse> handleEntityAlreadyEnabledException(EntityAlreadyEnabledException ex) {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.BAD_REQUEST,
                 ex.getMessage());
