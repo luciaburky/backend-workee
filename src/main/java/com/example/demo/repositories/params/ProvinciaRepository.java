@@ -1,11 +1,13 @@
 package com.example.demo.repositories.params;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.example.demo.entities.params.Pais;
 import com.example.demo.entities.params.Provincia;
 import com.example.demo.repositories.BaseRepository;
 
@@ -18,4 +20,14 @@ public interface ProvinciaRepository extends BaseRepository<Provincia, Long> {
         nativeQuery = true
     )
     List<Provincia> findProvinciaByPaisId(@Param("idPais") Long idPais);
+
+    @Query(value = "SELECT * FROM provincia WHERE fecha_hora_baja IS NULL " + 
+            "ORDER BY nombre_provincia ASC", 
+            nativeQuery = true
+            )
+    List<Provincia> buscarProvinciasActivas();
+
+    List<Provincia> findAllByOrderByNombreProvinciaAsc();
+
+    Optional<Provincia> findByNombreProvinciaIgnoreCase(String nombreProvincia);
 }
