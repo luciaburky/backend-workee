@@ -16,7 +16,7 @@ import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.exceptions.ErrorResponse;
 
 @RestControllerAdvice
-public class ExceptionHandlerController {
+public class GlobalExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
