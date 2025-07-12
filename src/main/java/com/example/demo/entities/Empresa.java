@@ -57,6 +57,7 @@ public class Empresa extends Base{
 
     @ManyToOne()
     @JoinColumn(name = "id_provincia")
+    @NotNull
     private Provincia provincia;
 
     @ManyToOne()

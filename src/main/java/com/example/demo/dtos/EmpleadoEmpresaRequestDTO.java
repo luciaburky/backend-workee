@@ -6,27 +6,25 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CrearEmpleadoEmpresaDTO {
+public class EmpleadoEmpresaRequestDTO {
 
     @NotBlank(message = "El nombre del empleado es obligatorio")
-    private String nombre;
+    private String nombreEmpleadoEmpresa;
 
     @NotBlank(message = "El apellido es obligatorio")
-    private String apellido;
+    private String apellidoEmpleadoEmpresa;
 
     @NotBlank(message = "El puesto es obligatorio")
-    private String puesto;
+    private String puestoEmpleadoEmpresa;
 
     @NotBlank(message = "El correo electrónico es obligatorio")
     @Email(message = "Debe ser un correo válido")
-    private String correo;
+    private String correoEmpleadoEmpresa;
 
     @NotBlank(message = "La contraseña es obligatoria")
     @Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres")

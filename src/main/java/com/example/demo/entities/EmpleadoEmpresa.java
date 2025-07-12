@@ -25,7 +25,7 @@ public class EmpleadoEmpresa extends Base {
 
     @Column(name = "apellido_empleado_empresa")
     @NotNull
-    private String apellidoEmpeladoEmpresa;
+    private String apellidoEmpleadoEmpresa;
 
     @Column(name = "nombre_empleado_empresa")
     @NotNull
@@ -37,5 +37,6 @@ public class EmpleadoEmpresa extends Base {
 
     @ManyToOne()
     @JoinColumn(name = "id_empresa")
+    @NotNull
     private Empresa empresa;
 }
