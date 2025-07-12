@@ -38,22 +38,6 @@ public class EmpresaServiceImpl extends BaseServiceImpl<Empresa, Long> implement
     
         empresaMapper.updateEntityFromDto(empresaRequestDTO, empresaOriginal);
         
-        /*if(empresaRequestDTO.getNombreEmpresa() != null && !empresaRequestDTO.getNombreEmpresa().isEmpty()){
-            empresaOriginal.setNombreEmpresa(empresaRequestDTO.getNombreEmpresa());
-        }
-        if(empresaRequestDTO.getDescripcionEmpresa() != null && !empresaRequestDTO.getDescripcionEmpresa().isEmpty()){
-            empresaOriginal.setDescripcionEmpresa(empresaRequestDTO.getDescripcionEmpresa());
-        }
-        if(empresaRequestDTO.getTelefonoEmpresa() != null){
-            empresaOriginal.setTelefonoEmpresa(empresaRequestDTO.getTelefonoEmpresa());
-        }
-        if(empresaRequestDTO.getDireccionEmpresa() != null && !empresaRequestDTO.getDireccionEmpresa().isEmpty()){
-            empresaOriginal.setDireccionEmpresa(empresaRequestDTO.getDireccionEmpresa());
-        }
-        if(empresaRequestDTO.getSitioWebEmpresa() != null && !empresaRequestDTO.getSitioWebEmpresa().isEmpty()){
-            empresaOriginal.setSitioWebEmpresa(empresaRequestDTO.getSitioWebEmpresa());
-        }*/
-        
         if(empresaRequestDTO.getIdRubro() != null && empresaRequestDTO.getIdRubro() != empresaOriginal.getRubro().getId()){
             
             Rubro rubro = rubroService.findById(empresaRequestDTO.getIdRubro());

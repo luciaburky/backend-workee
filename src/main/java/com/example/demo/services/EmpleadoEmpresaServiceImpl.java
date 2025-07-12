@@ -50,7 +50,7 @@ public class EmpleadoEmpresaServiceImpl extends BaseServiceImpl<EmpleadoEmpresa,
     }
    
 
-    //TODO: agregar validacion de que no exista el correo electornico
+    //TODO: agregar validacion de que no exista el correo electronico
 }
 
 
