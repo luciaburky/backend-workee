@@ -1,9 +1,21 @@
 package com.example.demo.services.params;
 
+import java.util.List;
+
+import com.example.demo.dtos.params.EstadoOfertaRequestDTO;
 import com.example.demo.entities.params.EstadoOferta;
 import com.example.demo.services.BaseService;
 
 public interface EstadoOfertaService extends BaseService<EstadoOferta, Long> {
-    // Aquí puedes agregar métodos específicos para manejar el estado de las ofertas si es necesario
+    
+    EstadoOferta guardarEstadoOferta(EstadoOfertaRequestDTO estadoOfertaDTO);
+    
+    EstadoOferta actualizarEstadoOferta(Long id, EstadoOfertaRequestDTO estadoOfertaDTO);
 
+    List<EstadoOferta> obtenerEstadoOfertas();
+    
+    List<EstadoOferta> obtenerEstadoOfertasActivos();
+
+    Boolean habilitarEstadoOferta(Long id);
+            
 }

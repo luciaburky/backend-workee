@@ -1,10 +1,21 @@
 package com.example.demo.services.params;
 
+import java.lang.foreign.Linker.Option;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
+import com.example.demo.dtos.params.EstadoBusquedaRequestDTO;
 import com.example.demo.entities.params.EstadoBusqueda;
+import com.example.demo.exceptions.EntityAlreadyEnabledException;
+import com.example.demo.exceptions.EntityAlreadyExistsException;
+import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.repositories.params.EstadoBusquedaRepository;
 import com.example.demo.services.BaseServiceImpl;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class EstadoBusquedaServiceImpl extends BaseServiceImpl<EstadoBusqueda, Long> implements EstadoBusquedaService {
@@ -14,5 +25,66 @@ public class EstadoBusquedaServiceImpl extends BaseServiceImpl<EstadoBusqueda, L
     public EstadoBusquedaServiceImpl(EstadoBusquedaRepository estadoBusquedaRepository) {
         super(estadoBusquedaRepository);
         this.estadoBusquedaRepository = estadoBusquedaRepository;
+    }
+
+    @Override
+    @Transactional
+    public EstadoBusqueda guardarEstadoBusqueda(EstadoBusquedaRequestDTO estadoBusquedaDTO) {
+
+        if(yaExisteEstadoBusqueda(estadoBusquedaDTO.getNombreEstadoBusqueda())) {
+            throw new EntityAlreadyExistsException("Ya existe un estado de búsqueda con ese nombre");
+        }
+        
+        EstadoBusqueda nuevoEstadoBusqueda = new EstadoBusqueda();
+        nuevoEstadoBusqueda.setNombreEstadoBusqueda(estadoBusquedaDTO.getNombreEstadoBusqueda());
+        nuevoEstadoBusqueda.setFechaHoraAlta(new Date());
+        
+        return estadoBusquedaRepository.save(nuevoEstadoBusqueda);
+    }
+
+    @Override
+    @Transactional  
+    public EstadoBusqueda actualizarEstadoBusqueda(Long id, EstadoBusquedaRequestDTO estadoBusquedaDTO) {
+        EstadoBusqueda estadoBusquedaOriginal = this.findById(id);
+        
+        if(yaExisteEstadoBusqueda(estadoBusquedaDTO.getNombreEstadoBusqueda())) {
+            throw new EntityAlreadyExistsException("Ya existe un estado de búsqueda con ese nombre");
+        }
+        
+        estadoBusquedaOriginal.setNombreEstadoBusqueda(estadoBusquedaDTO.getNombreEstadoBusqueda());
+        return estadoBusquedaRepository.save(estadoBusquedaOriginal);
+    }
+
+    @Override
+    @Transactional
+    public Boolean habilitarEstadoBusqueda(Long id) {
+        if(id == null) {
+            throw new EntityNotValidException("El ID del estado de búsqueda no puede ser nulo");
+        }
+        
+        EstadoBusqueda estadoBusqueda = this.findById(id);
+        
+        if(estadoBusqueda.getFechaHoraBaja() == null) {
+            throw new EntityAlreadyEnabledException("El estado de búsqueda ya está habilitado");
+        }
+        
+        estadoBusqueda.setFechaHoraBaja(null);
+        estadoBusquedaRepository.save(estadoBusqueda);
+        return true;
+    }
+
+    @Override
+    public List<EstadoBusqueda> obtenerEstadosBusqueda() {
+        return estadoBusquedaRepository.findAllByOrderByNombreEstadoBusquedaAsc();
+    }
+
+    @Override
+    public List<EstadoBusqueda> obtenerEstadosBusquedaActivos() {
+        return estadoBusquedaRepository.buscarEstadosBusquedaActivos();
+    }
+
+    private Boolean yaExisteEstadoBusqueda(String nombreEstadoBusqueda) {
+        Optional<EstadoBusqueda> estadoBusquedaExiste = estadoBusquedaRepository.findByNombreEstadoBusquedaIgnoreCase(nombreEstadoBusqueda);
+        return estadoBusquedaExiste.isPresent();
     }
 }
