@@ -7,10 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.params.GeneroRequestDTO;
 import com.example.demo.entities.params.Genero;
-import com.example.demo.exceptions.EntityAlreadyDisabledException;
 import com.example.demo.exceptions.EntityAlreadyEnabledException;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
-import com.example.demo.exceptions.EntityNotFoundException;
 import com.example.demo.repositories.params.GeneroRepository;
 import com.example.demo.services.BaseServiceImpl;
 
@@ -44,19 +42,13 @@ public class GeneroServiceImpl extends BaseServiceImpl<Genero,Long> implements G
         if(generoRequestDTO.getNombreGenero() == null || generoRequestDTO.getNombreGenero().isEmpty()) {
             throw new IllegalArgumentException("El nombre del género no puede estar vacío");
         }
-        Genero genero = buscarGeneroPorId(id);
+        Genero genero = findById(id);//buscarGeneroPorId(id);
         if(yaExisteEstadoUsuario(generoRequestDTO.getNombreGenero())) {
             throw new EntityAlreadyExistsException("El género ya existe");
         } else {
             genero.setNombreGenero(generoRequestDTO.getNombreGenero());
             return generoRepository.save(genero);
         }
-    }
-
-    @Override
-    public Genero buscarGeneroPorId(Long id) {
-        return generoRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Genero no encontrado con ID: " + id));
     }
 
     @Override
@@ -75,7 +67,7 @@ public class GeneroServiceImpl extends BaseServiceImpl<Genero,Long> implements G
         if(id == null) {
             throw new IllegalArgumentException("El ID no puede ser nulo");
         }
-        Genero genero = buscarGeneroPorId(id);
+        Genero genero = findById(id);//buscarGeneroPorId(id);
         if(genero.getFechaHoraBaja() == null) {
             throw new EntityAlreadyEnabledException("El género ya está habilitado");
         }
@@ -83,21 +75,6 @@ public class GeneroServiceImpl extends BaseServiceImpl<Genero,Long> implements G
         generoRepository.save(genero);
         return true;
     }
-
-    @Override
-    @Transactional
-    public Boolean deshabilitarGenero(Long id) {
-       if(id == null){
-            throw new IllegalArgumentException("El ID no puede ser nulo");
-        }
-        Genero genero = buscarGeneroPorId(id);
-        if(genero.getFechaHoraBaja() != null) {
-            throw new EntityAlreadyDisabledException("El genero ya está deshabilitado");
-        }
-        genero.setFechaHoraBaja(new Date());
-        generoRepository.save(genero);
-        return true;
-    } 
     
 
     private Boolean yaExisteEstadoUsuario(String nombreEstadoUsuario) {

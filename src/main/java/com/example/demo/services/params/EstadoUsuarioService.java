@@ -12,13 +12,10 @@ public interface EstadoUsuarioService extends BaseService<EstadoUsuario, Long>{
 
     public EstadoUsuario actualizarEstadoUsuario(Long id, EstadoUsuarioRequestDTO estadoUsuarioRequestDTO);
 
-    public EstadoUsuario buscarEstadoUsuarioPorId(Long id); //TODO: Si usamos el de base lo borramos
-
     public List<EstadoUsuario> obtenerEstadosUsuario();
 
     public List<EstadoUsuario> obtenerEstadosUsuarioActivos();
 
     public Boolean habilitarEstadoUsuario(Long id);
 
-    public Boolean deshabilitarEstadoUsuario(Long id); //TODO: Si usamos el de base lo borramos
 }

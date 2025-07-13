@@ -9,7 +9,6 @@ import com.example.demo.dtos.params.TipoContratoOfertaRequestDTO;
 import com.example.demo.entities.params.TipoContratoOferta;
 import com.example.demo.exceptions.EntityAlreadyEnabledException;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
-import com.example.demo.exceptions.EntityNotFoundException;
 import com.example.demo.repositories.params.TipoContratoOfertaRepository;
 import com.example.demo.services.BaseServiceImpl;
 
@@ -44,19 +43,13 @@ public class TipoContratoOfertaServiceImpl extends BaseServiceImpl<TipoContratoO
         if(tipoContratoOfertaRequestDTO.getNombreTipoContratoOferta() == null || tipoContratoOfertaRequestDTO.getNombreTipoContratoOferta().isEmpty()) {
             throw new IllegalArgumentException("El nombre del tipo de contrato de oferta no puede estar vacío");
         }
-        TipoContratoOferta tipoContratoOferta = buscarTipoContratoOfertaPorId(id);
+        TipoContratoOferta tipoContratoOferta = findById(id);//buscarTipoContratoOfertaPorId(id);
         if(yaExisteTipoContratoOferta(tipoContratoOfertaRequestDTO.getNombreTipoContratoOferta())) {
             throw new EntityAlreadyExistsException("El tipo de contrato de oferta ya existe.");
         } else {
             tipoContratoOferta.setNombreTipoContratoOferta(tipoContratoOfertaRequestDTO.getNombreTipoContratoOferta());
             return tipoContratoOfertaRepository.save(tipoContratoOferta);
         }
-    }
-
-    @Override
-    public TipoContratoOferta buscarTipoContratoOfertaPorId(Long id) {
-        return tipoContratoOfertaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Tipo de contrato de oferta no encontrado con ID: " + id));
     }
 
     @Override
@@ -75,7 +68,7 @@ public class TipoContratoOfertaServiceImpl extends BaseServiceImpl<TipoContratoO
         if(id == null) {
             throw new IllegalArgumentException("El ID no puede ser nulo");
         }
-        TipoContratoOferta tipoContratoOferta = buscarTipoContratoOfertaPorId(id);
+        TipoContratoOferta tipoContratoOferta = findById(id);//buscarTipoContratoOfertaPorId(id);
         if(tipoContratoOferta.getFechaHoraBaja() == null) {
             throw new EntityAlreadyEnabledException("El tipo de contrato de oferta ya está habilitado");
         }
@@ -84,20 +77,6 @@ public class TipoContratoOfertaServiceImpl extends BaseServiceImpl<TipoContratoO
         return true;
     }
 
-    @Override
-    @Transactional
-    public Boolean deshabilitarTipoContratoOferta(Long id) {
-        if(id == null) {
-            throw new IllegalArgumentException("El ID no puede ser nulo");
-        }
-        TipoContratoOferta tipoContratoOferta = buscarTipoContratoOfertaPorId(id);
-        if(tipoContratoOferta.getFechaHoraBaja() != null) {
-            throw new EntityAlreadyEnabledException("El tipo de contrato de oferta ya está deshabilitado");
-        }
-        tipoContratoOferta.setFechaHoraBaja(new Date());
-        tipoContratoOfertaRepository.save(tipoContratoOferta);
-        return true;
-    }
 
     private Boolean yaExisteTipoContratoOferta(String nombreTipoContratoOferta) {
         return tipoContratoOfertaRepository.findByNombreTipoContratoOfertaIgnoreCase(nombreTipoContratoOferta).isPresent();

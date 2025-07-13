@@ -10,13 +10,10 @@ public interface GeneroService extends BaseService<Genero, Long>{
 
     public Genero actualizarGenero(Long id, GeneroRequestDTO GeneroRequestDTO);
 
-    public Genero buscarGeneroPorId(Long id); //TODO: Si usamos el de base lo borramos
-
     public List<Genero> obtenerGeneros();
 
     public List<Genero> obtenerGenerosActivos();
 
     public Boolean habilitarGenero(Long id);
 
-    public Boolean deshabilitarGenero(Long id); //TODO: Si usamos el de base lo borramos
 }

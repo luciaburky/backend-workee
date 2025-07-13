@@ -7,10 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.controllers.BaseControllerImpl;
-import com.example.demo.dtos.params.PaisRequestDTO;
 import com.example.demo.dtos.params.ProvinciaRequestDTO;
-import com.example.demo.entities.params.Pais;
 import com.example.demo.entities.params.Provincia;
 import com.example.demo.services.params.ProvinciaService;
 
@@ -18,7 +15,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -82,7 +78,7 @@ public class ProvinciaController {
     @Operation(summary = "Obtiene una provincia por su ID")
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerProvincia(@PathVariable Long id) {
-        Provincia provincia = provinciaService.buscarProvinciaPorId(id);
+        Provincia provincia = provinciaService.findById(id); //buscarProvinciaPorId(id);
         if (provincia != null) {
             return ResponseEntity.status(HttpStatus.OK).body(provincia);
         } else {
@@ -94,7 +90,7 @@ public class ProvinciaController {
     @Operation(summary = "Deshabilita una provincia")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deshabilitarProvincia(@PathVariable Long id) {
-        boolean eliminada = provinciaService.deshabilitarProvincia(id);
+        boolean eliminada = provinciaService.delete(id); //deshabilitarProvincia(id);
         if (eliminada) {
             return ResponseEntity.status(HttpStatus.OK).build();
         } else {

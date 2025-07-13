@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.controllers.BaseControllerImpl;
 import com.example.demo.dtos.params.EstadoUsuarioRequestDTO;
 import com.example.demo.entities.params.EstadoUsuario;
 import com.example.demo.services.params.EstadoUsuarioService;
@@ -22,7 +21,6 @@ import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -67,7 +65,7 @@ public class EstadoUsuarioController {
     @Operation(summary = "Obtiene un EstadoUsuario por su ID")
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerEstadoUsuarioPorId(@PathVariable Long id) {
-        EstadoUsuario estadoUsuario = estadoUsuarioService.buscarEstadoUsuarioPorId(id);
+        EstadoUsuario estadoUsuario = estadoUsuarioService.findById(id); //buscarEstadoUsuarioPorId(id);
         if (estadoUsuario != null) {
             return ResponseEntity.status(HttpStatus.OK).body(estadoUsuario);
         } else {
@@ -78,7 +76,7 @@ public class EstadoUsuarioController {
     @Operation(summary = "Deshabilita un EstadoUsuario")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deshabilitarEstadoUsuario(@PathVariable Long id) {
-        boolean eliminado = estadoUsuarioService.deshabilitarEstadoUsuario(id);
+        boolean eliminado = estadoUsuarioService.delete(id);//deshabilitarEstadoUsuario(id);
         if (eliminado) {
             return ResponseEntity.status(HttpStatus.OK).build();
         } else {
