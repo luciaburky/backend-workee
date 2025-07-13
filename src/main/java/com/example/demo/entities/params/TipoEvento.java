@@ -1,5 +1,4 @@
 package com.example.demo.entities.params;
-import java.util.Date;
 
 import jakarta.validation.constraints.NotNull;
 
