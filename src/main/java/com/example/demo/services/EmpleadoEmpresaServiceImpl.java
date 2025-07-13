@@ -1,6 +1,7 @@
 package com.example.demo.services;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -90,6 +91,22 @@ public class EmpleadoEmpresaServiceImpl extends BaseServiceImpl<EmpleadoEmpresa,
     }
 
     
+    public Boolean darDeBajaEmpleadoEmpresa(Long id){
+        //TODO: Agregar validacion de que si esta asociado a ofertas, q esten todas finalizadas
+
+        return delete(id);
+    }
+
+
+    @Override
+    public List<EmpleadoEmpresa> visualizarEmpleados(Long idEmpresa){
+        return empleadoEmpresaRepository.traerEmpleadosActivos(idEmpresa);
+    }
+
+    @Override
+    public Long contarEmpleadosDeEmpresa(Long idempresa){
+        return empleadoEmpresaRepository.contarEmpelados(idempresa);
+    }
 }
 
 
