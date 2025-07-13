@@ -26,14 +26,14 @@ public class HabilidadController {
         this.habilidadService = habilidadService;
     }
 
-    @Operation(summary = "Obtiene todas las habilidades segun el id de Tipo de Habilidad")
+    /*@Operation(summary = "Obtiene todas las habilidades segun el id de Tipo de Habilidad")
     @GetMapping("habilidadesPorTipoHabilidad/{idTipoHabilidad}")
     public ResponseEntity<?> getHabilidadesByTipoHabilidad(@PathVariable Long idTipoHabilidad) {
-       /*  try {
+        try {
             return ResponseEntity.ok(habilidadService.findByTipoHabilidad(idTipoHabilidad));
         } catch (Exception e) {
             return errorResponse("No se pudo obtener la habilidad", HttpStatus.BAD_REQUEST);
-        } */
-    } 
+        } 
+    } */
 }
 

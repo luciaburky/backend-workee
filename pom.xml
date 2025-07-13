@@ -80,10 +80,7 @@
 		</dependency> -->
 		<!-- TODO: ACTIVAR ESTOE DE ARRIBA CUANDO HAGAMOS LA PARTE DE SEGURIDAD -->
 
-
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-validation</artifactId>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
@@ -119,13 +116,6 @@
                 <artifactId>sonar-maven-plugin</artifactId>
                 <version>${sonar.maven.plugin.version}</version>
             </plugin>
-
-			<plugin>
-                <groupId>org.sonarsource.scanner.maven</groupId>
-                <artifactId>sonar-maven-plugin</artifactId>
-                <version>${sonar.maven.plugin.version}</version>
-            </plugin>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -159,3 +149,4 @@
 	</build>
 
 </project>
+

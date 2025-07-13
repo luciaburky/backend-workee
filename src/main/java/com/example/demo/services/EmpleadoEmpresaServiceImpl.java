@@ -46,11 +46,50 @@ public class EmpleadoEmpresaServiceImpl extends BaseServiceImpl<EmpleadoEmpresa,
 
         empleadoEmpresaRepository.save(nuevoEmpleado);
 
+        //TODO: agregar validacion de que no exista el correo electronico
         return nuevoEmpleado;
     }
    
 
-    //TODO: agregar validacion de que no exista el correo electronico
+    @Override
+    @Transactional
+    public EmpleadoEmpresa modificarEmpleado(EmpleadoEmpresaRequestDTO empleadoEmpresaRequestDTO, boolean esEmpleadoModificandoseASiMismo, Long id){
+        EmpleadoEmpresa empleadoOriginal = findById(id);
+
+        if(esEmpleadoModificandoseASiMismo){
+            modificarComoEmpleado(empleadoOriginal, empleadoEmpresaRequestDTO);
+        } else {
+            modificarComoAdministrador(empleadoOriginal, empleadoEmpresaRequestDTO);
+        }
+
+        return empleadoEmpresaRepository.save(empleadoOriginal);
+    }
+
+    private void modificarComoEmpleado(EmpleadoEmpresa empleadoEmpresa, EmpleadoEmpresaRequestDTO empleadoEmpresaRequestDTO){
+        empleadoEmpresaMapper.updateEntityFromDto(empleadoEmpresaRequestDTO, empleadoEmpresa);
+        //Según el chat, cuando agreguemos lo del modulo de seguridad lo mejor es manejarlo con el PreAuthorize (iria en el controller). Ejemplo:
+        /*
+         * @PreAuthorize("hasRole('EMPLEADO') and #id == authentication.principal.id")
+            @PutMapping("/modificar-propio/{id}")
+            public ResponseEntity<?> modificarEmpleadoPropio(...) {
+            ...
+            y en el service (si usamos un unico metodo): 
+                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+                String email = auth.getName();
+            }
+         */
+
+    }
+
+    private void modificarComoAdministrador(EmpleadoEmpresa empleadoEmpresa, EmpleadoEmpresaRequestDTO empleadoEmpresaRequestDTO){
+        if(empleadoEmpresaRequestDTO.getPuestoEmpleadoEmpresa() != null && !empleadoEmpresaRequestDTO.getPuestoEmpleadoEmpresa().isEmpty()){
+            empleadoEmpresa.setPuestoEmpleadoEmpresa(empleadoEmpresaRequestDTO.getPuestoEmpleadoEmpresa());
+        } else {
+            throw new EntityNotValidException("El puesto no puede ser nulo");
+        }
+    }
+
+    
 }
 
 

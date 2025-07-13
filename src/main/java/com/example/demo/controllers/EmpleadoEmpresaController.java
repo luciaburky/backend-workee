@@ -36,6 +36,21 @@ public class EmpleadoEmpresaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoEmpleadoEmpresa);
     }
 
+    @Operation(summary = "Un EmpleadoEmpresa actualiza su perfil")
+    @PutMapping("/actualizarPerfilPropio/{id}")
+    public ResponseEntity<?> actualizarEmpleadoComoEmpleado(@RequestBody EmpleadoEmpresaRequestDTO empleadoEmpresaRequestDTO, Long id){
+        EmpleadoEmpresa empleadoEmpresa = empleadoEmpresaService.modificarEmpleado(empleadoEmpresaRequestDTO,true, id);
+        return ResponseEntity.status(HttpStatus.CREATED).body(empleadoEmpresa);
+    }
+
+    @Operation(summary = "Un Administrador de Empresa actualiza el perfil de un Empleado")
+    @PutMapping("/actualizarPerfilPorAdmin/{id}")
+    public ResponseEntity<?> actualizarEmpleadoComoAdminEmpresa(@RequestBody EmpleadoEmpresaRequestDTO empleadoEmpresaRequestDTO, Long id){
+        EmpleadoEmpresa empleadoEmpresa = empleadoEmpresaService.modificarEmpleado(empleadoEmpresaRequestDTO,false, id);
+        return ResponseEntity.status(HttpStatus.CREATED).body(empleadoEmpresa);
+    }
+
+
 }
 
 
