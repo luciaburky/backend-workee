@@ -38,7 +38,7 @@ public class HabilidadServiceImpl extends BaseServiceImpl<Habilidad, Long> imple
 
         tipoHabilidadService.findById(idTipoHabilidad);
 
-        return habilidadRepository.findByTipoHabilidad(idTipoHabilidad);
+        return habilidadRepository.findByTipoHabilidadId(idTipoHabilidad);
     }
 
 
