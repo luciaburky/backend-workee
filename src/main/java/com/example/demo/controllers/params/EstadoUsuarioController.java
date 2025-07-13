@@ -65,7 +65,7 @@ public class EstadoUsuarioController {
     @Operation(summary = "Obtiene un EstadoUsuario por su ID")
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerEstadoUsuarioPorId(@PathVariable Long id) {
-        EstadoUsuario estadoUsuario = estadoUsuarioService.buscarEstadoUsuarioPorId(id);
+        EstadoUsuario estadoUsuario = estadoUsuarioService.findById(id); //buscarEstadoUsuarioPorId(id);
         if (estadoUsuario != null) {
             return ResponseEntity.status(HttpStatus.OK).body(estadoUsuario);
         } else {
@@ -76,7 +76,7 @@ public class EstadoUsuarioController {
     @Operation(summary = "Deshabilita un EstadoUsuario")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deshabilitarEstadoUsuario(@PathVariable Long id) {
-        boolean eliminado = estadoUsuarioService.deshabilitarEstadoUsuario(id);
+        boolean eliminado = estadoUsuarioService.delete(id);//deshabilitarEstadoUsuario(id);
         if (eliminado) {
             return ResponseEntity.status(HttpStatus.OK).build();
         } else {

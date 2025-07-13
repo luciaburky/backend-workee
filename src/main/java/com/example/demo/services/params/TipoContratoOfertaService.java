@@ -11,13 +11,10 @@ public interface TipoContratoOfertaService extends BaseService<TipoContratoOfert
 
     public TipoContratoOferta actualizarTipoContratoOferta(Long id, TipoContratoOfertaRequestDTO tipoContratoOfertaRequestDTO);
 
-    public TipoContratoOferta buscarTipoContratoOfertaPorId(Long id); //TODO: Si usamos el de base lo borramos
-
     public List<TipoContratoOferta> obtenerTiposContratosOferta();
 
     public List<TipoContratoOferta> obtenerTiposContratosOfertaActivos();
 
     public Boolean habilitarTipoContratoOferta(Long id);
 
-    public Boolean deshabilitarTipoContratoOferta(Long id); //TODO: Si usamos el de base lo borramos
 }

@@ -1,8 +1,5 @@
 package com.example.demo.entities;
 
-import java.util.Date;
-
-import com.example.demo.entities.params.Pais;
 import com.example.demo.entities.params.Provincia;
 import com.example.demo.entities.params.Rubro;
 

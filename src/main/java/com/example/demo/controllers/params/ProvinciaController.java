@@ -78,7 +78,7 @@ public class ProvinciaController {
     @Operation(summary = "Obtiene una provincia por su ID")
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerProvincia(@PathVariable Long id) {
-        Provincia provincia = provinciaService.buscarProvinciaPorId(id);
+        Provincia provincia = provinciaService.findById(id); //buscarProvinciaPorId(id);
         if (provincia != null) {
             return ResponseEntity.status(HttpStatus.OK).body(provincia);
         } else {
@@ -90,7 +90,7 @@ public class ProvinciaController {
     @Operation(summary = "Deshabilita una provincia")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deshabilitarProvincia(@PathVariable Long id) {
-        boolean eliminada = provinciaService.deshabilitarProvincia(id);
+        boolean eliminada = provinciaService.delete(id); //deshabilitarProvincia(id);
         if (eliminada) {
             return ResponseEntity.status(HttpStatus.OK).build();
         } else {

@@ -11,7 +11,6 @@ import com.example.demo.entities.params.Pais;
 import com.example.demo.entities.params.Provincia;
 import com.example.demo.exceptions.EntityAlreadyEnabledException;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
-import com.example.demo.exceptions.EntityNotFoundException;
 import com.example.demo.repositories.params.ProvinciaRepository;
 import com.example.demo.services.BaseServiceImpl;
 
@@ -35,7 +34,7 @@ public class ProvinciaServiceImpl extends BaseServiceImpl<Provincia,Long> implem
         try{
             return provinciaRepository.findProvinciaByPaisId(idPais);
         } catch (Exception e){
-            throw new RuntimeException("Error al acceder a los datos de provincias.", e);
+            throw new org.springframework.dao.DataRetrievalFailureException("Error al acceder a los datos de provincias.", e);
         }
     }
 
@@ -53,7 +52,6 @@ public class ProvinciaServiceImpl extends BaseServiceImpl<Provincia,Long> implem
         if(provinciaRequestDTO.getIdPais() == null) {
             throw new IllegalArgumentException("El ID del país no puede ser nulo");
         }
-        //Pais paisBuscado = paisService.buscarPaisPorId(provinciaRequestDTO.getIdPais());
         Pais paisBuscado = paisService.findById(provinciaRequestDTO.getIdPais());
 
         nuevaProvincia.setPais(paisBuscado);
@@ -68,7 +66,7 @@ public class ProvinciaServiceImpl extends BaseServiceImpl<Provincia,Long> implem
             throw new IllegalArgumentException("El nombre de la provincia no puede ser nulo o vacío");
         }
 
-        Provincia provinciaOriginal = buscarProvinciaPorId(id);
+        Provincia provinciaOriginal = findById(id);//buscarProvinciaPorId(id);
 
         if(yaExisteProvincia(provinciaRequestDTO.getNombreProvincia())){
             throw new EntityAlreadyExistsException("Ya existe una provincia con ese nombre");
@@ -77,12 +75,6 @@ public class ProvinciaServiceImpl extends BaseServiceImpl<Provincia,Long> implem
         provinciaOriginal.setNombreProvincia(provinciaRequestDTO.getNombreProvincia());
 
         return provinciaRepository.save(provinciaOriginal);
-    }
-
-    @Override
-    public Provincia buscarProvinciaPorId(Long id){
-        return provinciaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Provincia no encontrada con ID: " + id));
     }
 
     @Override
@@ -101,26 +93,11 @@ public class ProvinciaServiceImpl extends BaseServiceImpl<Provincia,Long> implem
         if(id == null) {
             throw new IllegalArgumentException("El ID de la provincia no puede ser nulo");
         }
-        Provincia provinciaOriginal = buscarProvinciaPorId(id);
+        Provincia provinciaOriginal = findById(id);//buscarProvinciaPorId(id);
         if(provinciaOriginal.getFechaHoraBaja() == null) {
             throw new EntityAlreadyEnabledException("La provincia ya está habilitada");
         }
         provinciaOriginal.setFechaHoraBaja(null);
-        provinciaRepository.save(provinciaOriginal);
-        return true;
-    }
-
-    @Override
-    @Transactional
-    public Boolean deshabilitarProvincia(Long id){
-        if(id == null) {
-            throw new IllegalArgumentException("El ID de la provincia no puede ser nulo");
-        }
-        Provincia provinciaOriginal = buscarProvinciaPorId(id);
-        if(provinciaOriginal.getFechaHoraBaja() != null) {
-            throw new EntityAlreadyEnabledException("La provincia ya está deshabilitada");
-        }
-        provinciaOriginal.setFechaHoraBaja(new Date());
         provinciaRepository.save(provinciaOriginal);
         return true;
     }

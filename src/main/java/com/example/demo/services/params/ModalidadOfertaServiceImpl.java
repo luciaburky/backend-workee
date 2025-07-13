@@ -1,10 +1,20 @@
 package com.example.demo.services.params;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
+import com.example.demo.dtos.params.ModalidadOFertaRequestDTO;
 import com.example.demo.entities.params.ModalidadOferta;
+import com.example.demo.exceptions.EntityAlreadyEnabledException;
+import com.example.demo.exceptions.EntityAlreadyExistsException;
+import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.repositories.params.ModalidadOfertaRepository;
 import com.example.demo.services.BaseServiceImpl;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class ModalidadOfertaServiceImpl extends BaseServiceImpl<ModalidadOferta, Long> implements ModalidadOfertaService {
@@ -14,5 +24,64 @@ public class ModalidadOfertaServiceImpl extends BaseServiceImpl<ModalidadOferta,
     public ModalidadOfertaServiceImpl(ModalidadOfertaRepository modalidadOfertaRepository) {
         super(modalidadOfertaRepository);
         this.modalidadOfertaRepository = modalidadOfertaRepository;
-    }    
+    } 
+    
+    @Override
+    @Transactional
+    public ModalidadOferta guardarModalidadOferta(ModalidadOFertaRequestDTO modalidadOfertaDTO) {
+        if (yaExisteModalidadOferta(modalidadOfertaDTO.getNombreModalidadOferta())) {
+            throw new EntityAlreadyExistsException("Ya existe una modalidad de oferta con ese nombre");
+        }
+
+        ModalidadOferta nuevaModalidadOferta = new ModalidadOferta();
+        nuevaModalidadOferta.setNombreModalidadOferta(modalidadOfertaDTO.getNombreModalidadOferta());
+        nuevaModalidadOferta.setFechaHoraAlta(new Date());
+
+        return modalidadOfertaRepository.save(nuevaModalidadOferta);
+    }
+
+    @Override
+    @Transactional
+    public ModalidadOferta actualizarModalidadOferta(Long id, ModalidadOFertaRequestDTO modalidadOfertaDTO) {
+        ModalidadOferta modalidadOfertaOriginal = this.findById(id);
+        
+        if (yaExisteModalidadOferta(modalidadOfertaDTO.getNombreModalidadOferta())) {
+            throw new EntityAlreadyExistsException("Ya existe una modalidad de oferta con ese nombre");
+        }
+
+        modalidadOfertaOriginal.setNombreModalidadOferta(modalidadOfertaDTO.getNombreModalidadOferta());
+        return modalidadOfertaRepository.save(modalidadOfertaOriginal);
+    }
+
+    @Override
+    @Transactional
+    public Boolean habilitarModalidadOferta(Long id) {
+        if (id == null) {
+            throw new EntityNotValidException("El ID de la modalidad de oferta no puede ser nulo");
+        }
+
+        ModalidadOferta modalidadOferta = this.findById(id);
+        if (modalidadOferta.getFechaHoraBaja() == null) {
+            throw new EntityAlreadyEnabledException("La modalidad de oferta ya está habilitada");
+        }
+        
+        modalidadOferta.setFechaHoraBaja(null);
+        modalidadOfertaRepository.save(modalidadOferta);
+        return true;
+    }
+
+    @Override
+    public List<ModalidadOferta> obtenerModalidadesOfertas() {
+        return modalidadOfertaRepository.findAllByOrderByNombreModalidadOfertaAsc();
+    }
+
+    @Override
+    public List<ModalidadOferta> obtenerModalidadesOfertasActivos() {
+        return modalidadOfertaRepository.buscarModalidadOfertasActivos();
+    }   
+
+    private boolean yaExisteModalidadOferta(String nombreModalidadOferta) {
+        Optional<ModalidadOferta> modalidadOfertaExistente = modalidadOfertaRepository.findByNombreModalidadOfertaIgnoreCase(nombreModalidadOferta);
+        return modalidadOfertaExistente.isPresent();
+    }
 }

@@ -19,6 +19,7 @@ public abstract class BaseServiceImpl <E extends Base, ID extends Serializable> 
         this.baseRepository = baseRepository;
     }
 
+    //TODO: Borrar
     @Override
     @Transactional
     public E save(E entity) throws Exception {
@@ -31,6 +32,7 @@ public abstract class BaseServiceImpl <E extends Base, ID extends Serializable> 
         }
     }
 
+    //TODO: Borrar
     @Override
     @Transactional
     public E update(ID id, E entity) throws Exception {
@@ -47,21 +49,7 @@ public abstract class BaseServiceImpl <E extends Base, ID extends Serializable> 
 
     @Override
     @Transactional
-    public boolean delete(ID id) /*throws Exception*/ {
-        /*try{
-            Optional<E> entityOptional = baseRepository.findById(id);
-            if(entityOptional.isPresent()) {
-                entityOptional.get().setFechaHoraBaja(new Date());
-                baseRepository.save(entityOptional.get());
-                return true;
-            }
-            else {
-                throw new Exception();
-            }
-        }
-        catch(Exception e ){
-            throw new Exception(e.getMessage());
-        }*/
+    public boolean delete(ID id) {
         E entity = findById(id);
         if(entity.getFechaHoraBaja() != null){
             throw new EntityAlreadyDisabledException("La entidad ya se encuentra deshabilitada");
@@ -71,6 +59,7 @@ public abstract class BaseServiceImpl <E extends Base, ID extends Serializable> 
         return true;
     }
 
+    //TODO: Este volaria?
     @Override
     @Transactional
     public List<E> findAll() throws Exception {
@@ -82,19 +71,6 @@ public abstract class BaseServiceImpl <E extends Base, ID extends Serializable> 
         }
     }
 
-
-    /*@Override
-    @Transactional
-    public E findById(ID id) throws Exception {
-        try {
-            E entity;
-            Optional<E> entityOptional = baseRepository.findById(id);
-            entity = entityOptional.get();
-            return entity;
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }*/
     @Transactional
     @Override
     public E findById(ID id) {
@@ -102,7 +78,7 @@ public abstract class BaseServiceImpl <E extends Base, ID extends Serializable> 
                 .orElseThrow(() -> new EntityNotFoundException("Entidad no encontrada con ID: " + id));
     }
 
-
+    //TODO: Este volaria?
     @Override
     @Transactional
     public List<E> traerSoloActivos() throws Exception {

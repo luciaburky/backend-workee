@@ -1,6 +1,5 @@
 package com.example.demo.entities.params;
 import jakarta.persistence.Column;
-import java.util.Date;
 
 import jakarta.validation.constraints.NotNull;
 

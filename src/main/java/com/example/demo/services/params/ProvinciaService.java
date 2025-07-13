@@ -13,13 +13,10 @@ public interface ProvinciaService extends BaseService<Provincia, Long>{
 
     public Provincia actualizarProvincia(Long id, ProvinciaRequestDTO provinciaRequestDTO);
 
-    public Provincia buscarProvinciaPorId(Long id);
-
     public List<Provincia> obtenerProvincias();
 
     public List<Provincia> obtenerProvinciasActivas();
 
     public Boolean habilitarProvincia(Long id);
 
-    public Boolean deshabilitarProvincia(Long id);
 }

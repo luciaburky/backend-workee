@@ -63,7 +63,7 @@ public class GeneroController {
     @Operation(summary = "Obtiene un Genero por su ID")
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerGeneroPorId(@PathVariable Long id) {
-        Genero genero = generoService.buscarGeneroPorId(id);
+        Genero genero = generoService.findById(id); //buscarGeneroPorId(id);
         if (genero != null) {
             return ResponseEntity.status(HttpStatus.OK).body(genero);
         } else {
@@ -74,7 +74,7 @@ public class GeneroController {
     @Operation(summary = "Deshabilita un Genero")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deshabilitarGenero(@PathVariable Long id) {
-        boolean eliminado = generoService.deshabilitarGenero(id);
+        boolean eliminado = generoService.delete(id); //deshabilitarGenero(id);
         if (eliminado) {
             return ResponseEntity.status(HttpStatus.OK).build();
         } else {

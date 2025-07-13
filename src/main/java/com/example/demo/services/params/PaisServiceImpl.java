@@ -8,11 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.params.PaisRequestDTO;
 import com.example.demo.entities.params.Pais;
-import com.example.demo.entities.params.Provincia;
-import com.example.demo.exceptions.EntityAlreadyDisabledException;
 import com.example.demo.exceptions.EntityAlreadyEnabledException;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
-import com.example.demo.exceptions.EntityNotFoundException;
 import com.example.demo.repositories.params.PaisRepository;
 import com.example.demo.services.BaseServiceImpl;
 
@@ -70,27 +67,6 @@ public class PaisServiceImpl extends BaseServiceImpl<Pais,Long> implements PaisS
         paisRepository.save(paisOriginal);
         return true;
     }
-
-    /*@Override
-    @Transactional
-    public Boolean deshabilitarPais(Long id) {
-        if(id == null) {
-            throw new IllegalArgumentException("El ID del país no puede ser nulo");
-        }
-        Pais paisOriginal = this.findById(id); //buscarPaisPorId(id);
-        if (paisOriginal.getFechaHoraBaja() != null) {
-            throw new EntityAlreadyDisabledException("El país ya está deshabilitado");
-        }
-        paisOriginal.setFechaHoraBaja(new Date());
-        paisRepository.save(paisOriginal);
-        return true;
-    }*/
-
-    /*@Override
-    public Pais buscarPaisPorId(Long id) {
-        return paisRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("País no encontrado con ID: " + id));
-    }*/
 
     @Override
     public List<Pais> obtenerPaises() {

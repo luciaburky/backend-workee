@@ -63,7 +63,7 @@ public class TipoContratoOfertaController {
     @Operation(summary = "Obtiene un TipoContratoOferta por su ID")
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerTipoContratoOfertaPorId(@PathVariable Long id) {
-        TipoContratoOferta tipoContratoOferta = tipoContratoOfertaService.buscarTipoContratoOfertaPorId(id);
+        TipoContratoOferta tipoContratoOferta = tipoContratoOfertaService.findById(id); //buscarTipoContratoOfertaPorId(id);
         if (tipoContratoOferta != null) {
             return ResponseEntity.status(HttpStatus.OK).body(tipoContratoOferta);
         } else {
@@ -74,7 +74,7 @@ public class TipoContratoOfertaController {
     @Operation(summary = "Deshabilita un TipoContratoOferta")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deshabilitarTipoContratoOferta(@PathVariable Long id) {
-        boolean eliminado = tipoContratoOfertaService.deshabilitarTipoContratoOferta(id);
+        boolean eliminado = tipoContratoOfertaService.delete(id); //deshabilitarTipoContratoOferta(id);
         if (eliminado) {
             return ResponseEntity.status(HttpStatus.OK).build();
         } else {
