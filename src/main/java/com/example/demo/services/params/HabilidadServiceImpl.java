@@ -7,7 +7,6 @@ import com.example.demo.entities.params.Habilidad;
 import com.example.demo.entities.params.TipoHabilidad;
 import com.example.demo.exceptions.EntityAlreadyEnabledException;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
-import com.example.demo.exceptions.EntityNotFoundException;
 import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.repositories.params.HabilidadRepository;
 import com.example.demo.services.BaseServiceImpl;
