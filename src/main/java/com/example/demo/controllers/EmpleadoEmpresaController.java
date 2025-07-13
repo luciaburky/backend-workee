@@ -11,6 +11,7 @@ import com.example.demo.dtos.EmpleadoEmpresaRequestDTO;
 import com.example.demo.entities.EmpleadoEmpresa;
 import com.example.demo.services.EmpleadoEmpresaService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 

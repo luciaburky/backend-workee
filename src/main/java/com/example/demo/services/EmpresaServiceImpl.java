@@ -7,7 +7,6 @@ import com.example.demo.entities.Empresa;
 import com.example.demo.entities.params.Rubro;
 import com.example.demo.mappers.EmpresaMapper;
 import com.example.demo.repositories.EmpresaRepository;
-import com.example.demo.services.params.ProvinciaService;
 import com.example.demo.services.params.RubroService;
 
 import jakarta.transaction.Transactional;
@@ -17,14 +16,12 @@ public class EmpresaServiceImpl extends BaseServiceImpl<Empresa, Long> implement
 
     private final EmpresaRepository empresaRepository;
     private final RubroService rubroService;
-    private final ProvinciaService provinciaService;
     private final EmpresaMapper empresaMapper;
 
-    public EmpresaServiceImpl(EmpresaRepository empresaRepository, RubroService rubroService,ProvinciaService provinciaService, EmpresaMapper empresaMapper) {
+    public EmpresaServiceImpl(EmpresaRepository empresaRepository, RubroService rubroService, EmpresaMapper empresaMapper) {
         super(empresaRepository);
         this.empresaRepository = empresaRepository;
         this.rubroService = rubroService;
-        this.provinciaService = provinciaService;
         this.empresaMapper = empresaMapper;
     }
 
