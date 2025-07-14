@@ -1,5 +1,6 @@
-package com.example.demo.entities;
+package com.example.demo.entities.empresa;
 
+import com.example.demo.entities.Base;
 import com.example.demo.entities.params.Provincia;
 import com.example.demo.entities.params.Rubro;
 
@@ -54,6 +55,7 @@ public class Empresa extends Base{
 
     @ManyToOne()
     @JoinColumn(name = "id_provincia")
+    @NotNull
     private Provincia provincia;
 
     @ManyToOne()

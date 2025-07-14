@@ -12,7 +12,7 @@
 	<artifactId>demo</artifactId>
 	<version>0.0.1-SNAPSHOT</version> 
 	<name>demo</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Desarrollo del proyecto Workee</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -28,13 +28,7 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
-
-		<sonar.projectKey>workee_backend_empresa</sonar.projectKey>
-        <sonar.projectName>workee_backend_empresa</sonar.projectName>
-        <sonar.host.url>http://localhost:9000</sonar.host.url>
-        <sonar.token>sqp_8040a82de630aa20bea77d7d7117f2f2737a816f</sonar.token>
-        <sonar.maven.plugin.version>4.0.0.4121</sonar.maven.plugin.version>
-
+		<mapstruct.version>1.5.5.Final</mapstruct.version> 	
 	</properties>
 	<dependencies>
 		<dependency>
@@ -84,14 +78,6 @@
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 
-		<!-- <dependency>
-			<groupId>org.hibernate.validator</groupId>
-			<artifactId>hibernate-validator</artifactId>
-		</dependency> -->
-		<!-- <dependency>
-			<groupId>org.glassfish</groupId>
-			<artifactId>jakarta.el</artifactId>
-		</dependency> -->
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
@@ -102,21 +88,32 @@
 			<artifactId>java-dotenv</artifactId>
 			<version>5.2.2</version> 
 		</dependency>
+
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>${mapstruct.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct-processor</artifactId>
+			<version>${mapstruct.version}</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
 		<plugins>
 			<plugin>
-                <groupId>org.sonarsource.scanner.maven</groupId>
-                <artifactId>sonar-maven-plugin</artifactId>
-                <version>${sonar.maven.plugin.version}</version>
-            </plugin>
-
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
 					<annotationProcessorPaths>
+						<path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${mapstruct.version}</version>
+                        </path>
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
@@ -140,3 +137,4 @@
 	</build>
 
 </project>
+
