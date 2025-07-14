@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.example.demo.dtos.UbicacionDTO;
 import com.example.demo.entities.params.Provincia;
 import com.example.demo.repositories.BaseRepository;
 
@@ -29,4 +30,17 @@ public interface ProvinciaRepository extends BaseRepository<Provincia, Long> {
     List<Provincia> findAllByOrderByNombreProvinciaAsc();
 
     Optional<Provincia> findByNombreProvinciaIgnoreCase(String nombreProvincia);
+
+
+    //use JPQL porque era mas facil mapear al DTO
+    @Query("""
+            SELECT new com.example.demo.dtos.UbicacionDTO(p.id, p.nombreProvincia, pais.nombrePais)
+            FROM Provincia p
+            JOIN p.pais 
+            WHERE p.fechaHoraBaja IS NULL AND pais.fechaHoraBaja IS NULL
+            GROUP BY p.id, p.nombreProvincia, pais.nombrePais
+            ORDER BY pais.nombrePais
+            """
+    )
+    List<UbicacionDTO> obtenerUbicaciones();
 }

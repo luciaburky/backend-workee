@@ -1,20 +1,15 @@
 package com.example.demo.controllers;
 
-import java.util.List;
-
-import org.apache.catalina.connector.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dtos.EmpresaRequestDTO;
-import com.example.demo.dtos.FiltrosEmpresaRequestDTO;
 import com.example.demo.entities.empresa.Empresa;
 import com.example.demo.services.empresa.EmpresaService;
 
@@ -38,15 +33,6 @@ public class EmpresaController /*extends BaseControllerImpl<Empresa, EmpresaServ
     public ResponseEntity<?> modificarEmpresa(@PathVariable Long id, @RequestBody EmpresaRequestDTO empresaRequestDTO){
         Empresa empresaModificada = empresaService.modificarEmpresa(id, empresaRequestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(empresaModificada);
-    }
-
-
-    @Operation(summary = "Trae las empresas según los filtros aplicados")
-    @PostMapping("/empresasFiltradas")
-    public ResponseEntity<?> filtrarEmpresas(@RequestBody FiltrosEmpresaRequestDTO filtrosEmpresaRequestDTO){
-        List<Empresa> empresas = empresaService.buscarEmpresasConFiltros(filtrosEmpresaRequestDTO);
-
-        return ResponseEntity.status(HttpStatus.OK).body(empresas);
     }
 
     @Operation(summary = "Ver detalle de una empresa segun su ID")

@@ -2,6 +2,7 @@ package com.example.demo.services.params;
 
 import java.util.List;
 
+import com.example.demo.dtos.UbicacionDTO;
 import com.example.demo.dtos.params.ProvinciaRequestDTO;
 import com.example.demo.entities.params.Provincia;
 import com.example.demo.services.BaseService;
@@ -18,5 +19,7 @@ public interface ProvinciaService extends BaseService<Provincia, Long>{
     public List<Provincia> obtenerProvinciasActivas();
 
     public Boolean habilitarProvincia(Long id);
+
+    public List<UbicacionDTO> traerUbicaciones();
 
 }
