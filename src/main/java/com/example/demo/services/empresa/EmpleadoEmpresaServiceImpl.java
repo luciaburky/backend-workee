@@ -1,4 +1,4 @@
-package com.example.demo.services;
+package com.example.demo.services.empresa;
 
 import java.util.Date;
 import java.util.List;
@@ -6,11 +6,12 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.EmpleadoEmpresaRequestDTO;
-import com.example.demo.entities.EmpleadoEmpresa;
-import com.example.demo.entities.Empresa;
+import com.example.demo.entities.empresa.EmpleadoEmpresa;
+import com.example.demo.entities.empresa.Empresa;
 import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.mappers.EmpleadoEmpresaMapper;
-import com.example.demo.repositories.EmpleadoEmpresaRepository;
+import com.example.demo.repositories.empresa.EmpleadoEmpresaRepository;
+import com.example.demo.services.BaseServiceImpl;
 
 import jakarta.transaction.Transactional;
 

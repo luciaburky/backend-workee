@@ -1,9 +1,10 @@
-package com.example.demo.services;
+package com.example.demo.services.empresa;
 
 import java.util.List;
 
 import com.example.demo.dtos.EmpleadoEmpresaRequestDTO;
-import com.example.demo.entities.EmpleadoEmpresa;
+import com.example.demo.entities.empresa.EmpleadoEmpresa;
+import com.example.demo.services.BaseService;
 
 public interface EmpleadoEmpresaService extends BaseService<EmpleadoEmpresa, Long>{
     public EmpleadoEmpresa darDeAltaEmpleado(EmpleadoEmpresaRequestDTO empleadoEmpresaRequestDTO);

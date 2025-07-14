@@ -12,7 +12,7 @@
 	<artifactId>demo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>demo</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Desarrollo del proyecto Workee</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -28,14 +28,7 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
-		<mapstruct.version>1.5.5.Final</mapstruct.version> 
-
-		<sonar.projectKey>workee_backend_empresa</sonar.projectKey>
-        <sonar.projectName>workee_backend_empresa</sonar.projectName>
-        <sonar.host.url>http://localhost:9000</sonar.host.url>
-        <sonar.token>sqp_8040a82de630aa20bea77d7d7117f2f2737a816f</sonar.token>
-        <sonar.maven.plugin.version>4.0.0.4121</sonar.maven.plugin.version>
-
+		<mapstruct.version>1.5.5.Final</mapstruct.version> 	
 	</properties>
 	<dependencies>
 		<dependency>
@@ -111,11 +104,6 @@
 
 	<build>
 		<plugins>
-			<plugin>
-                <groupId>org.sonarsource.scanner.maven</groupId>
-                <artifactId>sonar-maven-plugin</artifactId>
-                <version>${sonar.maven.plugin.version}</version>
-            </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

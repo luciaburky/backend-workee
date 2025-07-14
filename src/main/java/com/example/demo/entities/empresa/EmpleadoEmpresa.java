@@ -1,5 +1,7 @@
-package com.example.demo.entities;
+package com.example.demo.entities.empresa;
 
+
+import com.example.demo.entities.Base;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -3,7 +3,7 @@ package com.example.demo.mappers;
 import org.mapstruct.*;
 
 import com.example.demo.dtos.EmpresaRequestDTO;
-import com.example.demo.entities.Empresa;
+import com.example.demo.entities.empresa.Empresa;
 
 @Mapper(componentModel = "spring")
 public interface EmpresaMapper {

@@ -6,7 +6,7 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import com.example.demo.dtos.EmpleadoEmpresaRequestDTO;
-import com.example.demo.entities.EmpleadoEmpresa;
+import com.example.demo.entities.empresa.EmpleadoEmpresa;
 
 @Mapper(componentModel = "spring")
 public interface EmpleadoEmpresaMapper {

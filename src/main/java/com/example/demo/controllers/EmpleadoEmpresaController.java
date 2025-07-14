@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dtos.EmpleadoEmpresaRequestDTO;
-import com.example.demo.entities.EmpleadoEmpresa;
-import com.example.demo.services.EmpleadoEmpresaService;
+import com.example.demo.entities.empresa.EmpleadoEmpresa;
+import com.example.demo.services.empresa.EmpleadoEmpresaService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -74,6 +74,8 @@ public class EmpleadoEmpresaController {
         EmpleadoEmpresa empleado = empleadoEmpresaService.findById(id);
         return ResponseEntity.status(HttpStatus.OK).body(empleado);
     }
+
+    //TODO: Agregar un endpoint (creo que en el controlador de oferta) para que traiga todas las ofertas asociadas a un empleado
 }
 
 

@@ -1,4 +1,4 @@
-package com.example.demo.repositories;
+package com.example.demo.repositories.empresa;
 
 import java.util.List;
 
@@ -6,7 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.example.demo.entities.EmpleadoEmpresa;
+import com.example.demo.entities.empresa.EmpleadoEmpresa;
+import com.example.demo.repositories.BaseRepository;
 
 @Repository
 public interface EmpleadoEmpresaRepository extends BaseRepository<EmpleadoEmpresa, Long> {
