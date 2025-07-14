@@ -13,12 +13,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping("/empresas")
 @Tag(name = "Empresa", description = "Controlador para operaciones CRUD de Empresa")
-public class EmpresaController extends BaseControllerImpl<Empresa, EmpresaService> {
+public class EmpresaController {
 
     private final EmpresaService empresaService;
 
     public EmpresaController(EmpresaService empresaService) {
-        super(empresaService);
         this.empresaService = empresaService;
     }
 
