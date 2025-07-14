@@ -34,6 +34,7 @@ public class EtapaServiceImpl extends BaseServiceImpl<Etapa, Long> implements Et
 
         Etapa nuevaEtapa = new Etapa();
         nuevaEtapa.setNombreEtapa(etapaDTO.getNombreEtapa());
+        nuevaEtapa.setDescripcionEtapa(etapaDTO.getDescripcionEtapa());
         nuevaEtapa.setFechaHoraAlta(new Date());
 
         return etapaRepository.save(nuevaEtapa);
@@ -49,6 +50,7 @@ public class EtapaServiceImpl extends BaseServiceImpl<Etapa, Long> implements Et
         }
 
         etapaOriginal.setNombreEtapa(etapaDTO.getNombreEtapa());
+        etapaOriginal.setDescripcionEtapa(etapaDTO.getDescripcionEtapa());
         return etapaRepository.save(etapaOriginal);
     }
 
@@ -61,7 +63,7 @@ public class EtapaServiceImpl extends BaseServiceImpl<Etapa, Long> implements Et
 
         Etapa etapa = this.findById(id);
         if (etapa.getFechaHoraBaja() == null) {
-            throw new EntityAlreadyExistsException("La etapa ya está habilitada");
+            throw new EntityNotValidException("La etapa ya está habilitada");
         }
 
         etapa.setFechaHoraBaja(null);

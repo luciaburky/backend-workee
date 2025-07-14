@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ModalidadOFertaRequestDTO {
+public class ModalidadOfertaRequestDTO {
     @NotBlank(message = "El nombre de la modalidad de oferta no puede estar vacío")
     private String nombreModalidadOferta;
 }

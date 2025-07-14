@@ -37,14 +37,12 @@ public class HabilidadServiceImpl extends BaseServiceImpl<Habilidad, Long> imple
         }
 
         tipoHabilidadService.findById(idTipoHabilidad);
-
-        return habilidadRepository.findByTipoHabilidad(idTipoHabilidad);
+        return habilidadRepository.findByTipoHabilidadId(idTipoHabilidad);
     }
 
 
     @Override
     @Transactional
-
     public Habilidad guardarHabilidad(HabilidadRequestDTO habilidadDTO){
         if(yaExisteHabilidad(habilidadDTO.getNombreHabilidad())){
             throw new EntityAlreadyExistsException("Ya existe una habilidad con ese nombre");

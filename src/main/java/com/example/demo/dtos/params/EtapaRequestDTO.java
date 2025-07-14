@@ -11,4 +11,7 @@ import lombok.NoArgsConstructor;
 public class EtapaRequestDTO {
     @NotBlank(message = "El nombre de la etapa no puede estar vacío")
     private String nombreEtapa;
+
+    @NotBlank(message = "La decripcion de la etapa no puede estar vacía")
+    private String descripcionEtapa;
 }

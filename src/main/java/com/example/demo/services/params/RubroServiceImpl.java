@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.params.RubroRequestDTO;
 import com.example.demo.entities.params.Rubro;
-import com.example.demo.exceptions.EntityAlreadyDisabledException;
 import com.example.demo.exceptions.EntityAlreadyEnabledException;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
 import com.example.demo.exceptions.EntityNotValidException;
@@ -31,7 +30,7 @@ public class RubroServiceImpl extends BaseServiceImpl<Rubro, Long> implements Ru
     @Transactional
     public Rubro guardarRubro(RubroRequestDTO rubroDTO) {
         if(yaExisteRubro(rubroDTO.getNombreRubro())) {
-            throw new EntityAlreadyDisabledException("Ya existe un rubro con ese nombre");
+            throw new EntityAlreadyExistsException("Ya existe un rubro con ese nombre");
         }
 
         Rubro nuevoRubro = new Rubro();

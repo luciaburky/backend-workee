@@ -12,7 +12,7 @@ import com.example.demo.repositories.BaseRepository;
 @Repository
 public interface HabilidadRepository extends BaseRepository<Habilidad, Long> {
     
-    List<Habilidad> findByTipoHabilidad(Long idTipoHabilidad);
+    List<Habilidad> findByTipoHabilidadId(Long idTipoHabilidad);
     
     @Query(value = "SELECT * FROM habilidad WHERE fecha_hora_baja IS NULL " + 
             "ORDER BY nombre_habilidad ASC", 

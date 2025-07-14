@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.example.demo.dtos.params.ModalidadOFertaRequestDTO;
+import com.example.demo.dtos.params.ModalidadOfertaRequestDTO;
 import com.example.demo.entities.params.ModalidadOferta;
 import com.example.demo.exceptions.EntityAlreadyEnabledException;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
@@ -28,7 +28,7 @@ public class ModalidadOfertaServiceImpl extends BaseServiceImpl<ModalidadOferta,
     
     @Override
     @Transactional
-    public ModalidadOferta guardarModalidadOferta(ModalidadOFertaRequestDTO modalidadOfertaDTO) {
+    public ModalidadOferta guardarModalidadOferta(ModalidadOfertaRequestDTO modalidadOfertaDTO) {
         if (yaExisteModalidadOferta(modalidadOfertaDTO.getNombreModalidadOferta())) {
             throw new EntityAlreadyExistsException("Ya existe una modalidad de oferta con ese nombre");
         }
@@ -42,7 +42,7 @@ public class ModalidadOfertaServiceImpl extends BaseServiceImpl<ModalidadOferta,
 
     @Override
     @Transactional
-    public ModalidadOferta actualizarModalidadOferta(Long id, ModalidadOFertaRequestDTO modalidadOfertaDTO) {
+    public ModalidadOferta actualizarModalidadOferta(Long id, ModalidadOfertaRequestDTO modalidadOfertaDTO) {
         ModalidadOferta modalidadOfertaOriginal = this.findById(id);
         
         if (yaExisteModalidadOferta(modalidadOfertaDTO.getNombreModalidadOferta())) {
