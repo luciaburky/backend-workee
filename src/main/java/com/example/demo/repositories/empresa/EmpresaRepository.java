@@ -30,5 +30,17 @@ public interface EmpresaRepository extends BaseRepository<Empresa, Long>  {
     public List<Empresa> buscarEmpresasPorNombre(@Param("nombreEmpresa") String nombreEmpresa);
 
     //TODO: agregar query para ver cantidad de ofertas abiertas
+
+    @Query(
+        """
+            SELECT COUNT(e) > 0 FROM Empresa e
+            JOIN e.provincia p
+            JOIN p.pais pa
+            WHERE e.fechaHoraBaja IS NULL AND pa.id = :idPais
+        """
+    )
+    boolean existenEmpresasActivasUsandoPais(@Param("idPais")Long idPais);
+
+    boolean existsByProvinciaIdAndFechaHoraBajaIsNull(Long provinciaId);
 }
 
