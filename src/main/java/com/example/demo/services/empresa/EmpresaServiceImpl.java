@@ -8,7 +8,6 @@ import com.example.demo.dtos.EmpresaRequestDTO;
 import com.example.demo.dtos.FiltrosEmpresaRequestDTO;
 import com.example.demo.entities.empresa.Empresa;
 import com.example.demo.entities.params.Rubro;
-import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.mappers.EmpresaMapper;
 import com.example.demo.repositories.empresa.EmpresaRepository;
 import com.example.demo.services.BaseServiceImpl;
