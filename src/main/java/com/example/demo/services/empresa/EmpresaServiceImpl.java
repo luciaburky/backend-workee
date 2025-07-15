@@ -36,13 +36,10 @@ public class EmpresaServiceImpl extends BaseServiceImpl<Empresa, Long> implement
             throw new IllegalArgumentException("El ID de la empresa no puede ser nulo");
         }
         Empresa empresaOriginal = findById(id);
-    
         empresaMapper.updateEntityFromDto(empresaRequestDTO, empresaOriginal);
         
         if(empresaRequestDTO.getIdRubro() != null && empresaRequestDTO.getIdRubro() != empresaOriginal.getRubro().getId()){
-            
             Rubro rubro = rubroService.findById(empresaRequestDTO.getIdRubro());
-            
             empresaOriginal.setRubro(rubro);
         }
         //TODO: Falta agregar el campo contraseña pero eso es del módulo de seguridad
@@ -52,27 +49,9 @@ public class EmpresaServiceImpl extends BaseServiceImpl<Empresa, Long> implement
 
     @Override
     public List<Empresa> buscarEmpresasConFiltros(FiltrosEmpresaRequestDTO filtrosEmpresaRequestDTO){
-        filtrosEmpresaRequestDTO = normalizarValoresFiltros(filtrosEmpresaRequestDTO);
-        System.out.println("rubros: " + filtrosEmpresaRequestDTO.getIdsRubros() + " /provincias: " + filtrosEmpresaRequestDTO.getIdsProvincias());
         return empresaRepository.buscarEmpresasConFiltros(filtrosEmpresaRequestDTO.getIdsRubros(), filtrosEmpresaRequestDTO.getIdsProvincias());
     }
     
-
-    private FiltrosEmpresaRequestDTO normalizarValoresFiltros(FiltrosEmpresaRequestDTO filtrosEmpresaRequestDTO){
-        List<Long> rubros = (filtrosEmpresaRequestDTO.getIdsRubros() != null && !filtrosEmpresaRequestDTO.getIdsRubros().isEmpty()) 
-                            ? filtrosEmpresaRequestDTO.getIdsRubros() 
-                            : null;
-
-        filtrosEmpresaRequestDTO.setIdsRubros(rubros);
-
-        List<Long> provincias = (filtrosEmpresaRequestDTO.getIdsProvincias() != null && !filtrosEmpresaRequestDTO.getIdsProvincias().isEmpty()) 
-                                ? filtrosEmpresaRequestDTO.getIdsProvincias() 
-                                : null;
-
-        filtrosEmpresaRequestDTO.setIdsProvincias(provincias);
-
-        return filtrosEmpresaRequestDTO;
-    }
 }
 
 
