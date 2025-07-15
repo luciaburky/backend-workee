@@ -12,6 +12,7 @@ import com.example.demo.exceptions.EntityAlreadyEnabledException;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
 import com.example.demo.exceptions.EntityNotFoundException;
 import com.example.demo.exceptions.EntityNotValidException;
+import com.example.demo.exceptions.EntityReferencedException;
 import com.example.demo.exceptions.ErrorResponse;
 
 @RestControllerAdvice
@@ -57,14 +58,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(DataAccessException.class)
-    public ResponseEntity<ErrorResponse> handleDatabaseError(DataAccessException ex) {
+    @ExceptionHandler(EntityReferencedException.class)
+    public ResponseEntity<ErrorResponse> handleEntityReferencedException(EntityReferencedException ex) {
         ErrorResponse error = new ErrorResponse(
-                HttpStatus.INTERNAL_SERVER_ERROR, 
-                "Error de acceso a la base de datos: " + ex.getMessage());
-        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
-
 
     //Manejador para las de @Valid
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -78,6 +78,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseEntity<ErrorResponse> handleDatabaseError(DataAccessException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR, 
+                "Error de acceso a la base de datos: " + ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     // Manejo de excepciones no controladas
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex) {
@@ -86,6 +94,4 @@ public class GlobalExceptionHandler {
                 "Un error inesperado ha ocurrido: " + ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-    //TODO: Revisar si es necesario agregar alguna otra excepción específica
 }

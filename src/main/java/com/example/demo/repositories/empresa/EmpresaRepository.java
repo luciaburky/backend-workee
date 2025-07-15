@@ -20,6 +20,9 @@ public interface EmpresaRepository extends BaseRepository<Empresa, Long>  {
         nativeQuery = true
     )
     public List<Empresa> buscarEmpresasConFiltros(@Param("idsRubros") List<Long> idsRubros, @Param("idsProvincias") List<Long> idsProvincias);
+
+
+    boolean existsByProvinciaIdAndFechaHoraBajaIsNull(Long provinciaId);
 }
 
 

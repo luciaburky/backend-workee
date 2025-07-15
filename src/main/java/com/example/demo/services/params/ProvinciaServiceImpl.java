@@ -11,6 +11,8 @@ import com.example.demo.entities.params.Pais;
 import com.example.demo.entities.params.Provincia;
 import com.example.demo.exceptions.EntityAlreadyEnabledException;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
+import com.example.demo.exceptions.EntityReferencedException;
+import com.example.demo.repositories.empresa.EmpresaRepository;
 import com.example.demo.repositories.params.ProvinciaRepository;
 import com.example.demo.services.BaseServiceImpl;
 
@@ -21,12 +23,13 @@ public class ProvinciaServiceImpl extends BaseServiceImpl<Provincia,Long> implem
 
     private final ProvinciaRepository provinciaRepository;
     private final PaisService paisService;
+    private final EmpresaRepository empresaRepository; //TODO: REVISAR Y VER SI CAMBIAMOS ESTO
 
-
-    public ProvinciaServiceImpl(ProvinciaRepository provinciaRepository, PaisService paisService) {
+    public ProvinciaServiceImpl(ProvinciaRepository provinciaRepository, PaisService paisService, EmpresaRepository empresaRepository) {
         super(provinciaRepository);
         this.provinciaRepository = provinciaRepository;
         this.paisService = paisService;
+        this.empresaRepository = empresaRepository;
     }
 
     @Override
@@ -106,5 +109,26 @@ public class ProvinciaServiceImpl extends BaseServiceImpl<Provincia,Long> implem
     private Boolean yaExisteProvincia(String nombreProvincia) {
         Optional<Provincia> provinciaExistente = provinciaRepository.findByNombreProvinciaIgnoreCase(nombreProvincia);
         return provinciaExistente.isPresent();
+    }
+
+    @Override
+    public Boolean deshabilitarProvincia(Long id){
+        Boolean estaEnUso = validarUsoProvincia(id);
+
+        if(estaEnUso){
+            throw new EntityReferencedException("La provincia se encuentra en uso, no puede deshabilitarla");
+        }
+        return delete(id);
+    }
+
+    private Boolean validarUsoProvincia(Long id){
+        Boolean provinciaEnUsoPorEmpresas = empresaRepository.existsByProvinciaIdAndFechaHoraBajaIsNull(id);
+        Boolean provinciaEnUsoPorCandidato = false; //TODO: Borrar el false y llamar al repo de candidato
+
+        if(provinciaEnUsoPorCandidato || provinciaEnUsoPorEmpresas){
+            return true;
+        } else {
+            return false;
+        }
     }
 }

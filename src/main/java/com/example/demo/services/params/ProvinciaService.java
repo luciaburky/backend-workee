@@ -19,4 +19,6 @@ public interface ProvinciaService extends BaseService<Provincia, Long>{
 
     public Boolean habilitarProvincia(Long id);
 
+    public Boolean deshabilitarProvincia(Long id);
+
 }

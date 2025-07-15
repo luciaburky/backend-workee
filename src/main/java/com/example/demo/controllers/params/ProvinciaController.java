@@ -90,7 +90,7 @@ public class ProvinciaController {
     @Operation(summary = "Deshabilita una provincia")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deshabilitarProvincia(@PathVariable Long id) {
-        boolean eliminada = provinciaService.delete(id); //deshabilitarProvincia(id);
+        boolean eliminada = provinciaService.deshabilitarProvincia(id); //delete(id);
         if (eliminada) {
             return ResponseEntity.status(HttpStatus.OK).build();
         } else {

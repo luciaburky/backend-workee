@@ -73,6 +73,12 @@ public class EmpresaServiceImpl extends BaseServiceImpl<Empresa, Long> implement
 
         return filtrosEmpresaRequestDTO;
     }
+
+
+    /*@Override
+    public Boolean existenEmpresasActivasUsandoProvincia(Long idProvincia){
+        return empresaRepository.existsByProvinciaIdAndFechaHoraBajaIsNull(idProvincia);
+    }*/
 }
 
 

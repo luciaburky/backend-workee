@@ -12,6 +12,8 @@ public interface EmpresaService extends BaseService<Empresa, Long>{
 
 
    public List<Empresa> buscarEmpresasConFiltros(FiltrosEmpresaRequestDTO filtrosEmpresaRequestDTO);
+
+   //public Boolean existenEmpresasActivasUsandoProvincia(Long idProvincia);
 }
 
 
