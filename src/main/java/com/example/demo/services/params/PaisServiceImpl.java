@@ -10,6 +10,8 @@ import com.example.demo.dtos.params.PaisRequestDTO;
 import com.example.demo.entities.params.Pais;
 import com.example.demo.exceptions.EntityAlreadyEnabledException;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
+import com.example.demo.exceptions.EntityReferencedException;
+import com.example.demo.repositories.empresa.EmpresaRepository;
 import com.example.demo.repositories.params.PaisRepository;
 import com.example.demo.services.BaseServiceImpl;
 
@@ -19,11 +21,13 @@ import jakarta.transaction.Transactional;
 @Service
 public class PaisServiceImpl extends BaseServiceImpl<Pais,Long> implements PaisService{
     private final PaisRepository paisRepository;
+    private final EmpresaRepository empresaRepository;
 
 
-    public PaisServiceImpl(PaisRepository paisRepository) {
+    public PaisServiceImpl(PaisRepository paisRepository, EmpresaRepository empresaRepository) {
         super(paisRepository);
         this.paisRepository = paisRepository;
+        this.empresaRepository = empresaRepository;
     }
 
     @Override
@@ -83,5 +87,25 @@ public class PaisServiceImpl extends BaseServiceImpl<Pais,Long> implements PaisS
         Optional<Pais> paisExistente = paisRepository.findByNombrePaisIgnoreCase(nombrePais);
         return paisExistente.isPresent();
     }
-    
+
+    @Override
+    public Boolean deshabilitarPais(Long idPais){
+        Boolean estaEnUso = validarUsoPais(idPais);
+
+        if(estaEnUso){
+            throw new EntityReferencedException("El pais se encuentra en uso");
+        }
+        return delete(idPais);
+    }
+
+    private Boolean validarUsoPais(Long id){
+        Boolean paisEnUsoPorEmpresas = empresaRepository.existenEmpresasActivasUsandoPais(id);
+        Boolean paisEnUsoPorCandidato = false; //TODO: Borrar el false y llamar al repo de candidato
+
+        if(paisEnUsoPorCandidato || paisEnUsoPorEmpresas){
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

@@ -78,7 +78,7 @@ public class PaisController  {
     @Operation(summary = "Deshabilita un pais")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deshabilitarPais(@PathVariable Long id) {
-        boolean eliminado = paisService.delete(id);//paisService.deshabilitarPais(id);
+        boolean eliminado = paisService.deshabilitarPais(id); //delete(id);
         if (eliminado) {
             return ResponseEntity.status(HttpStatus.OK).build();
         } else {
