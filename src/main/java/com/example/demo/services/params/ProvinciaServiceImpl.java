@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
-
+import com.example.demo.controllers.params.ProvinciaController;
 import com.example.demo.dtos.UbicacionDTO;
 import com.example.demo.dtos.params.ProvinciaRequestDTO;
 import com.example.demo.entities.params.Pais;
@@ -22,15 +22,18 @@ import jakarta.transaction.Transactional;
 @Service
 public class ProvinciaServiceImpl extends BaseServiceImpl<Provincia,Long> implements ProvinciaService{
 
+    private final ProvinciaController provinciaController;
+
     private final ProvinciaRepository provinciaRepository;
     private final PaisService paisService;
     private final EmpresaRepository empresaRepository; //TODO: REVISAR Y VER SI CAMBIAMOS ESTO
 
-    public ProvinciaServiceImpl(ProvinciaRepository provinciaRepository, PaisService paisService, EmpresaRepository empresaRepository) {
+    public ProvinciaServiceImpl(ProvinciaRepository provinciaRepository, PaisService paisService, EmpresaRepository empresaRepository, ProvinciaController provinciaController) {
         super(provinciaRepository);
         this.provinciaRepository = provinciaRepository;
         this.paisService = paisService;
         this.empresaRepository = empresaRepository;
+        this.provinciaController = provinciaController;
     }
 
     @Override
@@ -45,7 +48,7 @@ public class ProvinciaServiceImpl extends BaseServiceImpl<Provincia,Long> implem
     @Override
     @Transactional
     public Provincia guardarProvincia(ProvinciaRequestDTO provinciaRequestDTO){
-        if(yaExisteProvincia(provinciaRequestDTO.getNombreProvincia())){
+        if(yaExisteProvincia(provinciaRequestDTO.getNombreProvincia(), null)){
             throw new EntityAlreadyExistsException("Ya existe una provincia con ese nombre");
         }
 
@@ -72,7 +75,7 @@ public class ProvinciaServiceImpl extends BaseServiceImpl<Provincia,Long> implem
 
         Provincia provinciaOriginal = findById(id);//buscarProvinciaPorId(id);
 
-        if(yaExisteProvincia(provinciaRequestDTO.getNombreProvincia())){
+        if(yaExisteProvincia(provinciaRequestDTO.getNombreProvincia(), provinciaOriginal)){
             throw new EntityAlreadyExistsException("Ya existe una provincia con ese nombre");
         }
 
@@ -107,8 +110,14 @@ public class ProvinciaServiceImpl extends BaseServiceImpl<Provincia,Long> implem
     }
 
 
-    private Boolean yaExisteProvincia(String nombreProvincia) {
+    private Boolean yaExisteProvincia(String nombreProvincia, Provincia provinciaOriginal) {
         Optional<Provincia> provinciaExistente = provinciaRepository.findByNombreProvinciaIgnoreCase(nombreProvincia);
+        if(provinciaOriginal != null && provinciaExistente.get() != null){
+            if(provinciaOriginal.getId() == provinciaExistente.get().getId()){
+                return false;
+            }
+        }
+        
         return provinciaExistente.isPresent();
     }
 

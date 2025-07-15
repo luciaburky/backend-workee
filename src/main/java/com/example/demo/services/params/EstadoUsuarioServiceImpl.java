@@ -2,6 +2,7 @@ package com.example.demo.services.params;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,7 @@ public class EstadoUsuarioServiceImpl extends BaseServiceImpl<EstadoUsuario,Long
     @Override
     @Transactional
     public EstadoUsuario guardarEstadoUsuario(EstadoUsuarioRequestDTO estadoUsuarioRequestDTO) {
-        if(yaExisteEstadoUsuario(estadoUsuarioRequestDTO.getNombreEstadoUsuario())) {
+        if(yaExisteEstadoUsuario(estadoUsuarioRequestDTO.getNombreEstadoUsuario(), null)) {
             throw new EntityAlreadyExistsException("El estado de usuario ya existe");
         }
         EstadoUsuario estadoUsuario = new EstadoUsuario();
@@ -41,12 +42,12 @@ public class EstadoUsuarioServiceImpl extends BaseServiceImpl<EstadoUsuario,Long
         if(estadoUsuarioRequestDTO.getNombreEstadoUsuario() == null || estadoUsuarioRequestDTO.getNombreEstadoUsuario().isEmpty()) {
             throw new IllegalArgumentException("El nombre del estado de usuario no puede estar vacío");
         }
-        EstadoUsuario estadoUsuario = findById(id);//buscarEstadoUsuarioPorId(id);
-        if(yaExisteEstadoUsuario(estadoUsuarioRequestDTO.getNombreEstadoUsuario())) {
+        EstadoUsuario estadoUsuarioOriginal = findById(id);//buscarEstadoUsuarioPorId(id);
+        if(yaExisteEstadoUsuario(estadoUsuarioRequestDTO.getNombreEstadoUsuario(), estadoUsuarioOriginal)) {
             throw new EntityAlreadyExistsException("El estado de usuario ya existe");
         } else {
-            estadoUsuario.setNombreEstadoUsuario(estadoUsuarioRequestDTO.getNombreEstadoUsuario());
-            return estadoUsuarioRepository.save(estadoUsuario);
+            estadoUsuarioOriginal.setNombreEstadoUsuario(estadoUsuarioRequestDTO.getNombreEstadoUsuario());
+            return estadoUsuarioRepository.save(estadoUsuarioOriginal);
         }
     }
 
@@ -76,7 +77,14 @@ public class EstadoUsuarioServiceImpl extends BaseServiceImpl<EstadoUsuario,Long
     }
     
 
-    public Boolean yaExisteEstadoUsuario(String nombreEstadoUsuario) {
-        return estadoUsuarioRepository.findByNombreEstadoUsuarioIgnoreCase(nombreEstadoUsuario).isPresent();
+    public Boolean yaExisteEstadoUsuario(String nombreEstadoUsuario, EstadoUsuario estadoUsuarioOriginal) {
+        Optional<EstadoUsuario> estadoUsuarioExistente = estadoUsuarioRepository.findByNombreEstadoUsuarioIgnoreCase(nombreEstadoUsuario);
+        if(estadoUsuarioOriginal != null && estadoUsuarioExistente.get() != null){
+            if(estadoUsuarioOriginal.getId() == estadoUsuarioExistente.get().getId()){
+            return false;
+            }
+        }
+        
+        return estadoUsuarioExistente.isPresent();
     }
 }

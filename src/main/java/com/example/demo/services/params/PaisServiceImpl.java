@@ -84,9 +84,9 @@ public class PaisServiceImpl extends BaseServiceImpl<Pais,Long> implements PaisS
 
 
     private Boolean yaExistePais(String nombrePais, Pais paisOriginal) {
-        Optional<Pais> paisExistente = paisRepository.buscarPorNombrePais(nombrePais);
+        Optional<Pais> paisExistente = paisRepository.findByNombrePaisIgnoreCase(nombrePais); //buscarPorNombrePais(nombrePais);
         
-        if(paisOriginal != null){
+        if(paisOriginal != null && paisExistente.get() != null){
             if(paisOriginal.getId() == paisExistente.get().getId()){
                 return false;
             }

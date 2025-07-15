@@ -2,6 +2,7 @@ package com.example.demo.services.params;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -77,8 +78,14 @@ public class GeneroServiceImpl extends BaseServiceImpl<Genero,Long> implements G
     }
     
 
-    private Boolean yaExisteEstadoUsuario(String nombreEstadoUsuario) {
-        return generoRepository.findByNombreGeneroIgnoreCase(nombreEstadoUsuario).isPresent();
+    private Boolean yaExisteEstadoUsuario(String nombreEstadoUsuario, Genero generoOriginal) {
+        Optional<Genero> generoExistente = generoRepository.findByNombreGeneroIgnoreCase(nombreEstadoUsuario);
+        if(generoOriginal != null && generoExistente.get() != null){
+            if(generoOriginal.getId() == generoExistente.get().getId()){
+                return false;
+            }
+        }
+        return generoExistente.isPresent();
     }
 
 }

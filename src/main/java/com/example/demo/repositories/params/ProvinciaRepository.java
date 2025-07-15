@@ -14,33 +14,32 @@ import com.example.demo.repositories.BaseRepository;
 @Repository
 public interface ProvinciaRepository extends BaseRepository<Provincia, Long> {
     
-    @Query(
-        value = "SELECT * FROM provincia p WHERE p.id_pais = :idPais " + 
-                "ORDER BY p.nombre_provincia ASC ",
-        nativeQuery = true
-    )
-    List<Provincia> findProvinciaByPaisId(@Param("idPais") Long idPais);
+        @Query(
+                value = "SELECT * FROM provincia p WHERE p.id_pais = :idPais " + 
+                        "ORDER BY p.nombre_provincia ASC ",
+                nativeQuery = true
+        )
+        List<Provincia> findProvinciaByPaisId(@Param("idPais") Long idPais);
 
-    @Query(value = "SELECT * FROM provincia WHERE fecha_hora_baja IS NULL " + 
-            "ORDER BY nombre_provincia ASC", 
-            nativeQuery = true
-            )
-    List<Provincia> buscarProvinciasActivas();
+        @Query(value = "SELECT * FROM provincia WHERE fecha_hora_baja IS NULL " + 
+                "ORDER BY nombre_provincia ASC", 
+                nativeQuery = true
+                )
+        List<Provincia> buscarProvinciasActivas();
 
-    List<Provincia> findAllByOrderByNombreProvinciaAsc();
+        List<Provincia> findAllByOrderByNombreProvinciaAsc();
 
-    Optional<Provincia> findByNombreProvinciaIgnoreCase(String nombreProvincia);
+        Optional<Provincia> findByNombreProvinciaIgnoreCase(String nombreProvincia);
 
-
-    //use JPQL porque era mas facil mapear al DTO
-    @Query("""
-            SELECT new com.example.demo.dtos.UbicacionDTO(p.id, p.nombreProvincia, pais.nombrePais)
-            FROM Provincia p
-            JOIN p.pais 
-            WHERE p.fechaHoraBaja IS NULL AND pais.fechaHoraBaja IS NULL
-            GROUP BY p.id, p.nombreProvincia, pais.nombrePais
-            ORDER BY pais.nombrePais
-            """
-    )
-    List<UbicacionDTO> obtenerUbicaciones();
+        //use JPQL porque era mas facil mapear al DTO
+        @Query("""
+                SELECT new com.example.demo.dtos.UbicacionDTO(p.id, p.nombreProvincia, pais.nombrePais)
+                FROM Provincia p
+                JOIN p.pais 
+                WHERE p.fechaHoraBaja IS NULL AND pais.fechaHoraBaja IS NULL
+                GROUP BY p.id, p.nombreProvincia, pais.nombrePais
+                ORDER BY pais.nombrePais
+                """
+        )
+        List<UbicacionDTO> obtenerUbicaciones();
 }
