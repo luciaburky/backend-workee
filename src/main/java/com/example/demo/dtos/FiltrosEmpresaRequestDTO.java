@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FiltrosEmpresaRequestDTO {
-    //private String textoBusqueda;
+    private String nombreEmpresa;
     private List<Long> idsRubros;
     private List<Long> idsProvincias;
     private Boolean tieneOfertasAbiertas;

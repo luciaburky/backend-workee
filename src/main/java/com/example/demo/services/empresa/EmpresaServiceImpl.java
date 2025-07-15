@@ -8,6 +8,7 @@ import com.example.demo.dtos.EmpresaRequestDTO;
 import com.example.demo.dtos.FiltrosEmpresaRequestDTO;
 import com.example.demo.entities.empresa.Empresa;
 import com.example.demo.entities.params.Rubro;
+import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.mappers.EmpresaMapper;
 import com.example.demo.repositories.empresa.EmpresaRepository;
 import com.example.demo.services.BaseServiceImpl;
@@ -50,6 +51,14 @@ public class EmpresaServiceImpl extends BaseServiceImpl<Empresa, Long> implement
     @Override
     public List<Empresa> buscarEmpresasConFiltros(FiltrosEmpresaRequestDTO filtrosEmpresaRequestDTO){
         return empresaRepository.buscarEmpresasConFiltros(filtrosEmpresaRequestDTO.getIdsRubros(), filtrosEmpresaRequestDTO.getIdsProvincias());
+    }
+
+    @Override
+    public List<Empresa> buscarEmpresasPorNombre(String nombreEmpresa){
+        if(nombreEmpresa.isEmpty() || nombreEmpresa == null){
+            throw new IllegalArgumentException("El nombre de la empresa no puede estar vacío");
+        }
+        return empresaRepository.buscarEmpresasPorNombre(nombreEmpresa);
     }
     
 }
