@@ -15,23 +15,20 @@ public interface EmpresaRepository extends BaseRepository<Empresa, Long>  {
     @Query(
         value = "SELECT * FROM empresa " + 
                 "WHERE (:idsRubros IS NULL OR id_rubro IN (:idsRubros)) " + 
-                "AND (:idsProvincias IS NULL OR id_provincia IN (:idsProvincias)) " //TODO: Agregar el filtro de ofertas
-                ,                                                                 //DUDA: deberia agregar un filtro por nombre aca? o eso lo hacemos desde el front como hicieron en parametros?
+                "AND (:idsProvincias IS NULL OR id_provincia IN (:idsProvincias)) " + //TODO: Agregar el filtro de ofertas
+                "AND fecha_hora_baja IS NULL",                                                                 
         nativeQuery = true
     )
     public List<Empresa> buscarEmpresasConFiltros(@Param("idsRubros") List<Long> idsRubros, @Param("idsProvincias") List<Long> idsProvincias);
 
-
-    boolean existsByProvinciaIdAndFechaHoraBajaIsNull(Long provinciaId);
-
     @Query(
-        """
-            SELECT COUNT(e) > 0 FROM Empresa e
-            JOIN e.provincia p
-            JOIN p.pais pa
-            WHERE e.fechaHoraBaja IS NULL AND pa.id = :idPais
-        """
+        value = "SELECT * FROM empresa e " + 
+                "WHERE (LOWER(e.nombre_empresa) LIKE LOWER(CONCAT('%', :nombreEmpresa, '%')) ) " + 
+                "AND e.fecha_hora_baja IS NULL",
+        nativeQuery = true
     )
-    boolean existenEmpresasActivasUsandoPais(@Param("idPais")Long idPais);
+    public List<Empresa> buscarEmpresasPorNombre(@Param("nombreEmpresa") String nombreEmpresa);
+
+    //TODO: agregar query para ver cantidad de ofertas abiertas
 }
 

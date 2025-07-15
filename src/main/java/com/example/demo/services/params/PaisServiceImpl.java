@@ -33,7 +33,7 @@ public class PaisServiceImpl extends BaseServiceImpl<Pais,Long> implements PaisS
     @Override
     @Transactional
     public Pais guardarPais(PaisRequestDTO paisRequestDTO) {
-        if (yaExistePais(paisRequestDTO.getNombrePais())) {
+        if (yaExistePais(paisRequestDTO.getNombrePais(), null)) {
             throw new EntityAlreadyExistsException("Ya existe un país con ese nombre");
         }
 
@@ -49,7 +49,7 @@ public class PaisServiceImpl extends BaseServiceImpl<Pais,Long> implements PaisS
     public Pais actualizarPais(Long id, PaisRequestDTO paisRequestDTO){
         Pais paisOriginal = this.findById(id); //buscarPaisPorId(id);
         
-        if (yaExistePais(paisRequestDTO.getNombrePais())) {
+        if (yaExistePais(paisRequestDTO.getNombrePais(), paisOriginal)) {
             throw new EntityAlreadyExistsException("Ya existe un país con ese nombre");
         }
 
@@ -83,8 +83,15 @@ public class PaisServiceImpl extends BaseServiceImpl<Pais,Long> implements PaisS
     }
 
 
-    private Boolean yaExistePais(String nombrePais) {
-        Optional<Pais> paisExistente = paisRepository.findByNombrePaisIgnoreCase(nombrePais);
+    private Boolean yaExistePais(String nombrePais, Pais paisOriginal) {
+        Optional<Pais> paisExistente = paisRepository.buscarPorNombrePais(nombrePais);
+        
+        if(paisOriginal != null){
+            if(paisOriginal.getId() == paisExistente.get().getId()){
+                return false;
+            }
+        }
+        
         return paisExistente.isPresent();
     }
 

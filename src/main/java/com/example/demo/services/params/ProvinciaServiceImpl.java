@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.example.demo.dtos.UbicacionDTO;
 import com.example.demo.dtos.params.ProvinciaRequestDTO;
 import com.example.demo.entities.params.Pais;
 import com.example.demo.entities.params.Provincia;
@@ -109,6 +110,12 @@ public class ProvinciaServiceImpl extends BaseServiceImpl<Provincia,Long> implem
     private Boolean yaExisteProvincia(String nombreProvincia) {
         Optional<Provincia> provinciaExistente = provinciaRepository.findByNombreProvinciaIgnoreCase(nombreProvincia);
         return provinciaExistente.isPresent();
+    }
+
+    @Override
+    public List<UbicacionDTO> traerUbicaciones(){
+        List<UbicacionDTO> ubicaciones = provinciaRepository.obtenerUbicaciones();
+        return ubicaciones;
     }
 
     @Override
