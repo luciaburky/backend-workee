@@ -66,26 +66,23 @@ public class HabilidadServiceImpl extends BaseServiceImpl<Habilidad, Long> imple
     @Override
     @Transactional
     public Habilidad actualizarHabilidad(Long id, HabilidadRequestDTO habilidadDTO){
-        if(habilidadDTO.getNombreHabilidad() == null || habilidadDTO.getNombreHabilidad().isBlank()) {
-            throw new EntityNotValidException("El nombre de la habilidad no puede ser nulo o vacío");
-        }
-
-        if(habilidadDTO.getIdTipoHabilidad() == null){
-            throw new EntityNotValidException("El ID del tipo de habilidad no puede ser nulo");
-        }
 
         Habilidad habilidadOriginal = findById(id);
 
-        if(!habilidadOriginal.getNombreHabilidad().equalsIgnoreCase(habilidadDTO.getNombreHabilidad())) {
-            if(yaExisteHabilidad(habilidadDTO.getNombreHabilidad(), id)) {
-                throw new EntityAlreadyExistsException("Ya existe una habilidad con ese nombre");
+        if(habilidadDTO.getNombreHabilidad() != null && !habilidadDTO.getNombreHabilidad().isBlank() ){
+            if(!habilidadOriginal.getNombreHabilidad().equalsIgnoreCase(habilidadDTO.getNombreHabilidad())) {
+                if(yaExisteHabilidad(habilidadDTO.getNombreHabilidad(), id)) {
+                    throw new EntityAlreadyExistsException("Ya existe una habilidad con ese nombre");
+                }
+                habilidadOriginal.setNombreHabilidad(habilidadDTO.getNombreHabilidad());
             }
-            habilidadOriginal.setNombreHabilidad(habilidadDTO.getNombreHabilidad());
-        }
+        }            
 
-        if(!habilidadOriginal.getTipoHabilidad().getId().equals(habilidadDTO.getIdTipoHabilidad())) {
-            TipoHabilidad tipoHabilidad = tipoHabilidadService.findById(habilidadDTO.getIdTipoHabilidad());
-            habilidadOriginal.setTipoHabilidad((tipoHabilidad));
+        if(habilidadDTO.getIdTipoHabilidad() != null){
+            if(!habilidadOriginal.getTipoHabilidad().getId().equals(habilidadDTO.getIdTipoHabilidad())) {
+                TipoHabilidad tipoHabilidad = tipoHabilidadService.findById(habilidadDTO.getIdTipoHabilidad());
+                habilidadOriginal.setTipoHabilidad((tipoHabilidad));
+            }
         }
 
         return habilidadRepository.save(habilidadOriginal);
