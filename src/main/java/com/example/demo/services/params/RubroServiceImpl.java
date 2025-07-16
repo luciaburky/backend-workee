@@ -29,7 +29,7 @@ public class RubroServiceImpl extends BaseServiceImpl<Rubro, Long> implements Ru
     @Override
     @Transactional
     public Rubro guardarRubro(RubroRequestDTO rubroDTO) {
-        if(yaExisteRubro(rubroDTO.getNombreRubro())) {
+        if(yaExisteRubro(rubroDTO.getNombreRubro(), null)) {
             throw new EntityAlreadyExistsException("Ya existe un rubro con ese nombre");
         }
 
@@ -45,7 +45,7 @@ public class RubroServiceImpl extends BaseServiceImpl<Rubro, Long> implements Ru
     public Rubro actualizarRubro(Long id, RubroRequestDTO rubroDTO) {
         Rubro rubroOriginal = this.findById(id);
 
-        if(yaExisteRubro(rubroDTO.getNombreRubro())) {
+        if(yaExisteRubro(rubroDTO.getNombreRubro(), id)) {
             throw new EntityAlreadyExistsException("Ya existe un rubro con ese nombre");
         }
 
@@ -81,9 +81,10 @@ public class RubroServiceImpl extends BaseServiceImpl<Rubro, Long> implements Ru
         return rubroRepository.buscarRubrosActivos();
     }
 
-    public Boolean yaExisteRubro(String nombreRubro) {
+    public Boolean yaExisteRubro(String nombreRubro, Long idAExcluir) {
         Optional<Rubro> rubroExiste = rubroRepository.findByNombreRubroIgnoreCase(nombreRubro);
-        return rubroExiste.isPresent();
-    }
+        return rubroExiste
+        .filter(e -> idAExcluir == null || !e.getId().equals(idAExcluir))
+        .isPresent();    }
     
 }
