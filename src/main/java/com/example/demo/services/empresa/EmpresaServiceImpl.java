@@ -49,7 +49,7 @@ public class EmpresaServiceImpl extends BaseServiceImpl<Empresa, Long> implement
 
     @Override
     public List<Empresa> buscarEmpresasConFiltros(FiltrosEmpresaRequestDTO filtrosEmpresaRequestDTO){
-        return empresaRepository.buscarEmpresasConFiltros(filtrosEmpresaRequestDTO.getIdsRubros(), filtrosEmpresaRequestDTO.getIdsProvincias());
+        return empresaRepository.buscarEmpresasConFiltros(filtrosEmpresaRequestDTO.getIdsRubros(), filtrosEmpresaRequestDTO.getIdsProvincias(), filtrosEmpresaRequestDTO.getNombreEmpresa());
     }
 
     @Override
