@@ -2,6 +2,7 @@ package com.example.demo.services.params;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,7 @@ public class TipoEventoServiceImpl extends BaseServiceImpl<TipoEvento,Long> impl
     @Override
     @Transactional
     public TipoEvento guardarTipoEvento(TipoEventoRequestDTO tipoEventoRequestDTO) {
-        if(yaExisteTipoEvento(tipoEventoRequestDTO.getNombreTipoEvento())) {
+        if(yaExisteTipoEvento(tipoEventoRequestDTO.getNombreTipoEvento(), null)) {
             throw new EntityAlreadyExistsException("Ya existe un tipo de evento con ese nombre");
         }
         TipoEvento nuevTipoEvento = new TipoEvento();
@@ -40,10 +41,11 @@ public class TipoEventoServiceImpl extends BaseServiceImpl<TipoEvento,Long> impl
     @Override
     @Transactional
     public TipoEvento actualizarTipoEvento(Long id, TipoEventoRequestDTO tipoEventoRequestDTO) {
-        if(yaExisteTipoEvento(tipoEventoRequestDTO.getNombreTipoEvento())) {
+        TipoEvento tipoEventoOriginal = buscarTipoEventoPorId(id);
+        
+        if(yaExisteTipoEvento(tipoEventoRequestDTO.getNombreTipoEvento(),tipoEventoOriginal.getId())) {
             throw new EntityAlreadyExistsException("Ya existe un tipo de evento con ese nombre");
         }
-        TipoEvento tipoEventoOriginal = buscarTipoEventoPorId(id);
         tipoEventoOriginal.setNombreTipoEvento(tipoEventoRequestDTO.getNombreTipoEvento());
         return tipoEventoRepository.save(tipoEventoOriginal);
     }
@@ -94,7 +96,13 @@ public class TipoEventoServiceImpl extends BaseServiceImpl<TipoEvento,Long> impl
         return true;
     }
 
-    private Boolean yaExisteTipoEvento(String nombreTipoEvento) {
-        return tipoEventoRepository.findByNombreTipoEventoIgnoreCase(nombreTipoEvento).isPresent();
+    private Boolean yaExisteTipoEvento(String nombreTipoEvento, Long idTipoEventoOriginal) {
+        Optional<TipoEvento> tipoEventoExistente = tipoEventoRepository.findByNombreTipoEventoIgnoreCase(nombreTipoEvento);
+        if(idTipoEventoOriginal != null && tipoEventoExistente.isPresent()){
+            if(idTipoEventoOriginal == tipoEventoExistente.get().getId()){
+                return false;
+            }
+        }
+        return tipoEventoExistente.isPresent();
     }
 }

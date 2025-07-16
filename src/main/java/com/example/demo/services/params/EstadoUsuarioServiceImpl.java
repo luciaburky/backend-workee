@@ -43,7 +43,7 @@ public class EstadoUsuarioServiceImpl extends BaseServiceImpl<EstadoUsuario,Long
             throw new IllegalArgumentException("El nombre del estado de usuario no puede estar vacío");
         }
         EstadoUsuario estadoUsuarioOriginal = findById(id);//buscarEstadoUsuarioPorId(id);
-        if(yaExisteEstadoUsuario(estadoUsuarioRequestDTO.getNombreEstadoUsuario(), estadoUsuarioOriginal)) {
+        if(yaExisteEstadoUsuario(estadoUsuarioRequestDTO.getNombreEstadoUsuario(), estadoUsuarioOriginal.getId())) {
             throw new EntityAlreadyExistsException("El estado de usuario ya existe");
         } else {
             estadoUsuarioOriginal.setNombreEstadoUsuario(estadoUsuarioRequestDTO.getNombreEstadoUsuario());
@@ -77,10 +77,10 @@ public class EstadoUsuarioServiceImpl extends BaseServiceImpl<EstadoUsuario,Long
     }
     
 
-    public Boolean yaExisteEstadoUsuario(String nombreEstadoUsuario, EstadoUsuario estadoUsuarioOriginal) {
+    public Boolean yaExisteEstadoUsuario(String nombreEstadoUsuario, Long idEstadoUsuarioOriginal) {
         Optional<EstadoUsuario> estadoUsuarioExistente = estadoUsuarioRepository.findByNombreEstadoUsuarioIgnoreCase(nombreEstadoUsuario);
-        if(estadoUsuarioOriginal != null && estadoUsuarioExistente.get() != null){
-            if(estadoUsuarioOriginal.getId() == estadoUsuarioExistente.get().getId()){
+        if(idEstadoUsuarioOriginal != null && estadoUsuarioExistente.isPresent()){
+            if(idEstadoUsuarioOriginal == estadoUsuarioExistente.get().getId()){
             return false;
             }
         }
