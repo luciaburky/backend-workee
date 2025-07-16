@@ -38,13 +38,8 @@ public class ProvinciaController {
     @Operation(summary = "Obtiene las provincias según el id de País")
     @GetMapping("provinciasPorPais/{idPais}") 
     public ResponseEntity<List<Provincia>> getProvinciasByPais(@PathVariable Long idPais) {
-       try { 
             List<Provincia> provincias = provinciaService.findProvinciaByPaisId(idPais);
             return ResponseEntity.ok(provincias);
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
     }
 
     @Operation(summary = "Crea una provincia")
@@ -79,35 +74,22 @@ public class ProvinciaController {
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerProvincia(@PathVariable Long id) {
         Provincia provincia = provinciaService.findById(id); //buscarProvinciaPorId(id);
-        if (provincia != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(provincia);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Provincia no encontrada");
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(provincia);
     }
 
 
     @Operation(summary = "Deshabilita una provincia")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deshabilitarProvincia(@PathVariable Long id) {
-        boolean eliminada = provinciaService.deshabilitarProvincia(id); //delete(id);
-        if (eliminada) {
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Provincia no encontrada");
-        }
-
+        provinciaService.deshabilitarProvincia(id); //delete(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @Operation(summary = "Habilita una provincia")
     @PutMapping("/habilitar/{id}")
     public ResponseEntity<?> habilitarProvincia(@PathVariable Long id) {
-        boolean habilitada = provinciaService.habilitarProvincia(id);
-        if (habilitada) {
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Provincia no encontrada");
-        }
+        provinciaService.habilitarProvincia(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 }
