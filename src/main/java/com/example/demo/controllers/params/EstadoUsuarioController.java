@@ -66,33 +66,21 @@ public class EstadoUsuarioController {
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerEstadoUsuarioPorId(@PathVariable Long id) {
         EstadoUsuario estadoUsuario = estadoUsuarioService.findById(id); //buscarEstadoUsuarioPorId(id);
-        if (estadoUsuario != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(estadoUsuario);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("EstadoUsuario no encontrado");
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(estadoUsuario);
     }
 
     @Operation(summary = "Deshabilita un EstadoUsuario")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deshabilitarEstadoUsuario(@PathVariable Long id) {
-        boolean eliminado = estadoUsuarioService.delete(id);//deshabilitarEstadoUsuario(id);
-        if (eliminado) {
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("EstadoUsuario no encontrado");
-        }
+        estadoUsuarioService.delete(id);//deshabilitarEstadoUsuario(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @Operation(summary = "Habilita un EstadoUsuario")
     @PutMapping("/habilitar/{id}")
     public ResponseEntity<?> habilitarEstadoUsuario(@PathVariable Long id) {
-        Boolean habilitado = estadoUsuarioService.habilitarEstadoUsuario(id);
-        if (habilitado) {
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("EstadoUsuario no encontrado");
-        }
+        estadoUsuarioService.habilitarEstadoUsuario(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 }
