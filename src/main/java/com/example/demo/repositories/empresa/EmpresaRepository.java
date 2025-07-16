@@ -11,8 +11,8 @@ import com.example.demo.repositories.BaseRepository;
 
 @Repository
 public interface EmpresaRepository extends BaseRepository<Empresa, Long>  {
-    @Query(
-        """
+    @Query(//TODO: Agregar el filtro por ofertas abiertas
+        """ 
             SELECT e FROM Empresa e
             WHERE (:nombreEmpresa IS NULL OR LOWER(e.nombreEmpresa) LIKE LOWER(CONCAT('%', :nombreEmpresa, '%')))
             AND (:idsRubros IS NULL OR e.rubro.id IN :idsRubros)
@@ -30,6 +30,6 @@ public interface EmpresaRepository extends BaseRepository<Empresa, Long>  {
     )
     public List<Empresa> buscarEmpresasPorNombre(@Param("nombreEmpresa") String nombreEmpresa);
 
-    //TODO: agregar query para ver cantidad de ofertas abiertas
+    //TODO: agregar a las queries para ver cantidad de ofertas abiertas de cada empresa (ver de hacer un join o algo asi)
 }
 

@@ -39,7 +39,7 @@ public interface ProvinciaRepository extends BaseRepository<Provincia, Long> {
             JOIN p.pais 
             WHERE p.fechaHoraBaja IS NULL AND pais.fechaHoraBaja IS NULL
             GROUP BY p.id, p.nombreProvincia, pais.nombrePais
-            ORDER BY pais.nombrePais
+            ORDER BY pais.nombrePais ASC, p.nombreProvincia ASC
             """
     )
     List<UbicacionDTO> obtenerUbicaciones();
