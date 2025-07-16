@@ -29,7 +29,7 @@ public class ModalidadOfertaServiceImpl extends BaseServiceImpl<ModalidadOferta,
     @Override
     @Transactional
     public ModalidadOferta guardarModalidadOferta(ModalidadOfertaRequestDTO modalidadOfertaDTO) {
-        if (yaExisteModalidadOferta(modalidadOfertaDTO.getNombreModalidadOferta())) {
+        if (yaExisteModalidadOferta(modalidadOfertaDTO.getNombreModalidadOferta(), null)) {
             throw new EntityAlreadyExistsException("Ya existe una modalidad de oferta con ese nombre");
         }
 
@@ -45,7 +45,7 @@ public class ModalidadOfertaServiceImpl extends BaseServiceImpl<ModalidadOferta,
     public ModalidadOferta actualizarModalidadOferta(Long id, ModalidadOfertaRequestDTO modalidadOfertaDTO) {
         ModalidadOferta modalidadOfertaOriginal = this.findById(id);
         
-        if (yaExisteModalidadOferta(modalidadOfertaDTO.getNombreModalidadOferta())) {
+        if (yaExisteModalidadOferta(modalidadOfertaDTO.getNombreModalidadOferta(), id)) {
             throw new EntityAlreadyExistsException("Ya existe una modalidad de oferta con ese nombre");
         }
 
@@ -80,8 +80,9 @@ public class ModalidadOfertaServiceImpl extends BaseServiceImpl<ModalidadOferta,
         return modalidadOfertaRepository.buscarModalidadOfertasActivos();
     }   
 
-    private boolean yaExisteModalidadOferta(String nombreModalidadOferta) {
+    private boolean yaExisteModalidadOferta(String nombreModalidadOferta, Long idAExcluir) {
         Optional<ModalidadOferta> modalidadOfertaExistente = modalidadOfertaRepository.findByNombreModalidadOfertaIgnoreCase(nombreModalidadOferta);
-        return modalidadOfertaExistente.isPresent();
-    }
+        return modalidadOfertaExistente
+        .filter(e -> idAExcluir == null || !e.getId().equals(idAExcluir))
+        .isPresent();    }
 }

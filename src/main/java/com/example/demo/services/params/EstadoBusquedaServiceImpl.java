@@ -29,7 +29,7 @@ public class EstadoBusquedaServiceImpl extends BaseServiceImpl<EstadoBusqueda, L
     @Transactional
     public EstadoBusqueda guardarEstadoBusqueda(EstadoBusquedaRequestDTO estadoBusquedaDTO) {
 
-        if(yaExisteEstadoBusqueda(estadoBusquedaDTO.getNombreEstadoBusqueda())) {
+        if(yaExisteEstadoBusqueda(estadoBusquedaDTO.getNombreEstadoBusqueda(), null)) {
             throw new EntityAlreadyExistsException("Ya existe un estado de búsqueda con ese nombre");
         }
         
@@ -45,7 +45,7 @@ public class EstadoBusquedaServiceImpl extends BaseServiceImpl<EstadoBusqueda, L
     public EstadoBusqueda actualizarEstadoBusqueda(Long id, EstadoBusquedaRequestDTO estadoBusquedaDTO) {
         EstadoBusqueda estadoBusquedaOriginal = this.findById(id);
         
-        if(yaExisteEstadoBusqueda(estadoBusquedaDTO.getNombreEstadoBusqueda())) {
+        if (yaExisteEstadoBusqueda(estadoBusquedaDTO.getNombreEstadoBusqueda(), id)) {
             throw new EntityAlreadyExistsException("Ya existe un estado de búsqueda con ese nombre");
         }
         
@@ -81,8 +81,10 @@ public class EstadoBusquedaServiceImpl extends BaseServiceImpl<EstadoBusqueda, L
         return estadoBusquedaRepository.buscarEstadosBusquedaActivos();
     }
 
-    private Boolean yaExisteEstadoBusqueda(String nombreEstadoBusqueda) {
+    private Boolean yaExisteEstadoBusqueda(String nombreEstadoBusqueda, Long idAExcluir) {
         Optional<EstadoBusqueda> estadoBusquedaExiste = estadoBusquedaRepository.findByNombreEstadoBusquedaIgnoreCase(nombreEstadoBusqueda);
-        return estadoBusquedaExiste.isPresent();
+        return estadoBusquedaExiste
+        .filter(e -> idAExcluir == null || !e.getId().equals(idAExcluir))
+        .isPresent();
     }
 }
