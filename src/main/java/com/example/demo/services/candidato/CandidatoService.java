@@ -1,11 +1,10 @@
-package com.example.demo.services;
+package com.example.demo.services.candidato;
 
 import java.util.List;
 
-import org.springframework.http.ResponseEntity;
-
 import com.example.demo.dtos.CandidatoRequestDTO;
 import com.example.demo.entities.Candidato;
+import com.example.demo.services.BaseService;
 
 public interface CandidatoService extends BaseService<Candidato, Long> {
     
@@ -13,6 +12,5 @@ public interface CandidatoService extends BaseService<Candidato, Long> {
     
     Candidato modificarCandidato(Long idCandidato, CandidatoRequestDTO candidatoRequestDTO);
     
-    //List<Candidato> buscarCandidatosActivos();
-
+    List<Candidato> obtenerCandidatos();
 }

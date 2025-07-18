@@ -1,7 +1,7 @@
-package com.example.demo.services;
+package com.example.demo.services.candidato;
 
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
-import org.springframework.http.ResponseEntity;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.CandidatoRequestDTO;
@@ -9,10 +9,9 @@ import com.example.demo.entities.Candidato;
 import com.example.demo.entities.params.EstadoBusqueda;
 import com.example.demo.entities.params.Genero;
 import com.example.demo.entities.params.Provincia;
-import com.example.demo.exceptions.EntityNotFoundException;
-import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.mappers.CandidatoMapper;
 import com.example.demo.repositories.CandidatoRepository;
+import com.example.demo.services.BaseServiceImpl;
 import com.example.demo.services.params.EstadoBusquedaService;
 import com.example.demo.services.params.GeneroService;
 import com.example.demo.services.params.ProvinciaService;
@@ -73,5 +72,12 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
             candidatoOriginal.setGenero(genero);
         }
         return candidatoRepository.save(candidatoOriginal);
+    }
+
+    @Override
+    @Transactional
+    public List<Candidato> obtenerCandidatos() {
+        List<Candidato> listaCandidatos = candidatoRepository.findAllByOrderByNombreCandidatoAsc();
+        return listaCandidatos;
     }
 }
