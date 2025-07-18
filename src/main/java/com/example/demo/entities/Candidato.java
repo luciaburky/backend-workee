@@ -50,7 +50,6 @@ public class Candidato extends Base {
     
     @ManyToOne
     @JoinColumn(name = "id_estado_busqueda")
-    @NotNull
     private EstadoBusqueda estadoBusqueda;
 
     @ManyToOne

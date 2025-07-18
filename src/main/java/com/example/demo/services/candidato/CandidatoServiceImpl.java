@@ -43,11 +43,15 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
 
         Provincia provincia = provinciaService.findById(candidatoDTO.getIdProvincia());
         Genero genero = generoService.findById(candidatoDTO.getIdGenero());
-        EstadoBusqueda estadoBusqueda = estadoBusquedaService.findById(candidatoDTO.getIdEstadoBusqueda());
+        //EstadoBusqueda estadoBusqueda = estadoBusquedaService.findById(candidatoDTO.getIdEstadoBusqueda());
+        if(candidatoDTO.getIdEstadoBusqueda() != null){
+            EstadoBusqueda estadoBusqueda = estadoBusquedaService.findById(candidatoDTO.getIdEstadoBusqueda());
+            nuevoCandidato.setEstadoBusqueda(estadoBusqueda);
+        }
 
         //Falta: CandidatoCV, CandidatoHabilidades
         nuevoCandidato.setProvincia(provincia);
-        nuevoCandidato.setEstadoBusqueda(estadoBusqueda);
+        //nuevoCandidato.setEstadoBusqueda(estadoBusqueda);
         nuevoCandidato.setGenero(genero);
         
         return candidatoRepository.save(nuevoCandidato);

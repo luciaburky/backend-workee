@@ -30,7 +30,7 @@ public class CandidatoRequestDTO {
     //Puede seleccionarlo en la creacion o posteriormente
     private Long idEstadoBusqueda;
 
-    //Definir si es obligatorio o no
+    @NotNull(message = "El genero es obligatorio")
     private Long idGenero;
 
     @NotBlank(message = "El correo electrónico es obligatorio")

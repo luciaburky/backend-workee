@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping(path = "/candidatos")
-@Tag(name = "candidatos", description = "Controlador para operaciones de Candidato")
+@Tag(name = "Candidato", description = "Controlador para operaciones de Candidato")
 public class CandidatoController {
     
     private final CandidatoService candidatoService;
