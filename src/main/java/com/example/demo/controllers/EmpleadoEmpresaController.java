@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -76,6 +77,13 @@ public class EmpleadoEmpresaController {
     }
 
     //TODO: Agregar un endpoint (creo que en el controlador de oferta) para que traiga todas las ofertas asociadas a un empleado
+
+    @Operation(summary = "Administrador empresa da de baja un empelado empresa")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> darDeBajaEmpleado(@PathVariable Long id){
+        Boolean seDioBaja = empleadoEmpresaService.darDeBajaEmpleadoEmpresa(id);
+        return ResponseEntity.status(HttpStatus.OK).body(seDioBaja);
+    }
 }
 
 
