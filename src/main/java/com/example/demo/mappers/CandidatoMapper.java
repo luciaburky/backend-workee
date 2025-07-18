@@ -6,7 +6,7 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import com.example.demo.dtos.CandidatoRequestDTO;
-import com.example.demo.entities.Candidato;
+import com.example.demo.entities.candidato.Candidato;
 
 
 @Mapper(componentModel = "spring")
