@@ -128,7 +128,7 @@ public class ProvinciaServiceImpl extends BaseServiceImpl<Provincia,Long> implem
         Boolean estaEnUso = validarUsoProvincia(id);
 
         if(estaEnUso){
-            throw new EntityReferencedException("La provincia se encuentra en uso, no puede deshabilitarla");
+            throw new EntityReferencedException("La entidad se encuentra en uso, no puede deshabilitarla");
         }
         return delete(id);
     }
