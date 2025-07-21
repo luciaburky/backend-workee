@@ -12,6 +12,7 @@ import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.mappers.EmpleadoEmpresaMapper;
 import com.example.demo.repositories.empresa.EmpleadoEmpresaRepository;
 import com.example.demo.services.BaseServiceImpl;
+import com.example.demo.services.seguridad.UsuarioService;
 
 import jakarta.transaction.Transactional;
 
@@ -22,11 +23,14 @@ public class EmpleadoEmpresaServiceImpl extends BaseServiceImpl<EmpleadoEmpresa,
     private final EmpresaService empresaService;
     private final EmpleadoEmpresaMapper empleadoEmpresaMapper;
 
-    public EmpleadoEmpresaServiceImpl(EmpleadoEmpresaRepository empleadoEmpresaRepository, EmpresaService empresaService, EmpleadoEmpresaMapper empleadoEmpresaMapper) {
+    private final UsuarioService usuarioService; //TODO: Revisar
+
+    public EmpleadoEmpresaServiceImpl(EmpleadoEmpresaRepository empleadoEmpresaRepository, EmpresaService empresaService, EmpleadoEmpresaMapper empleadoEmpresaMapper, UsuarioService usuarioService) {
         super(empleadoEmpresaRepository);
         this.empleadoEmpresaRepository = empleadoEmpresaRepository;
         this.empresaService = empresaService;
         this.empleadoEmpresaMapper = empleadoEmpresaMapper;
+        this.usuarioService = usuarioService;
     }
     
     @Override
@@ -91,10 +95,12 @@ public class EmpleadoEmpresaServiceImpl extends BaseServiceImpl<EmpleadoEmpresa,
         }
     }
 
-    
+    @Override
+    @Transactional
     public Boolean darDeBajaEmpleadoEmpresa(Long id){
         //TODO: Agregar validacion de que si esta asociado a ofertas, q esten todas finalizadas
-
+        EmpleadoEmpresa empleadoEmpresa = findById(id);
+        usuarioService.delete(empleadoEmpresa.getUsuario().getId()); //TODO: Revisar si agrego que se valide que no este en uso
         return delete(id);
     }
 
