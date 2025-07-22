@@ -25,12 +25,5 @@ public class CandidatoHabilidad extends Base {
     @ManyToOne
     @JoinColumn(name = "id_habilidad")
     @NotNull
-    private Habilidad iHabilidad;
-    
-    /*
-     @ManyToOne
-     @JoinColumn(name = "id_candidato")
-     @NotNull
-     private Candidato idCandidato; 
-     */
+    private Habilidad Habilidad;
 }

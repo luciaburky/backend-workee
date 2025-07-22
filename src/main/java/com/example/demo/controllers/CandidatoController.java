@@ -5,7 +5,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dtos.CandidatoRequestDTO;
-import com.example.demo.entities.Candidato;
+import com.example.demo.entities.candidato.Candidato;
+import com.example.demo.entities.params.Habilidad;
 import com.example.demo.services.candidato.CandidatoService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,7 +15,9 @@ import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -59,5 +62,26 @@ public class CandidatoController {
         List<Candidato> listaCandidatos = candidatoService.obtenerCandidatos();
         return ResponseEntity.ok().body(listaCandidatos);
     }
+
+    @Operation(summary = "Obtener habilidades de un Candidato")
+    @GetMapping("/{id}/habilidades")
+    public ResponseEntity<List<Habilidad>> obtenerHabilidades(@RequestParam Long idCandidato) {
+        List<Habilidad> habilidades = candidatoService.obtenerHabilidades(idCandidato);
+        return ResponseEntity.ok().body(habilidades);
+    }
+
+    //Ver si recibir idCandidato o CandidatoRequestDTO y si recibir idHabilidad o Habilidad
+    @Operation(summary = "Agregar una habilidad a un Candidato")
+    @PostMapping("/{id}/habilidades")   
+    public ResponseEntity<List<Habilidad>> agregarHabilidad(@RequestParam Long idCandidato, @RequestParam Long idHabilidad) {
+        List<Habilidad> habilidadesActualizadas = candidatoService.agregarHabilidad(idCandidato, idHabilidad);
+        return ResponseEntity.ok().body(habilidadesActualizadas);
+    }
     
+    @Operation(summary = "Eliminar una habilidad de un Candidato")
+    @DeleteMapping("/{idCandidato}/habilidades/{idHabilidad}]")  
+    public ResponseEntity<List<Habilidad>> eliminarHabilidad(@PathVariable Long idCandidato, @PathVariable Long idHabilidad) {
+        List<Habilidad> habilidadesActualizadas = candidatoService.eliminarHabilidad(idCandidato, idHabilidad);
+        return ResponseEntity.ok().body(habilidadesActualizadas);
+    }
 }

@@ -65,6 +65,6 @@ public class Candidato extends Base {
     @JoinColumn(name = "id_candidato")
     private List<CandidatoHabilidad> habilidades;
 
-    // Falta: CandidatoCV, CandidatoHabilidad, Usuario
+    // Falta: CandidatoCV, Usuario
 }
 
