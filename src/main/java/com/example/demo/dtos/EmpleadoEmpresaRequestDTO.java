@@ -36,4 +36,6 @@ public class EmpleadoEmpresaRequestDTO {
 
     @NotNull(message = "La empresa es obligatoria")
     private Long idEmpresa;
+
+    private String urlFotoPerfil;
 } 

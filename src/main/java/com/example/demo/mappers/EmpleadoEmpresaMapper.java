@@ -20,3 +20,4 @@ public interface EmpleadoEmpresaMapper {
     void updateEntityFromDto(EmpleadoEmpresaRequestDTO dto, @MappingTarget EmpleadoEmpresa entity);
     
 }
+ 

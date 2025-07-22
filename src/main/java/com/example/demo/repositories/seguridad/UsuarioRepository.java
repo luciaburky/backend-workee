@@ -7,5 +7,7 @@ import com.example.demo.repositories.BaseRepository;
 
 @Repository
 public interface UsuarioRepository extends BaseRepository<Usuario, Long>{
-
+    
+    public Boolean existsByFechaHoraBajaIsNullAndCorreoUsuarioLike(String correo);
 }
+

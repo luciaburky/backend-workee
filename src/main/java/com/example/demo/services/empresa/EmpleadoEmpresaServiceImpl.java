@@ -6,8 +6,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.EmpleadoEmpresaRequestDTO;
+import com.example.demo.dtos.UsuarioDTO;
 import com.example.demo.entities.empresa.EmpleadoEmpresa;
 import com.example.demo.entities.empresa.Empresa;
+import com.example.demo.entities.seguridad.Usuario;
 import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.mappers.EmpleadoEmpresaMapper;
 import com.example.demo.repositories.empresa.EmpleadoEmpresaRepository;
@@ -23,7 +25,7 @@ public class EmpleadoEmpresaServiceImpl extends BaseServiceImpl<EmpleadoEmpresa,
     private final EmpresaService empresaService;
     private final EmpleadoEmpresaMapper empleadoEmpresaMapper;
 
-    private final UsuarioService usuarioService; //TODO: Revisar
+    private final UsuarioService usuarioService; 
 
     public EmpleadoEmpresaServiceImpl(EmpleadoEmpresaRepository empleadoEmpresaRepository, EmpresaService empresaService, EmpleadoEmpresaMapper empleadoEmpresaMapper, UsuarioService usuarioService) {
         super(empleadoEmpresaRepository);
@@ -43,16 +45,19 @@ public class EmpleadoEmpresaServiceImpl extends BaseServiceImpl<EmpleadoEmpresa,
         if(!empleadoEmpresaRequestDTO.getRepetirContrasenia().equals(empleadoEmpresaRequestDTO.getContrasenia()) ){
             throw new EntityNotValidException("Las contraseñas deben coincidir");
         }
+        UsuarioDTO dtoUsuario = new UsuarioDTO(empleadoEmpresaRequestDTO.getCorreoEmpleadoEmpresa(), empleadoEmpresaRequestDTO.getContrasenia(), empleadoEmpresaRequestDTO.getUrlFotoPerfil());
+        Usuario usuarioCreado = usuarioService.registrarUsuario(dtoUsuario);
+
         Empresa empresa = empresaService.findById(empleadoEmpresaRequestDTO.getIdEmpresa());
         EmpleadoEmpresa nuevoEmpleado = new EmpleadoEmpresa();
 
         nuevoEmpleado = empleadoEmpresaMapper.toEntity(empleadoEmpresaRequestDTO);
         nuevoEmpleado.setEmpresa(empresa);
         nuevoEmpleado.setFechaHoraAlta(new Date());
+        nuevoEmpleado.setUsuario(usuarioCreado);
 
         empleadoEmpresaRepository.save(nuevoEmpleado);
 
-        //TODO: agregar validacion de que no exista el correo electronico
         return nuevoEmpleado;
     }
    
