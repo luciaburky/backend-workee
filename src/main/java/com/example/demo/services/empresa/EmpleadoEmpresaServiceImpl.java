@@ -78,17 +78,9 @@ public class EmpleadoEmpresaServiceImpl extends BaseServiceImpl<EmpleadoEmpresa,
 
     private void modificarComoEmpleado(EmpleadoEmpresa empleadoEmpresa, EmpleadoEmpresaRequestDTO empleadoEmpresaRequestDTO){
         empleadoEmpresaMapper.updateEntityFromDto(empleadoEmpresaRequestDTO, empleadoEmpresa);
-        //Según el chat, cuando agreguemos lo del modulo de seguridad lo mejor es manejarlo con el PreAuthorize (iria en el controller). Ejemplo:
-        /*
-         * @PreAuthorize("hasRole('EMPLEADO') and #id == authentication.principal.id")
-            @PutMapping("/modificar-propio/{id}")
-            public ResponseEntity<?> modificarEmpleadoPropio(...) {
-            ...
-            y en el service (si usamos un unico metodo): 
-                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-                String email = auth.getName();
-            }
-         */
+        
+        //modificar datos de usuario
+        usuarioService.actualizarDatosUsuario(empleadoEmpresa.getUsuario().getId(), empleadoEmpresaRequestDTO.getContrasenia(), empleadoEmpresaRequestDTO.getRepetirContrasenia(), empleadoEmpresaRequestDTO.getUrlFotoPerfil());
 
     }
 

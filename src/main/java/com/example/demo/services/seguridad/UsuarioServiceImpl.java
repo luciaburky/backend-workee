@@ -1,10 +1,13 @@
 package com.example.demo.services.seguridad;
 
+import java.util.Date;
+
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.UsuarioDTO;
 import com.example.demo.entities.seguridad.Usuario;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
+import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.mappers.UsuarioMapper;
 import com.example.demo.repositories.seguridad.UsuarioRepository;
 import com.example.demo.services.BaseServiceImpl;
@@ -33,20 +36,61 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
             throw new EntityAlreadyExistsException("El correo ingresado ya se encuentra en uso");
         }
 
-        String contraseniaCodificada = codificarContrasenia(usuarioDTO.getContraseniaUsuario());
+        String contraseniaCodificada = encriptarContrasenia(usuarioDTO.getContraseniaUsuario());
         
         Usuario nuevoUsuario = usuarioMapper.toEntity(usuarioDTO);//new Usuario();
         nuevoUsuario.setContraseniaUsuario(contraseniaCodificada);
+        nuevoUsuario.setFechaHoraAlta(new Date());
         return usuarioRepository.save(nuevoUsuario);
         
     }
 
-    private String codificarContrasenia(String contrasenia){
+    private String encriptarContrasenia(String contrasenia){
         return contrasenia; //TODO: Hacer codificacion de contraseña 
     }
     
     private Boolean existeUsuarioConCorreo(String correoUsuario){
         return usuarioRepository.existsByFechaHoraBajaIsNullAndCorreoUsuarioLike(correoUsuario);
+    }
+
+    @Override
+    @Transactional
+    public void actualizarDatosUsuario(Long idUsuario, String nuevaContrasenia, String repetirContrasenia, String nuevaUrlFoto){
+        boolean seCambio = false;
+        Usuario usuario = findById(idUsuario);
+
+        if(nuevaContrasenia != null && !nuevaContrasenia.isBlank()){
+            String contrasenia = modificarContrasenia(nuevaContrasenia, repetirContrasenia);
+            usuario.setContraseniaUsuario(contrasenia);
+            seCambio = true;
+        }
+
+        if(nuevaUrlFoto != null && !nuevaUrlFoto.isBlank()){
+            usuario.setUrlFotoUsuario(nuevaUrlFoto);
+            seCambio = true;
+        }
+
+        if(seCambio){
+            usuarioRepository.save(usuario);
+        }
+    }
+    
+    @Transactional
+    private String modificarContrasenia(String contrasenia, String repetirContrasenia){
+        if(contrasenia == null || repetirContrasenia == null){
+            throw new EntityNotValidException("La contraseña no puede estar vacía");
+        }
+        if(contrasenia.length() < 8 || repetirContrasenia.length() < 8){
+            throw new EntityNotValidException("La contraseña debe tener al menos 8 caracteres");
+        }
+        if(!contrasenia.equals(repetirContrasenia)){
+            throw new EntityNotValidException("Las contraseñas deben coincidir");
+        }
+
+        String contraseniaEncriptada = encriptarContrasenia(contrasenia);
+
+        return contraseniaEncriptada;
+
     }
 }
 
