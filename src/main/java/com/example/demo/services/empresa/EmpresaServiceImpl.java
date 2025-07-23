@@ -12,6 +12,7 @@ import com.example.demo.mappers.EmpresaMapper;
 import com.example.demo.repositories.empresa.EmpresaRepository;
 import com.example.demo.services.BaseServiceImpl;
 import com.example.demo.services.params.RubroService;
+import com.example.demo.services.seguridad.UsuarioService;
 
 import jakarta.transaction.Transactional;
 
@@ -21,12 +22,14 @@ public class EmpresaServiceImpl extends BaseServiceImpl<Empresa, Long> implement
     private final EmpresaRepository empresaRepository;
     private final RubroService rubroService;
     private final EmpresaMapper empresaMapper;
+    private final UsuarioService usuarioService;
 
-    public EmpresaServiceImpl(EmpresaRepository empresaRepository, RubroService rubroService, EmpresaMapper empresaMapper) {
+    public EmpresaServiceImpl(EmpresaRepository empresaRepository, RubroService rubroService, EmpresaMapper empresaMapper, UsuarioService usuarioService) {
         super(empresaRepository);
         this.empresaRepository = empresaRepository;
         this.rubroService = rubroService;
         this.empresaMapper = empresaMapper;
+        this.usuarioService = usuarioService;
     }
 
     @Override
@@ -42,7 +45,8 @@ public class EmpresaServiceImpl extends BaseServiceImpl<Empresa, Long> implement
             Rubro rubro = rubroService.findById(empresaRequestDTO.getIdRubro());
             empresaOriginal.setRubro(rubro);
         }
-        //TODO: Falta agregar el campo contraseña pero eso es del módulo de seguridad
+        
+        usuarioService.actualizarDatosUsuario(empresaOriginal.getUsuario().getId(), empresaRequestDTO.getContrasenia(), empresaRequestDTO.getRepetirContrasenia(), empresaRequestDTO.getUrlFotoPerfil());
 
         return empresaRepository.save(empresaOriginal);
     }
