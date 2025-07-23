@@ -92,5 +92,14 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
         return contraseniaEncriptada;
 
     }
+
+    //ESTE LO DA DE BAJA SIN VERIFICAR SI YA ESTABA DADO DE BAJA
+    @Override
+    @Transactional
+    public void darDeBajaUsuario(Long idUsuario){
+        Usuario usuario = findById(idUsuario);
+        usuario.setFechaHoraBaja(new Date());
+        usuarioRepository.save(usuario);
+    }
 }
 

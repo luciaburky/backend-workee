@@ -27,6 +27,7 @@ public interface EmpleadoEmpresaRepository extends BaseRepository<EmpleadoEmpres
         nativeQuery = true
      )
      public List<EmpleadoEmpresa> traerEmpleadosActivos(@Param("idEmpresa") Long idEmpresa);
+
 }
 
 

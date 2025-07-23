@@ -37,4 +37,11 @@ public abstract class BaseServiceImpl <E extends Base, ID extends Serializable> 
                 .orElseThrow(() -> new EntityNotFoundException("Entidad no encontrada con ID: " + id));
     }
 
+    @Override
+    @Transactional
+    public E save(E entity) {
+        entity = baseRepository.save(entity);
+        return entity;
+    }
+
 }

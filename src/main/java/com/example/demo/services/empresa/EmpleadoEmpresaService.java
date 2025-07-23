@@ -16,4 +16,6 @@ public interface EmpleadoEmpresaService extends BaseService<EmpleadoEmpresa, Lon
     public List<EmpleadoEmpresa> visualizarEmpleados(Long idEmpresa);
 
     public Long contarEmpleadosDeEmpresa(Long idempresa);
+
+    
 }

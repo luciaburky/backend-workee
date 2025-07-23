@@ -63,6 +63,8 @@ public class EmpresaServiceImpl extends BaseServiceImpl<Empresa, Long> implement
         }
         return empresaRepository.buscarEmpresasPorNombre(nombreEmpresa);
     }
+
+
     
 }
 
