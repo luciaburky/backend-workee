@@ -2,6 +2,7 @@ package com.example.demo.controllers;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import com.example.demo.dtos.FiltrosEmpresaRequestDTO;
 import com.example.demo.dtos.UbicacionDTO;
 import com.example.demo.entities.empresa.Empresa;
 import com.example.demo.services.empresa.EmpresaService;
+import com.example.demo.services.mail.MailService;
 import com.example.demo.services.params.ProvinciaService;
 
 import io.swagger.v3.oas.annotations.Operation;

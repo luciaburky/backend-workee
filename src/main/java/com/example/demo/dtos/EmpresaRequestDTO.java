@@ -47,6 +47,8 @@ public class EmpresaRequestDTO {
     @NotNull(message = "La provincia no puede estar vacía")
     private Long idProvincia;
 
-    @NotNull(message = "La foto de perfil no puede estar vacía")
+    @NotNull(message = "El logo de la empresa no puede estar vacío")
     private String urlFotoPerfil; 
+
+    private String urlDocumentoLegal;
 }

@@ -16,6 +16,8 @@ public interface EmpresaService extends BaseService<Empresa, Long>{
    public List<Empresa> buscarEmpresasPorNombre(String nombreEmpresa);
 
    //public Boolean eliminarCuenta(Long idEmpresa);
+
+   public Empresa crearEmpresa(EmpresaRequestDTO empresaRequestDTO);
 }
 
 

@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ import com.example.demo.services.empresa.EmpresaService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/empresas")
@@ -50,6 +52,13 @@ public class EmpresaController {
     public ResponseEntity<?> eliminarEmpresa(@PathVariable Long idEmpresa){
         empresaOrquestadorService.darDeBajaEmpresaYRelacionados(idEmpresa);
         return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    @Operation(summary = "Permiste a una empresa registrarse")
+    @PostMapping("")
+    public ResponseEntity<?> registrarEmpresa(@Valid @RequestBody EmpresaRequestDTO empresaRequestDTO){
+        Empresa empresaNueva = empresaService.crearEmpresa(empresaRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(empresaNueva);
     }
 }
 
