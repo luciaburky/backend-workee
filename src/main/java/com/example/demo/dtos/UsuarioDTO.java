@@ -11,4 +11,5 @@ public class UsuarioDTO {
     private String correoUsuario;
     private String contraseniaUsuario;
     private String urlFotoUsuario;
+    private String estadoUsuarioInicial;
 }

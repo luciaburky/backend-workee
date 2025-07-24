@@ -22,4 +22,5 @@ public interface EstadoUsuarioRepository extends BaseRepository<EstadoUsuario, L
     List<EstadoUsuario> findAllByOrderByNombreEstadoUsuarioAsc();
 
     Optional<EstadoUsuario> findByNombreEstadoUsuarioIgnoreCase(String nombreEstadoUsuario);
+
 }

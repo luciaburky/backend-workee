@@ -10,6 +10,7 @@ import com.example.demo.dtos.params.EstadoUsuarioRequestDTO;
 import com.example.demo.entities.params.EstadoUsuario;
 import com.example.demo.exceptions.EntityAlreadyEnabledException;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
+import com.example.demo.exceptions.EntityNotFoundException;
 import com.example.demo.repositories.params.EstadoUsuarioRepository;
 import com.example.demo.services.BaseServiceImpl;
 
@@ -87,4 +88,12 @@ public class EstadoUsuarioServiceImpl extends BaseServiceImpl<EstadoUsuario,Long
         
         return estadoUsuarioExistente.isPresent();
     }
+
+    @Override
+    public EstadoUsuario obtenerEstadoPorNombre(String nombreEstado){
+        return estadoUsuarioRepository.findByNombreEstadoUsuarioIgnoreCase(nombreEstado)
+                .orElseThrow(() -> new EntityNotFoundException("No se ha encontrado un EstadoUsuario para el nombre ingresado"));
+    }
 }
+
+                

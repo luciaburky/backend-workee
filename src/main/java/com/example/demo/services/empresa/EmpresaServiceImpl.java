@@ -10,6 +10,7 @@ import com.example.demo.dtos.EmpresaRequestDTO;
 import com.example.demo.dtos.FiltrosEmpresaRequestDTO;
 import com.example.demo.dtos.UsuarioDTO;
 import com.example.demo.entities.empresa.Empresa;
+import com.example.demo.entities.params.EstadoUsuarioEnum;
 import com.example.demo.entities.params.Provincia;
 import com.example.demo.entities.params.Rubro;
 import com.example.demo.entities.seguridad.Usuario;
@@ -81,7 +82,7 @@ public class EmpresaServiceImpl extends BaseServiceImpl<Empresa, Long> implement
         Rubro rubroEmpresa = rubroService.findById(empresaRequestDTO.getIdRubro());
         Provincia provinciaEmpresa = provinciaService.findById(empresaRequestDTO.getIdProvincia());
         
-        UsuarioDTO usuarioDTO = new UsuarioDTO(empresaRequestDTO.getEmailEmpresa(), empresaRequestDTO.getContrasenia(), empresaRequestDTO.getUrlFotoPerfil());
+        UsuarioDTO usuarioDTO = new UsuarioDTO(empresaRequestDTO.getEmailEmpresa(), empresaRequestDTO.getContrasenia(), empresaRequestDTO.getUrlFotoPerfil(), EstadoUsuarioEnum.PENDIENTE.toString());
         Usuario nuevoUsuario = usuarioService.registrarUsuario(usuarioDTO);
 
         nuevaEmpresa.setRubro(rubroEmpresa);

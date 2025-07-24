@@ -1,16 +1,20 @@
 package com.example.demo.services.seguridad;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.UsuarioDTO;
+import com.example.demo.entities.params.EstadoUsuario;
 import com.example.demo.entities.seguridad.Usuario;
+import com.example.demo.entities.seguridad.UsuarioEstadoUsuario;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
 import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.mappers.UsuarioMapper;
 import com.example.demo.repositories.seguridad.UsuarioRepository;
 import com.example.demo.services.BaseServiceImpl;
+import com.example.demo.services.params.EstadoUsuarioService;
 
 import jakarta.transaction.Transactional;
 
@@ -20,11 +24,13 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
     private final UsuarioRepository usuarioRepository;
     //private final BCrypt
     private final UsuarioMapper usuarioMapper;
+    private final EstadoUsuarioService estadoUsuarioService;
 
-    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper) {
+    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper, EstadoUsuarioService estadoUsuarioService) {
         super(usuarioRepository);
         this.usuarioRepository = usuarioRepository;
         this.usuarioMapper = usuarioMapper;
+        this.estadoUsuarioService = estadoUsuarioService;
         
     }
 
@@ -37,10 +43,22 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
         }
 
         String contraseniaCodificada = encriptarContrasenia(usuarioDTO.getContraseniaUsuario());
-        
-        Usuario nuevoUsuario = usuarioMapper.toEntity(usuarioDTO);//new Usuario();
+
+        Usuario nuevoUsuario = usuarioMapper.toEntity(usuarioDTO);
         nuevoUsuario.setContraseniaUsuario(contraseniaCodificada);
         nuevoUsuario.setFechaHoraAlta(new Date());
+
+        //Se guarda para que tenga el ID
+        usuarioRepository.save(nuevoUsuario);
+
+        //Seteo del estado
+        EstadoUsuario estadoUsuario = estadoUsuarioService.obtenerEstadoPorNombre(usuarioDTO.getEstadoUsuarioInicial());
+        UsuarioEstadoUsuario usuarioEstadoUsuario = new UsuarioEstadoUsuario();
+        usuarioEstadoUsuario.setEstadoUsuario(estadoUsuario);
+        usuarioEstadoUsuario.setFechaHoraAlta(new Date());
+        nuevoUsuario.setUsuarioEstadoList(new ArrayList<>());
+        nuevoUsuario.getUsuarioEstadoList().add(usuarioEstadoUsuario);
+
         return usuarioRepository.save(nuevoUsuario);
         
     }
