@@ -1,7 +1,7 @@
 package com.example.demo.entities.params;
 
 public enum EstadoUsuarioEnum {
-    APROBADO,
+    HABILITADO,
     PENDIENTE,
     RECHAZADO
 }

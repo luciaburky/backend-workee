@@ -47,7 +47,7 @@ public class EmpleadoEmpresaServiceImpl extends BaseServiceImpl<EmpleadoEmpresa,
             throw new EntityNotValidException("Las contraseñas deben coincidir");
         }
 
-        UsuarioDTO dtoUsuario = new UsuarioDTO(empleadoEmpresaRequestDTO.getCorreoEmpleadoEmpresa(), empleadoEmpresaRequestDTO.getContrasenia(), empleadoEmpresaRequestDTO.getUrlFotoPerfil(), EstadoUsuarioEnum.APROBADO.toString());
+        UsuarioDTO dtoUsuario = new UsuarioDTO(empleadoEmpresaRequestDTO.getCorreoEmpleadoEmpresa(), empleadoEmpresaRequestDTO.getContrasenia(), empleadoEmpresaRequestDTO.getUrlFotoPerfil(), EstadoUsuarioEnum.HABILITADO.toString());
         Usuario usuarioCreado = usuarioService.registrarUsuario(dtoUsuario);
 
         Empresa empresa = empresaService.findById(empleadoEmpresaRequestDTO.getIdEmpresa());
