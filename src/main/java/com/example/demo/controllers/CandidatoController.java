@@ -44,7 +44,7 @@ public class CandidatoController {
 
     @Operation(summary = "Actualizar un Candidato")
     @PutMapping("/{id}")
-    public ResponseEntity<Candidato> actualizarCandidato(@RequestParam Long idCandidato, CandidatoRequestDTO candidatoDTO) {
+    public ResponseEntity<Candidato> actualizarCandidato(@PathVariable("id") Long idCandidato, @RequestBody CandidatoRequestDTO candidatoDTO) {
         Candidato candidatoActualizado = candidatoService.modificarCandidato(idCandidato, candidatoDTO);
         return ResponseEntity.ok().body(candidatoActualizado);
     }
@@ -70,7 +70,7 @@ public class CandidatoController {
         return ResponseEntity.ok().body(habilidades);
     }
 
-    //Ver si recibir idCandidato o CandidatoRequestDTO y si recibir idHabilidad o Habilidad
+    /*Ver si recibir idCandidato o CandidatoRequestDTO y si recibir idHabilidad o Habilidad
     @Operation(summary = "Agregar una habilidad a un Candidato")
     @PostMapping("/{id}/habilidades")   
     public ResponseEntity<List<Habilidad>> agregarHabilidad(@RequestParam Long idCandidato, @RequestParam Long idHabilidad) {
@@ -84,4 +84,5 @@ public class CandidatoController {
         List<Habilidad> habilidadesActualizadas = candidatoService.eliminarHabilidad(idCandidato, idHabilidad);
         return ResponseEntity.ok().body(habilidadesActualizadas);
     }
+        */
 }

@@ -1,7 +1,10 @@
 package com.example.demo.services.candidato;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -52,20 +55,36 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
 
         Provincia provincia = provinciaService.findById(candidatoDTO.getIdProvincia());
         Genero genero = generoService.findById(candidatoDTO.getIdGenero());
-        //EstadoBusqueda estadoBusqueda = estadoBusquedaService.findById(candidatoDTO.getIdEstadoBusqueda());
         if(candidatoDTO.getIdEstadoBusqueda() != null){
             EstadoBusqueda estadoBusqueda = estadoBusquedaService.findById(candidatoDTO.getIdEstadoBusqueda());
             nuevoCandidato.setEstadoBusqueda(estadoBusqueda);
         }
+        
+        if(candidatoDTO.getIdHabilidades() != null && !candidatoDTO.getIdHabilidades().isEmpty()) {
 
-        //Falta: CandidatoCV, CandidatoHabilidades
+            List<CandidatoHabilidad> habilidades = candidatoDTO.getIdHabilidades().stream()
+            .distinct()
+            .map(idHabilidad -> {
+                Habilidad habilidad = habilidadService.findById(idHabilidad);
+                CandidatoHabilidad candidatoHabilidad = new CandidatoHabilidad();
+                candidatoHabilidad.setHabilidad(habilidad);
+                candidatoHabilidad.setFechaHoraAlta(new Date());    
+                return candidatoHabilidad;
+            })
+            .collect(Collectors.toList());
+
+            nuevoCandidato.setHabilidades(habilidades);
+        } else {
+            nuevoCandidato.setHabilidades(new ArrayList<>());
+        }
+
+        //Falta: CandidatoCV
         nuevoCandidato.setProvincia(provincia);
-        //nuevoCandidato.setEstadoBusqueda(estadoBusqueda);
         nuevoCandidato.setGenero(genero);
         
         return candidatoRepository.save(nuevoCandidato);
     }
-
+ 
     @Override
     @Transactional
     public Candidato modificarCandidato(Long idCandidato, CandidatoRequestDTO candidatoDTO) {
@@ -84,9 +103,20 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
             Genero genero = generoService.findById(candidatoDTO.getIdGenero());
             candidatoOriginal.setGenero(genero);
         }
+
+        // Actualizar habilidades
+        actualizarHabilidadesCandidato(candidatoOriginal, candidatoDTO);
+        
         return candidatoRepository.save(candidatoOriginal);
     }
 
+    @Override
+    @Transactional
+    public Candidato findById(Long id) {
+        return candidatoRepository.findByIdWithHabilidades(id)
+            .orElseThrow(() -> new EntityNotFoundException("Candidato no encontrado con ID: " + id));
+    }
+    
     @Override
     @Transactional
     public List<Candidato> obtenerCandidatos() {
@@ -118,6 +148,40 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
         }
         return obtenerHabilidades(idCandidato);
     }
+
+    private void actualizarHabilidadesCandidato(Candidato candidato, CandidatoRequestDTO dto) {
+        if (dto.getIdHabilidades() == null) return;
+
+        Set<Long> nuevasIds = new HashSet<>(dto.getIdHabilidades());
+
+        // Inicializar la lista si es null
+        if (candidato.getHabilidades() == null) {
+            candidato.setHabilidades(new ArrayList<>());
+        }
+
+        // Eliminar habilidades que no están en la nueva lista
+        candidato.getHabilidades().removeIf(ch -> 
+        !nuevasIds.contains(ch.getHabilidad().getId())
+        );
+
+        // Recupera los IDs actuales para comparar  
+        Set<Long> idsActuales = candidato.getHabilidades()
+            .stream()
+            .map(ch -> ch.getHabilidad().getId())
+            .collect(Collectors.toSet());
+
+        // Agregar nuevas habilidades que no están en la lista actual
+        for (Long idNueva : nuevasIds) {
+            if (!idsActuales.contains(idNueva)) {
+                Habilidad habilidad = habilidadService.findById(idNueva);
+                CandidatoHabilidad candidatoHabilidad = new CandidatoHabilidad();
+                candidatoHabilidad.setHabilidad(habilidad);
+                candidatoHabilidad.setFechaHoraAlta(new Date());
+                candidato.getHabilidades().add(candidatoHabilidad);
+            }
+        } 
+    }
+
 
     @Override
     @Transactional

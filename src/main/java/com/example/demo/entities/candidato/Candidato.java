@@ -1,5 +1,6 @@
 package com.example.demo.entities.candidato;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -44,8 +45,8 @@ public class Candidato extends Base {
     private String apellidoCandidato;
 
     @NotNull
-    @Column
-    private Date fechaDeNacimiento;
+    @Column(name = "fecha_de_nacimiento")
+    private LocalDate fechaDeNacimiento;
 
     @ManyToOne
     @JoinColumn(name = "id_provincia")
@@ -53,7 +54,7 @@ public class Candidato extends Base {
     private Provincia provincia;
     
     @ManyToOne
-    @JoinColumn(name = "id_estado_busqueda")
+    @JoinColumn(name = "id_estado_busqueda", nullable = true)
     private EstadoBusqueda estadoBusqueda;
 
     @ManyToOne
@@ -65,6 +66,6 @@ public class Candidato extends Base {
     @JoinColumn(name = "id_candidato")
     private List<CandidatoHabilidad> habilidades;
 
-    // Falta: CandidatoCV, Usuario
+    // Falta: CandidatoCV
 }
 

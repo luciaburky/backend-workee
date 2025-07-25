@@ -2,20 +2,28 @@ package com.example.demo.mappers;
 
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import com.example.demo.dtos.CandidatoRequestDTO;
 import com.example.demo.entities.candidato.Candidato;
 
-
 @Mapper(componentModel = "spring")
 public interface CandidatoMapper {
 
-    //Creacion 
+    // Mapea todos los atributos salvo los que se setean manualmente
+    @Mapping(target = "provincia", ignore = true)
+    @Mapping(target = "genero", ignore = true)
+    @Mapping(target = "estadoBusqueda", ignore = true)
+    @Mapping(target = "habilidades", ignore = true)
     Candidato toEntity(CandidatoRequestDTO dto);
 
-    //Actualizacion / Actualizacion parcial
+    // Mapea actualización parcial, ignorando los atributos que se setean manualmente
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "provincia", ignore = true)
+    @Mapping(target = "genero", ignore = true)
+    @Mapping(target = "estadoBusqueda", ignore = true)
+    @Mapping(target = "habilidades", ignore = true)
     Candidato updateEntityFromDto(CandidatoRequestDTO dto, @MappingTarget Candidato entity);
 }

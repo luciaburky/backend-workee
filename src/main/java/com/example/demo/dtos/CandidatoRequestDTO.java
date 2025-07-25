@@ -1,6 +1,8 @@
 package com.example.demo.dtos;
 
+import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -22,7 +24,7 @@ public class CandidatoRequestDTO {
     private String apellidoCandidato;
 
     @NotNull(message = "La fecha de nacimiento es obligatoria")
-    private Date fechaDeNacimiento;
+    private LocalDate fechaDeNacimiento;
 
     @NotNull(message = "La provincia es obligatoria")
     private Long idProvincia;
@@ -32,6 +34,9 @@ public class CandidatoRequestDTO {
 
     @NotNull(message = "El genero es obligatorio")
     private Long idGenero;
+
+    //Puede seleccionarlo en la creacion o posteriormente
+    private List<Long> idHabilidades;
 
     @NotBlank(message = "El correo electrónico es obligatorio")
     @Email(message = "Debe ser un correo válido")

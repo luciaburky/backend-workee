@@ -18,12 +18,12 @@ import lombok.Setter;
 @Table(name = "candidato_habilidad")
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class CandidatoHabilidad extends Base {
     @ManyToOne
     @JoinColumn(name = "id_habilidad")
     @NotNull
-    private Habilidad Habilidad;
+    private Habilidad habilidad;
 }
