@@ -2,7 +2,10 @@ package com.example.demo.services.seguridad;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -69,10 +72,58 @@ public class RolServiceImpl extends BaseServiceImpl<Rol, Long> implements RolSer
         }
 
         return rolRepository.save(nuevoRol);
-
-        
     }
 
-    
+    @Override
+    @Transactional
+    public Rol modificarRol(RolRequestDTO rolRequestDTO, Long idRol){
+        Rol rolExistente = findById(idRol);
+
+        if(!rolRequestDTO.getNombreRol().isBlank() && rolRequestDTO.getNombreRol() != null){
+            if(rolRepository.existsByNombreRol(rolRequestDTO.getNombreRol()) && !rolRequestDTO.getNombreRol().equals(rolExistente.getNombreRol())){
+                throw new EntityAlreadyExistsException("Ya existe un rol con el nombre ingresado");
+            }
+            rolExistente.setNombreRol(rolRequestDTO.getNombreRol());
+        }
+
+        if (rolRequestDTO.getIdPermisos() == null || rolRequestDTO.getIdPermisos().isEmpty()) {
+            throw new EntityNotValidException("Se debe seleccionar al menos un permiso");
+        }
+
+        List<PermisoRol> actuales = rolExistente.getPermisoRolList();
+        Set<Long> idsNuevos = new HashSet<>(rolRequestDTO.getIdPermisos());
+
+        //Dar de baja los que no selecciono que ya tenia
+        for(PermisoRol permisoRolViejo: actuales){
+            Long idPermisoViejo = permisoRolViejo.getPermiso().getId();
+            if(!idsNuevos.contains(idPermisoViejo) && permisoRolViejo.getFechaHoraBaja() == null){
+                permisoRolViejo.setFechaHoraBaja(new Date());
+            }
+        }
+
+        //Habilitar los que estaban dados de baja
+        for(PermisoRol permisoRolViejo: actuales){
+            Long idPermiso = permisoRolViejo.getPermiso().getId();
+            if(idsNuevos.contains(idPermiso) && permisoRolViejo.getFechaHoraBaja() != null){
+                permisoRolViejo.setFechaHoraBaja(null);
+            }
+        }
+       
+        //Agregar los nuevos que selecciono
+        Set<Long> idsActuales = actuales.stream()
+            .map(permisoRol -> permisoRol.getPermiso().getId())
+            .collect(Collectors.toSet());
+        for(Long idPermiso : idsNuevos){
+            if(!idsActuales.contains(idPermiso)){
+                Permiso permiso = permisoService.findById(idPermiso);
+                PermisoRol nuevoPermisoRol = new PermisoRol();
+                nuevoPermisoRol.setFechaHoraAlta(new Date());
+                nuevoPermisoRol.setPermiso(permiso);
+                actuales.add(nuevoPermisoRol);
+            }
+        }
+
+        return rolRepository.save(rolExistente);
+    }
 
 }

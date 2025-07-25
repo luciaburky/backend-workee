@@ -9,4 +9,5 @@ import com.example.demo.services.BaseService;
 public interface RolService extends BaseService<Rol, Long>{
     public List<Rol> obtenerRoles();
     public Rol crearRol(RolRequestDTO rolRequestDTO);
+    public Rol modificarRol(RolRequestDTO rolRequestDTO, Long idRol);
 }
