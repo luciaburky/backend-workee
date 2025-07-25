@@ -5,9 +5,12 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dtos.RolRequestDTO;
 import com.example.demo.entities.seguridad.Rol;
 import com.example.demo.services.seguridad.RolService;
 
@@ -29,5 +32,12 @@ public class RolController {
     public ResponseEntity<?> obtenerRoles(){
         List<Rol> roles = rolService.obtenerRoles();
         return ResponseEntity.status(HttpStatus.OK).body(roles);
+    }
+
+    @Operation(summary = "Crea un nuevo rol")
+    @PostMapping("")
+    public ResponseEntity<?> crearRol(@RequestBody RolRequestDTO rolRequestDTO){
+        Rol nuevoRol = rolService.crearRol(rolRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(nuevoRol);
     }
 }

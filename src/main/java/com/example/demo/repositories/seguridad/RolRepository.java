@@ -9,5 +9,7 @@ import com.example.demo.repositories.BaseRepository;
 
 @Repository
 public interface RolRepository extends BaseRepository<Rol, Long>{
-    List<Rol> findAllByOrderByNombreRolAsc();
+    public List<Rol> findAllByOrderByNombreRolAsc();
+
+    boolean existsByNombreRol(String nombreRol);
 }

@@ -9,5 +9,5 @@ import com.example.demo.repositories.BaseRepository;
 
 @Repository
 public interface CategoriaRolRepository extends BaseRepository<CategoriaRol, Long>{
-    public List<CategoriaRol> findAllByOrderByNombreCategoriaRolAscAndFechaHoraBajaIsNull();
+    public List<CategoriaRol> findAllByFechaHoraBajaIsNullOrderByNombreCategoriaRolAsc();
 }
