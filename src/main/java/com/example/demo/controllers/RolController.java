@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,5 +49,19 @@ public class RolController {
     public ResponseEntity<?> modificarRol(@RequestBody RolRequestDTO rolRequestDTO, @PathVariable Long idRol){
         Rol rolExistente = rolService.modificarRol(rolRequestDTO, idRol);
         return ResponseEntity.status(HttpStatus.OK).body(rolExistente);
+    }
+
+    @Operation(summary = "Deshabilitar un rol por su id")
+    @DeleteMapping("/{idRol}")
+    public ResponseEntity<?> deshabilitarRol(@PathVariable Long idRol){
+        rolService.deshabilitarRol(idRol);
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    @Operation(summary = "Habilitar un rol por su id")
+    @PutMapping("/habilitar/{idRol}")
+    public ResponseEntity<?> habilitarRol(@PathVariable Long idRol){
+        rolService.habilitarRol(idRol);
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 }

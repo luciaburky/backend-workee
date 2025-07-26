@@ -14,8 +14,10 @@ import com.example.demo.entities.seguridad.CategoriaRol;
 import com.example.demo.entities.seguridad.Permiso;
 import com.example.demo.entities.seguridad.PermisoRol;
 import com.example.demo.entities.seguridad.Rol;
+import com.example.demo.exceptions.EntityAlreadyEnabledException;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
 import com.example.demo.exceptions.EntityNotValidException;
+import com.example.demo.exceptions.EntityReferencedException;
 import com.example.demo.repositories.seguridad.RolRepository;
 import com.example.demo.services.BaseServiceImpl;
 
@@ -26,12 +28,14 @@ public class RolServiceImpl extends BaseServiceImpl<Rol, Long> implements RolSer
     private final RolRepository rolRepository;
     private final CategoriaRolService categoriaRolService;
     private final PermisoService permisoService;
+    private final UsuarioRolService usuarioRolService;
     
-    public RolServiceImpl(RolRepository rolRepository, CategoriaRolService categoriaRolService, PermisoService permisoService){
+    public RolServiceImpl(RolRepository rolRepository, CategoriaRolService categoriaRolService, PermisoService permisoService, UsuarioRolService usuarioRolService){
         super(rolRepository);
         this.rolRepository = rolRepository;
         this.categoriaRolService = categoriaRolService;
         this.permisoService = permisoService;
+        this.usuarioRolService = usuarioRolService;
     }
 
     @Override
@@ -126,4 +130,31 @@ public class RolServiceImpl extends BaseServiceImpl<Rol, Long> implements RolSer
         return rolRepository.save(rolExistente);
     }
 
+    @Override
+    @Transactional
+    public Boolean deshabilitarRol(Long idRol){
+        if(idRol == null){
+            throw new IllegalArgumentException("El ID no puede ser nulo");
+        }
+        Boolean rolEstaEnUso = usuarioRolService.existenUsuariosActivosUsandoRol(idRol);
+        if(rolEstaEnUso){
+            throw new EntityReferencedException("No se puede deshabilitar el rol porque se encuentra en uso.");
+        }
+        return delete(idRol);
+    }
+
+    @Override
+    @Transactional
+    public Boolean habilitarRol(Long idRol){
+        if(idRol == null){
+            throw new IllegalArgumentException("El ID no puede ser nulo");
+        }
+        Rol rol = findById(idRol);
+        if(rol.getFechaHoraBaja() == null){
+            throw new EntityAlreadyEnabledException("El rol ya está habilitado");
+        }
+        rol.setFechaHoraBaja(null);
+        rolRepository.save(rol);
+        return true;
+    }
 }
