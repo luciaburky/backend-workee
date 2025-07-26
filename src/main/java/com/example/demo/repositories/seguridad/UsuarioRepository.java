@@ -9,5 +9,7 @@ import com.example.demo.repositories.BaseRepository;
 public interface UsuarioRepository extends BaseRepository<Usuario, Long>{
     
     public Boolean existsByFechaHoraBajaIsNullAndCorreoUsuarioLike(String correo);
+
+    public Usuario findByCorreoUsuarioAndFechaHoraBajaIsNull();
 }
 
