@@ -39,4 +39,5 @@ public class UsuarioController {
         this.usuarioService.confirmarRecuperacionContrasenia(idUsuario, recuperarContraseniaDTO);
         return ResponseEntity.status(HttpStatus.OK).body("Contraseña recuperada exitosamente");
     }
+
 }

@@ -1,23 +1,29 @@
 package com.example.demo.services.empresa;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.example.demo.dtos.EmpresaPendienteHabilitacionDTO;
 import com.example.demo.dtos.EmpresaRequestDTO;
 import com.example.demo.dtos.FiltrosEmpresaRequestDTO;
 import com.example.demo.dtos.UsuarioDTO;
 import com.example.demo.entities.empresa.Empresa;
+import com.example.demo.entities.params.EstadoUsuario;
 import com.example.demo.entities.params.EstadoUsuarioEnum;
 import com.example.demo.entities.params.Provincia;
 import com.example.demo.entities.params.Rubro;
 import com.example.demo.entities.seguridad.Usuario;
+import com.example.demo.entities.seguridad.UsuarioEstadoUsuario;
+import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.mappers.EmpresaMapper;
 import com.example.demo.repositories.empresa.EmpresaRepository;
 import com.example.demo.services.BaseServiceImpl;
 import com.example.demo.services.mail.MailService;
+import com.example.demo.services.params.EstadoUsuarioService;
 import com.example.demo.services.params.ProvinciaService;
 import com.example.demo.services.params.RubroService;
 import com.example.demo.services.seguridad.UsuarioService;
@@ -33,8 +39,9 @@ public class EmpresaServiceImpl extends BaseServiceImpl<Empresa, Long> implement
     private final UsuarioService usuarioService;
     private final ProvinciaService provinciaService;
     private final MailService mailService;
+    private final EstadoUsuarioService estadoUsuarioService;
 
-    public EmpresaServiceImpl(EmpresaRepository empresaRepository, RubroService rubroService, EmpresaMapper empresaMapper, UsuarioService usuarioService, ProvinciaService provinciaService, MailService mailService) {
+    public EmpresaServiceImpl(EmpresaRepository empresaRepository, RubroService rubroService, EmpresaMapper empresaMapper, UsuarioService usuarioService, ProvinciaService provinciaService, MailService mailService, EstadoUsuarioService estadoUsuarioService) {
         super(empresaRepository);
         this.empresaRepository = empresaRepository;
         this.rubroService = rubroService;
@@ -42,6 +49,7 @@ public class EmpresaServiceImpl extends BaseServiceImpl<Empresa, Long> implement
         this.usuarioService = usuarioService;
         this.provinciaService = provinciaService;
         this.mailService = mailService;
+        this.estadoUsuarioService = estadoUsuarioService;
     }
 
     @Override
@@ -104,6 +112,54 @@ public class EmpresaServiceImpl extends BaseServiceImpl<Empresa, Long> implement
 
         String subject = "¡Bienvenido a Workee! Tu cuenta se encuentra en revisión.";
         mailService.enviar(mailTo, subject, templateName, variables);
+    }
+
+    @Override
+    public List<EmpresaPendienteHabilitacionDTO> buscarEmpresasPendientesDeHabilitacion(String nombreEstado){
+        return empresaRepository.buscarEmpresasPendientesParaHabilitar(nombreEstado);
+    }
+
+
+    @Override
+    @Transactional
+    public Boolean habilitarEmpresa(Long idEmpresa){
+        Empresa empresa = findById(idEmpresa);
+        Usuario usuarioEmpresa = empresa.getUsuario();
+
+        if(usuarioEmpresa == null){
+            throw new EntityNotValidException("La empresa no posee un usuario asociado");
+        }
+
+        EstadoUsuario estadoPendiente =  estadoUsuarioService.obtenerEstadoPorNombre("Pendiente");
+        EstadoUsuario estadoHabilitado =  estadoUsuarioService.obtenerEstadoPorNombre("Habilitado");
+
+
+        boolean estadoCambiado = false;
+        if(usuarioEmpresa.getUsuarioEstadoList() != null){
+            for(UsuarioEstadoUsuario usuarioEstadoUsuario: usuarioEmpresa.getUsuarioEstadoList()){
+                if(usuarioEstadoUsuario.getFechaHoraBaja() == null && usuarioEstadoUsuario.getEstadoUsuario().equals(estadoPendiente)){
+                    usuarioEstadoUsuario.setFechaHoraBaja(new Date());
+                    estadoCambiado = true;
+                    break;
+                }
+            }
+        }
+        if(!estadoCambiado){
+            throw new EntityNotValidException("No se pudo habilitar la empresa");
+        }
+
+        UsuarioEstadoUsuario nuevoUsuarioEstadoUsuario = new UsuarioEstadoUsuario();
+        nuevoUsuarioEstadoUsuario.setEstadoUsuario(estadoHabilitado);
+        nuevoUsuarioEstadoUsuario.setFechaHoraAlta(new Date());
+
+        if (usuarioEmpresa.getUsuarioEstadoList() == null) {
+            usuarioEmpresa.setUsuarioEstadoList(new java.util.ArrayList<>());
+        }
+        
+        usuarioEmpresa.getUsuarioEstadoList().add(nuevoUsuarioEstadoUsuario);
+
+        usuarioService.save(usuarioEmpresa);
+        return true;
     }
     
 }
