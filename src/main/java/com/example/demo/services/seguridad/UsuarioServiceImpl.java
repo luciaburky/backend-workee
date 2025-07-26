@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import com.example.demo.entities.params.EstadoUsuario;
 import com.example.demo.entities.seguridad.Usuario;
 import com.example.demo.entities.seguridad.UsuarioEstadoUsuario;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
+import com.example.demo.exceptions.EntityNotFoundException;
 import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.mappers.UsuarioMapper;
 import com.example.demo.repositories.seguridad.UsuarioRepository;
@@ -20,7 +22,6 @@ import com.example.demo.services.BaseServiceImpl;
 import com.example.demo.services.mail.MailService;
 import com.example.demo.services.params.EstadoUsuarioService;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -130,17 +131,18 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
 
     @Override
     public void solicitarRecuperarContrasenia(String correoUsuario){
-        Usuario usuario = usuarioRepository.findByCorreoUsuarioAndFechaHoraBajaIsNull(correoUsuario);
-        if(usuario == null){
+        Optional<Usuario> usuario = usuarioRepository.buscarUsuarioPorCorreo(correoUsuario);
+        
+        if(!usuario.isPresent()){
             throw new EntityNotFoundException("No se encontró un usuario con el correo ingresado");
         }
-
+        Usuario usuarioEncontrado = usuario.get();
         //TODO: Encriptar el id del usuario para generar el link
-        String idEncriptado = usuario.getId().toString();
+        String idEncriptado = usuarioEncontrado.getId().toString();
         //TODO: Revisar correo de recuperacion
         String linkRecuperacion = "http://localhost:4200/nuevaContrasenia?correo=" + idEncriptado; 
 
-        enviarMailRecuperacionAUsuario(usuario.getCorreoUsuario(), linkRecuperacion);
+        enviarMailRecuperacionAUsuario(usuarioEncontrado.getCorreoUsuario(), linkRecuperacion);
     }
 
     private void enviarMailRecuperacionAUsuario(String mailTo, String urlrecuperacion){
