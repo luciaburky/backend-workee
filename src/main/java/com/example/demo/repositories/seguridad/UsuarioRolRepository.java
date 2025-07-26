@@ -1,9 +1,12 @@
 package com.example.demo.repositories.seguridad;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.example.demo.dtos.UsuarioResponseDTO;
 import com.example.demo.entities.seguridad.UsuarioRol;
 import com.example.demo.repositories.BaseRepository;
 
@@ -19,4 +22,15 @@ public interface UsuarioRolRepository extends BaseRepository<UsuarioRol, Long> {
         """
     )
     Boolean existenUsuariosActivosConRol(@Param("idRol") Long idRol);
+
+    @Query(
+        """
+             SELECT new com.example.demo.dtos.UsuarioResponseDTO(ur.usuario.id, ur.usuario.urlFotoUsuario, ur.usuario.correoUsuario, ur.rol.nombreRol)  
+             FROM UsuarioRol ur
+             WHERE ur.usuario.fechaHoraBaja IS NULL
+             AND ur.fechaHoraBaja IS NULL
+        """
+    )
+    public List<UsuarioResponseDTO> buscarUsuariosActivos();
 }
+

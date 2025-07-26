@@ -3,6 +3,7 @@ package com.example.demo.services.seguridad;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.RecuperarContraseniaDTO;
 import com.example.demo.dtos.UsuarioDTO;
+import com.example.demo.dtos.UsuarioResponseDTO;
 import com.example.demo.entities.params.EstadoUsuario;
 import com.example.demo.entities.seguridad.Usuario;
 import com.example.demo.entities.seguridad.UsuarioEstadoUsuario;
@@ -18,6 +20,7 @@ import com.example.demo.exceptions.EntityNotFoundException;
 import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.mappers.UsuarioMapper;
 import com.example.demo.repositories.seguridad.UsuarioRepository;
+import com.example.demo.repositories.seguridad.UsuarioRolRepository;
 import com.example.demo.services.BaseServiceImpl;
 import com.example.demo.services.mail.MailService;
 import com.example.demo.services.params.EstadoUsuarioService;
@@ -31,16 +34,17 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
     //private final BCrypt
     private final UsuarioMapper usuarioMapper;
     private final EstadoUsuarioService estadoUsuarioService;
+    private final UsuarioRolRepository usuarioRolRepository;
 
     private final MailService mailService;
 
-    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper, EstadoUsuarioService estadoUsuarioService, MailService mailService) {
+    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper, EstadoUsuarioService estadoUsuarioService, MailService mailService, UsuarioRolRepository usuarioRolRepository) {
         super(usuarioRepository);
         this.usuarioRepository = usuarioRepository;
         this.usuarioMapper = usuarioMapper;
         this.estadoUsuarioService = estadoUsuarioService;
         this.mailService = mailService;
-        
+        this.usuarioRolRepository = usuarioRolRepository;
     }
 
 
@@ -120,7 +124,7 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
 
     }
 
-    //ESTE LO DA DE BAJA SIN VERIFICAR SI YA ESTABA DADO DE BAJA
+    //ESTE LO DA DE BAJA SIN VERIFICAR SI YA ESTABA DADO DE BAJA (es para cuando se elimina)
     @Override
     @Transactional
     public void darDeBajaUsuario(Long idUsuario){
@@ -170,5 +174,11 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
         usuario.setContraseniaUsuario(contraseniaEncriptada);
         usuarioRepository.save(usuario);
     }
+
+    @Override
+    public List<UsuarioResponseDTO> buscarUsuariosActivos(){
+        return usuarioRolRepository.buscarUsuariosActivos();
+    }
+
 }
 

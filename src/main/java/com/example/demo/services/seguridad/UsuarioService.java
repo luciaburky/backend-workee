@@ -1,7 +1,10 @@
 package com.example.demo.services.seguridad;
 
+import java.util.List;
+
 import com.example.demo.dtos.RecuperarContraseniaDTO;
 import com.example.demo.dtos.UsuarioDTO;
+import com.example.demo.dtos.UsuarioResponseDTO;
 import com.example.demo.entities.seguridad.Usuario;
 import com.example.demo.services.BaseService;
 
@@ -15,4 +18,6 @@ public interface UsuarioService extends BaseService<Usuario, Long>{
     public void solicitarRecuperarContrasenia(String correoUsuario);
 
     public void confirmarRecuperacionContrasenia(String idEncriptado, RecuperarContraseniaDTO recuperarContraseniaDTO);
+
+    public List<UsuarioResponseDTO> buscarUsuariosActivos();
 }
