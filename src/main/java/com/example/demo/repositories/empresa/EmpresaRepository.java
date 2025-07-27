@@ -1,6 +1,7 @@
 package com.example.demo.repositories.empresa;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -56,5 +57,7 @@ public interface EmpresaRepository extends BaseRepository<Empresa, Long>  {
         """
     )
     public List<EmpresaPendienteHabilitacionDTO> buscarEmpresasPendientesParaHabilitar(@Param("nombreEstado") String nombreEstado);
+
+    Optional<Empresa> findByUsuarioId(Long usuarioId);
 }
 

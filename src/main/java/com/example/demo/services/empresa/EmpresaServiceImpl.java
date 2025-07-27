@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -161,6 +162,16 @@ public class EmpresaServiceImpl extends BaseServiceImpl<Empresa, Long> implement
         usuarioService.save(usuarioEmpresa);
         return true;
     }
+
+    @Override
+    public Optional<Empresa> buscarEmpresaPorIdUsuario(Long idUsuario){
+        if(idUsuario == null){
+            throw new IllegalArgumentException("El id del usuario no puede estar vacío");
+        }
+        Optional<Empresa> empresa = empresaRepository.findByUsuarioId(idUsuario);
+
+        return empresa;
+    }   
     
 }
 

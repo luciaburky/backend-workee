@@ -2,6 +2,7 @@ package com.example.demo.services.empresa;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -112,6 +113,21 @@ public class EmpleadoEmpresaServiceImpl extends BaseServiceImpl<EmpleadoEmpresa,
     @Override
     public Long contarEmpleadosDeEmpresa(Long idempresa){
         return empleadoEmpresaRepository.contarEmpelados(idempresa);
+    }
+
+    @Override
+    public Optional<EmpleadoEmpresa> buscarEmpleadoEmpresaPorUsuarioId(Long idUsuario){
+        if(idUsuario == null){
+            throw new IllegalArgumentException("El id del usuario no puede estar vacío");
+        }
+        Optional<EmpleadoEmpresa> empleado = empleadoEmpresaRepository.findByUsuarioId(idUsuario);
+
+        return empleado;
+    }
+
+    @Override
+    public List<EmpleadoEmpresa> visualizarTodosLosEmpleadosDeUnaEmpresa(Long idEmpresa){
+        return empleadoEmpresaRepository.traerTodosLosEmpleadosDeUnaEmpresa(idEmpresa);
     }
 }
 

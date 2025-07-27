@@ -180,5 +180,10 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
         return usuarioRolRepository.buscarUsuariosActivos();
     }
 
+    @Override
+    public List<UsuarioResponseDTO> buscarUsuariosActivosPorRol(String nombreRol){
+        return usuarioRolRepository.buscarUsuariosActivosPorRol(nombreRol);
+    }
+
 }
 

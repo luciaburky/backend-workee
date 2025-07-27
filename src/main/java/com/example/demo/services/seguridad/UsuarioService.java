@@ -20,4 +20,6 @@ public interface UsuarioService extends BaseService<Usuario, Long>{
     public void confirmarRecuperacionContrasenia(String idEncriptado, RecuperarContraseniaDTO recuperarContraseniaDTO);
 
     public List<UsuarioResponseDTO> buscarUsuariosActivos();
+
+    public List<UsuarioResponseDTO> buscarUsuariosActivosPorRol(String nombreRol);
 }

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dtos.EmpresaRequestDTO;
 import com.example.demo.entities.empresa.Empresa;
-import com.example.demo.services.empresa.EmpresaOrquestadorService;
+import com.example.demo.services.BajaOrquestadorService;
 import com.example.demo.services.empresa.EmpresaService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,11 +26,11 @@ import jakarta.validation.Valid;
 public class EmpresaController {
 
     private final EmpresaService empresaService;
-    private final EmpresaOrquestadorService empresaOrquestadorService;
+    private final BajaOrquestadorService bajaOrquestadorService;
 
-    public EmpresaController(EmpresaService empresaService, EmpresaOrquestadorService empresaOrquestadorService) {
+    public EmpresaController(EmpresaService empresaService, BajaOrquestadorService bajaOrquestadorService) {
         this.empresaService = empresaService;
-        this.empresaOrquestadorService = empresaOrquestadorService;
+        this.bajaOrquestadorService = bajaOrquestadorService;
     }
 
     @Operation(summary = "Modificar perfil de administrador empresa")
@@ -50,7 +50,7 @@ public class EmpresaController {
     @Operation(summary = "Elimina una cuenta de empresa y todo lo relacionado a ella")
     @DeleteMapping("/{idEmpresa}")
     public ResponseEntity<?> eliminarEmpresa(@PathVariable Long idEmpresa){
-        empresaOrquestadorService.darDeBajaEmpresaYRelacionados(idEmpresa);
+        bajaOrquestadorService.darDeBajaEmpresaYRelacionados(idEmpresa);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 

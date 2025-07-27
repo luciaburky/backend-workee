@@ -1,6 +1,7 @@
 package com.example.demo.services.empresa;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.example.demo.dtos.EmpresaPendienteHabilitacionDTO;
 import com.example.demo.dtos.EmpresaRequestDTO;
@@ -23,6 +24,8 @@ public interface EmpresaService extends BaseService<Empresa, Long>{
    public List<EmpresaPendienteHabilitacionDTO> buscarEmpresasPendientesDeHabilitacion(String nombreEstado);
 
    public Boolean habilitarEmpresa(Long idEmpresa);
+
+   public Optional<Empresa> buscarEmpresaPorIdUsuario(Long idUsuario);
 }
 
 

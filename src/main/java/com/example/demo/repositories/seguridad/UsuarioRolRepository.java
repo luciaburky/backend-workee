@@ -32,5 +32,16 @@ public interface UsuarioRolRepository extends BaseRepository<UsuarioRol, Long> {
         """
     )
     public List<UsuarioResponseDTO> buscarUsuariosActivos();
+
+    @Query(
+        """
+             SELECT new com.example.demo.dtos.UsuarioResponseDTO(ur.usuario.id, ur.usuario.urlFotoUsuario, ur.usuario.correoUsuario, ur.rol.nombreRol)  
+             FROM UsuarioRol ur
+             WHERE ur.usuario.fechaHoraBaja IS NULL
+             AND ur.fechaHoraBaja IS NULL
+             AND ur.rol.nombreRol LIKE :nombreRol
+        """
+    )
+    public List<UsuarioResponseDTO> buscarUsuariosActivosPorRol(String nombreRol);
 }
 

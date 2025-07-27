@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.dtos.CorreoRequestDTO;
 import com.example.demo.dtos.RecuperarContraseniaDTO;
 import com.example.demo.dtos.UsuarioResponseDTO;
+import com.example.demo.services.BajaOrquestadorService;
 import com.example.demo.services.seguridad.UsuarioService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,9 +26,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 public class UsuarioController {
     private final UsuarioService usuarioService;
+    private final BajaOrquestadorService bajaOrquestadorService;
 
-    public UsuarioController(UsuarioService usuarioService){
+    public UsuarioController(UsuarioService usuarioService, BajaOrquestadorService bajaOrquestadorService){
         this.usuarioService = usuarioService;
+        this.bajaOrquestadorService = bajaOrquestadorService;
     }
 
     @Operation(summary = "Enviar correo para que usuario recupere su contraseña")
@@ -49,6 +52,20 @@ public class UsuarioController {
     public ResponseEntity<?> buscarUsuariosActivos(){
         List<UsuarioResponseDTO> usuarios = usuarioService.buscarUsuariosActivos();
         return ResponseEntity.status(HttpStatus.OK).body(usuarios);
+    }
+
+    @Operation(summary = "Trae a todos los usuarios que se encuentran activos según el rol ingresado")
+    @GetMapping("/{nombreRol}")
+    public ResponseEntity<?> buscarUsuariosActivosPorRol(@PathVariable String nombreRol){
+        List<UsuarioResponseDTO> usuarios = usuarioService.buscarUsuariosActivosPorRol(nombreRol);
+        return ResponseEntity.status(HttpStatus.OK).body(usuarios);
+    }
+
+    @Operation(summary = "Para dar de baja un usuario y su entidad relacionada")
+    @PutMapping("/{idUsuario}")
+    public ResponseEntity<?> darDeBajaUsuario(@PathVariable Long idUsuario){
+        this.bajaOrquestadorService.darDeBajaUsuarioYEntidadRelacionada(idUsuario);
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
 }
