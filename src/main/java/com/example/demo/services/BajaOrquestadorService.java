@@ -35,7 +35,6 @@ public class BajaOrquestadorService {
         List<EmpleadoEmpresa> empleados = empleadoEmpresaService.visualizarTodosLosEmpleadosDeUnaEmpresa(idEmpresa);
         
         for(EmpleadoEmpresa empleado: empleados){
-            System.out.println("Empleado " + empleado.getId());
             empleado.setFechaHoraBaja(new Date());
             empleadoEmpresaService.save(empleado);
             usuarioService.darDeBajaUsuario(empleado.getUsuario().getId()); 
