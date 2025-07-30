@@ -100,7 +100,7 @@ public class PaisServiceImpl extends BaseServiceImpl<Pais,Long> implements PaisS
         Boolean estaEnUso = validarUsoPais(idPais);
 
         if(estaEnUso){
-            throw new EntityReferencedException("El pais se encuentra en uso");
+            throw new EntityReferencedException("La entidad se encuentra en uso, no puede deshabilitarla");
         }
         return delete(idPais);
     }

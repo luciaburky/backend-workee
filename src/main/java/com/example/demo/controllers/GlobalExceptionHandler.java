@@ -1,5 +1,7 @@
 package com.example.demo.controllers;
 
+import java.util.stream.Collectors;
+
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,10 +71,14 @@ public class GlobalExceptionHandler {
     //Manejador para las de @Valid
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationErrors(MethodArgumentNotValidException ex) {
-        StringBuilder mensaje = new StringBuilder("Errores de validación en ");
+        String mensaje = ex.getBindingResult().getFieldErrors().stream()
+                .map(error -> error.getDefaultMessage())
+                .collect(Collectors.joining(", "));
+        
+        /*StringBuilder mensaje = new StringBuilder("Errores de validación en ");
         ex.getBindingResult().getFieldErrors().forEach(error ->
             mensaje.append(error.getField()).append(": ").append(error.getDefaultMessage()).append("; ")
-        );
+        );*/
 
         ErrorResponse error = new ErrorResponse(HttpStatus.BAD_REQUEST, mensaje.toString());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
