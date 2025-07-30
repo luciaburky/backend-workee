@@ -16,5 +16,7 @@ public interface RubroService extends BaseService<Rubro, Long> {
     List<Rubro> obtenerRubrosActivos();
 
     Boolean habilitarRubro(Long id);
+
+    public Boolean deshabilitarRubro(Long idRubro);
     
 }

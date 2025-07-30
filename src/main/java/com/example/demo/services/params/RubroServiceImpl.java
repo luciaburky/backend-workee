@@ -11,6 +11,8 @@ import com.example.demo.entities.params.Rubro;
 import com.example.demo.exceptions.EntityAlreadyEnabledException;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
 import com.example.demo.exceptions.EntityNotValidException;
+import com.example.demo.exceptions.EntityReferencedException;
+import com.example.demo.repositories.empresa.EmpresaRepository;
 import com.example.demo.repositories.params.RubroRepository;
 import com.example.demo.services.BaseServiceImpl;
 
@@ -20,10 +22,12 @@ import jakarta.transaction.Transactional;
 public class RubroServiceImpl extends BaseServiceImpl<Rubro, Long> implements RubroService {
 
     private final RubroRepository rubroRepository;
+    private final EmpresaRepository empresaRepository;
 
-    public RubroServiceImpl(RubroRepository rubroRepository) {
+    public RubroServiceImpl(RubroRepository rubroRepository, EmpresaRepository empresaRepository) {
         super(rubroRepository);
         this.rubroRepository = rubroRepository;
+        this.empresaRepository = empresaRepository;
     }   
 
     @Override
@@ -86,5 +90,19 @@ public class RubroServiceImpl extends BaseServiceImpl<Rubro, Long> implements Ru
         return rubroExiste
         .filter(e -> idAExcluir == null || !e.getId().equals(idAExcluir))
         .isPresent();    }
+
+
+    @Override
+    @Transactional
+    public Boolean deshabilitarRubro(Long idRubro){
+        Boolean estaEnUso = validarUsoRubro(idRubro);
+        if(estaEnUso){
+            throw new EntityReferencedException("La entidad se encuentra en uso, no puede deshabilitarla");
+        }
+        return delete(idRubro);
+    }
     
+    private Boolean validarUsoRubro(Long idRubro){
+        return empresaRepository.existsByRubroIdAndFechaHoraBajaIsNull(idRubro);
+    }
 }

@@ -15,7 +15,6 @@ import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -69,22 +68,6 @@ public class CandidatoController {
         List<Habilidad> habilidades = candidatoService.obtenerHabilidades(idCandidato);
         return ResponseEntity.ok().body(habilidades);
     }
-
-    /*Ver si recibir idCandidato o CandidatoRequestDTO y si recibir idHabilidad o Habilidad
-    @Operation(summary = "Agregar una habilidad a un Candidato")
-    @PostMapping("/{id}/habilidades")   
-    public ResponseEntity<List<Habilidad>> agregarHabilidad(@RequestParam Long idCandidato, @RequestParam Long idHabilidad) {
-        List<Habilidad> habilidadesActualizadas = candidatoService.agregarHabilidad(idCandidato, idHabilidad);
-        return ResponseEntity.ok().body(habilidadesActualizadas);
-    }
-    
-    @Operation(summary = "Eliminar una habilidad de un Candidato")
-    @DeleteMapping("/{idCandidato}/habilidades/{idHabilidad}]")  
-    public ResponseEntity<List<Habilidad>> eliminarHabilidad(@PathVariable Long idCandidato, @PathVariable Long idHabilidad) {
-        List<Habilidad> habilidadesActualizadas = candidatoService.eliminarHabilidad(idCandidato, idHabilidad);
-        return ResponseEntity.ok().body(habilidadesActualizadas);
-    }
-        */
 
     @Operation(summary = "Elimina una cuenta de candidato y todo lo relacionado a ella")
     @DeleteMapping("/{idCandidato}")

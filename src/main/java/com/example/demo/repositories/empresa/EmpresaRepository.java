@@ -43,7 +43,9 @@ public interface EmpresaRepository extends BaseRepository<Empresa, Long>  {
     )
     public boolean existenEmpresasActivasUsandoPais(@Param("idPais")Long idPais);
 
-    public boolean existsByProvinciaIdAndFechaHoraBajaIsNull(Long provinciaId);
+    boolean existsByProvinciaIdAndFechaHoraBajaIsNull(Long provinciaId);
+
+    boolean existsByRubroIdAndFechaHoraBajaIsNull(Long rubroId);
 
     @Query(
         """
