@@ -12,4 +12,8 @@ public interface RolService extends BaseService<Rol, Long>{
     public Rol modificarRol(RolRequestDTO rolRequestDTO, Long idRol);
     public Boolean deshabilitarRol(Long idRol);
     public Boolean habilitarRol(Long idRol);
+
+    public List<Rol> obtenerRolesSegunCategoria(Long categoriaRolId);
+
+    public Rol buscarRolActivoPorId(Long idRol);
 }

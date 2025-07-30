@@ -13,8 +13,10 @@ import com.example.demo.dtos.RecuperarContraseniaDTO;
 import com.example.demo.dtos.UsuarioDTO;
 import com.example.demo.dtos.UsuarioResponseDTO;
 import com.example.demo.entities.params.EstadoUsuario;
+import com.example.demo.entities.seguridad.Rol;
 import com.example.demo.entities.seguridad.Usuario;
 import com.example.demo.entities.seguridad.UsuarioEstadoUsuario;
+import com.example.demo.entities.seguridad.UsuarioRol;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
 import com.example.demo.exceptions.EntityNotFoundException;
 import com.example.demo.exceptions.EntityNotValidException;
@@ -31,20 +33,23 @@ import jakarta.transaction.Transactional;
 public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implements UsuarioService{
 
     private final UsuarioRepository usuarioRepository;
-    //private final BCrypt
     private final UsuarioMapper usuarioMapper;
     private final EstadoUsuarioService estadoUsuarioService;
     private final UsuarioRolRepository usuarioRolRepository;
+    private final RolService rolService;
 
     private final MailService mailService;
 
-    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper, EstadoUsuarioService estadoUsuarioService, MailService mailService, UsuarioRolRepository usuarioRolRepository) {
+    //private final BCrypt
+
+    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper, EstadoUsuarioService estadoUsuarioService, MailService mailService, UsuarioRolRepository usuarioRolRepository, RolService rolService) {
         super(usuarioRepository);
         this.usuarioRepository = usuarioRepository;
         this.usuarioMapper = usuarioMapper;
         this.estadoUsuarioService = estadoUsuarioService;
         this.mailService = mailService;
         this.usuarioRolRepository = usuarioRolRepository;
+        this.rolService = rolService;
     }
 
 
@@ -183,6 +188,47 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
     @Override
     public List<UsuarioResponseDTO> buscarUsuariosActivosPorRol(String nombreRol){
         return usuarioRolRepository.buscarUsuariosActivosPorRol(nombreRol);
+    }
+
+    @Override
+    @Transactional
+    public void modificarRolUsuario(Long idUsuario, Long idRol){
+        if(idUsuario == null){
+            throw new EntityNotValidException("El id del usuario no puede estar vacio");
+        }
+        if(idRol == null){
+            throw new EntityNotValidException("El id del rol no puede estar vacio");
+
+        }
+
+        Optional<UsuarioRol> actual = usuarioRolRepository.buscarUsuarioRolActualSegunIdUsuario(idUsuario);
+        if(!actual.isPresent()){
+            throw new EntityNotFoundException("El usuario no posee ningún rol actual");
+        }
+        UsuarioRol usuarioRolActual = actual.get();
+        if(idRol == usuarioRolActual.getRol().getId()){
+            throw new EntityAlreadyExistsException("El usuario actualmente posee el rol ingresado");
+        }
+
+        Optional<UsuarioRol> usuarioRolExistenteOptional = usuarioRolRepository.buscarUsuarioRolAnteriorSegunIdUsuarioEIdRol(idRol, idUsuario);
+        if(usuarioRolExistenteOptional.isPresent()){
+            System.out.println("Entreeeee");
+            UsuarioRol usuarioRolExistente = usuarioRolExistenteOptional.get();
+            usuarioRolExistente.setFechaHoraBaja(null);
+            usuarioRolRepository.save(usuarioRolExistente);
+        } else {
+            Rol rolNuevo = rolService.buscarRolActivoPorId(idRol);
+            Usuario usuario = findById(idUsuario);
+
+            UsuarioRol nuevoUsuarioRol = new UsuarioRol();
+            nuevoUsuarioRol.setRol(rolNuevo);
+            nuevoUsuarioRol.setFechaHoraAlta(new Date());
+            nuevoUsuarioRol.setUsuario(usuario);
+            usuarioRolRepository.save(nuevoUsuarioRol);
+        }
+
+        usuarioRolActual.setFechaHoraBaja(new Date());
+        usuarioRolRepository.save(usuarioRolActual);
     }
 
 }

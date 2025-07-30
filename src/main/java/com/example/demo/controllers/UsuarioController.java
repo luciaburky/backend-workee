@@ -68,4 +68,11 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.OK).body("Usuario dado de baja correctamente");
     }
 
+    @Operation(summary = "Modificar el rol de un usuario")
+    @PutMapping("/modificarRol/{idUsuario}")
+    public ResponseEntity<?> modificarRolDeUsuario(@PathVariable Long idUsuario, @RequestBody Long idRol){
+        usuarioService.modificarRolUsuario(idUsuario, idRol);
+        return ResponseEntity.status(HttpStatus.OK).body("Rol modificado correctamente");
+    }
+
 }

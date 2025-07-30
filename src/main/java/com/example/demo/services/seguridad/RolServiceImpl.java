@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -16,6 +17,7 @@ import com.example.demo.entities.seguridad.PermisoRol;
 import com.example.demo.entities.seguridad.Rol;
 import com.example.demo.exceptions.EntityAlreadyEnabledException;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
+import com.example.demo.exceptions.EntityNotFoundException;
 import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.exceptions.EntityReferencedException;
 import com.example.demo.repositories.seguridad.RolRepository;
@@ -156,5 +158,19 @@ public class RolServiceImpl extends BaseServiceImpl<Rol, Long> implements RolSer
         rol.setFechaHoraBaja(null);
         rolRepository.save(rol);
         return true;
+    }
+
+    @Override
+    public List<Rol> obtenerRolesSegunCategoria(Long categoriaRolId){
+        return rolRepository.findAllByCategoriaRolIdAndFechaHoraBajaIsNull(categoriaRolId);
+    }
+
+    @Override
+    public Rol buscarRolActivoPorId(Long idRol){
+        Optional<Rol> rolOptional = rolRepository.findByIdAndFechaHoraBajaIsNull(idRol);
+        if(!rolOptional.isPresent()){
+            throw new EntityNotFoundException("No se encontró ningún rol activo con el id ingresado");
+        }
+        return rolOptional.get();
     }
 }

@@ -22,4 +22,6 @@ public interface UsuarioService extends BaseService<Usuario, Long>{
     public List<UsuarioResponseDTO> buscarUsuariosActivos();
 
     public List<UsuarioResponseDTO> buscarUsuariosActivosPorRol(String nombreRol);
+
+    public void modificarRolUsuario(Long idUsuario, Long idRol);
 }

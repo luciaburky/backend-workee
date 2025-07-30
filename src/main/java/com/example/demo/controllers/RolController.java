@@ -55,13 +55,20 @@ public class RolController {
     @DeleteMapping("/{idRol}")
     public ResponseEntity<?> deshabilitarRol(@PathVariable Long idRol){
         rolService.deshabilitarRol(idRol);
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        return ResponseEntity.status(HttpStatus.OK).body("Rol deshabilitado correctamente");
     }
 
     @Operation(summary = "Habilitar un rol por su id")
     @PutMapping("/habilitar/{idRol}")
     public ResponseEntity<?> habilitarRol(@PathVariable Long idRol){
         rolService.habilitarRol(idRol);
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        return ResponseEntity.status(HttpStatus.OK).body("Rol habilitado correctamente");
+    }
+
+    @Operation(summary = "Traer roles activos segun una categoría")
+    @GetMapping("/porCategoria/{idCategoria}")
+    public ResponseEntity<?> buscarRolesSegunCategoria(@PathVariable Long idCategoria){
+        List<Rol> roles = rolService.obtenerRolesSegunCategoria(idCategoria);
+        return ResponseEntity.status(HttpStatus.OK).body(roles);
     }
 }

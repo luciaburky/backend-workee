@@ -1,6 +1,7 @@
 package com.example.demo.repositories.seguridad;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
@@ -11,5 +12,9 @@ import com.example.demo.repositories.BaseRepository;
 public interface RolRepository extends BaseRepository<Rol, Long>{
     public List<Rol> findAllByOrderByNombreRolAsc();
 
-    boolean existsByNombreRol(String nombreRol);
+    public boolean existsByNombreRol(String nombreRol);
+
+    public List<Rol> findAllByCategoriaRolIdAndFechaHoraBajaIsNull(Long categoriaRolId);
+
+    public Optional<Rol> findByIdAndFechaHoraBajaIsNull(Long idRol);
 }

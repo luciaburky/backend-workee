@@ -1,6 +1,7 @@
 package com.example.demo.repositories.seguridad;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -43,5 +44,21 @@ public interface UsuarioRolRepository extends BaseRepository<UsuarioRol, Long> {
         """
     )
     public List<UsuarioResponseDTO> buscarUsuariosActivosPorRol(String nombreRol);
+
+
+    @Query(
+        value = "SELECT * FROM usuario_rol " + 
+            "WHERE fecha_hora_baja IS NULL " + 
+            "AND id_usuario = :idUsuario",
+        nativeQuery = true
+    )
+    public Optional<UsuarioRol> buscarUsuarioRolActualSegunIdUsuario(Long idUsuario);
+
+    @Query(
+        value = "SELECT * FROM usuario_rol " +  
+            "WHERE id_usuario = :idUsuario AND id_rol = :idRol",
+        nativeQuery = true
+    )
+    public Optional<UsuarioRol> buscarUsuarioRolAnteriorSegunIdUsuarioEIdRol(Long idRol, Long idUsuario);
 }
 
