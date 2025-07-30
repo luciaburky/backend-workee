@@ -1,5 +1,6 @@
 package com.example.demo.services.seguridad;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -77,8 +78,30 @@ public class RolServiceImpl extends BaseServiceImpl<Rol, Long> implements RolSer
             nuevoRol.getPermisoRolList().add(nuevoPermisoRol);
         }
 
+        //Generar un codigo para identificarlo
+        String codigoRol = generarCodigoUnico(rolRequestDTO.getNombreRol());
+        nuevoRol.setCodigoRol(codigoRol);
+
         return rolRepository.save(nuevoRol);
     }
+
+    private String generarCodigoUnico(String nombreRol){
+        String base = normalizar(nombreRol);
+        String codigoRol = base;
+        int contador = 1;
+
+        while(rolRepository.existsByCodigoRol(codigoRol)){
+            codigoRol = base + "_" + contador;
+            contador++;
+        }
+        return codigoRol;
+    }
+    private String normalizar(String texto){
+        String sinAcentos = Normalizer.normalize(texto, Normalizer.Form.NFD)
+            .replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+        return sinAcentos.trim().toUpperCase().replaceAll("[^A-Z0-9]", "_");
+    }
+
 
     @Override
     @Transactional

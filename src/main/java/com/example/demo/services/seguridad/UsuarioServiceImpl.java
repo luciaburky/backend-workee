@@ -225,7 +225,6 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
 
         Optional<UsuarioRol> usuarioRolExistenteOptional = usuarioRolRepository.buscarUsuarioRolAnteriorSegunIdUsuarioEIdRol(idRol, idUsuario);
         if(usuarioRolExistenteOptional.isPresent()){
-            System.out.println("Entreeeee");
             UsuarioRol usuarioRolExistente = usuarioRolExistenteOptional.get();
             usuarioRolExistente.setFechaHoraBaja(null);
             usuarioRolRepository.save(usuarioRolExistente);

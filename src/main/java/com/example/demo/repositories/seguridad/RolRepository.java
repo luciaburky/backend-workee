@@ -17,4 +17,6 @@ public interface RolRepository extends BaseRepository<Rol, Long>{
     public List<Rol> findAllByCategoriaRolIdAndFechaHoraBajaIsNull(Long categoriaRolId);
 
     public Optional<Rol> findByIdAndFechaHoraBajaIsNull(Long idRol);
+    
+    public boolean existsByCodigoRol(String codigoRol);
 }
