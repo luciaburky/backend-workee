@@ -100,12 +100,12 @@ public class EmpresaServiceImpl extends BaseServiceImpl<Empresa, Long> implement
 
         empresaRepository.save(nuevaEmpresa);
 
-        enviarMailAEmpresa(nuevaEmpresa.getUsuario().getCorreoUsuario(), nuevaEmpresa.getNombreEmpresa());
+        enviarMailRevisionAEmpresa(nuevaEmpresa.getUsuario().getCorreoUsuario(), nuevaEmpresa.getNombreEmpresa());
 
         return nuevaEmpresa;
     }
 
-    private void enviarMailAEmpresa(String mailTo, String nombreEmpresa){
+    private void enviarMailRevisionAEmpresa(String mailTo, String nombreEmpresa){
         String templateName = "mailRevisionEmpresa";
         Map<String, Object> variables = new HashMap<>();
         
@@ -120,7 +120,7 @@ public class EmpresaServiceImpl extends BaseServiceImpl<Empresa, Long> implement
         return empresaRepository.buscarEmpresasPendientesParaHabilitar(nombreEstado);
     }
 
-
+    /* 
     @Override
     @Transactional
     public Boolean habilitarEmpresa(Long idEmpresa){
@@ -160,8 +160,89 @@ public class EmpresaServiceImpl extends BaseServiceImpl<Empresa, Long> implement
         usuarioEmpresa.getUsuarioEstadoList().add(nuevoUsuarioEstadoUsuario);
 
         usuarioService.save(usuarioEmpresa);
+        enviarMailAEmpresaHabilitada(usuarioEmpresa.getCorreoUsuario(), empresa.getNombreEmpresa());
+
+        return true;
+    }*/
+
+    private void enviarMailAEmpresaHabilitada(String mailTo, String nombreEmpresa){
+        String templateName = "empresaHabilitada";
+        Map<String, Object> variables = new HashMap<>();
+        String urlInicioSesion = "http://localhost:4200/login"; //TODO: Revisar
+        
+        variables.put("nombreEmpresa", nombreEmpresa);
+        variables.put("urlApp", urlInicioSesion);
+
+
+        String subject = "¡Felicidades! Tu cuenta ha sido habilitada.";
+        mailService.enviar(mailTo, subject, templateName, variables);
+        System.out.println("SE NEVIO EL MAIL");
+    }
+
+    private void enviarMailAEmpresaRechazada(String mailTo, String nombreEmpresa){
+        String templateName = "empresaRechazada";
+        Map<String, Object> variables = new HashMap<>();
+        
+        variables.put("nombreEmpresa", nombreEmpresa);
+
+
+        String subject = "Lo sentimos, tu cuenta ha sido rechazada";
+        mailService.enviar(mailTo, subject, templateName, variables);
+        System.out.println("SE NEVIO EL MAIL");
+    }
+
+    @Override
+    @Transactional
+    public Boolean rechazarOAceptarEmpresa(Long idEmpresa, String nuevoEstado){
+        Empresa empresa = findById(idEmpresa);
+        Usuario usuarioEmpresa = empresa.getUsuario();
+
+        if(usuarioEmpresa == null){
+            throw new EntityNotValidException("La empresa no posee un usuario asociado");
+        }
+
+        EstadoUsuario estadoPendiente =  estadoUsuarioService.obtenerEstadoPorNombre("Pendiente");
+        EstadoUsuario estado =  estadoUsuarioService.obtenerEstadoPorNombre(nuevoEstado);
+
+
+        boolean estadoCambiado = false;
+        if(usuarioEmpresa.getUsuarioEstadoList() != null){
+            for(UsuarioEstadoUsuario usuarioEstadoUsuario: usuarioEmpresa.getUsuarioEstadoList()){
+                if(usuarioEstadoUsuario.getFechaHoraBaja() == null && usuarioEstadoUsuario.getEstadoUsuario().equals(estadoPendiente)){
+                    usuarioEstadoUsuario.setFechaHoraBaja(new Date());
+                    estadoCambiado = true;
+                    break;
+                }
+            }
+        }
+
+        if(!estadoCambiado){
+            throw new EntityNotValidException("No se pudo habilitar la empresa");
+        }
+
+        UsuarioEstadoUsuario nuevoUsuarioEstadoUsuario = new UsuarioEstadoUsuario();
+        nuevoUsuarioEstadoUsuario.setEstadoUsuario(estado);
+        nuevoUsuarioEstadoUsuario.setFechaHoraAlta(new Date());
+
+        if (usuarioEmpresa.getUsuarioEstadoList() == null) {
+            usuarioEmpresa.setUsuarioEstadoList(new java.util.ArrayList<>());
+        }
+        
+        usuarioEmpresa.getUsuarioEstadoList().add(nuevoUsuarioEstadoUsuario);
+
+        usuarioService.save(usuarioEmpresa);
+
+        if(estado.getNombreEstadoUsuario().equals(EstadoUsuarioEnum.HABILITADO.toString())){
+            enviarMailAEmpresaHabilitada(usuarioEmpresa.getCorreoUsuario(), empresa.getNombreEmpresa());
+        } else if(estado.getNombreEstadoUsuario().equals(EstadoUsuarioEnum.RECHAZADO.toString())){
+            empresa.setFechaHoraBaja(new Date());
+            empresaRepository.save(empresa);
+            enviarMailAEmpresaRechazada(usuarioEmpresa.getCorreoUsuario(), empresa.getNombreEmpresa());
+        }
+
         return true;
     }
+
 
     @Override
     public Optional<Empresa> buscarEmpresaPorIdUsuario(Long idUsuario){

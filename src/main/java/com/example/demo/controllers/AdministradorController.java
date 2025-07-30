@@ -27,10 +27,17 @@ public class AdministradorController {
     }
 
     @Operation(summary = "Se habilita una empresa")
-    @PutMapping("/habilitaciones/{idEmpresa}")
+    @PutMapping("/habilitaciones/habilitar/{idEmpresa}")
     public ResponseEntity<?> habilitarEmpresa(@PathVariable Long idEmpresa){
-        empresaService.habilitarEmpresa(idEmpresa);
+        empresaService.rechazarOAceptarEmpresa(idEmpresa, "Habilitado"); //habilitarEmpresa(idEmpresa);
         return ResponseEntity.status(HttpStatus.OK).body("La empresa se ha habilitado exitosamente.");
+    }
+
+    @Operation(summary = "Se rechaza una empresa")
+    @PutMapping("/habilitaciones/rechazar/{idEmpresa}")
+    public ResponseEntity<?> rechazarEmpresa(@PathVariable Long idEmpresa){
+        empresaService.rechazarOAceptarEmpresa(idEmpresa, "Rechazado"); 
+        return ResponseEntity.status(HttpStatus.OK).body("La empresa se ha rechazado exitosamente.");
     }
 
     @Operation(summary = "Ver empresas pendientes por habilitar")

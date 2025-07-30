@@ -23,7 +23,9 @@ public interface EmpresaService extends BaseService<Empresa, Long>{
 
    public List<EmpresaPendienteHabilitacionDTO> buscarEmpresasPendientesDeHabilitacion(String nombreEstado);
 
-   public Boolean habilitarEmpresa(Long idEmpresa);
+   //public Boolean habilitarEmpresa(Long idEmpresa);
+
+   public Boolean rechazarOAceptarEmpresa(Long idEmpresa, String nuevoEstado);
 
    public Optional<Empresa> buscarEmpresaPorIdUsuario(Long idUsuario);
 }
