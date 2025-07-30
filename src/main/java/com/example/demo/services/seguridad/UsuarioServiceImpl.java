@@ -198,7 +198,6 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
         }
         if(idRol == null){
             throw new EntityNotValidException("El id del rol no puede estar vacio");
-
         }
 
         Optional<UsuarioRol> actual = usuarioRolRepository.buscarUsuarioRolActualSegunIdUsuario(idUsuario);
@@ -208,6 +207,11 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
         UsuarioRol usuarioRolActual = actual.get();
         if(idRol == usuarioRolActual.getRol().getId()){
             throw new EntityAlreadyExistsException("El usuario actualmente posee el rol ingresado");
+        }
+
+        Boolean sonMismaCategoria = verificarQueRolPerteneceACategoria(idRol, usuarioRolActual.getRol().getId());
+        if(!sonMismaCategoria){
+            throw new EntityNotValidException("El rol ingresado no pertenece a la categoria de roles del usuario");
         }
 
         Optional<UsuarioRol> usuarioRolExistenteOptional = usuarioRolRepository.buscarUsuarioRolAnteriorSegunIdUsuarioEIdRol(idRol, idUsuario);
@@ -229,6 +233,17 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
 
         usuarioRolActual.setFechaHoraBaja(new Date());
         usuarioRolRepository.save(usuarioRolActual);
+    }
+
+    private Boolean verificarQueRolPerteneceACategoria(Long idRolNuevo, Long idRolActual){
+        Rol rolNuevo = rolService.findById(idRolNuevo);
+        Rol rolActual = rolService.findById(idRolActual);
+
+        if(rolActual.getCategoriaRol().getId() != rolNuevo.getCategoriaRol().getId()){
+            return false;
+        } else {
+            return true;
+        }
     }
 
 }
