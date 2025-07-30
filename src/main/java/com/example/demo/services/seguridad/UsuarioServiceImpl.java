@@ -74,7 +74,7 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
         usuarioRepository.save(nuevoUsuario);
 
         //Seteo del estado
-        EstadoUsuario estadoUsuario = estadoUsuarioService.obtenerEstadoPorCodigo(usuarioDTO.getEstadoUsuarioInicial()); //obtenerEstadoPorNombre(usuarioDTO.getEstadoUsuarioInicial());
+        EstadoUsuario estadoUsuario = estadoUsuarioService.obtenerEstadoPorCodigo(usuarioDTO.getEstadoUsuarioInicial()); 
         UsuarioEstadoUsuario usuarioEstadoUsuario = new UsuarioEstadoUsuario();
         usuarioEstadoUsuario.setEstadoUsuario(estadoUsuario);
         usuarioEstadoUsuario.setFechaHoraAlta(new Date());
@@ -82,6 +82,13 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
         nuevoUsuario.getUsuarioEstadoList().add(usuarioEstadoUsuario);
 
         //Seteo del rol
+        Rol rol = rolService.buscarRolPorCodigoRol(usuarioDTO.getRolUsuario());
+        UsuarioRol nuevoUsuarioRol = new UsuarioRol();
+        nuevoUsuarioRol.setFechaHoraAlta(new Date());
+        nuevoUsuarioRol.setUsuario(nuevoUsuario);
+        nuevoUsuarioRol.setRol(rol);
+
+        usuarioRolRepository.save(nuevoUsuarioRol);
 
 
         return usuarioRepository.save(nuevoUsuario);

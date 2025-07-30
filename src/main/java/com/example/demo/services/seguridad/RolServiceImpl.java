@@ -196,4 +196,13 @@ public class RolServiceImpl extends BaseServiceImpl<Rol, Long> implements RolSer
         }
         return rolOptional.get();
     }
+
+    @Override
+    public Rol buscarRolPorCodigoRol(String codigoRol){
+        Rol rol = rolRepository.findByCodigoRolAndFechaHoraBajaIsNull(codigoRol);
+        if(rol == null){
+            throw new EntityNotFoundException("No se encontró el rol buscado con el código ingresado");
+        }
+        return rol;
+    }
 }

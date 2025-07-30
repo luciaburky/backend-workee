@@ -87,6 +87,7 @@ public class EmpresaServiceImpl extends BaseServiceImpl<Empresa, Long> implement
     }
 
     @Override
+    @Transactional
     public Empresa crearEmpresa(EmpresaRequestDTO empresaRequestDTO){
         Empresa nuevaEmpresa = empresaMapper.toEntity(empresaRequestDTO);
         Rubro rubroEmpresa = rubroService.findById(empresaRequestDTO.getIdRubro());
