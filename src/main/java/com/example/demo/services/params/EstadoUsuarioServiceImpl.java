@@ -1,5 +1,6 @@
 package com.example.demo.services.params;
 
+import java.text.Normalizer;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -34,7 +35,30 @@ public class EstadoUsuarioServiceImpl extends BaseServiceImpl<EstadoUsuario,Long
         EstadoUsuario estadoUsuario = new EstadoUsuario();
         estadoUsuario.setNombreEstadoUsuario(estadoUsuarioRequestDTO.getNombreEstadoUsuario());
         estadoUsuario.setFechaHoraAlta(new Date());
+
+        //Generar un codigo para identificarlo
+        String codigoEstadoUsuario = generarCodigoUnico(estadoUsuarioRequestDTO.getNombreEstadoUsuario());
+        estadoUsuario.setCodigoEstadoUsuario(codigoEstadoUsuario);
+        
         return estadoUsuarioRepository.save(estadoUsuario);
+    }
+
+    private String generarCodigoUnico(String nombreEstadoUsuario){
+        String base = normalizar(nombreEstadoUsuario);
+        String codigoEstado = base;
+        int contador = 1;
+
+        while(estadoUsuarioRepository.existsByCodigoEstadoUsuario(codigoEstado)){
+            codigoEstado = base + "_" + contador;
+            contador++;
+        }
+        return codigoEstado;
+    }
+
+    private String normalizar(String texto){
+        String sinAcentos = Normalizer.normalize(texto, Normalizer.Form.NFD)
+            .replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+        return sinAcentos.trim().toUpperCase().replaceAll("[^A-Z0-9]", "_");
     }
 
     @Override
