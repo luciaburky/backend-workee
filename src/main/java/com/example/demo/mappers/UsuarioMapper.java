@@ -10,6 +10,7 @@ import com.example.demo.entities.seguridad.Usuario;
 public interface UsuarioMapper {
 
     //@Mapping(target = "urlFotoUsuario", ignore = true)
+    @Mapping(target = "usuarioEstadoList", ignore = true)
     Usuario toEntity(UsuarioDTO dto);
 }
  

@@ -55,7 +55,7 @@ public class UsuarioController {
     }
 
     @Operation(summary = "Trae a todos los usuarios que se encuentran activos según el rol ingresado")
-    @GetMapping("/{nombreRol}")
+    @GetMapping("/porRol/{nombreRol}")
     public ResponseEntity<?> buscarUsuariosActivosPorRol(@PathVariable String nombreRol){
         List<UsuarioResponseDTO> usuarios = usuarioService.buscarUsuariosActivosPorRol(nombreRol);
         return ResponseEntity.status(HttpStatus.OK).body(usuarios);
@@ -73,6 +73,13 @@ public class UsuarioController {
     public ResponseEntity<?> modificarRolDeUsuario(@PathVariable Long idUsuario, @RequestBody Long idRol){
         usuarioService.modificarRolUsuario(idUsuario, idRol);
         return ResponseEntity.status(HttpStatus.OK).body("Rol modificado correctamente");
+    }
+
+    @Operation(summary = "Visualizar detalle de usuario")
+    @GetMapping("/{idUsuario}")
+    public ResponseEntity<?> visualizarDetalleUsuario(@PathVariable Long idUsuario){
+        UsuarioResponseDTO usuario = usuarioService.visualizarDetalleUsuario(idUsuario);
+        return ResponseEntity.status(HttpStatus.OK).body(usuario);
     }
 
 }

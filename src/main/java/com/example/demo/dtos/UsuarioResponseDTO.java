@@ -12,4 +12,5 @@ public class UsuarioResponseDTO {
     private String urlFotoUsuario;
     private String correoUsuario;
     private String rolActualusuario;
+    private String nombreEntidad;
 }

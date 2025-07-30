@@ -24,6 +24,7 @@ import com.example.demo.mappers.UsuarioMapper;
 import com.example.demo.repositories.seguridad.UsuarioRepository;
 import com.example.demo.repositories.seguridad.UsuarioRolRepository;
 import com.example.demo.services.BaseServiceImpl;
+import com.example.demo.services.NombreEntidadResolverService;
 import com.example.demo.services.mail.MailService;
 import com.example.demo.services.params.EstadoUsuarioService;
 
@@ -37,12 +38,12 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
     private final EstadoUsuarioService estadoUsuarioService;
     private final UsuarioRolRepository usuarioRolRepository;
     private final RolService rolService;
-
+    private final NombreEntidadResolverService nombreEntidadResolverService;
     private final MailService mailService;
 
     //private final BCrypt
 
-    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper, EstadoUsuarioService estadoUsuarioService, MailService mailService, UsuarioRolRepository usuarioRolRepository, RolService rolService) {
+    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper, EstadoUsuarioService estadoUsuarioService, MailService mailService, UsuarioRolRepository usuarioRolRepository, RolService rolService, NombreEntidadResolverService nombreEntidadResolverService) {
         super(usuarioRepository);
         this.usuarioRepository = usuarioRepository;
         this.usuarioMapper = usuarioMapper;
@@ -50,6 +51,7 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
         this.mailService = mailService;
         this.usuarioRolRepository = usuarioRolRepository;
         this.rolService = rolService;
+        this.nombreEntidadResolverService = nombreEntidadResolverService;
     }
 
 
@@ -244,6 +246,28 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
         } else {
             return true;
         }
+    }
+
+    @Override
+    public UsuarioResponseDTO visualizarDetalleUsuario(Long idUsuario){
+        Usuario usuario = findById(idUsuario);
+
+        UsuarioResponseDTO usuarioResponseDTO = new UsuarioResponseDTO();
+        usuarioResponseDTO.setCorreoUsuario(usuario.getCorreoUsuario());
+        usuarioResponseDTO.setIdUsuario(idUsuario);
+        usuarioResponseDTO.setUrlFotoUsuario(usuario.getUrlFotoUsuario());
+
+        String nombreUsuario = nombreEntidadResolverService.obtenerNombreEntidadPorIdUsuario(idUsuario);
+        usuarioResponseDTO.setNombreEntidad(nombreUsuario);
+        
+        Optional<UsuarioRol> usuarioRolOptional = usuarioRolRepository.buscarUsuarioRolActualSegunIdUsuario(idUsuario);
+
+        if(usuarioRolOptional.isPresent()){
+            UsuarioRol usuarioRol = usuarioRolOptional.get();
+            usuarioResponseDTO.setRolActualusuario(usuarioRol.getRol().getNombreRol());
+        }
+
+        return usuarioResponseDTO;
     }
 
 }
