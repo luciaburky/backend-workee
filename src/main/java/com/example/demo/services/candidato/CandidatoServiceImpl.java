@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.CandidatoRequestDTO;
 import com.example.demo.entities.candidato.Candidato;
+import com.example.demo.entities.candidato.CandidatoCV;
 import com.example.demo.entities.candidato.CandidatoHabilidad;
 import com.example.demo.entities.params.EstadoBusqueda;
 import com.example.demo.entities.params.Genero;
@@ -37,8 +38,9 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
     private final GeneroService generoService;
     private final EstadoBusquedaService estadoBusquedaService;
     private final HabilidadService habilidadService;
+    private final CandidatoCVService candidatoCVService;
 
-    public CandidatoServiceImpl(CandidatoRepository candidatoRepository, CandidatoMapper candidatoMapper, ProvinciaService provinciaService, GeneroService generoService, EstadoBusquedaService estadoBusquedaService, HabilidadService habilidadService) {
+    public CandidatoServiceImpl(CandidatoRepository candidatoRepository, CandidatoMapper candidatoMapper, ProvinciaService provinciaService, GeneroService generoService, EstadoBusquedaService estadoBusquedaService, HabilidadService habilidadService, CandidatoCVService candidatoCVService) {
         super(candidatoRepository);
         this.candidatoRepository = candidatoRepository;
         this.candidatoMapper = candidatoMapper;
@@ -46,6 +48,7 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
         this.generoService = generoService;
         this.estadoBusquedaService = estadoBusquedaService;
         this.habilidadService = habilidadService;
+        this.candidatoCVService = candidatoCVService;
     }
 
     @Override
@@ -79,6 +82,12 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
         }
 
         //Falta: CandidatoCV
+        if(candidatoDTO.getEnlaceCV() != null && !candidatoDTO.getEnlaceCV().isEmpty()) {
+            CandidatoCV candidatoCV = candidatoCVService.actualizarOCrearCV(nuevoCandidato, candidatoDTO.getEnlaceCV());
+            nuevoCandidato.setCandidatoCV(candidatoCV);
+        }
+
+        nuevoCandidato.setFechaHoraAlta(new Date());
         nuevoCandidato.setProvincia(provincia);
         nuevoCandidato.setGenero(genero);
         
@@ -106,6 +115,8 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
 
         // Actualizar habilidades
         actualizarHabilidadesCandidato(candidatoOriginal, candidatoDTO);
+        // Actualizar o crear CV
+        candidatoCVService.actualizarOCrearCV(candidatoOriginal, candidatoDTO.getEnlaceCV());
         
         return candidatoRepository.save(candidatoOriginal);
     }

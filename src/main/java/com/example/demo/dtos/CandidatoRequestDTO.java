@@ -1,7 +1,6 @@
 package com.example.demo.dtos;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 import jakarta.validation.constraints.Email;
@@ -38,6 +37,9 @@ public class CandidatoRequestDTO {
     //Puede seleccionarlo en la creacion o posteriormente
     private List<Long> idHabilidades;
 
+    // Puede seleccionarlo en la creacion o posteriormente
+    private String enlaceCV;
+
     @NotBlank(message = "El correo electrónico es obligatorio")
     @Email(message = "Debe ser un correo válido")
     private String correoCandidato;
@@ -49,7 +51,5 @@ public class CandidatoRequestDTO {
     @NotBlank(message = "Debes repetir la contraseña")
     @Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres")
     private String repetirContrasenia;
-
-    //Faltaria: CandidatoCV y CandidatoHabilidades
     
 }

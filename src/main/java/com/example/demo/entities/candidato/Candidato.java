@@ -1,7 +1,6 @@
 package com.example.demo.entities.candidato;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 import com.example.demo.entities.Base;
@@ -15,6 +14,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -66,6 +66,8 @@ public class Candidato extends Base {
     @JoinColumn(name = "id_candidato")
     private List<CandidatoHabilidad> habilidades;
 
-    // Falta: CandidatoCV
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "id_cv", nullable = true)
+    private CandidatoCV candidatoCV;
 }
 
