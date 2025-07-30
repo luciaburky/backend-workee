@@ -120,51 +120,6 @@ public class EmpresaServiceImpl extends BaseServiceImpl<Empresa, Long> implement
         return empresaRepository.buscarEmpresasPendientesParaHabilitar(nombreEstado);
     }
 
-    /* 
-    @Override
-    @Transactional
-    public Boolean habilitarEmpresa(Long idEmpresa){
-        Empresa empresa = findById(idEmpresa);
-        Usuario usuarioEmpresa = empresa.getUsuario();
-
-        if(usuarioEmpresa == null){
-            throw new EntityNotValidException("La empresa no posee un usuario asociado");
-        }
-
-        EstadoUsuario estadoPendiente =  estadoUsuarioService.obtenerEstadoPorNombre("Pendiente");
-        EstadoUsuario estadoHabilitado =  estadoUsuarioService.obtenerEstadoPorNombre("Habilitado");
-
-
-        boolean estadoCambiado = false;
-        if(usuarioEmpresa.getUsuarioEstadoList() != null){
-            for(UsuarioEstadoUsuario usuarioEstadoUsuario: usuarioEmpresa.getUsuarioEstadoList()){
-                if(usuarioEstadoUsuario.getFechaHoraBaja() == null && usuarioEstadoUsuario.getEstadoUsuario().equals(estadoPendiente)){
-                    usuarioEstadoUsuario.setFechaHoraBaja(new Date());
-                    estadoCambiado = true;
-                    break;
-                }
-            }
-        }
-        if(!estadoCambiado){
-            throw new EntityNotValidException("No se pudo habilitar la empresa");
-        }
-
-        UsuarioEstadoUsuario nuevoUsuarioEstadoUsuario = new UsuarioEstadoUsuario();
-        nuevoUsuarioEstadoUsuario.setEstadoUsuario(estadoHabilitado);
-        nuevoUsuarioEstadoUsuario.setFechaHoraAlta(new Date());
-
-        if (usuarioEmpresa.getUsuarioEstadoList() == null) {
-            usuarioEmpresa.setUsuarioEstadoList(new java.util.ArrayList<>());
-        }
-        
-        usuarioEmpresa.getUsuarioEstadoList().add(nuevoUsuarioEstadoUsuario);
-
-        usuarioService.save(usuarioEmpresa);
-        enviarMailAEmpresaHabilitada(usuarioEmpresa.getCorreoUsuario(), empresa.getNombreEmpresa());
-
-        return true;
-    }*/
-
     private void enviarMailAEmpresaHabilitada(String mailTo, String nombreEmpresa){
         String templateName = "empresaHabilitada";
         Map<String, Object> variables = new HashMap<>();

@@ -65,7 +65,7 @@ public class UsuarioController {
     @PutMapping("/{idUsuario}")
     public ResponseEntity<?> darDeBajaUsuario(@PathVariable Long idUsuario){
         this.bajaOrquestadorService.darDeBajaUsuarioYEntidadRelacionada(idUsuario);
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        return ResponseEntity.status(HttpStatus.OK).body("Usuario dado de baja correctamente");
     }
 
 }

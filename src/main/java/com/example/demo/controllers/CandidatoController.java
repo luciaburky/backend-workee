@@ -85,4 +85,11 @@ public class CandidatoController {
         return ResponseEntity.ok().body(habilidadesActualizadas);
     }
         */
+
+    @Operation(summary = "Elimina una cuenta de candidato y todo lo relacionado a ella")
+    @DeleteMapping("/{idCandidato}")
+    public ResponseEntity<?> eliminarCandidato(@PathVariable Long idCandidato){
+        candidatoService.eliminarCuentaCandidato(idCandidato);
+        return ResponseEntity.status(HttpStatus.OK).body("Cuenta de candidato eliminada correctamente");
+    }
 }

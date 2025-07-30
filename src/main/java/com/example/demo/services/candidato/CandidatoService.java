@@ -1,7 +1,7 @@
 package com.example.demo.services.candidato;
 
 import java.util.List;
-
+import java.util.Optional;
 
 import com.example.demo.dtos.CandidatoRequestDTO;
 import com.example.demo.entities.candidato.Candidato;
@@ -23,4 +23,8 @@ public interface CandidatoService extends BaseService<Candidato, Long> {
     List<Habilidad> eliminarHabilidad(Long idCandidato, Long idHabilidad);
 
     List<Habilidad> obtenerHabilidadesPorTipo(Long idCandidato, Long idTipoHabilidad);
+
+    public Optional<Candidato> buscarCandidatoPorIdUsuario(Long idUsuario);
+
+    public Boolean eliminarCuentaCandidato(Long idCandidato);
 }

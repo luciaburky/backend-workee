@@ -51,7 +51,7 @@ public class EmpresaController {
     @DeleteMapping("/{idEmpresa}")
     public ResponseEntity<?> eliminarEmpresa(@PathVariable Long idEmpresa){
         bajaOrquestadorService.darDeBajaEmpresaYRelacionados(idEmpresa);
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        return ResponseEntity.status(HttpStatus.OK).body("Cuenta de empresa eliminada correctamente");
     }
 
     @Operation(summary = "Permiste a una empresa registrarse")

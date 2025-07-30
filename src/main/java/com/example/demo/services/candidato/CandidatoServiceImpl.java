@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -25,6 +26,7 @@ import com.example.demo.services.params.EstadoBusquedaService;
 import com.example.demo.services.params.GeneroService;
 import com.example.demo.services.params.HabilidadService;
 import com.example.demo.services.params.ProvinciaService;
+import com.example.demo.services.seguridad.UsuarioService;
 
 import jakarta.transaction.Transactional;
 
@@ -37,8 +39,9 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
     private final GeneroService generoService;
     private final EstadoBusquedaService estadoBusquedaService;
     private final HabilidadService habilidadService;
+    private final UsuarioService usuarioService;
 
-    public CandidatoServiceImpl(CandidatoRepository candidatoRepository, CandidatoMapper candidatoMapper, ProvinciaService provinciaService, GeneroService generoService, EstadoBusquedaService estadoBusquedaService, HabilidadService habilidadService) {
+    public CandidatoServiceImpl(CandidatoRepository candidatoRepository, CandidatoMapper candidatoMapper, ProvinciaService provinciaService, GeneroService generoService, EstadoBusquedaService estadoBusquedaService, HabilidadService habilidadService, UsuarioService usuarioService) {
         super(candidatoRepository);
         this.candidatoRepository = candidatoRepository;
         this.candidatoMapper = candidatoMapper;
@@ -46,6 +49,7 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
         this.generoService = generoService;
         this.estadoBusquedaService = estadoBusquedaService;
         this.habilidadService = habilidadService;
+        this.usuarioService = usuarioService;
     }
 
     @Override
@@ -223,5 +227,26 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
                         .map(CandidatoHabilidad::getHabilidad)
                         .filter(h -> h.getTipoHabilidad().getId().equals(idTipoHabilidad))
                         .collect(Collectors.toList());  
+    }
+
+    @Override
+    public Optional<Candidato> buscarCandidatoPorIdUsuario(Long idUsuario){
+        if(idUsuario == null){
+            throw new IllegalArgumentException("El id del usuario no puede estar vacío");
+        }
+        Optional<Candidato> candidato = candidatoRepository.findByUsuarioId(idUsuario);
+
+        return candidato;
+
+    }
+
+    @Override
+    @Transactional
+    public Boolean eliminarCuentaCandidato(Long idCandidato){
+        Candidato candidato = findById(idCandidato);
+        candidato.setFechaHoraBaja(new Date());
+        usuarioService.darDeBajaUsuario(candidato.getUsuario().getId());
+        candidatoRepository.save(candidato);
+        return true;
     }
 }   

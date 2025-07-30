@@ -6,10 +6,12 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.example.demo.entities.candidato.Candidato;
 import com.example.demo.entities.empresa.EmpleadoEmpresa;
 import com.example.demo.entities.empresa.Empresa;
 import com.example.demo.entities.seguridad.Usuario;
 import com.example.demo.exceptions.EntityAlreadyDisabledException;
+import com.example.demo.services.candidato.CandidatoService;
 import com.example.demo.services.empresa.EmpleadoEmpresaService;
 import com.example.demo.services.empresa.EmpresaService;
 import com.example.demo.services.seguridad.UsuarioService;
@@ -21,11 +23,13 @@ public class BajaOrquestadorService {
     private final EmpresaService empresaService;
     private final EmpleadoEmpresaService empleadoEmpresaService;
     private final UsuarioService usuarioService;
+    private final CandidatoService candidatoService;
 
-    public BajaOrquestadorService(EmpresaService empresaService, EmpleadoEmpresaService empleadoEmpresaService, UsuarioService usuarioService){
+    public BajaOrquestadorService(EmpresaService empresaService, EmpleadoEmpresaService empleadoEmpresaService, UsuarioService usuarioService, CandidatoService candidatoService){
         this.empresaService = empresaService;
         this.empleadoEmpresaService = empleadoEmpresaService;
         this.usuarioService = usuarioService;
+        this.candidatoService = candidatoService;
     }
 
     
@@ -67,8 +71,13 @@ public class BajaOrquestadorService {
             return;
         }
 
-        //TODO: FALTARIA SI LA ENTIDAD RELACIONADA ES CANDIDATO, AGREGAR ESA PARTE ACA
-
-        usuarioService.darDeBajaUsuario(usuario.getId());
+        Optional<Candidato> candidatoOptional = candidatoService.buscarCandidatoPorIdUsuario(idUsuario);
+        if(candidatoOptional.isPresent()){
+            Candidato candidato = candidatoOptional.get();
+            candidato.setFechaHoraBaja(new Date());
+            candidatoService.save(candidato);
+            usuarioService.darDeBajaUsuario(usuario.getId());
+            return;
+        }
     }
 }
