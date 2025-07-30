@@ -10,7 +10,8 @@ import com.example.demo.dtos.EmpleadoEmpresaRequestDTO;
 import com.example.demo.dtos.UsuarioDTO;
 import com.example.demo.entities.empresa.EmpleadoEmpresa;
 import com.example.demo.entities.empresa.Empresa;
-import com.example.demo.entities.params.EstadoUsuarioEnum;
+import com.example.demo.entities.params.CodigoEstadoUsuario;
+import com.example.demo.entities.seguridad.CodigoRol;
 import com.example.demo.entities.seguridad.Usuario;
 import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.mappers.EmpleadoEmpresaMapper;
@@ -48,7 +49,7 @@ public class EmpleadoEmpresaServiceImpl extends BaseServiceImpl<EmpleadoEmpresa,
             throw new EntityNotValidException("Las contraseñas deben coincidir");
         }
 
-        UsuarioDTO dtoUsuario = new UsuarioDTO(empleadoEmpresaRequestDTO.getCorreoEmpleadoEmpresa(), empleadoEmpresaRequestDTO.getContrasenia(), empleadoEmpresaRequestDTO.getUrlFotoPerfil(), EstadoUsuarioEnum.HABILITADO.toString());
+        UsuarioDTO dtoUsuario = new UsuarioDTO(empleadoEmpresaRequestDTO.getCorreoEmpleadoEmpresa(), empleadoEmpresaRequestDTO.getContrasenia(), empleadoEmpresaRequestDTO.getUrlFotoPerfil(), CodigoEstadoUsuario.HABILITADO, CodigoRol.EMPLEADO_EMPRESA);
         Usuario usuarioCreado = usuarioService.registrarUsuario(dtoUsuario);
 
         Empresa empresa = empresaService.findById(empleadoEmpresaRequestDTO.getIdEmpresa());

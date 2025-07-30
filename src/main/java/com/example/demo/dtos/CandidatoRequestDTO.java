@@ -50,5 +50,8 @@ public class CandidatoRequestDTO {
     private String repetirContrasenia;
 
     //Faltaria: CandidatoCV y CandidatoHabilidades
+
+    private String urlFotoPerfil;
+    private String urlCV;
     
 }

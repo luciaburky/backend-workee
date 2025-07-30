@@ -40,4 +40,7 @@ public class Rol extends Base{
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "id_rol")
     private List<PermisoRol> permisoRolList;
+
+    @Column(name = "codigo_rol", unique = true)
+    private String codigoRol;
 }

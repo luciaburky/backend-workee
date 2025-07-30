@@ -15,7 +15,7 @@ import com.example.demo.repositories.params.EstadoUsuarioRepository;
 import com.example.demo.services.BaseServiceImpl;
 
 import jakarta.transaction.Transactional;
-
+ 
 @Service
 public class EstadoUsuarioServiceImpl extends BaseServiceImpl<EstadoUsuario,Long> implements EstadoUsuarioService {
     private final EstadoUsuarioRepository estadoUsuarioRepository;
@@ -90,9 +90,12 @@ public class EstadoUsuarioServiceImpl extends BaseServiceImpl<EstadoUsuario,Long
     }
 
     @Override
-    public EstadoUsuario obtenerEstadoPorNombre(String nombreEstado){
-        return estadoUsuarioRepository.findByNombreEstadoUsuarioIgnoreCase(nombreEstado)
-                .orElseThrow(() -> new EntityNotFoundException("No se ha encontrado un EstadoUsuario para el nombre ingresado"));
+    public EstadoUsuario obtenerEstadoPorCodigo(String codigoEstado){
+        EstadoUsuario estadoUsuario = estadoUsuarioRepository.findByCodigoEstadoUsuarioAndFechaHoraBajaIsNull(codigoEstado);
+        if(estadoUsuario == null){
+            throw new EntityNotFoundException("No se encontró el estado usuario buscado");
+        }
+        return estadoUsuario;
     }
 }
 

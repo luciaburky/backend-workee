@@ -17,6 +17,7 @@ public interface CandidatoMapper {
     @Mapping(target = "genero", ignore = true)
     @Mapping(target = "estadoBusqueda", ignore = true)
     @Mapping(target = "habilidades", ignore = true)
+    @Mapping(target = "usuario", ignore = true)
     Candidato toEntity(CandidatoRequestDTO dto);
 
     // Mapea actualización parcial, ignorando los atributos que se setean manualmente
@@ -25,5 +26,9 @@ public interface CandidatoMapper {
     @Mapping(target = "genero", ignore = true)
     @Mapping(target = "estadoBusqueda", ignore = true)
     @Mapping(target = "habilidades", ignore = true)
+    @Mapping(target = "usuario", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "fechaHoraBaja", ignore = true)
+    @Mapping(target = "fechaHoraAlta", ignore = true)
     Candidato updateEntityFromDto(CandidatoRequestDTO dto, @MappingTarget Candidato entity);
-}
+} 

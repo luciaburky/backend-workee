@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dtos.EmpresaPendienteHabilitacionDTO;
+import com.example.demo.entities.params.CodigoEstadoUsuario;
 import com.example.demo.services.empresa.EmpresaService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,14 +30,14 @@ public class AdministradorController {
     @Operation(summary = "Se habilita una empresa")
     @PutMapping("/habilitaciones/habilitar/{idEmpresa}")
     public ResponseEntity<?> habilitarEmpresa(@PathVariable Long idEmpresa){
-        empresaService.rechazarOAceptarEmpresa(idEmpresa, "Habilitado"); //habilitarEmpresa(idEmpresa);
+        empresaService.rechazarOAceptarEmpresa(idEmpresa, CodigoEstadoUsuario.HABILITADO); //habilitarEmpresa(idEmpresa);
         return ResponseEntity.status(HttpStatus.OK).body("La empresa se ha habilitado exitosamente.");
     }
 
     @Operation(summary = "Se rechaza una empresa")
     @PutMapping("/habilitaciones/rechazar/{idEmpresa}")
     public ResponseEntity<?> rechazarEmpresa(@PathVariable Long idEmpresa){
-        empresaService.rechazarOAceptarEmpresa(idEmpresa, "Rechazado"); 
+        empresaService.rechazarOAceptarEmpresa(idEmpresa, CodigoEstadoUsuario.RECHAZADO); 
         return ResponseEntity.status(HttpStatus.OK).body("La empresa se ha rechazado exitosamente.");
     }
 

@@ -18,6 +18,6 @@ public interface EstadoUsuarioService extends BaseService<EstadoUsuario, Long>{
 
     public Boolean habilitarEstadoUsuario(Long id);
 
-    public EstadoUsuario obtenerEstadoPorNombre(String nombreEstado);
+    public EstadoUsuario obtenerEstadoPorCodigo(String codigoEstado);
 
 }

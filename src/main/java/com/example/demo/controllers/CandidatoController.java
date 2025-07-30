@@ -35,12 +35,12 @@ public class CandidatoController {
         this.candidatoService = candidatoService;
     }
 
-    @Operation(summary = "Crear un nuevo Candidato")
+/*@Operation(summary = "Crear un nuevo Candidato")
     @PostMapping
         public ResponseEntity<Candidato> crearCandidato(@Valid @RequestBody CandidatoRequestDTO candidatoDTO) {
         Candidato nuevoCandidato = candidatoService.crearCandidato(candidatoDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoCandidato);
-    }
+    }*/
 
     @Operation(summary = "Actualizar un Candidato")
     @PutMapping("/{id}")
@@ -91,5 +91,13 @@ public class CandidatoController {
     public ResponseEntity<?> eliminarCandidato(@PathVariable Long idCandidato){
         candidatoService.eliminarCuentaCandidato(idCandidato);
         return ResponseEntity.status(HttpStatus.OK).body("Cuenta de candidato eliminada correctamente");
+    }
+
+    
+    @Operation(summary = "Permiste a un candidato registrarse")
+    @PostMapping("")
+    public ResponseEntity<?> registrarCandidato(@Valid @RequestBody CandidatoRequestDTO candidatoRequestDTO){
+        //Empresa empresaNueva = empresaService.crearEmpresa();
+        return ResponseEntity.status(HttpStatus.CREATED).body(null);
     }
 }

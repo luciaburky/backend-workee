@@ -13,10 +13,11 @@ import com.example.demo.dtos.EmpresaRequestDTO;
 import com.example.demo.dtos.FiltrosEmpresaRequestDTO;
 import com.example.demo.dtos.UsuarioDTO;
 import com.example.demo.entities.empresa.Empresa;
+import com.example.demo.entities.params.CodigoEstadoUsuario;
 import com.example.demo.entities.params.EstadoUsuario;
-import com.example.demo.entities.params.EstadoUsuarioEnum;
 import com.example.demo.entities.params.Provincia;
 import com.example.demo.entities.params.Rubro;
+import com.example.demo.entities.seguridad.CodigoRol;
 import com.example.demo.entities.seguridad.Usuario;
 import com.example.demo.entities.seguridad.UsuarioEstadoUsuario;
 import com.example.demo.exceptions.EntityNotValidException;
@@ -91,7 +92,7 @@ public class EmpresaServiceImpl extends BaseServiceImpl<Empresa, Long> implement
         Rubro rubroEmpresa = rubroService.findById(empresaRequestDTO.getIdRubro());
         Provincia provinciaEmpresa = provinciaService.findById(empresaRequestDTO.getIdProvincia());
         
-        UsuarioDTO usuarioDTO = new UsuarioDTO(empresaRequestDTO.getEmailEmpresa(), empresaRequestDTO.getContrasenia(), empresaRequestDTO.getUrlFotoPerfil(), EstadoUsuarioEnum.PENDIENTE.toString());
+        UsuarioDTO usuarioDTO = new UsuarioDTO(empresaRequestDTO.getEmailEmpresa(), empresaRequestDTO.getContrasenia(), empresaRequestDTO.getUrlFotoPerfil(), CodigoEstadoUsuario.PENDIENTE, CodigoRol.ADMIN_EMPRESA);
         Usuario nuevoUsuario = usuarioService.registrarUsuario(usuarioDTO);
 
         nuevaEmpresa.setRubro(rubroEmpresa);
@@ -156,8 +157,8 @@ public class EmpresaServiceImpl extends BaseServiceImpl<Empresa, Long> implement
             throw new EntityNotValidException("La empresa no posee un usuario asociado");
         }
 
-        EstadoUsuario estadoPendiente =  estadoUsuarioService.obtenerEstadoPorNombre("Pendiente");
-        EstadoUsuario estado =  estadoUsuarioService.obtenerEstadoPorNombre(nuevoEstado);
+        EstadoUsuario estadoPendiente =  estadoUsuarioService. obtenerEstadoPorCodigo(CodigoEstadoUsuario.PENDIENTE);
+        EstadoUsuario estado =  estadoUsuarioService.obtenerEstadoPorCodigo(nuevoEstado);//obtenerEstadoPorNombre(nuevoEstado);
 
 
         boolean estadoCambiado = false;
@@ -187,9 +188,9 @@ public class EmpresaServiceImpl extends BaseServiceImpl<Empresa, Long> implement
 
         usuarioService.save(usuarioEmpresa);
 
-        if(estado.getNombreEstadoUsuario().equals(EstadoUsuarioEnum.HABILITADO.toString())){
+        if(estado.getCodigoEstadoUsuario().equals(CodigoEstadoUsuario.HABILITADO)){
             enviarMailAEmpresaHabilitada(usuarioEmpresa.getCorreoUsuario(), empresa.getNombreEmpresa());
-        } else if(estado.getNombreEstadoUsuario().equals(EstadoUsuarioEnum.RECHAZADO.toString())){
+        } else if(estado.getCodigoEstadoUsuario().equals(CodigoEstadoUsuario.RECHAZADO)){
             empresa.setFechaHoraBaja(new Date());
             empresaRepository.save(empresa);
             enviarMailAEmpresaRechazada(usuarioEmpresa.getCorreoUsuario(), empresa.getNombreEmpresa());

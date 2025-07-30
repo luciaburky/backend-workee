@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.RecuperarContraseniaDTO;
@@ -41,9 +42,9 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
     private final NombreEntidadResolverService nombreEntidadResolverService;
     private final MailService mailService;
 
-    //private final BCrypt
+    //private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper, EstadoUsuarioService estadoUsuarioService, MailService mailService, UsuarioRolRepository usuarioRolRepository, RolService rolService, NombreEntidadResolverService nombreEntidadResolverService) {
+    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper, EstadoUsuarioService estadoUsuarioService, MailService mailService, UsuarioRolRepository usuarioRolRepository, RolService rolService, NombreEntidadResolverService nombreEntidadResolverService/* , BCryptPasswordEncoder bCryptPasswordEncoder*/) {
         super(usuarioRepository);
         this.usuarioRepository = usuarioRepository;
         this.usuarioMapper = usuarioMapper;
@@ -52,6 +53,7 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
         this.usuarioRolRepository = usuarioRolRepository;
         this.rolService = rolService;
         this.nombreEntidadResolverService = nombreEntidadResolverService;
+        //this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
 
@@ -72,19 +74,24 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
         usuarioRepository.save(nuevoUsuario);
 
         //Seteo del estado
-        EstadoUsuario estadoUsuario = estadoUsuarioService.obtenerEstadoPorNombre(usuarioDTO.getEstadoUsuarioInicial());
+        EstadoUsuario estadoUsuario = estadoUsuarioService.obtenerEstadoPorCodigo(usuarioDTO.getEstadoUsuarioInicial()); //obtenerEstadoPorNombre(usuarioDTO.getEstadoUsuarioInicial());
         UsuarioEstadoUsuario usuarioEstadoUsuario = new UsuarioEstadoUsuario();
         usuarioEstadoUsuario.setEstadoUsuario(estadoUsuario);
         usuarioEstadoUsuario.setFechaHoraAlta(new Date());
         nuevoUsuario.setUsuarioEstadoList(new ArrayList<>());
         nuevoUsuario.getUsuarioEstadoList().add(usuarioEstadoUsuario);
 
+        //Seteo del rol
+
+
         return usuarioRepository.save(nuevoUsuario);
         
     }
 
     private String encriptarContrasenia(String contrasenia){
-        return contrasenia; //TODO: Hacer codificacion de contraseña 
+        String contraseniaEncriptada = contrasenia;
+        //String contraseniaEncriptada = bCryptPasswordEncoder.encode(contrasenia);
+        return contraseniaEncriptada; 
     }
     
     private Boolean existeUsuarioConCorreo(String correoUsuario){
