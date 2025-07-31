@@ -2,10 +2,6 @@ package com.example.demo.services;
 
 import java.io.Serializable;
 import java.util.Date;
-<<<<<<< HEAD
-
-=======
->>>>>>> develop
 
 import com.example.demo.entities.Base;
 import com.example.demo.exceptions.EntityAlreadyDisabledException;

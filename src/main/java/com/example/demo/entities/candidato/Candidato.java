@@ -7,6 +7,7 @@ import com.example.demo.entities.Base;
 import com.example.demo.entities.params.EstadoBusqueda;
 import com.example.demo.entities.params.Genero;
 import com.example.demo.entities.params.Provincia;
+import com.example.demo.entities.seguridad.Usuario;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -69,5 +70,9 @@ public class Candidato extends Base {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "id_cv", nullable = true)
     private CandidatoCV candidatoCV;
+
+    @OneToOne()
+    @JoinColumn(name = "id_usuario")
+    private Usuario usuario;
 }
 
