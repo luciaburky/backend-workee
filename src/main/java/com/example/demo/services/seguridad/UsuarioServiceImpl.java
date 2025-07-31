@@ -1,12 +1,15 @@
 package com.example.demo.services.seguridad;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,12 +21,14 @@ import com.example.demo.entities.seguridad.Rol;
 import com.example.demo.entities.seguridad.Usuario;
 import com.example.demo.entities.seguridad.UsuarioEstadoUsuario;
 import com.example.demo.entities.seguridad.UsuarioRol;
+import com.example.demo.entities.seguridad.tokens.TokenRecuperacion;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
 import com.example.demo.exceptions.EntityNotFoundException;
 import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.mappers.UsuarioMapper;
 import com.example.demo.repositories.seguridad.UsuarioRepository;
 import com.example.demo.repositories.seguridad.UsuarioRolRepository;
+import com.example.demo.repositories.seguridad.tokens.TokenRecuperacionRepository;
 import com.example.demo.services.BaseServiceImpl;
 import com.example.demo.services.NombreEntidadResolverService;
 import com.example.demo.services.mail.MailService;
@@ -34,6 +39,8 @@ import jakarta.transaction.Transactional;
 @Service
 public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implements UsuarioService{
 
+    private final TokenRecuperacionRepository tokenRecuperacionRepository;
+
     private final UsuarioRepository usuarioRepository;
     private final UsuarioMapper usuarioMapper;
     private final EstadoUsuarioService estadoUsuarioService;
@@ -42,9 +49,9 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
     private final NombreEntidadResolverService nombreEntidadResolverService;
     private final MailService mailService;
 
-    //private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper, EstadoUsuarioService estadoUsuarioService, MailService mailService, UsuarioRolRepository usuarioRolRepository, RolService rolService, NombreEntidadResolverService nombreEntidadResolverService/* , BCryptPasswordEncoder bCryptPasswordEncoder*/) {
+    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper, EstadoUsuarioService estadoUsuarioService, MailService mailService, UsuarioRolRepository usuarioRolRepository, RolService rolService, NombreEntidadResolverService nombreEntidadResolverService, BCryptPasswordEncoder bCryptPasswordEncoder, TokenRecuperacionRepository tokenRecuperacionRepository) {
         super(usuarioRepository);
         this.usuarioRepository = usuarioRepository;
         this.usuarioMapper = usuarioMapper;
@@ -53,7 +60,8 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
         this.usuarioRolRepository = usuarioRolRepository;
         this.rolService = rolService;
         this.nombreEntidadResolverService = nombreEntidadResolverService;
-        //this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.tokenRecuperacionRepository = tokenRecuperacionRepository;
     }
 
 
@@ -96,8 +104,8 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
     }
 
     private String encriptarContrasenia(String contrasenia){
-        String contraseniaEncriptada = contrasenia;
-        //String contraseniaEncriptada = bCryptPasswordEncoder.encode(contrasenia);
+        //String contraseniaEncriptada = contrasenia;
+        String contraseniaEncriptada = bCryptPasswordEncoder.encode(contrasenia);
         return contraseniaEncriptada; 
     }
     
@@ -155,6 +163,7 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
     }
 
     @Override
+    @Transactional
     public void solicitarRecuperarContrasenia(String correoUsuario){
         Optional<Usuario> usuario = usuarioRepository.buscarUsuarioPorCorreo(correoUsuario);
         
@@ -162,11 +171,21 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
             throw new EntityNotFoundException("No se encontró un usuario con el correo ingresado");
         }
         Usuario usuarioEncontrado = usuario.get();
-        //TODO: Encriptar el id del usuario para generar el link
-        String idEncriptado = usuarioEncontrado.getId().toString();
-        //TODO: Revisar correo de recuperacion
-        String linkRecuperacion = "http://localhost:4200/nuevaContrasenia?correo=" + idEncriptado; 
 
+        //Token para recuperar contraseña
+        String token = UUID.randomUUID().toString();
+
+        TokenRecuperacion tokenRecuperacion = new TokenRecuperacion();
+        tokenRecuperacion.setToken(token);
+        LocalDateTime fechaCreacion = LocalDateTime.now();
+        tokenRecuperacion.setFechaCreacion(fechaCreacion);
+        tokenRecuperacion.setFechaExpiracion(fechaCreacion.plusMinutes(30));
+        tokenRecuperacion.setUsuario(usuarioEncontrado);
+        
+        tokenRecuperacionRepository.save(tokenRecuperacion);
+        
+        //Enviar link
+        String linkRecuperacion = "http://localhost:4200/nuevaContrasenia?token=" + token;
         enviarMailRecuperacionAUsuario(usuarioEncontrado.getCorreoUsuario(), linkRecuperacion);
     }
 
@@ -179,18 +198,30 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
     }
 
     @Transactional
-    public void confirmarRecuperacionContrasenia(String idEncriptado, RecuperarContraseniaDTO recuperarContraseniaDTO){
+    @Override
+    public void confirmarRecuperacionContrasenia(String token, RecuperarContraseniaDTO recuperarContraseniaDTO){
         if(!recuperarContraseniaDTO.getContraseniaNueva().equals(recuperarContraseniaDTO.getRepetirContrasenia())){
             throw new EntityNotValidException("Las contraseñas no coinciden");
         }
 
-        //TODO: desencriptar id del usuario
-        Long idUsuario = 1L;
+        Optional<TokenRecuperacion> tokenRecuperacionOptional = tokenRecuperacionRepository.findByToken(token);
+        if(!tokenRecuperacionOptional.isPresent()){
+            throw new EntityNotValidException("El token es inválido o inexistente");
+        }
+        TokenRecuperacion tokenRecuperacion = tokenRecuperacionOptional.get();
+        if(tokenRecuperacion.getFechaExpiracion().isBefore(LocalDateTime.now())){
+            throw new EntityNotValidException("El token ha expirado");
+        }
+        if(tokenRecuperacion.getFechaUso() != null){
+            throw new EntityNotValidException("El token ya fue utilizado");
+        }
         
-        Usuario usuario = findById(idUsuario);
+        Usuario usuario = tokenRecuperacion.getUsuario();
 
-        //TODO: encriptar contraseña
-        String contraseniaEncriptada = recuperarContraseniaDTO.getContraseniaNueva();
+        String contraseniaEncriptada = encriptarContrasenia(recuperarContraseniaDTO.getContraseniaNueva());
+
+        tokenRecuperacion.setFechaUso(LocalDateTime.now());
+        tokenRecuperacionRepository.save(tokenRecuperacion);
         
         usuario.setContraseniaUsuario(contraseniaEncriptada);
         usuarioRepository.save(usuario);

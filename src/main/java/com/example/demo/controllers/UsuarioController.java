@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dtos.CorreoRequestDTO;
@@ -18,6 +19,7 @@ import com.example.demo.services.BajaOrquestadorService;
 import com.example.demo.services.seguridad.UsuarioService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
@@ -42,10 +44,11 @@ public class UsuarioController {
 
     @Operation(summary = "Usuario recupera su contraseña")
     @PutMapping("/recuperarContrasenia/{idUsuario}")
-    public ResponseEntity<?> confirmarRecuperacionContrasenia(@PathVariable String idUsuario, @RequestBody RecuperarContraseniaDTO recuperarContraseniaDTO){
-        this.usuarioService.confirmarRecuperacionContrasenia(idUsuario, recuperarContraseniaDTO);
+    @Parameter(name = "token", description = "Token recibido por correo", required = true)
+    public ResponseEntity<?> confirmarRecuperacionContrasenia(@RequestParam String token, @RequestBody RecuperarContraseniaDTO recuperarContraseniaDTO){
+        this.usuarioService.confirmarRecuperacionContrasenia(token, recuperarContraseniaDTO);
         return ResponseEntity.status(HttpStatus.OK).body("Contraseña recuperada exitosamente");
-    }
+    } //AVISO PARA CUANDO HAGAN EL FRONT: En este caso si va RequestParam pq el path es http://localhost:4200/nuevaContrasenia?token=...
 
     @Operation(summary = "Trae a todos los usuarios que se encuentran activos")
     @GetMapping("")
