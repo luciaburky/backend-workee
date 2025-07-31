@@ -89,6 +89,9 @@ public class EmpresaServiceImpl extends BaseServiceImpl<Empresa, Long> implement
     @Override
     @Transactional
     public Empresa crearEmpresa(EmpresaRequestDTO empresaRequestDTO){
+        if(!empresaRequestDTO.getContrasenia().equals(empresaRequestDTO.getRepetirContrasenia())){
+            throw new EntityNotValidException("Las contraseñas deben coincidir");
+        }
         Empresa nuevaEmpresa = empresaMapper.toEntity(empresaRequestDTO);
         Rubro rubroEmpresa = rubroService.findById(empresaRequestDTO.getIdRubro());
         Provincia provinciaEmpresa = provinciaService.findById(empresaRequestDTO.getIdProvincia());
@@ -102,6 +105,7 @@ public class EmpresaServiceImpl extends BaseServiceImpl<Empresa, Long> implement
 
         empresaRepository.save(nuevaEmpresa);
 
+        //Envio mail
         enviarMailRevisionAEmpresa(nuevaEmpresa.getUsuario().getCorreoUsuario(), nuevaEmpresa.getNombreEmpresa());
 
         return nuevaEmpresa;

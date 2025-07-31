@@ -26,4 +26,6 @@ public interface UsuarioService extends BaseService<Usuario, Long>{
     public void modificarRolUsuario(Long idUsuario, Long idRol);
 
     public UsuarioResponseDTO visualizarDetalleUsuario(Long idUsuario);
+
+    public void confirmarTokenCandidato(String token);
 }

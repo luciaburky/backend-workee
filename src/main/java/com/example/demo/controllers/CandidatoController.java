@@ -81,7 +81,7 @@ public class CandidatoController {
     @Operation(summary = "Permiste a un candidato registrarse")
     @PostMapping("")
     public ResponseEntity<?> registrarCandidato(@Valid @RequestBody CandidatoRequestDTO candidatoRequestDTO){
-        //Empresa empresaNueva = empresaService.crearEmpresa();
-        return ResponseEntity.status(HttpStatus.CREATED).body(null);
+        Candidato candidato = candidatoService.crearCandidato(candidatoRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(candidato);
     }
 }

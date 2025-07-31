@@ -2,6 +2,7 @@ package com.example.demo.services.seguridad;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -16,11 +17,13 @@ import org.springframework.stereotype.Service;
 import com.example.demo.dtos.RecuperarContraseniaDTO;
 import com.example.demo.dtos.UsuarioDTO;
 import com.example.demo.dtos.UsuarioResponseDTO;
+import com.example.demo.entities.params.CodigoEstadoUsuario;
 import com.example.demo.entities.params.EstadoUsuario;
 import com.example.demo.entities.seguridad.Rol;
 import com.example.demo.entities.seguridad.Usuario;
 import com.example.demo.entities.seguridad.UsuarioEstadoUsuario;
 import com.example.demo.entities.seguridad.UsuarioRol;
+import com.example.demo.entities.seguridad.tokens.TokenConfirmacion;
 import com.example.demo.entities.seguridad.tokens.TokenRecuperacion;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
 import com.example.demo.exceptions.EntityNotFoundException;
@@ -28,6 +31,7 @@ import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.mappers.UsuarioMapper;
 import com.example.demo.repositories.seguridad.UsuarioRepository;
 import com.example.demo.repositories.seguridad.UsuarioRolRepository;
+import com.example.demo.repositories.seguridad.tokens.TokenConfirmacionRepository;
 import com.example.demo.repositories.seguridad.tokens.TokenRecuperacionRepository;
 import com.example.demo.services.BaseServiceImpl;
 import com.example.demo.services.NombreEntidadResolverService;
@@ -40,6 +44,7 @@ import jakarta.transaction.Transactional;
 public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implements UsuarioService{
 
     private final TokenRecuperacionRepository tokenRecuperacionRepository;
+    private final TokenConfirmacionRepository tokenConfirmacionRepository;
 
     private final UsuarioRepository usuarioRepository;
     private final UsuarioMapper usuarioMapper;
@@ -51,7 +56,7 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper, EstadoUsuarioService estadoUsuarioService, MailService mailService, UsuarioRolRepository usuarioRolRepository, RolService rolService, NombreEntidadResolverService nombreEntidadResolverService, BCryptPasswordEncoder bCryptPasswordEncoder, TokenRecuperacionRepository tokenRecuperacionRepository) {
+    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper, EstadoUsuarioService estadoUsuarioService, MailService mailService, UsuarioRolRepository usuarioRolRepository, RolService rolService, NombreEntidadResolverService nombreEntidadResolverService, BCryptPasswordEncoder bCryptPasswordEncoder, TokenRecuperacionRepository tokenRecuperacionRepository, TokenConfirmacionRepository tokenConfirmacionRepository) {
         super(usuarioRepository);
         this.usuarioRepository = usuarioRepository;
         this.usuarioMapper = usuarioMapper;
@@ -62,6 +67,7 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
         this.nombreEntidadResolverService = nombreEntidadResolverService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.tokenRecuperacionRepository = tokenRecuperacionRepository;
+        this.tokenConfirmacionRepository = tokenConfirmacionRepository;
     }
 
 
@@ -314,5 +320,52 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
         return usuarioResponseDTO;
     }
 
-}
+    @Override
+    @Transactional
+    public void confirmarTokenCandidato(String token){
+        Optional<TokenConfirmacion> tokenConfirmacionOptional = tokenConfirmacionRepository.findByToken(token);
+        if(!tokenConfirmacionOptional.isPresent()){
+            throw new EntityNotValidException("El token es inválido o inexistente");
+        }
+        TokenConfirmacion tokenConfirmacion = tokenConfirmacionOptional.get();
+        if(tokenConfirmacion.getFechaExpiracion().isBefore(LocalDateTime.now())){
+            throw new EntityNotValidException("El token ha expirado");
+        }
+        if(tokenConfirmacion.getFechaUso() != null){
+            throw new EntityNotValidException("El token ya fue utilizado");
+        }
+        
+        tokenConfirmacion.setFechaUso(LocalDateTime.now());
+        
+        Long idUsuario = tokenConfirmacion.getUsuario().getId();
+        verificarCandidato(idUsuario);
 
+        tokenConfirmacionRepository.save(tokenConfirmacion);
+    }
+
+    @Transactional
+    private void verificarCandidato(Long idUsuario){
+        Usuario usuario = findById(idUsuario);
+
+        //Actual (PENDIENTE)
+        Optional<UsuarioEstadoUsuario> usuarioEstadoActualOptional = usuario.getUsuarioEstadoList().stream()
+            .filter(e -> e.getFechaHoraBaja() == null)
+            .max(Comparator.comparing(UsuarioEstadoUsuario::getFechaHoraAlta));
+
+        if(usuarioEstadoActualOptional.isPresent()){
+            UsuarioEstadoUsuario usuarioEstadoUsuarioActual = usuarioEstadoActualOptional.get();
+            usuarioEstadoUsuarioActual.setFechaHoraBaja(new Date());
+        }
+
+        //Nuevo (HABILITADO)
+        EstadoUsuario estadoUsuarioNuevo = estadoUsuarioService.obtenerEstadoPorCodigo(CodigoEstadoUsuario.HABILITADO);
+        UsuarioEstadoUsuario usuarioEstadoUsuarioNuevo = new UsuarioEstadoUsuario();
+        usuarioEstadoUsuarioNuevo.setEstadoUsuario(estadoUsuarioNuevo);
+        usuarioEstadoUsuarioNuevo.setFechaHoraAlta(new Date());
+
+        usuario.getUsuarioEstadoList().add(usuarioEstadoUsuarioNuevo);
+
+        usuarioRepository.save(usuario);
+    }
+
+}

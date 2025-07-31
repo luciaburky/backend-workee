@@ -42,14 +42,6 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.OK).body("Revise su correo para poder recuperar su contraseña");
     }
 
-    @Operation(summary = "Usuario recupera su contraseña")
-    @PutMapping("/recuperarContrasenia/{idUsuario}")
-    @Parameter(name = "token", description = "Token recibido por correo", required = true)
-    public ResponseEntity<?> confirmarRecuperacionContrasenia(@RequestParam String token, @RequestBody RecuperarContraseniaDTO recuperarContraseniaDTO){
-        this.usuarioService.confirmarRecuperacionContrasenia(token, recuperarContraseniaDTO);
-        return ResponseEntity.status(HttpStatus.OK).body("Contraseña recuperada exitosamente");
-    } //AVISO PARA CUANDO HAGAN EL FRONT: En este caso si va RequestParam pq el path es http://localhost:4200/nuevaContrasenia?token=...
-
     @Operation(summary = "Trae a todos los usuarios que se encuentran activos")
     @GetMapping("")
     public ResponseEntity<?> buscarUsuariosActivos(){
@@ -83,6 +75,23 @@ public class UsuarioController {
     public ResponseEntity<?> visualizarDetalleUsuario(@PathVariable Long idUsuario){
         UsuarioResponseDTO usuario = usuarioService.visualizarDetalleUsuario(idUsuario);
         return ResponseEntity.status(HttpStatus.OK).body(usuario);
+    }
+
+    @Operation(summary = "Usuario recupera su contraseña")
+    @PutMapping("/recuperarContrasenia/{idUsuario}")
+    @Parameter(name = "token", description = "Token recibido por correo", required = true)
+    public ResponseEntity<?> confirmarRecuperacionContrasenia(@RequestParam String token, @RequestBody RecuperarContraseniaDTO recuperarContraseniaDTO){
+        this.usuarioService.confirmarRecuperacionContrasenia(token, recuperarContraseniaDTO);
+        return ResponseEntity.status(HttpStatus.OK).body("Contraseña recuperada exitosamente");
+    } //AVISO PARA CUANDO HAGAN EL FRONT: En este caso si va RequestParam pq el path es http://localhost:4200/nuevaContrasenia?token=...
+
+
+    @Operation(summary = "Usuario verifica su cuenta")
+    @PutMapping("/confirmarCuenta")
+    @Parameter(name = "token", description = "Token recibido por correo", required = true)
+    public ResponseEntity<?> confirmarRecuperacionContrasenia(@RequestParam String token){
+        this.usuarioService.confirmarTokenCandidato(token);
+        return ResponseEntity.status(HttpStatus.OK).body("Cuenta verificada exitosamente");
     }
 
 }
