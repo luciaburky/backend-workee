@@ -19,6 +19,7 @@ import com.example.demo.entities.params.Habilidad;
 import com.example.demo.entities.params.Provincia;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
 import com.example.demo.exceptions.EntityNotFoundException;
+import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.mappers.CandidatoMapper;
 import com.example.demo.repositories.candidato.CandidatoRepository;
 import com.example.demo.services.BaseServiceImpl;
@@ -54,8 +55,13 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
     @Override
     @Transactional
     public Candidato crearCandidato(CandidatoRequestDTO candidatoDTO) {
+        if(candidatoDTO.getContrasenia() != candidatoDTO.getRepetirContrasenia()) {
+            throw new EntityNotValidException("Las contraseñas deben coincidir");
+        }
+        //Creo el nuevo candidato a partir del DTO
         Candidato nuevoCandidato = candidatoMapper.toEntity(candidatoDTO);
 
+        //Seteo los Atributos complejos
         Provincia provincia = provinciaService.findById(candidatoDTO.getIdProvincia());
         Genero genero = generoService.findById(candidatoDTO.getIdGenero());
         if(candidatoDTO.getIdEstadoBusqueda() != null){
@@ -63,8 +69,8 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
             nuevoCandidato.setEstadoBusqueda(estadoBusqueda);
         }
         
+        //Seteo las habilidades
         if(candidatoDTO.getIdHabilidades() != null && !candidatoDTO.getIdHabilidades().isEmpty()) {
-
             List<CandidatoHabilidad> habilidades = candidatoDTO.getIdHabilidades().stream()
             .distinct()
             .map(idHabilidad -> {
@@ -81,7 +87,7 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
             nuevoCandidato.setHabilidades(new ArrayList<>());
         }
 
-        //Falta: CandidatoCV
+        //Setear el CV 
         if(candidatoDTO.getEnlaceCV() != null && !candidatoDTO.getEnlaceCV().isEmpty()) {
             CandidatoCV candidatoCV = candidatoCVService.actualizarOCrearCV(nuevoCandidato, candidatoDTO.getEnlaceCV());
             nuevoCandidato.setCandidatoCV(candidatoCV);
@@ -97,6 +103,10 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
     @Override
     @Transactional
     public Candidato modificarCandidato(Long idCandidato, CandidatoRequestDTO candidatoDTO) {
+        if(candidatoDTO.getContrasenia() != candidatoDTO.getRepetirContrasenia()) {
+            throw new EntityNotValidException("Las contraseñas deben coincidir");
+        }
+        
         Candidato candidatoOriginal = findById(idCandidato);
         candidatoMapper.updateEntityFromDto(candidatoDTO, candidatoOriginal);
         
