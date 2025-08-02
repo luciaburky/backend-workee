@@ -25,6 +25,5 @@ public class Genero extends Base {
     @NotNull
     @Column(name = "nombre_genero")
     private String nombreGenero;
-    
 
 }

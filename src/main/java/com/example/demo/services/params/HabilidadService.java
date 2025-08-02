@@ -17,4 +17,6 @@ public interface HabilidadService extends BaseService<Habilidad, Long>{
     List<Habilidad> obtenerHabilidadesActivas();
 
     Boolean habilitarHabilidad(Long id);
+    
+    Boolean deshabilitarHabilidad(Long id);
 }

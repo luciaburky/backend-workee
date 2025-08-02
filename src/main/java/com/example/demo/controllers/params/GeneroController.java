@@ -70,7 +70,7 @@ public class GeneroController {
     @Operation(summary = "Deshabilita un Genero")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deshabilitarGenero(@PathVariable Long id) {
-        generoService.delete(id); //deshabilitarGenero(id);
+        generoService.deshabilitarGenero(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

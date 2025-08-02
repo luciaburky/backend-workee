@@ -56,7 +56,7 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
     @Override
     @Transactional
     public Candidato crearCandidato(CandidatoRequestDTO candidatoDTO) {
-        if(candidatoDTO.getContrasenia() != candidatoDTO.getRepetirContrasenia()) {
+        if(!candidatoDTO.getContrasenia().equals(candidatoDTO.getRepetirContrasenia())) {
             throw new EntityNotValidException("Las contraseñas deben coincidir");
         }
         //Creo el nuevo candidato a partir del DTO
@@ -104,7 +104,7 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
     @Override
     @Transactional
     public Candidato modificarCandidato(Long idCandidato, CandidatoRequestDTO candidatoDTO) {
-        if(candidatoDTO.getContrasenia() != candidatoDTO.getRepetirContrasenia()) {
+        if(!candidatoDTO.getContrasenia().equals(candidatoDTO.getRepetirContrasenia())) {
             throw new EntityNotValidException("Las contraseñas deben coincidir");
         }
         

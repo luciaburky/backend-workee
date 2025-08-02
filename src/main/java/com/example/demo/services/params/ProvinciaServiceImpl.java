@@ -12,6 +12,7 @@ import com.example.demo.entities.params.Provincia;
 import com.example.demo.exceptions.EntityAlreadyEnabledException;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
 import com.example.demo.exceptions.EntityReferencedException;
+import com.example.demo.repositories.candidato.CandidatoRepository;
 import com.example.demo.repositories.empresa.EmpresaRepository;
 import com.example.demo.repositories.params.ProvinciaRepository;
 import com.example.demo.services.BaseServiceImpl;
@@ -23,13 +24,15 @@ public class ProvinciaServiceImpl extends BaseServiceImpl<Provincia,Long> implem
 
     private final ProvinciaRepository provinciaRepository;
     private final PaisService paisService;
-    private final EmpresaRepository empresaRepository; //TODO: REVISAR Y VER SI CAMBIAMOS ESTO
+    private final EmpresaRepository empresaRepository; 
+    private final CandidatoRepository candidatoRepository;
 
-    public ProvinciaServiceImpl(ProvinciaRepository provinciaRepository, PaisService paisService, EmpresaRepository empresaRepository) {
+    public ProvinciaServiceImpl(ProvinciaRepository provinciaRepository, PaisService paisService, EmpresaRepository empresaRepository, CandidatoRepository candidatoRepository) {
         super(provinciaRepository);
         this.provinciaRepository = provinciaRepository;
         this.paisService = paisService;
         this.empresaRepository = empresaRepository;
+        this.candidatoRepository = candidatoRepository;
     }
 
     @Override
@@ -135,7 +138,7 @@ public class ProvinciaServiceImpl extends BaseServiceImpl<Provincia,Long> implem
 
     private Boolean validarUsoProvincia(Long id){
         Boolean provinciaEnUsoPorEmpresas = empresaRepository.existsByProvinciaIdAndFechaHoraBajaIsNull(id);
-        Boolean provinciaEnUsoPorCandidato = false; //TODO: Borrar el false y llamar al repo de candidato
+        Boolean provinciaEnUsoPorCandidato = candidatoRepository.existsByProvinciaIdAndFechaHoraBajaIsNull(id);
 
         if(provinciaEnUsoPorCandidato || provinciaEnUsoPorEmpresas){
             return true;
