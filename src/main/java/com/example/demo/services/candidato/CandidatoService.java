@@ -18,9 +18,9 @@ public interface CandidatoService extends BaseService<Candidato, Long> {
 
     List<Habilidad> obtenerHabilidades(Long idCandidato);
 
-    List<Habilidad> agregarHabilidad(Long idCandidato, Long idHabilidad);
-
-    List<Habilidad> eliminarHabilidad(Long idCandidato, Long idHabilidad);
-
     List<Habilidad> obtenerHabilidadesPorTipo(Long idCandidato, Long idTipoHabilidad);
+    
+    void actualizaroCrearCV(Long idCandidato, String cv);
+    
+    void eliminarCv(Long idCandidato);
 }

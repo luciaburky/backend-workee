@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -125,9 +126,7 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
 
         // Actualizar habilidades
         actualizarHabilidadesCandidato(candidatoOriginal, candidatoDTO);
-        // Actualizar o crear CV
-        candidatoCVService.actualizarOCrearCV(candidatoOriginal, candidatoDTO.getEnlaceCV());
-        
+     
         return candidatoRepository.save(candidatoOriginal);
     }
 
@@ -144,33 +143,8 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
         List<Candidato> listaCandidatos = candidatoRepository.findAllByOrderByNombreCandidatoAsc();
         return listaCandidatos;
     }
-
-    @Override
-    @Transactional
-    public List<Habilidad> agregarHabilidad(Long idCandidato, Long idHabilidad) {
-        Candidato candidato = candidatoRepository.findByIdWithHabilidades(idCandidato)
-        .orElseThrow(() -> new EntityNotFoundException("Candidato no encontrado con ID " + idCandidato));
-
-        Habilidad habilidad = habilidadService.findById(idHabilidad);
-        
-        // Verificar si la habilidad ya está asociada al candidato
-        boolean yaExiste = candidato.getHabilidades().stream()
-            .anyMatch(candidatoHabilidad -> candidatoHabilidad.getHabilidad().getId().equals(idHabilidad));
-
-        // Agregar la nueva habilidad     
-        if (!yaExiste) {
-            CandidatoHabilidad nuevaHabilidad = new CandidatoHabilidad();
-            nuevaHabilidad.setHabilidad(habilidad);
-            nuevaHabilidad.setFechaHoraAlta(new Date());
-            candidato.getHabilidades().add(nuevaHabilidad);
-            candidatoRepository.save(candidato);
-        } else {
-            throw new EntityAlreadyExistsException("La habilidad ya está asociada al candidato.");
-        }
-        return obtenerHabilidades(idCandidato);
-    }
-
-    private void actualizarHabilidadesCandidato(Candidato candidato, CandidatoRequestDTO dto) {
+ 
+    private void actualizarHabilidadesCandidato(Candidato candidato,  CandidatoRequestDTO dto) {
         if (dto.getIdHabilidades() == null) return;
 
         Set<Long> nuevasIds = new HashSet<>(dto.getIdHabilidades());
@@ -180,29 +154,70 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
             candidato.setHabilidades(new ArrayList<>());
         }
 
-        // Eliminar habilidades que no están en la nueva lista
-        candidato.getHabilidades().removeIf(ch -> 
-        !nuevasIds.contains(ch.getHabilidad().getId())
-        );
+        Map<Long, CandidatoHabilidad> mapaActuales = mapearHabilidadesPorId(candidato);
+        
+        procesarBajasYReactivaciones(mapaActuales, nuevasIds);
 
-        // Recupera los IDs actuales para comparar  
-        Set<Long> idsActuales = candidato.getHabilidades()
-            .stream()
-            .map(ch -> ch.getHabilidad().getId())
-            .collect(Collectors.toSet());
+        agregarNuevasHabilidades(candidato, nuevasIds, mapaActuales);
+    }
 
-        // Agregar nuevas habilidades que no están en la lista actual
+    private void agregarNuevasHabilidades(Candidato candidato, Set<Long> nuevasIds, Map<Long, CandidatoHabilidad> actuales) {
         for (Long idNueva : nuevasIds) {
-            if (!idsActuales.contains(idNueva)) {
+            if (!actuales.containsKey(idNueva)) {
                 Habilidad habilidad = habilidadService.findById(idNueva);
                 CandidatoHabilidad candidatoHabilidad = new CandidatoHabilidad();
                 candidatoHabilidad.setHabilidad(habilidad);
                 candidatoHabilidad.setFechaHoraAlta(new Date());
+                candidatoHabilidad.setFechaHoraBaja(null); 
                 candidato.getHabilidades().add(candidatoHabilidad);
             }
-        } 
+        }
     }
 
+    private void procesarBajasYReactivaciones(Map<Long, CandidatoHabilidad> actuales, Set<Long> nuevasIds) {
+        for (CandidatoHabilidad ch : actuales.values()) {
+            Long idHabilidad = ch.getHabilidad().getId();
+            if (!nuevasIds.contains(idHabilidad)) {
+                // Si la habilidad no está en nuevasIds, marcar como baja
+                ch.setFechaHoraBaja(new Date());
+            } else {
+                // Si la habilidad está en nuevasIds, reactivar si estaba dada de baja
+                if (ch.getFechaHoraBaja() != null) {
+                    ch.setFechaHoraBaja(null);
+                }
+                
+            }
+        }
+    }
+
+    private Map<Long, CandidatoHabilidad> mapearHabilidadesPorId(Candidato candidato) {
+        return candidato.getHabilidades()
+            .stream()
+            .collect(Collectors.toMap(
+                ch -> ch.getHabilidad().getId(),
+                ch -> ch
+            ));
+    }
+
+    @Override
+    @Transactional
+    public void actualizaroCrearCV(Long idCandidato, String cv) {
+        Candidato candidato = findById(idCandidato);
+        candidatoCVService.actualizarOCrearCV(candidato, cv);
+    }
+
+    @Override
+    @Transactional
+    public void eliminarCv(Long idCandidato){
+        Candidato candidato = findById(idCandidato);
+        if (candidato.getCandidatoCV() != null) {
+            candidatoCVService.delete(candidato.getCandidatoCV().getId());
+            //candidato.setCandidatoCV(null);
+            candidatoRepository.save(candidato);
+        } else {
+            throw new EntityNotFoundException("El candidato no tiene un CV asociado.");
+        }
+    }
 
     @Override
     @Transactional
@@ -213,24 +228,6 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
                         .stream()
                         .map(CandidatoHabilidad::getHabilidad)
                         .collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional
-    public List<Habilidad> eliminarHabilidad(Long idCandidato, Long idHabilidad) {
-        Candidato candidato = candidatoRepository.findByIdWithHabilidades(idCandidato)
-        .orElseThrow(() -> new EntityNotFoundException("Candidato no encontrado con ID " + idCandidato));
-
-        CandidatoHabilidad habilidadAEliminar = candidato.getHabilidades()
-            .stream()
-            .filter(ch -> ch.getHabilidad().getId().equals(idHabilidad))
-            .findFirst()
-            .orElseThrow(() -> new EntityNotFoundException("Habilidad no encontrada para el candidato con ID " + idCandidato));
-
-        candidato.getHabilidades().remove(habilidadAEliminar);
-        candidatoRepository.save(candidato);
-        
-        return obtenerHabilidades(idCandidato);
     }
 
     @Override
