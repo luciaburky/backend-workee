@@ -1,0 +1,41 @@
+package com.example.demo.dtos;
+
+import java.util.List;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class OfertaRequestDTO {
+    
+    @NotBlank(message = "El título de la oferta no puede estar vacío")
+    private String titulo;
+    
+    @NotBlank(message = "La descripción de la oferta no puede estar vacía")
+    private String descripcion;   
+
+    @NotBlank(message = "Las responsabilidades de la oferta no pueden estar vacías")
+    private String responsabilidades;
+
+    @NotNull(message = "El id de la empresa no puede estar vacío")
+    private Long idEmpresa;
+
+    @NotNull(message = "El id de la modalidad de oferta no puede estar vacío")
+    private Long idModalidadOferta;
+
+    @NotNull(message = "El id del tipo de contrato de oferta no puede estar vacío")
+    private Long idTipoContratoOferta;
+
+    private List<Long> idHabilidades;
+
+    @NotNull(message = "El id del estado de la oferta no puede estar vacío")
+    private Long idEstadosOferta;
+
+    //Falta: OfertaEstadoOferta, Estado oferta, OfertaEtapa
+    
+}
