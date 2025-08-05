@@ -50,12 +50,12 @@ public class CandidatoController {
         return ResponseEntity.ok().body(candidato);
     }
 
-    @Operation(summary = "Obtener todos los Candidatos")
+    /*@Operation(summary = "Obtener todos los Candidatos")
     @GetMapping("")
     public ResponseEntity<List<Candidato>> obtenerCandidatos() {
         List<Candidato> listaCandidatos = candidatoService.obtenerCandidatos();
         return ResponseEntity.ok().body(listaCandidatos);
-    }
+    }*/
 
     @Operation(summary = "Obtener habilidades de un Candidato")
     @GetMapping("/{id}/habilidades")

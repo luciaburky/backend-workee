@@ -230,6 +230,10 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
     @Transactional
     @Override
     public void confirmarRecuperacionContrasenia(String token, RecuperarContraseniaDTO recuperarContraseniaDTO){
+        String contraseniaActualDeUsuario = findById(recuperarContraseniaDTO.getIdUsuario()).getContraseniaUsuario();
+        if(!contraseniaActualDeUsuario.equals(recuperarContraseniaDTO.getContraseniaActual())){
+            throw new EntityNotValidException("La contraseña actual es incorrecta");
+        }
         if(!recuperarContraseniaDTO.getContraseniaNueva().equals(recuperarContraseniaDTO.getRepetirContrasenia())){
             throw new EntityNotValidException("Las contraseñas no coinciden");
         }
@@ -414,5 +418,4 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
         
         return jwtUtil.generateToken(userDetails);
     }
-
 }
