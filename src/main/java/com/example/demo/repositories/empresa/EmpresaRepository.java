@@ -61,5 +61,7 @@ public interface EmpresaRepository extends BaseRepository<Empresa, Long>  {
     public List<EmpresaPendienteHabilitacionDTO> buscarEmpresasPendientesParaHabilitar(@Param("nombreEstado") String nombreEstado);
 
     Optional<Empresa> findByUsuarioId(Long usuarioId);
+
+    Boolean existsByUsuarioId(Long usuarioId);
 }
 

@@ -21,7 +21,6 @@ public interface UsuarioRepository extends BaseRepository<Usuario, Long>{
         nativeQuery = true
     )
     public Optional<Usuario> buscarUsuarioPorCorreo(@Param("correo") String correo);
-
     
 }
 

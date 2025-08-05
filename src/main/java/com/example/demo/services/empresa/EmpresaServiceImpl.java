@@ -102,6 +102,7 @@ public class EmpresaServiceImpl extends BaseServiceImpl<Empresa, Long> implement
         nuevaEmpresa.setRubro(rubroEmpresa);
         nuevaEmpresa.setProvincia(provinciaEmpresa);
         nuevaEmpresa.setUsuario(nuevoUsuario);
+        nuevaEmpresa.setFechaHoraAlta(new Date());
 
         empresaRepository.save(nuevaEmpresa);
 
@@ -214,6 +215,11 @@ public class EmpresaServiceImpl extends BaseServiceImpl<Empresa, Long> implement
 
         return empresa;
     }   
+
+    @Override
+    public Boolean existeEmpresaPorUsuarioId(Long usuarioId){
+        return empresaRepository.existsByUsuarioId(usuarioId);
+    }
     
 }
 

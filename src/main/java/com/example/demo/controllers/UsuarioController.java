@@ -4,22 +4,23 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.dtos.CorreoRequestDTO;
-import com.example.demo.dtos.RecuperarContraseniaDTO;
 import com.example.demo.dtos.UsuarioResponseDTO;
+import com.example.demo.entities.seguridad.Usuario;
 import com.example.demo.services.BajaOrquestadorService;
+import com.example.demo.services.candidato.CandidatoService;
+import com.example.demo.services.empresa.EmpleadoEmpresaService;
+import com.example.demo.services.empresa.EmpresaService;
 import com.example.demo.services.seguridad.UsuarioService;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
@@ -29,21 +30,23 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class UsuarioController {
     private final UsuarioService usuarioService;
     private final BajaOrquestadorService bajaOrquestadorService;
+    private final EmpleadoEmpresaService empleadoEmpresaService;
+    private final EmpresaService empresaService;
+    private final CandidatoService candidatoService;
 
-    public UsuarioController(UsuarioService usuarioService, BajaOrquestadorService bajaOrquestadorService){
+    public UsuarioController(UsuarioService usuarioService, BajaOrquestadorService bajaOrquestadorService, EmpleadoEmpresaService empleadoEmpresaService, EmpresaService empresaService, CandidatoService candidatoService){
         this.usuarioService = usuarioService;
         this.bajaOrquestadorService = bajaOrquestadorService;
+        this.empleadoEmpresaService = empleadoEmpresaService;
+        this.empresaService = empresaService;
+        this.candidatoService = candidatoService;
     }
 
-    @Operation(summary = "Enviar correo para que usuario recupere su contraseña")
-    @PutMapping("/recuperarContrasenia")
-    public ResponseEntity<?> solicitarRecuperarContrasenia(@RequestBody CorreoRequestDTO correoRequestDTO){
-        this.usuarioService.solicitarRecuperarContrasenia(correoRequestDTO.getCorreo());
-        return ResponseEntity.status(HttpStatus.OK).body("Revise su correo para poder recuperar su contraseña");
-    }
+    
 
     @Operation(summary = "Trae a todos los usuarios que se encuentran activos")
     @GetMapping("")
+    @PreAuthorize("hasAuthority('VER_USUARIOS')") 
     public ResponseEntity<?> buscarUsuariosActivos(){
         List<UsuarioResponseDTO> usuarios = usuarioService.buscarUsuariosActivos();
         return ResponseEntity.status(HttpStatus.OK).body(usuarios);
@@ -51,6 +54,7 @@ public class UsuarioController {
 
     @Operation(summary = "Trae a todos los usuarios que se encuentran activos según el rol ingresado")
     @GetMapping("/porRol/{nombreRol}")
+    @PreAuthorize("hasAuthority('VER_USUARIOS')") 
     public ResponseEntity<?> buscarUsuariosActivosPorRol(@PathVariable String nombreRol){
         List<UsuarioResponseDTO> usuarios = usuarioService.buscarUsuariosActivosPorRol(nombreRol);
         return ResponseEntity.status(HttpStatus.OK).body(usuarios);
@@ -58,6 +62,7 @@ public class UsuarioController {
 
     @Operation(summary = "Para dar de baja un usuario y su entidad relacionada")
     @PutMapping("/{idUsuario}")
+    @PreAuthorize("hasAuthority('ELIMINAR_USUARIO')") 
     public ResponseEntity<?> darDeBajaUsuario(@PathVariable Long idUsuario){
         this.bajaOrquestadorService.darDeBajaUsuarioYEntidadRelacionada(idUsuario);
         return ResponseEntity.status(HttpStatus.OK).body("Usuario dado de baja correctamente");
@@ -65,6 +70,7 @@ public class UsuarioController {
 
     @Operation(summary = "Modificar el rol de un usuario")
     @PutMapping("/modificarRol/{idUsuario}")
+    @PreAuthorize("hasAuthority('MODIFICAR_ROL_USUARIO')") 
     public ResponseEntity<?> modificarRolDeUsuario(@PathVariable Long idUsuario, @RequestBody Long idRol){
         usuarioService.modificarRolUsuario(idUsuario, idRol);
         return ResponseEntity.status(HttpStatus.OK).body("Rol modificado correctamente");
@@ -72,26 +78,25 @@ public class UsuarioController {
 
     @Operation(summary = "Visualizar detalle de usuario")
     @GetMapping("/{idUsuario}")
+    @PreAuthorize("hasAuthority('VER_DETALLE_USUARIO') or hasAuthority('MODIFICAR_ROL_USUARIO')") 
     public ResponseEntity<?> visualizarDetalleUsuario(@PathVariable Long idUsuario){
         UsuarioResponseDTO usuario = usuarioService.visualizarDetalleUsuario(idUsuario);
         return ResponseEntity.status(HttpStatus.OK).body(usuario);
     }
 
-    @Operation(summary = "Usuario recupera su contraseña")
-    @PutMapping("/recuperarContrasenia/{idUsuario}")
-    @Parameter(name = "token", description = "Token recibido por correo", required = true)
-    public ResponseEntity<?> confirmarRecuperacionContrasenia(@RequestParam String token, @RequestBody RecuperarContraseniaDTO recuperarContraseniaDTO){
-        this.usuarioService.confirmarRecuperacionContrasenia(token, recuperarContraseniaDTO);
-        return ResponseEntity.status(HttpStatus.OK).body("Contraseña recuperada exitosamente");
-    } //AVISO PARA CUANDO HAGAN EL FRONT: En este caso si va RequestParam pq el path es http://localhost:4200/nuevaContrasenia?token=...
+    @GetMapping("/miPerfil")
+    @PreAuthorize("hasAuthority('VER_MI_PERFIL')")
+    public ResponseEntity<?> verPerfilUsuario(){
+        Usuario usuario = usuarioService.obtenerUsuarioAutenticado();
 
-
-    @Operation(summary = "Usuario verifica su cuenta")
-    @PutMapping("/confirmarCuenta")
-    @Parameter(name = "token", description = "Token recibido por correo", required = true)
-    public ResponseEntity<?> confirmarRecuperacionContrasenia(@RequestParam String token){
-        this.usuarioService.confirmarTokenCandidato(token);
-        return ResponseEntity.status(HttpStatus.OK).body("Cuenta verificada exitosamente");
+        if (empleadoEmpresaService.existeEmpleadoPorUsuarioId(usuario.getId())) {
+            return ResponseEntity.ok(empleadoEmpresaService.buscarEmpleadoEmpresaPorUsuarioId(usuario.getId()));
+        } else if (empresaService.existeEmpresaPorUsuarioId(usuario.getId())) {
+            return ResponseEntity.ok(empresaService.buscarEmpresaPorIdUsuario(usuario.getId()));
+        } else if (candidatoService.existeCandidatoPorUsuarioId(usuario.getId())) {
+            return ResponseEntity.ok(candidatoService.buscarCandidatoPorIdUsuario(usuario.getId()));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No tiene perfil asociado.");
+        }
     }
-
 }

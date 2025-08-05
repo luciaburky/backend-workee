@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,7 +16,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping(path ="/categorias-roles")
+@RequestMapping(path ="/categoriasRoles")
 @Tag(name = "CategoriaRol", description = "Controlador para operaciones de CategoriaRol")
 public class CategoriaRolController {
     private final CategoriaRolService categoriaRolService;
@@ -24,8 +25,9 @@ public class CategoriaRolController {
         this.categoriaRolService = categoriaRolService;
     }
 
-    @Operation(summary = "Obtiene todas las categorías de roles")
+    @Operation(summary = "Obtiene todas las categorías de roles ACTIVAS")
     @GetMapping("")
+    @PreAuthorize("hasAuthority('CREAR_ROL')")
     public ResponseEntity<?> obtenerCategoriasRoles(){
         List<CategoriaRol> categorias = categoriaRolService.obtenerCategoriasRoles();
         return ResponseEntity.status(HttpStatus.OK).body(categorias);

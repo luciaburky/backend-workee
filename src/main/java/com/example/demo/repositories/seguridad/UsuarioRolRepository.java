@@ -60,5 +60,7 @@ public interface UsuarioRolRepository extends BaseRepository<UsuarioRol, Long> {
         nativeQuery = true
     )
     public Optional<UsuarioRol> buscarUsuarioRolAnteriorSegunIdUsuarioEIdRol(Long idRol, Long idUsuario);
+
+    
 }
 

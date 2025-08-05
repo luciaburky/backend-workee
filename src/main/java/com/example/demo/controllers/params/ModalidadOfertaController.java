@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +23,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/modalidades-oferta")
+@RequestMapping("/modalidadesOferta")
 @Tag(name = "Modalidad Oferta", description = "Controlador para operaciones CRUD")
 public class ModalidadOfertaController {
 
@@ -33,7 +34,8 @@ public class ModalidadOfertaController {
     }
 
     @Operation(summary = "Crear una nueva Modalidad Oferta")
-    @PostMapping
+    @PostMapping()
+    @PreAuthorize("hasAuthority('HABILITACION_HABILIDAD')")
     public ResponseEntity<ModalidadOferta> crearModalidadOferta(@Valid @RequestBody ModalidadOfertaRequestDTO modalidadOfertaRequestDTO){
         ModalidadOferta nuevaModalidadOferta = modalidadOfertaService.guardarModalidadOferta(modalidadOfertaRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevaModalidadOferta);
@@ -41,6 +43,7 @@ public class ModalidadOfertaController {
 
     @Operation(summary = "Actualizar una Modalidad Oferta Existente")
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('MODIFICAR_MODALIDAD_OFERTA')")
     public ResponseEntity<ModalidadOferta> actualizarModalidadOferta(@PathVariable Long id, @RequestBody ModalidadOfertaRequestDTO modalidadOfertaRequestDTO) {
         ModalidadOferta modalidadOfertaActualizada = modalidadOfertaService.actualizarModalidadOferta(id, modalidadOfertaRequestDTO);
         return ResponseEntity.ok(modalidadOfertaActualizada);
@@ -48,6 +51,7 @@ public class ModalidadOfertaController {
 
     @Operation(summary = "Obtener todas las Modalidad Oferta")
     @GetMapping
+    @PreAuthorize("hasAuthority('VER_TODAS_MODALIDADES_OF')")
     public ResponseEntity<List<ModalidadOferta>> obtenerModalidadOferta() {
         List<ModalidadOferta> listaModalidadOferta = modalidadOfertaService.obtenerModalidadesOfertas();
         return ResponseEntity.ok(listaModalidadOferta);
@@ -55,6 +59,7 @@ public class ModalidadOfertaController {
 
     @Operation(summary = "Obtener todas las Modalidades Oferta Activas")
     @GetMapping("/activas")
+    @PreAuthorize("hasAuthority('???') or hasAuthority('BUSCAR_OFERTAS')") //TODO: Cuando agreguemos lo del modulo de ofertas ponerle alguna
     public ResponseEntity<List<ModalidadOferta>> obtenerModalidadOfertaActivos() {
         List<ModalidadOferta> listaModalidadOfertaActivas = modalidadOfertaService.obtenerModalidadesOfertasActivos();
         return ResponseEntity.ok(listaModalidadOfertaActivas);
@@ -62,13 +67,15 @@ public class ModalidadOfertaController {
     
     @Operation(summary = "Obtener una Modalidad Oferta por ID")
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('VER_MODALIDAD_OFERTA')")
     public ResponseEntity<ModalidadOferta> obtenerModalidadOfertaPorId(@PathVariable Long id) {
         ModalidadOferta modalidadOferta = modalidadOfertaService.findById(id);
         return ResponseEntity.ok(modalidadOferta);
     }
 
     @Operation(summary = "Deshabilitar una Modalidad Oferta")
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deshabilitar/{id}")
+    @PreAuthorize("hasAuthority('HABILITACION_MODALIDAD_OFERTA')")
     public ResponseEntity<Void> deshabilitarModalidadOferta(@PathVariable Long id) {
         modalidadOfertaService.delete(id);
         return ResponseEntity.ok().build();
@@ -76,6 +83,7 @@ public class ModalidadOfertaController {
     
     @Operation(summary = "Habilitar una Modalidad Oferta")
     @PutMapping("/habilitar/{id}")
+    @PreAuthorize("hasAuthority('HABILITACION_MODALIDAD_OFERTA')")
     public ResponseEntity<Void> habilitarModalidadOferta(@PathVariable Long id) {
         modalidadOfertaService.habilitarModalidadOferta(id);
         return ResponseEntity.ok().build();

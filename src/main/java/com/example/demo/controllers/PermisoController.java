@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +28,7 @@ public class PermisoController {
 
     @Operation(summary = "Obtiene todos los permisos pertenecientes a una categoría")
     @GetMapping("/{idCategoria}")
+    @PreAuthorize("hasAuthority('VER_PERMISOS')") 
     public ResponseEntity<?> obtenerPermisosSegunCategoria(@PathVariable Long idCategoria){
         List<Permiso> permisos = permisoService.obtenerPermisosDeUnaCategoria(idCategoria);
         return ResponseEntity.status(HttpStatus.OK).body(permisos);

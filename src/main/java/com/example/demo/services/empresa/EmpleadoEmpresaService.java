@@ -21,4 +21,6 @@ public interface EmpleadoEmpresaService extends BaseService<EmpleadoEmpresa, Lon
     public Optional<EmpleadoEmpresa> buscarEmpleadoEmpresaPorUsuarioId(Long idUsuario);
 
     public List<EmpleadoEmpresa> visualizarTodosLosEmpleadosDeUnaEmpresa(Long idEmpresa);
+
+    public Boolean existeEmpleadoPorUsuarioId(Long usuarioId);
 }

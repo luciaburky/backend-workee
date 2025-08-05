@@ -18,4 +18,6 @@ public interface CandidatoRepository extends BaseRepository<Candidato, Long> {
 
 
     Optional<Candidato> findByUsuarioId(Long usuarioId);
+
+    Boolean existsByUsuarioId(Long usuarioId);
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,7 +34,8 @@ public class EtapaController {
     }
     
     @Operation(summary = "Crear una nueva Etapa")
-    @PostMapping
+    @PostMapping()
+    @PreAuthorize("hasAuthority('CREAR_ETAPA')")
     public ResponseEntity<Etapa> crearEtapa(@Valid @RequestBody EtapaRequestDTO etapaRequestDTO){
         Etapa nuevaEtapa = etapaService.guardarEtapa(etapaRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevaEtapa);
@@ -41,6 +43,7 @@ public class EtapaController {
 
     @Operation(summary = "Actualizar una Etapa Existente")
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('MODIFICAR_ETAPA')")
     public ResponseEntity<Etapa> actualizarEtapa(@PathVariable Long id, @RequestBody EtapaRequestDTO etapaRequestDTO) {
         Etapa etapaActualizada = etapaService.actualizarEtapa(id, etapaRequestDTO);
         return ResponseEntity.ok(etapaActualizada);
@@ -48,6 +51,7 @@ public class EtapaController {
 
     @Operation(summary = "Obtener todas las Etapas")
     @GetMapping
+    @PreAuthorize("hasAuthority('VER_TODAS_ETAPAS')")
     public ResponseEntity<List<Etapa>> obtenerEtapa() {
         List<Etapa> listaEtapas = etapaService.obtenerEtapas();
         return ResponseEntity.ok(listaEtapas);
@@ -55,6 +59,7 @@ public class EtapaController {
 
     @Operation(summary = "Obtener todas las Etapas Activas")
     @GetMapping("/activas")
+    @PreAuthorize("hasAuthority('?')") //TODO: ver que se le pone a esto en base a lo que se agregue de gestión de ofertas
     public ResponseEntity<List<Etapa>> obtenerEtapasActivas() {
         List<Etapa> listaEtapasActivas = etapaService.obtenerEtapasActivos();
         return ResponseEntity.ok(listaEtapasActivas) ;
@@ -62,13 +67,15 @@ public class EtapaController {
     
     @Operation(summary = "Obtener una Etapa por ID")
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('VER_ETAPA')")
     public ResponseEntity<Etapa> obtenerEtapaPorId(@PathVariable Long id) {
         Etapa etapa = etapaService.findById(id);
         return ResponseEntity.ok(etapa);
     }
 
     @Operation(summary = "Deshabilitar un Etapa")
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deshabilitar/{id}")
+    @PreAuthorize("hasAuthority('HABILITACION_ETAPA')")
     public ResponseEntity<Void> deshabilitarEtapa(@PathVariable Long id) {
         etapaService.delete(id);
         return ResponseEntity.ok().build();
@@ -76,6 +83,7 @@ public class EtapaController {
     
     @Operation(summary = "Habilitar un Etapa")
     @PutMapping("/habilitar/{id}")
+    @PreAuthorize("hasAuthority('HABILITACION_ETAPA')")
     public ResponseEntity<Void> habilitarEtapa(@PathVariable Long id) {
         etapaService.habilitarEtapa(id);
         return ResponseEntity.ok().build();

@@ -135,7 +135,7 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
         tokenConfirmacion.setUsuario(nuevoUsuario);
         tokenConfirmacionRepository.save(tokenConfirmacion);
 
-        String linkConfirmacion = "http://localhost:4200/cuentaVerificada?token=" + token;
+        String linkConfirmacion = "http://localhost:4200/cuentaVerificada?token=" + token; //TODO: Ver si lo dejamos asi
 
         //Envio mail
         enviarMailConfirmacionACandidato(candidatoDTO.getCorreoCandidato(), candidatoDTO.getNombreCandidato(), linkConfirmacion);
@@ -315,5 +315,11 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
         usuarioService.darDeBajaUsuario(candidato.getUsuario().getId());
         candidatoRepository.save(candidato);
         return true;
+    }
+
+
+    @Override
+    public Boolean existeCandidatoPorUsuarioId(Long usuarioId){
+        return candidatoRepository.existsByUsuarioId(usuarioId);
     }
 }   

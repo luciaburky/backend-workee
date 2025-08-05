@@ -38,6 +38,8 @@ public interface EmpleadoEmpresaRepository extends BaseRepository<EmpleadoEmpres
         nativeQuery = true
      )
      public List<EmpleadoEmpresa> traerTodosLosEmpleadosDeUnaEmpresa(@Param("idEmpresa") Long idEmpresa);
+
+     Boolean existsByUsuarioId(Long usuarioId);
      
 }
 

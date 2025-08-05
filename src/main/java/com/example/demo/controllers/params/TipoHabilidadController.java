@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +35,7 @@ public class TipoHabilidadController {
 
     @Operation(summary = "Crear un nuevo Tipo Habilidad")
     @PostMapping
+    @PreAuthorize("hasAuthority('CREAR_TIPO_HABILIDAD')")
     public ResponseEntity<TipoHabilidad> crearTipoHabilidad(@Valid @RequestBody TipoHabilidadRequestDTO tipoHabilidadRequestDTO){
         TipoHabilidad nuevoTipoHabilidad = tipoHabilidadService.guardarTipoHabilidad(tipoHabilidadRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoTipoHabilidad);
@@ -41,6 +43,7 @@ public class TipoHabilidadController {
 
     @Operation(summary = "Actualizar un Tipo Habilidad Existente")
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('MODIFICAR_TIPO_HABILIDAD')")
     public ResponseEntity<TipoHabilidad> actualizarTipoHabilidad(@PathVariable Long id, @RequestBody TipoHabilidadRequestDTO tipoHabilidadRequestDTO) {
         TipoHabilidad tipoHabilidadActualizado = tipoHabilidadService.actualizarTipoHabilidad(id, tipoHabilidadRequestDTO);
         return ResponseEntity.ok(tipoHabilidadActualizado);
@@ -48,6 +51,7 @@ public class TipoHabilidadController {
 
     @Operation(summary = "Obtener todos los Tipos de Habilidad")
     @GetMapping
+    @PreAuthorize("hasAuthority('VER_TODOS_TIPO_HABILIDAD')")
     public ResponseEntity<List<TipoHabilidad>> obtenerTipoHabilidad() {
         List<TipoHabilidad> listaTipoHabilidades = tipoHabilidadService.obtenerTipoHabilidades();
         return ResponseEntity.ok(listaTipoHabilidades);
@@ -62,13 +66,15 @@ public class TipoHabilidadController {
     
     @Operation(summary = "Obtener un Tipo Habilidad por ID")
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('VER_TIPO_HABILIDAD')")
     public ResponseEntity<TipoHabilidad> obtenerTipoHabilidadPorId(@PathVariable Long id) {
         TipoHabilidad tipoHabilidad = tipoHabilidadService.findById(id);
         return ResponseEntity.ok(tipoHabilidad);
     }
 
     @Operation(summary = "Deshabilitar un Tipo Habilidad")
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deshabilitar/{id}")
+    @PreAuthorize("hasAuthority('HABILITACION_TIPO_HABILIDAD')")
     public ResponseEntity<Void> deshabilitarTipoHabilidad(@PathVariable Long id) {
         tipoHabilidadService.delete(id);
         return ResponseEntity.ok().build();
@@ -76,6 +82,7 @@ public class TipoHabilidadController {
     
     @Operation(summary = "Habilitar un Tipo Habilidad")
     @PutMapping("/habilitar/{id}")
+    @PreAuthorize("hasAuthority('HABILITACION_TIPO_HABILIDAD')")
     public ResponseEntity<Void> habilitarTipoHabilidad(@PathVariable Long id) {
         tipoHabilidadService.habilitarTipoHabilidad(id);
         return ResponseEntity.ok().build();

@@ -5,6 +5,7 @@ import java.util.List;
 import com.example.demo.dtos.RecuperarContraseniaDTO;
 import com.example.demo.dtos.UsuarioDTO;
 import com.example.demo.dtos.UsuarioResponseDTO;
+import com.example.demo.dtos.login.LoginRequestDTO;
 import com.example.demo.entities.seguridad.Usuario;
 import com.example.demo.services.BaseService;
 
@@ -28,4 +29,9 @@ public interface UsuarioService extends BaseService<Usuario, Long>{
     public UsuarioResponseDTO visualizarDetalleUsuario(Long idUsuario);
 
     public void confirmarTokenCandidato(String token);
+
+    public Usuario obtenerUsuarioAutenticado();
+    
+    public String login(LoginRequestDTO loginRequestDTO);
 }
+

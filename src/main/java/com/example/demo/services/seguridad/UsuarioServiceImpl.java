@@ -10,13 +10,18 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.RecuperarContraseniaDTO;
 import com.example.demo.dtos.UsuarioDTO;
 import com.example.demo.dtos.UsuarioResponseDTO;
+import com.example.demo.dtos.login.LoginRequestDTO;
 import com.example.demo.entities.params.CodigoEstadoUsuario;
 import com.example.demo.entities.params.EstadoUsuario;
 import com.example.demo.entities.seguridad.Rol;
@@ -33,6 +38,7 @@ import com.example.demo.repositories.seguridad.UsuarioRepository;
 import com.example.demo.repositories.seguridad.UsuarioRolRepository;
 import com.example.demo.repositories.seguridad.tokens.TokenConfirmacionRepository;
 import com.example.demo.repositories.seguridad.tokens.TokenRecuperacionRepository;
+import com.example.demo.security.JwtUtil;
 import com.example.demo.services.BaseServiceImpl;
 import com.example.demo.services.NombreEntidadResolverService;
 import com.example.demo.services.mail.MailService;
@@ -55,8 +61,13 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
     private final MailService mailService;
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
-    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper, EstadoUsuarioService estadoUsuarioService, MailService mailService, UsuarioRolRepository usuarioRolRepository, RolService rolService, NombreEntidadResolverService nombreEntidadResolverService, BCryptPasswordEncoder bCryptPasswordEncoder, TokenRecuperacionRepository tokenRecuperacionRepository, TokenConfirmacionRepository tokenConfirmacionRepository) {
+    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper, EstadoUsuarioService estadoUsuarioService, 
+    MailService mailService, UsuarioRolRepository usuarioRolRepository, RolService rolService, NombreEntidadResolverService nombreEntidadResolverService, 
+    BCryptPasswordEncoder bCryptPasswordEncoder, TokenRecuperacionRepository tokenRecuperacionRepository, TokenConfirmacionRepository tokenConfirmacionRepository,
+    AuthenticationManager authenticationManager,JwtUtil jwtUtil) {
         super(usuarioRepository);
         this.usuarioRepository = usuarioRepository;
         this.usuarioMapper = usuarioMapper;
@@ -68,7 +79,11 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.tokenRecuperacionRepository = tokenRecuperacionRepository;
         this.tokenConfirmacionRepository = tokenConfirmacionRepository;
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
     }
+
+    
 
 
     @Override
@@ -178,6 +193,15 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
         }
         Usuario usuarioEncontrado = usuario.get();
 
+        Optional<TokenRecuperacion> ultimoToken = tokenRecuperacionRepository.findUltimoTokenActivo(usuarioEncontrado.getId());
+        if (ultimoToken.isPresent() && ultimoToken.get().getFechaCreacion().isAfter(LocalDateTime.now().minusMinutes(5))) {
+            throw new EntityNotValidException("Ya se envió un correo de recuperación recientemente. Esperá 5 minutos.");
+        }
+
+
+        //Si reenvia el mail para recup contraseña entonces invalida el que se habia guardado antes
+        tokenRecuperacionRepository.invalidarTokensActivosDelUsuario(usuarioEncontrado.getId(), LocalDateTime.now(), LocalDateTime.now());
+        
         //Token para recuperar contraseña
         String token = UUID.randomUUID().toString();
 
@@ -366,6 +390,29 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
         usuario.getUsuarioEstadoList().add(usuarioEstadoUsuarioNuevo);
 
         usuarioRepository.save(usuario);
+    }
+
+    @Override
+     public Usuario obtenerUsuarioAutenticado() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName(); 
+        return usuarioRepository.buscarUsuarioPorCorreo(email).orElseThrow(() ->
+            new RuntimeException("Usuario no encontrado")
+        );
+    }
+
+
+    @Override
+    public String login(LoginRequestDTO loginRequestDTO) {
+        Authentication authentication = authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(
+                loginRequestDTO.getCorreo(),
+                loginRequestDTO.getContrasenia()
+            )
+        );
+         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        
+        return jwtUtil.generateToken(userDetails);
     }
 
 }

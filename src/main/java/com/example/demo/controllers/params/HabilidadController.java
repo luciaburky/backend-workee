@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,7 +43,8 @@ public class HabilidadController {
     }
     
     @Operation(summary = "Crear una nueva Habilidad")
-    @PostMapping
+    @PostMapping()
+    @PreAuthorize("hasAuthority('CREAR_HABILIDAD')")
     public ResponseEntity<Habilidad> crearHabilidad(@Valid @RequestBody HabilidadRequestDTO habilidadRequestDTO){
         System.out.println("==> Recibido DTO: " + habilidadRequestDTO);
         System.out.println("==> nombreHabilidad DTO: " + habilidadRequestDTO.getNombreHabilidad());
@@ -53,13 +55,15 @@ public class HabilidadController {
 
     @Operation(summary = "Actualizar una Habilidad Existente")
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('MODIFICAR_HABILIDAD')")
     public ResponseEntity<Habilidad> actualizarHabilidad(@PathVariable Long id, @RequestBody HabilidadRequestDTO habilidadRequestDTO) {
         Habilidad habilidadActualizada = habilidadService.actualizarHabilidad(id, habilidadRequestDTO);
         return ResponseEntity.ok(habilidadActualizada);
     }
 
     @Operation(summary = "Obtener todas las Habilidades")
-    @GetMapping
+    @GetMapping()
+    @PreAuthorize("hasAuthority('VER_TODAS_HABILIDADES')")
     public ResponseEntity<List<Habilidad>> obtenerHabilidades() {
         List<Habilidad> listaHabilidades = habilidadService.obtenerHabilidades();
         return ResponseEntity.ok(listaHabilidades);
@@ -74,13 +78,15 @@ public class HabilidadController {
     
     @Operation(summary = "Obtener una Habilidad por ID")
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('VER_HABILIDAD')")
     public ResponseEntity<Habilidad> obtenerHabilidadPorId(@PathVariable Long id) {
         Habilidad habilidad = habilidadService.findById(id);
         return ResponseEntity.ok(habilidad);
     }
 
     @Operation(summary = "Deshabilitar Habilidad")
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deshabilitar/{id}")
+    @PreAuthorize("hasAuthority('HABILITACION_HABILIDAD')")
     public ResponseEntity<Void> deshabilitarHabillidad(@PathVariable Long id) {
         habilidadService.delete(id);
         return ResponseEntity.ok().build();
@@ -88,6 +94,7 @@ public class HabilidadController {
     
     @Operation(summary = "Habilitar Habilidad")
     @PutMapping("/habilitar/{id}")
+    @PreAuthorize("hasAuthority('HABILITACION_HABILIDAD')")
     public ResponseEntity<Void> habilitarHabilidad(@PathVariable Long id) {
         habilidadService.habilitarHabilidad(id);
         return ResponseEntity.ok().build();

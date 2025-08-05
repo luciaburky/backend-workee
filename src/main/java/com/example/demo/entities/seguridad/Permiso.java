@@ -25,6 +25,6 @@ public class Permiso extends Base{
     private String nombrePermiso;
 
     @NotNull
-    @Column(name = "url_permiso")
-    private String urlPermiso;
+    @Column(name = "codigo_permiso")
+    private String codigoPermiso;
 }

@@ -130,6 +130,11 @@ public class EmpleadoEmpresaServiceImpl extends BaseServiceImpl<EmpleadoEmpresa,
     public List<EmpleadoEmpresa> visualizarTodosLosEmpleadosDeUnaEmpresa(Long idEmpresa){
         return empleadoEmpresaRepository.traerTodosLosEmpleadosDeUnaEmpresa(idEmpresa);
     }
+
+    @Override
+    public Boolean existeEmpleadoPorUsuarioId(Long usuarioId){
+        return empleadoEmpresaRepository.existsByUsuarioId(usuarioId);
+    }
 }
 
 
