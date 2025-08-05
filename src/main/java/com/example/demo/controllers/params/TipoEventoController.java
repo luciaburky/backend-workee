@@ -64,33 +64,21 @@ public class TipoEventoController  {
     @GetMapping("/{id}")
     public ResponseEntity<?> TipoEventoPorId(@PathVariable Long id) {
         TipoEvento tipoEvento = tipoEventoService.buscarTipoEventoPorId(id);
-        if (tipoEvento != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(tipoEvento);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("TipoEvento no encontrado");
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(tipoEvento);
     }
 
     @Operation(summary = "Deshabilita un TipoEvento")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deshabilitarTipoEvento(@PathVariable Long id) {
-        boolean eliminado = tipoEventoService.deshabilitarTipoEvento(id);
-        if (eliminado) {
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("TipoEvento no encontrado");
-        }
+        tipoEventoService.deshabilitarTipoEvento(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @Operation(summary = "Habilita un TipoEvento")
     @PutMapping("/habilitar/{id}")
     public ResponseEntity<?> habilitaripoEvento(@PathVariable Long id) {
-        Boolean habilitado = tipoEventoService.habilitarTipoEvento(id);
-        if (habilitado) {
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("TipoEvento no encontrado");
-        }
+        tipoEventoService.habilitarTipoEvento(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 }

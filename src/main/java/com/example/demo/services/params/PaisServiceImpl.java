@@ -10,6 +10,8 @@ import com.example.demo.dtos.params.PaisRequestDTO;
 import com.example.demo.entities.params.Pais;
 import com.example.demo.exceptions.EntityAlreadyEnabledException;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
+import com.example.demo.exceptions.EntityReferencedException;
+import com.example.demo.repositories.empresa.EmpresaRepository;
 import com.example.demo.repositories.params.PaisRepository;
 import com.example.demo.services.BaseServiceImpl;
 
@@ -19,11 +21,13 @@ import jakarta.transaction.Transactional;
 @Service
 public class PaisServiceImpl extends BaseServiceImpl<Pais,Long> implements PaisService{
     private final PaisRepository paisRepository;
+    private final EmpresaRepository empresaRepository;
 
 
-    public PaisServiceImpl(PaisRepository paisRepository) {
+    public PaisServiceImpl(PaisRepository paisRepository, EmpresaRepository empresaRepository) {
         super(paisRepository);
         this.paisRepository = paisRepository;
+        this.empresaRepository = empresaRepository;
     }
 
     @Override
@@ -45,7 +49,7 @@ public class PaisServiceImpl extends BaseServiceImpl<Pais,Long> implements PaisS
     public Pais actualizarPais(Long id, PaisRequestDTO paisRequestDTO){
         Pais paisOriginal = this.findById(id); //buscarPaisPorId(id);
         
-        if (yaExistePais(paisRequestDTO.getNombrePais(), paisOriginal)) {
+        if (yaExistePais(paisRequestDTO.getNombrePais(), paisOriginal.getId())) {
             throw new EntityAlreadyExistsException("Ya existe un país con ese nombre");
         }
 
@@ -79,16 +83,36 @@ public class PaisServiceImpl extends BaseServiceImpl<Pais,Long> implements PaisS
     }
 
 
-    private Boolean yaExistePais(String nombrePais, Pais paisOriginal) {
-        Optional<Pais> paisExistente = paisRepository.buscarPorNombrePais(nombrePais);
+    private Boolean yaExistePais(String nombrePais, Long idPais) {
+        Optional<Pais> paisExistente = paisRepository.findByNombrePaisIgnoreCase(nombrePais); //buscarPorNombrePais(nombrePais);
         
-        if(paisOriginal != null){
-            if(paisOriginal.getId() == paisExistente.get().getId()){
+        if(idPais != null && paisExistente.isPresent()){
+            if(idPais == paisExistente.get().getId()){
                 return false;
             }
         }
         
         return paisExistente.isPresent();
     }
-    
+
+    @Override
+    public Boolean deshabilitarPais(Long idPais){
+        Boolean estaEnUso = validarUsoPais(idPais);
+
+        if(estaEnUso){
+            throw new EntityReferencedException("La entidad se encuentra en uso, no puede deshabilitarla");
+        }
+        return delete(idPais);
+    }
+
+    private Boolean validarUsoPais(Long id){
+        Boolean paisEnUsoPorEmpresas = empresaRepository.existenEmpresasActivasUsandoPais(id);
+        Boolean paisEnUsoPorCandidato = false; //TODO: Borrar el false y llamar al repo de candidato
+
+        if(paisEnUsoPorCandidato || paisEnUsoPorEmpresas){
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

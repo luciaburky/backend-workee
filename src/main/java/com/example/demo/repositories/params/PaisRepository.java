@@ -18,14 +18,7 @@ public interface PaisRepository extends BaseRepository<Pais, Long> {
             )
     List<Pais> buscarPaisesActivos();
 
-    //Optional<Pais> findByNombrePaisIgnoreCase(String nombrePais);
-
-    @Query(
-        value = "SELECT * FROM pais " + 
-                "WHERE LOWER(:nombrePais) LIKE LOWER(nombre_pais)",
-        nativeQuery = true
-    )
-    Optional<Pais> buscarPorNombrePais(String nombrePais);
+    Optional<Pais> findByNombrePaisIgnoreCase(String nombrePais);
 
     List<Pais> findAllByOrderByNombrePaisAsc();
 }

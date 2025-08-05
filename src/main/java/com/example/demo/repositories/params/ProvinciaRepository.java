@@ -14,20 +14,20 @@ import com.example.demo.repositories.BaseRepository;
 @Repository
 public interface ProvinciaRepository extends BaseRepository<Provincia, Long> {
     
-    @Query(
-        value = "SELECT * FROM provincia p WHERE p.id_pais = :idPais " + 
-                "ORDER BY p.nombre_provincia ASC ",
-        nativeQuery = true
-    )
-    List<Provincia> findProvinciaByPaisId(@Param("idPais") Long idPais);
+        @Query(
+                value = "SELECT * FROM provincia p WHERE p.id_pais = :idPais " + 
+                        "ORDER BY p.nombre_provincia ASC ",
+                nativeQuery = true
+        )
+        List<Provincia> findProvinciaByPaisId(@Param("idPais") Long idPais);
 
-    @Query(value = "SELECT * FROM provincia WHERE fecha_hora_baja IS NULL " + 
-            "ORDER BY nombre_provincia ASC", 
-            nativeQuery = true
-            )
-    List<Provincia> buscarProvinciasActivas();
+        @Query(value = "SELECT * FROM provincia WHERE fecha_hora_baja IS NULL " + 
+                "ORDER BY nombre_provincia ASC", 
+                nativeQuery = true
+                )
+        List<Provincia> buscarProvinciasActivas();
 
-    List<Provincia> findAllByOrderByNombreProvinciaAsc();
+        List<Provincia> findAllByOrderByNombreProvinciaAsc();
 
     Optional<Provincia> findByNombreProvinciaIgnoreCase(String nombreProvincia);
 

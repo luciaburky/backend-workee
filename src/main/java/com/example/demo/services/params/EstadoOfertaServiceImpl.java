@@ -30,7 +30,7 @@ public class EstadoOfertaServiceImpl extends BaseServiceImpl<EstadoOferta, Long>
     @Override
     @Transactional
     public EstadoOferta guardarEstadoOferta(EstadoOfertaRequestDTO estadoOfertaDTO) {
-        if (yaExisteEstadoOferta(estadoOfertaDTO.getNombreEstadoOferta())) {
+        if (yaExisteEstadoOferta(estadoOfertaDTO.getNombreEstadoOferta(), null)) {
             throw new EntityAlreadyExistsException("Ya existe un estado de oferta con ese nombre");
         }
 
@@ -46,7 +46,7 @@ public class EstadoOfertaServiceImpl extends BaseServiceImpl<EstadoOferta, Long>
     public EstadoOferta actualizarEstadoOferta(Long id, EstadoOfertaRequestDTO estadoOfertaDTO) {
         EstadoOferta estadoOfertaOriginal = this.findById(id);
 
-        if (yaExisteEstadoOferta(estadoOfertaDTO.getNombreEstadoOferta())) {
+        if (yaExisteEstadoOferta(estadoOfertaDTO.getNombreEstadoOferta(), id)) {
             throw new EntityAlreadyExistsException("Ya existe un estado de oferta con ese nombre");
         }
 
@@ -83,8 +83,10 @@ public class EstadoOfertaServiceImpl extends BaseServiceImpl<EstadoOferta, Long>
         return estadoOfertaRepository.buscarEstadoOfertasActivos();
     }
 
-    private Boolean yaExisteEstadoOferta(String nombreEstadoOferta) {
+    private Boolean yaExisteEstadoOferta(String nombreEstadoOferta, Long idAExcluir) {
         Optional<EstadoOferta> estadoOfertaExistente = estadoOfertaRepository.findByNombreEstadoOfertaIgnoreCase(nombreEstadoOferta);
-        return estadoOfertaExistente.isPresent();
+        return estadoOfertaExistente
+        .filter(e -> idAExcluir == null || !e.getId().equals(idAExcluir))
+        .isPresent();    
     }
 }

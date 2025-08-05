@@ -28,7 +28,7 @@ public class EtapaServiceImpl extends BaseServiceImpl<Etapa, Long> implements Et
     @Override
     @Transactional
     public Etapa guardarEtapa(EtapaRequestDTO etapaDTO) {
-        if (yaExisteEtapa(etapaDTO.getNombreEtapa())) {
+        if (yaExisteEtapa(etapaDTO.getNombreEtapa(), null)) {
             throw new EntityAlreadyExistsException("Ya existe una etapa con ese nombre");
         }
 
@@ -45,14 +45,24 @@ public class EtapaServiceImpl extends BaseServiceImpl<Etapa, Long> implements Et
     public Etapa actualizarEtapa(Long id, EtapaRequestDTO etapaDTO) {
         Etapa etapaOriginal = this.findById(id);
 
-        if (yaExisteEtapa(etapaDTO.getNombreEtapa())) {
-            throw new EntityAlreadyExistsException("Ya existe una etapa con ese nombre");
+        // Si viene un nombre no vacío, se valida y se setea
+        if (etapaDTO.getNombreEtapa() != null && !etapaDTO.getNombreEtapa().isBlank()) {
+            // Si el nombre es distinto al actual, valido duplicado
+            if (!etapaDTO.getNombreEtapa().equalsIgnoreCase(etapaOriginal.getNombreEtapa()) &&
+                    yaExisteEtapa(etapaDTO.getNombreEtapa(), id)) {
+                throw new EntityAlreadyExistsException("Ya existe una etapa con ese nombre");
+            }
+            etapaOriginal.setNombreEtapa(etapaDTO.getNombreEtapa());
         }
 
-        etapaOriginal.setNombreEtapa(etapaDTO.getNombreEtapa());
-        etapaOriginal.setDescripcionEtapa(etapaDTO.getDescripcionEtapa());
+        // Si viene una descripción no vacía, se setea
+        if (etapaDTO.getDescripcionEtapa() != null && !etapaDTO.getDescripcionEtapa().isBlank()) {
+            etapaOriginal.setDescripcionEtapa(etapaDTO.getDescripcionEtapa());
+        }
+
         return etapaRepository.save(etapaOriginal);
     }
+
 
     @Override
     @Transactional
@@ -81,8 +91,10 @@ public class EtapaServiceImpl extends BaseServiceImpl<Etapa, Long> implements Et
         return etapaRepository.buscarEtapasActivos();
     }
 
-    private Boolean yaExisteEtapa(String nombreEtapa) {
+    private Boolean yaExisteEtapa(String nombreEtapa, Long idAExcluir) {
         Optional<Etapa> etapaExiste = etapaRepository.findByNombreEtapaIgnoreCase(nombreEtapa);
-        return etapaExiste.isPresent();
+        return etapaExiste
+        .filter(e -> idAExcluir == null || !e.getId().equals(idAExcluir))
+        .isPresent();
     }
 }

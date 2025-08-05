@@ -44,7 +44,7 @@ public class HabilidadServiceImpl extends BaseServiceImpl<Habilidad, Long> imple
     @Override
     @Transactional
     public Habilidad guardarHabilidad(HabilidadRequestDTO habilidadDTO){
-        if(yaExisteHabilidad(habilidadDTO.getNombreHabilidad())){
+        if(yaExisteHabilidad(habilidadDTO.getNombreHabilidad(), null)){
             throw new EntityAlreadyExistsException("Ya existe una habilidad con ese nombre");
         }
 
@@ -66,17 +66,24 @@ public class HabilidadServiceImpl extends BaseServiceImpl<Habilidad, Long> imple
     @Override
     @Transactional
     public Habilidad actualizarHabilidad(Long id, HabilidadRequestDTO habilidadDTO){
-        if(habilidadDTO.getNombreHabilidad() == null || habilidadDTO.getNombreHabilidad().isEmpty()) {
-            throw new EntityNotValidException("El nombre de la habilidad no puede ser nulo o vacío");
-        }
 
         Habilidad habilidadOriginal = findById(id);
 
-        if(yaExisteHabilidad(habilidadDTO.getNombreHabilidad())){
-            throw new EntityAlreadyExistsException("Ya existe una habilidad con ese nombre");
-        }
+        if(habilidadDTO.getNombreHabilidad() != null && !habilidadDTO.getNombreHabilidad().isBlank() ){
+            if(!habilidadOriginal.getNombreHabilidad().equalsIgnoreCase(habilidadDTO.getNombreHabilidad())) {
+                if(yaExisteHabilidad(habilidadDTO.getNombreHabilidad(), id)) {
+                    throw new EntityAlreadyExistsException("Ya existe una habilidad con ese nombre");
+                }
+                habilidadOriginal.setNombreHabilidad(habilidadDTO.getNombreHabilidad());
+            }
+        }            
 
-        habilidadOriginal.setNombreHabilidad(habilidadDTO.getNombreHabilidad());
+        if(habilidadDTO.getIdTipoHabilidad() != null){
+            if(!habilidadOriginal.getTipoHabilidad().getId().equals(habilidadDTO.getIdTipoHabilidad())) {
+                TipoHabilidad tipoHabilidad = tipoHabilidadService.findById(habilidadDTO.getIdTipoHabilidad());
+                habilidadOriginal.setTipoHabilidad((tipoHabilidad));
+            }
+        }
 
         return habilidadRepository.save(habilidadOriginal);
     }
@@ -95,7 +102,6 @@ public class HabilidadServiceImpl extends BaseServiceImpl<Habilidad, Long> imple
         habilidadRepository.save(habilidadOriginal);
         return true;
     }
-
     
     @Override
     public List<Habilidad> obtenerHabilidades() {
@@ -107,8 +113,10 @@ public class HabilidadServiceImpl extends BaseServiceImpl<Habilidad, Long> imple
         return habilidadRepository.buscarHabilidadesActivas();
     }
 
-    private Boolean yaExisteHabilidad(String nombreHabilidad) {
+    private Boolean yaExisteHabilidad(String nombreHabilidad, Long idAExcluir) {
         Optional<Habilidad> habilidadExiste = habilidadRepository.findByNombreHabilidadIgnoreCase(nombreHabilidad);
-        return habilidadExiste.isPresent();
+        return habilidadExiste
+        .filter(h -> idAExcluir == null || !h.getId().equals(idAExcluir))
+        .isPresent();
     }
 }

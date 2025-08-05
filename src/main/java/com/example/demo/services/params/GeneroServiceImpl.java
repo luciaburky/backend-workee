@@ -2,6 +2,7 @@ package com.example.demo.services.params;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ public class GeneroServiceImpl extends BaseServiceImpl<Genero,Long> implements G
     @Override
     @Transactional
     public Genero guardarGenero(GeneroRequestDTO generoRequestDTO) {
-        if(yaExisteEstadoUsuario(generoRequestDTO.getNombreGenero())) {
+        if(yaExisteEstadoUsuario(generoRequestDTO.getNombreGenero(), null)) {
             throw new EntityAlreadyExistsException("El género ya existe");
         }
         Genero genero = new Genero();
@@ -42,12 +43,12 @@ public class GeneroServiceImpl extends BaseServiceImpl<Genero,Long> implements G
         if(generoRequestDTO.getNombreGenero() == null || generoRequestDTO.getNombreGenero().isEmpty()) {
             throw new IllegalArgumentException("El nombre del género no puede estar vacío");
         }
-        Genero genero = findById(id);//buscarGeneroPorId(id);
-        if(yaExisteEstadoUsuario(generoRequestDTO.getNombreGenero())) {
+        Genero generoOriginal = findById(id);//buscarGeneroPorId(id);
+        if(yaExisteEstadoUsuario(generoRequestDTO.getNombreGenero(), generoOriginal.getId())) {
             throw new EntityAlreadyExistsException("El género ya existe");
         } else {
-            genero.setNombreGenero(generoRequestDTO.getNombreGenero());
-            return generoRepository.save(genero);
+            generoOriginal.setNombreGenero(generoRequestDTO.getNombreGenero());
+            return generoRepository.save(generoOriginal);
         }
     }
 
@@ -77,8 +78,14 @@ public class GeneroServiceImpl extends BaseServiceImpl<Genero,Long> implements G
     }
     
 
-    private Boolean yaExisteEstadoUsuario(String nombreEstadoUsuario) {
-        return generoRepository.findByNombreGeneroIgnoreCase(nombreEstadoUsuario).isPresent();
+    private Boolean yaExisteEstadoUsuario(String nombreEstadoUsuario, Long idGeneroOriginal) {
+        Optional<Genero> generoExistente = generoRepository.findByNombreGeneroIgnoreCase(nombreEstadoUsuario);
+        if(idGeneroOriginal != null && generoExistente.isPresent()){
+            if(idGeneroOriginal == generoExistente.get().getId()){
+                return false;
+            }
+        }
+        return generoExistente.isPresent();
     }
 
 }

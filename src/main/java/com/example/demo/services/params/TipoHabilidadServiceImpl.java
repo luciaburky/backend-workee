@@ -29,7 +29,7 @@ public class TipoHabilidadServiceImpl extends BaseServiceImpl<TipoHabilidad, Lon
     @Override
     @Transactional
     public TipoHabilidad guardarTipoHabilidad(TipoHabilidadRequestDTO tipoHabilidadDTO) {
-        if (yaExisteTipoHabilidad(tipoHabilidadDTO.getNombreTipoHabilidad())) {
+        if (yaExisteTipoHabilidad(tipoHabilidadDTO.getNombreTipoHabilidad(), null)) {
             throw new EntityAlreadyExistsException("Ya existe un tipo de habilidad con ese nombre");
         }
 
@@ -45,7 +45,7 @@ public class TipoHabilidadServiceImpl extends BaseServiceImpl<TipoHabilidad, Lon
     public TipoHabilidad actualizarTipoHabilidad(Long id, TipoHabilidadRequestDTO tipoHabilidadDTO) {
         TipoHabilidad tipoHabilidadOriginal = this.findById(id);
         
-        if (yaExisteTipoHabilidad(tipoHabilidadDTO.getNombreTipoHabilidad())) {
+        if (yaExisteTipoHabilidad(tipoHabilidadDTO.getNombreTipoHabilidad(), id)) {
             throw new EntityAlreadyExistsException("Ya existe un tipo de habilidad con ese nombre");
         }
 
@@ -82,8 +82,11 @@ public class TipoHabilidadServiceImpl extends BaseServiceImpl<TipoHabilidad, Lon
     }
 
 
-    private Boolean yaExisteTipoHabilidad(String nombreTipoHabilidad) {
+    private Boolean yaExisteTipoHabilidad(String nombreTipoHabilidad, Long idAExcluir) {
         Optional<TipoHabilidad> tipoHabilidadExiste = tipoHabilidadRepository.findByNombreTipoHabilidadIgnoreCase(nombreTipoHabilidad);
-        return tipoHabilidadExiste.isPresent();
+        return tipoHabilidadExiste
+        .filter(e -> idAExcluir == null || !e.getId().equals(idAExcluir))
+        .isPresent();
     }
 }
+

@@ -2,6 +2,7 @@ package com.example.demo.services.params;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ public class TipoContratoOfertaServiceImpl extends BaseServiceImpl<TipoContratoO
     @Override
     @Transactional
     public TipoContratoOferta guardarTipoContratoOferta(TipoContratoOfertaRequestDTO tipoContratoOfertaRequestDTO) {
-        if(yaExisteTipoContratoOferta(tipoContratoOfertaRequestDTO.getNombreTipoContratoOferta())) {
+        if(yaExisteTipoContratoOferta(tipoContratoOfertaRequestDTO.getNombreTipoContratoOferta(), null)) {
             throw new EntityAlreadyExistsException("El tipo de contrato de oferta ya existe.");
         }
         TipoContratoOferta tipoContratoOferta = new TipoContratoOferta();
@@ -44,7 +45,7 @@ public class TipoContratoOfertaServiceImpl extends BaseServiceImpl<TipoContratoO
             throw new IllegalArgumentException("El nombre del tipo de contrato de oferta no puede estar vacío");
         }
         TipoContratoOferta tipoContratoOferta = findById(id);//buscarTipoContratoOfertaPorId(id);
-        if(yaExisteTipoContratoOferta(tipoContratoOfertaRequestDTO.getNombreTipoContratoOferta())) {
+        if(yaExisteTipoContratoOferta(tipoContratoOfertaRequestDTO.getNombreTipoContratoOferta(), tipoContratoOferta.getId())) {
             throw new EntityAlreadyExistsException("El tipo de contrato de oferta ya existe.");
         } else {
             tipoContratoOferta.setNombreTipoContratoOferta(tipoContratoOfertaRequestDTO.getNombreTipoContratoOferta());
@@ -78,8 +79,14 @@ public class TipoContratoOfertaServiceImpl extends BaseServiceImpl<TipoContratoO
     }
 
 
-    private Boolean yaExisteTipoContratoOferta(String nombreTipoContratoOferta) {
-        return tipoContratoOfertaRepository.findByNombreTipoContratoOfertaIgnoreCase(nombreTipoContratoOferta).isPresent();
+    private Boolean yaExisteTipoContratoOferta(String nombreTipoContratoOferta, Long idTipoContratoOfertaOriginal) {
+        Optional<TipoContratoOferta> tipoContratoOfertaExistente = tipoContratoOfertaRepository.findByNombreTipoContratoOfertaIgnoreCase(nombreTipoContratoOferta);
+        if(idTipoContratoOfertaOriginal != null && tipoContratoOfertaExistente.isPresent()){
+            if(idTipoContratoOfertaOriginal == tipoContratoOfertaExistente.get().getId()){
+                return false;
+            }
+        }
+        return tipoContratoOfertaExistente.isPresent();
     }
 
 }

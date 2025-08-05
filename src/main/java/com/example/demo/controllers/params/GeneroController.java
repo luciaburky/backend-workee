@@ -64,33 +64,21 @@ public class GeneroController {
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerGeneroPorId(@PathVariable Long id) {
         Genero genero = generoService.findById(id); //buscarGeneroPorId(id);
-        if (genero != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(genero);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Genero no encontrado");
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(genero);
     }
 
     @Operation(summary = "Deshabilita un Genero")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deshabilitarGenero(@PathVariable Long id) {
-        boolean eliminado = generoService.delete(id); //deshabilitarGenero(id);
-        if (eliminado) {
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Genero no encontrado");
-        }
+        generoService.delete(id); //deshabilitarGenero(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @Operation(summary = "Habilita un Genero")
     @PutMapping("/habilitar/{id}")
     public ResponseEntity<?> habilitarGenero(@PathVariable Long id) {
-        Boolean habilitado = generoService.habilitarGenero(id);
-        if (habilitado) {
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Genero no encontrado");
-        }
+        generoService.habilitarGenero(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 }

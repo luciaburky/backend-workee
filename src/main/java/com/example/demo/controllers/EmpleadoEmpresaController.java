@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,28 +41,28 @@ public class EmpleadoEmpresaController {
 
     @Operation(summary = "Un EmpleadoEmpresa actualiza su perfil")
     @PutMapping("/actualizarPerfilPropio/{id}")
-    public ResponseEntity<?> actualizarEmpleadoComoEmpleado(@RequestBody EmpleadoEmpresaRequestDTO empleadoEmpresaRequestDTO, Long id){
+    public ResponseEntity<?> actualizarEmpleadoComoEmpleado(@RequestBody EmpleadoEmpresaRequestDTO empleadoEmpresaRequestDTO, @PathVariable Long id){
         EmpleadoEmpresa empleadoEmpresa = empleadoEmpresaService.modificarEmpleado(empleadoEmpresaRequestDTO,true, id);
         return ResponseEntity.status(HttpStatus.CREATED).body(empleadoEmpresa);
     }
 
     @Operation(summary = "Un Administrador de Empresa actualiza el perfil de un Empleado")
     @PutMapping("/actualizarPerfilPorAdmin/{id}")
-    public ResponseEntity<?> actualizarEmpleadoComoAdminEmpresa(@RequestBody EmpleadoEmpresaRequestDTO empleadoEmpresaRequestDTO, Long id){
+    public ResponseEntity<?> actualizarEmpleadoComoAdminEmpresa(@RequestBody EmpleadoEmpresaRequestDTO empleadoEmpresaRequestDTO, @PathVariable Long id){
         EmpleadoEmpresa empleadoEmpresa = empleadoEmpresaService.modificarEmpleado(empleadoEmpresaRequestDTO,false, id);
         return ResponseEntity.status(HttpStatus.CREATED).body(empleadoEmpresa);
     }
 
 
     @Operation(summary = "Trae todos los empleados ACTIVOS de una empresa")
-    @PutMapping("/traerTodos/{id}")
+    @GetMapping("/traerTodos/{id}")
     public ResponseEntity<?> visualizarEmpleadosActivos(@PathVariable Long id){
         List<EmpleadoEmpresa> empleados = empleadoEmpresaService.visualizarEmpleados(id);
         return ResponseEntity.status(HttpStatus.OK).body(empleados);
     }
 
     @Operation(summary = "Dice la cantidad de empleados ACTIVOS que tiene una empresa")
-    @PutMapping("/contarEmpleados/{id}")
+    @GetMapping("/contarEmpleados/{id}")
     public ResponseEntity<?> contarCantidadEmpleadosDeEmpresa(@PathVariable Long id){
         Long cantidadEmpleados = empleadoEmpresaService.contarEmpleadosDeEmpresa(id);
         return ResponseEntity.status(HttpStatus.OK).body(cantidadEmpleados);
@@ -76,6 +77,13 @@ public class EmpleadoEmpresaController {
     }
 
     //TODO: Agregar un endpoint (creo que en el controlador de oferta) para que traiga todas las ofertas asociadas a un empleado
+
+    @Operation(summary = "Administrador empresa da de baja un empelado empresa")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> darDeBajaEmpleado(@PathVariable Long id){
+        Boolean seDioBaja = empleadoEmpresaService.darDeBajaEmpleadoEmpresa(id);
+        return ResponseEntity.status(HttpStatus.OK).body(seDioBaja);
+    }
 }
 
 

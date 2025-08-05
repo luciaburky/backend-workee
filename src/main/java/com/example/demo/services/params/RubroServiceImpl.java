@@ -11,6 +11,8 @@ import com.example.demo.entities.params.Rubro;
 import com.example.demo.exceptions.EntityAlreadyEnabledException;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
 import com.example.demo.exceptions.EntityNotValidException;
+import com.example.demo.exceptions.EntityReferencedException;
+import com.example.demo.repositories.empresa.EmpresaRepository;
 import com.example.demo.repositories.params.RubroRepository;
 import com.example.demo.services.BaseServiceImpl;
 
@@ -20,16 +22,18 @@ import jakarta.transaction.Transactional;
 public class RubroServiceImpl extends BaseServiceImpl<Rubro, Long> implements RubroService {
 
     private final RubroRepository rubroRepository;
+    private final EmpresaRepository empresaRepository;
 
-    public RubroServiceImpl(RubroRepository rubroRepository) {
+    public RubroServiceImpl(RubroRepository rubroRepository, EmpresaRepository empresaRepository) {
         super(rubroRepository);
         this.rubroRepository = rubroRepository;
+        this.empresaRepository = empresaRepository;
     }   
 
     @Override
     @Transactional
     public Rubro guardarRubro(RubroRequestDTO rubroDTO) {
-        if(yaExisteRubro(rubroDTO.getNombreRubro())) {
+        if(yaExisteRubro(rubroDTO.getNombreRubro(), null)) {
             throw new EntityAlreadyExistsException("Ya existe un rubro con ese nombre");
         }
 
@@ -45,7 +49,7 @@ public class RubroServiceImpl extends BaseServiceImpl<Rubro, Long> implements Ru
     public Rubro actualizarRubro(Long id, RubroRequestDTO rubroDTO) {
         Rubro rubroOriginal = this.findById(id);
 
-        if(yaExisteRubro(rubroDTO.getNombreRubro())) {
+        if(yaExisteRubro(rubroDTO.getNombreRubro(), id)) {
             throw new EntityAlreadyExistsException("Ya existe un rubro con ese nombre");
         }
 
@@ -81,9 +85,24 @@ public class RubroServiceImpl extends BaseServiceImpl<Rubro, Long> implements Ru
         return rubroRepository.buscarRubrosActivos();
     }
 
-    public Boolean yaExisteRubro(String nombreRubro) {
+    public Boolean yaExisteRubro(String nombreRubro, Long idAExcluir) {
         Optional<Rubro> rubroExiste = rubroRepository.findByNombreRubroIgnoreCase(nombreRubro);
-        return rubroExiste.isPresent();
+        return rubroExiste
+        .filter(e -> idAExcluir == null || !e.getId().equals(idAExcluir))
+        .isPresent();    }
+
+
+    @Override
+    @Transactional
+    public Boolean deshabilitarRubro(Long idRubro){
+        Boolean estaEnUso = validarUsoRubro(idRubro);
+        if(estaEnUso){
+            throw new EntityReferencedException("La entidad se encuentra en uso, no puede deshabilitarla");
+        }
+        return delete(idRubro);
     }
     
+    private Boolean validarUsoRubro(Long idRubro){
+        return empresaRepository.existsByRubroIdAndFechaHoraBajaIsNull(idRubro);
+    }
 }

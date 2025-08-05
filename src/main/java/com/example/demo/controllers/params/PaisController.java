@@ -67,35 +67,22 @@ public class PaisController  {
         //Pais pais = paisService.buscarPaisPorId(id);
         Pais pais = paisService.findById(id);
 
-        if (pais != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(pais);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Pais no encontrado");
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(pais);
     }
 
 
     @Operation(summary = "Deshabilita un pais")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deshabilitarPais(@PathVariable Long id) {
-        boolean eliminado = paisService.delete(id);//paisService.deshabilitarPais(id);
-        if (eliminado) {
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Pais no encontrado");
-        }
-
+        paisService.deshabilitarPais(id); //delete(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @Operation(summary = "Habilita un pais")
     @PutMapping("/habilitar/{id}")
     public ResponseEntity<?> habilitarPais(@PathVariable Long id) {
-        boolean habilitado = paisService.habilitarPais(id);
-        if (habilitado) {
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Pais no encontrado");
-        }
+        paisService.habilitarPais(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     

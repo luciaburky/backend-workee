@@ -64,33 +64,21 @@ public class TipoContratoOfertaController {
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerTipoContratoOfertaPorId(@PathVariable Long id) {
         TipoContratoOferta tipoContratoOferta = tipoContratoOfertaService.findById(id); //buscarTipoContratoOfertaPorId(id);
-        if (tipoContratoOferta != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(tipoContratoOferta);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("TipoContratoOferta no encontrado");
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(tipoContratoOferta);
     }
 
     @Operation(summary = "Deshabilita un TipoContratoOferta")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deshabilitarTipoContratoOferta(@PathVariable Long id) {
-        boolean eliminado = tipoContratoOfertaService.delete(id); //deshabilitarTipoContratoOferta(id);
-        if (eliminado) {
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("TipoContratoOferta no encontrado");
-        }
+        tipoContratoOfertaService.delete(id); //deshabilitarTipoContratoOferta(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @Operation(summary = "Habilita un TipoContratoOferta")
     @PutMapping("/habilitar/{id}")
     public ResponseEntity<?> habilitarTipoContratoOferta(@PathVariable Long id) {
-        Boolean habilitado = tipoContratoOfertaService.habilitarTipoContratoOferta(id);
-        if (habilitado) {
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("TipoContratoOferta no encontrado");
-        }
+        tipoContratoOfertaService.habilitarTipoContratoOferta(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 

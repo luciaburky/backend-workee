@@ -70,9 +70,10 @@ public class RubroController{
     @Operation(summary = "Deshabilitar un Rubro")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deshabilitarRubro(@PathVariable Long id) {
-        rubroService.delete(id);
-        return ResponseEntity.ok().build();
+        rubroService.deshabilitarRubro(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
+
     
     @Operation(summary = "Habilitar un Rubro")
     @PutMapping("/habilitar/{id}")

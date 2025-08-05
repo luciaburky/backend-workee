@@ -17,4 +17,6 @@ public interface PaisService extends BaseService<Pais, Long> {
 
     public Boolean habilitarPais(Long id);
 
+    public Boolean deshabilitarPais(Long idPais);
+
 }

@@ -22,4 +22,6 @@ public interface ProvinciaService extends BaseService<Provincia, Long>{
 
     public List<UbicacionDTO> traerUbicaciones();
 
+    public Boolean deshabilitarProvincia(Long id);
+
 }

@@ -5,13 +5,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
-
 import com.example.demo.dtos.UbicacionDTO;
 import com.example.demo.dtos.params.ProvinciaRequestDTO;
 import com.example.demo.entities.params.Pais;
 import com.example.demo.entities.params.Provincia;
 import com.example.demo.exceptions.EntityAlreadyEnabledException;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
+import com.example.demo.exceptions.EntityReferencedException;
+import com.example.demo.repositories.empresa.EmpresaRepository;
 import com.example.demo.repositories.params.ProvinciaRepository;
 import com.example.demo.services.BaseServiceImpl;
 
@@ -22,12 +23,13 @@ public class ProvinciaServiceImpl extends BaseServiceImpl<Provincia,Long> implem
 
     private final ProvinciaRepository provinciaRepository;
     private final PaisService paisService;
+    private final EmpresaRepository empresaRepository; //TODO: REVISAR Y VER SI CAMBIAMOS ESTO
 
-
-    public ProvinciaServiceImpl(ProvinciaRepository provinciaRepository, PaisService paisService) {
+    public ProvinciaServiceImpl(ProvinciaRepository provinciaRepository, PaisService paisService, EmpresaRepository empresaRepository) {
         super(provinciaRepository);
         this.provinciaRepository = provinciaRepository;
         this.paisService = paisService;
+        this.empresaRepository = empresaRepository;
     }
 
     @Override
@@ -42,7 +44,7 @@ public class ProvinciaServiceImpl extends BaseServiceImpl<Provincia,Long> implem
     @Override
     @Transactional
     public Provincia guardarProvincia(ProvinciaRequestDTO provinciaRequestDTO){
-        if(yaExisteProvincia(provinciaRequestDTO.getNombreProvincia())){
+        if(yaExisteProvincia(provinciaRequestDTO.getNombreProvincia(), null)){
             throw new EntityAlreadyExistsException("Ya existe una provincia con ese nombre");
         }
 
@@ -69,7 +71,7 @@ public class ProvinciaServiceImpl extends BaseServiceImpl<Provincia,Long> implem
 
         Provincia provinciaOriginal = findById(id);//buscarProvinciaPorId(id);
 
-        if(yaExisteProvincia(provinciaRequestDTO.getNombreProvincia())){
+        if(yaExisteProvincia(provinciaRequestDTO.getNombreProvincia(), provinciaOriginal.getId())){
             throw new EntityAlreadyExistsException("Ya existe una provincia con ese nombre");
         }
 
@@ -104,8 +106,14 @@ public class ProvinciaServiceImpl extends BaseServiceImpl<Provincia,Long> implem
     }
 
 
-    private Boolean yaExisteProvincia(String nombreProvincia) {
+    private Boolean yaExisteProvincia(String nombreProvincia, Long idProvinciaOriginal) {
         Optional<Provincia> provinciaExistente = provinciaRepository.findByNombreProvinciaIgnoreCase(nombreProvincia);
+        if(idProvinciaOriginal != null && provinciaExistente.isPresent()){
+            if(idProvinciaOriginal == provinciaExistente.get().getId()){
+                return false;
+            }
+        }
+        
         return provinciaExistente.isPresent();
     }
 
@@ -113,5 +121,26 @@ public class ProvinciaServiceImpl extends BaseServiceImpl<Provincia,Long> implem
     public List<UbicacionDTO> traerUbicaciones(){
         List<UbicacionDTO> ubicaciones = provinciaRepository.obtenerUbicaciones();
         return ubicaciones;
+    }
+
+    @Override
+    public Boolean deshabilitarProvincia(Long id){
+        Boolean estaEnUso = validarUsoProvincia(id);
+
+        if(estaEnUso){
+            throw new EntityReferencedException("La entidad se encuentra en uso, no puede deshabilitarla");
+        }
+        return delete(id);
+    }
+
+    private Boolean validarUsoProvincia(Long id){
+        Boolean provinciaEnUsoPorEmpresas = empresaRepository.existsByProvinciaIdAndFechaHoraBajaIsNull(id);
+        Boolean provinciaEnUsoPorCandidato = false; //TODO: Borrar el false y llamar al repo de candidato
+
+        if(provinciaEnUsoPorCandidato || provinciaEnUsoPorEmpresas){
+            return true;
+        } else {
+            return false;
+        }
     }
 }
