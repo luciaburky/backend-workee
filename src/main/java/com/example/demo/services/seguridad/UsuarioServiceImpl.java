@@ -136,11 +136,15 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
 
     @Override
     @Transactional
-    public void actualizarDatosUsuario(Long idUsuario, String nuevaContrasenia, String repetirContrasenia, String nuevaUrlFoto){
+    public void actualizarDatosUsuario(Long idUsuario, String nuevaContrasenia, String repetirContrasenia, String nuevaUrlFoto, String contraseniaActual){
         boolean seCambio = false;
         Usuario usuario = findById(idUsuario);
+        String contraseniaEncriptada = encriptarContrasenia(contraseniaActual);
 
         if(nuevaContrasenia != null && !nuevaContrasenia.isBlank()){
+            if(!usuario.getContraseniaUsuario().equals(contraseniaEncriptada)){
+                throw new EntityNotValidException("La contraseña actual ingresada no coincide con la contraseña guardada");
+            }
             String contrasenia = modificarContrasenia(nuevaContrasenia, repetirContrasenia);
             usuario.setContraseniaUsuario(contrasenia);
             seCambio = true;

@@ -53,5 +53,7 @@ public class CandidatoRequestDTO {
     private String repetirContrasenia;
 
     private String urlFotoPerfil;
+
+    private String contraseniaActual;
     
 }

@@ -38,4 +38,6 @@ public class EmpleadoEmpresaRequestDTO {
     private Long idEmpresa;
 
     private String urlFotoPerfil;
+
+    private String contraseniaActual;
 } 

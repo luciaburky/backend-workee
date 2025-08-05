@@ -51,4 +51,6 @@ public class EmpresaRequestDTO {
     private String urlFotoPerfil; 
 
     private String urlDocumentoLegal;
+
+    private String contraseniaActual;
 }

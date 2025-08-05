@@ -12,7 +12,7 @@ import com.example.demo.services.BaseService;
 public interface UsuarioService extends BaseService<Usuario, Long>{
     public Usuario registrarUsuario(UsuarioDTO usuarioDTO);
 
-    public void actualizarDatosUsuario(Long idUsuario, String nuevaContrasenia, String repetirContrasenia, String nuevaUrlFoto);
+    public void actualizarDatosUsuario(Long idUsuario, String nuevaContrasenia, String repetirContrasenia, String nuevaUrlFoto, String contraseniaActual);
 
     public void darDeBajaUsuario(Long idUsuario);
 
