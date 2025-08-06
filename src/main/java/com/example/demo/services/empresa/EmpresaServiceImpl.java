@@ -54,7 +54,7 @@ public class EmpresaServiceImpl extends BaseServiceImpl<Empresa, Long> implement
 
     @Override
     public List<Empresa> buscarEmpresasPorNombre(String nombreEmpresa){
-        if(nombreEmpresa.isEmpty() || nombreEmpresa == null){
+        if(nombreEmpresa.isBlank() || nombreEmpresa == null){
             throw new IllegalArgumentException("El nombre de la empresa no puede estar vacío");
         }
         return empresaRepository.buscarEmpresasPorNombre(nombreEmpresa);

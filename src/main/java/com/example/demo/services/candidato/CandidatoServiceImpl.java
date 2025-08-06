@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.CandidatoRequestDTO;
+import com.example.demo.dtos.FiltrosCandidatoRequestDTO;
 import com.example.demo.entities.candidato.Candidato;
 import com.example.demo.entities.candidato.CandidatoCV;
 import com.example.demo.entities.candidato.CandidatoHabilidad;
@@ -18,7 +19,6 @@ import com.example.demo.entities.params.EstadoBusqueda;
 import com.example.demo.entities.params.Genero;
 import com.example.demo.entities.params.Habilidad;
 import com.example.demo.entities.params.Provincia;
-import com.example.demo.exceptions.EntityAlreadyExistsException;
 import com.example.demo.exceptions.EntityNotFoundException;
 import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.mappers.CandidatoMapper;
@@ -241,5 +241,18 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
                         .map(CandidatoHabilidad::getHabilidad)
                         .filter(h -> h.getTipoHabilidad().getId().equals(idTipoHabilidad))
                         .collect(Collectors.toList());  
+    }
+
+    @Override
+    public List<Candidato> buscarCandidatosConFiltros(FiltrosCandidatoRequestDTO filtrosCandidatoRequestDTO){
+        return candidatoRepository.buscarCandidatosConFiltros(filtrosCandidatoRequestDTO.getNombreCandidato(), filtrosCandidatoRequestDTO.getIdsHabilidades(), filtrosCandidatoRequestDTO.getIdsProvincias(), filtrosCandidatoRequestDTO.getIdsPaises(), filtrosCandidatoRequestDTO.getIdsEstadosDeBusqueda());
+    }
+
+    @Override
+    public List<Candidato> buscarCandidatosPorNombre(String nombreCandidato){
+        if(nombreCandidato.isBlank() || nombreCandidato == null){
+            throw new IllegalArgumentException("El nombre del candidato no puede estar vacío");
+        }
+        return candidatoRepository.buscarCandidatosPorNombre(nombreCandidato);
     }
 }   
