@@ -295,12 +295,12 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
             throw new EntityNotValidException("El rol ingresado no pertenece a la categoria de roles del usuario");
         }
 
-        Optional<UsuarioRol> usuarioRolExistenteOptional = usuarioRolRepository.buscarUsuarioRolAnteriorSegunIdUsuarioEIdRol(idRol, idUsuario);
-        if(usuarioRolExistenteOptional.isPresent()){
+        //Optional<UsuarioRol> usuarioRolExistenteOptional = usuarioRolRepository.buscarUsuarioRolAnteriorSegunIdUsuarioEIdRol(idRol, idUsuario);
+        /*if(usuarioRolExistenteOptional.isPresent()){
             UsuarioRol usuarioRolExistente = usuarioRolExistenteOptional.get();
             usuarioRolExistente.setFechaHoraBaja(null);
-            usuarioRolRepository.save(usuarioRolExistente);
-        } else {
+            usuarioRolRepository.save(usuarioRolExistente);*/
+        //} else {
             Rol rolNuevo = rolService.buscarRolActivoPorId(idRol);
             Usuario usuario = findById(idUsuario);
 
@@ -309,7 +309,7 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
             nuevoUsuarioRol.setFechaHoraAlta(new Date());
             nuevoUsuarioRol.setUsuario(usuario);
             usuarioRolRepository.save(nuevoUsuarioRol);
-        }
+        //}
 
         usuarioRolActual.setFechaHoraBaja(new Date());
         usuarioRolRepository.save(usuarioRolActual);
