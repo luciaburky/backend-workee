@@ -11,6 +11,7 @@ import com.example.demo.entities.params.Pais;
 import com.example.demo.exceptions.EntityAlreadyEnabledException;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
 import com.example.demo.exceptions.EntityReferencedException;
+import com.example.demo.repositories.candidato.CandidatoRepository;
 import com.example.demo.repositories.empresa.EmpresaRepository;
 import com.example.demo.repositories.params.PaisRepository;
 import com.example.demo.services.BaseServiceImpl;
@@ -22,12 +23,14 @@ import jakarta.transaction.Transactional;
 public class PaisServiceImpl extends BaseServiceImpl<Pais,Long> implements PaisService{
     private final PaisRepository paisRepository;
     private final EmpresaRepository empresaRepository;
+    private final CandidatoRepository candidatoRepository;
 
 
-    public PaisServiceImpl(PaisRepository paisRepository, EmpresaRepository empresaRepository) {
+    public PaisServiceImpl(PaisRepository paisRepository, EmpresaRepository empresaRepository, CandidatoRepository candidatoRepository) {
         super(paisRepository);
         this.paisRepository = paisRepository;
         this.empresaRepository = empresaRepository;
+        this.candidatoRepository = candidatoRepository;
     }
 
     @Override
@@ -107,7 +110,7 @@ public class PaisServiceImpl extends BaseServiceImpl<Pais,Long> implements PaisS
 
     private Boolean validarUsoPais(Long id){
         Boolean paisEnUsoPorEmpresas = empresaRepository.existenEmpresasActivasUsandoPais(id);
-        Boolean paisEnUsoPorCandidato = false; //TODO: Borrar el false y llamar al repo de candidato
+        Boolean paisEnUsoPorCandidato = candidatoRepository.existsByProvincia_Pais_IdAndFechaHoraBajaIsNull(id);
 
         if(paisEnUsoPorCandidato || paisEnUsoPorEmpresas){
             return true;

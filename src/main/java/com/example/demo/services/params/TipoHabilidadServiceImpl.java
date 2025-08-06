@@ -11,6 +11,7 @@ import com.example.demo.entities.params.TipoHabilidad;
 import com.example.demo.exceptions.EntityAlreadyEnabledException;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
 import com.example.demo.exceptions.EntityNotValidException;
+import com.example.demo.repositories.candidato.CandidatoRepository;
 import com.example.demo.repositories.params.TipoHabilidadRepository;
 import com.example.demo.services.BaseServiceImpl;
 
@@ -20,10 +21,12 @@ import jakarta.transaction.Transactional;
 public class TipoHabilidadServiceImpl extends BaseServiceImpl<TipoHabilidad, Long> implements TipoHabilidadService{
     
     private final TipoHabilidadRepository tipoHabilidadRepository;
+    private final CandidatoRepository candidatoRepository;
     
-    public TipoHabilidadServiceImpl(TipoHabilidadRepository tipoHabilidadRepository){
+    public TipoHabilidadServiceImpl(TipoHabilidadRepository tipoHabilidadRepository, CandidatoRepository candidatoRepository) {
         super(tipoHabilidadRepository);
         this.tipoHabilidadRepository = tipoHabilidadRepository;
+        this.candidatoRepository = candidatoRepository;
     }
 
     @Override
@@ -87,6 +90,20 @@ public class TipoHabilidadServiceImpl extends BaseServiceImpl<TipoHabilidad, Lon
         return tipoHabilidadExiste
         .filter(e -> idAExcluir == null || !e.getId().equals(idAExcluir))
         .isPresent();
+    }
+
+    @Override
+    @Transactional
+    public Boolean deshabilitarTipoHabilidad(Long id) {
+        if(id == null) {
+            throw new EntityNotValidException("El ID del tipo de habilidad no puede ser nulo");
+        }
+        boolean enUso = candidatoRepository.existsByHabilidades_Habilidad_TipoHabilidad_IdAndFechaHoraBajaIsNull(id);
+        if(enUso) {
+            throw new EntityNotValidException("La entidad se encuentra en uso, no puede deshabilitarla");
+        } else {
+            return delete(id);
+        }
     }
 }
 

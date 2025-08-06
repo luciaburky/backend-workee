@@ -76,7 +76,7 @@ public class TipoHabilidadController {
     @DeleteMapping("/deshabilitar/{id}")
     @PreAuthorize("hasAuthority('HABILITACION_TIPO_HABILIDAD')")
     public ResponseEntity<Void> deshabilitarTipoHabilidad(@PathVariable Long id) {
-        tipoHabilidadService.delete(id);
+        tipoHabilidadService.deshabilitarTipoHabilidad(id);
         return ResponseEntity.ok().build();
     }
     

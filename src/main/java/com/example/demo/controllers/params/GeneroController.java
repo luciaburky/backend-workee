@@ -76,7 +76,7 @@ public class GeneroController {
     @DeleteMapping("/deshabilitar/{id}")
     @PreAuthorize("hasAuthority('HABILITACION_GENERO')")
     public ResponseEntity<?> deshabilitarGenero(@PathVariable Long id) {
-        generoService.delete(id); 
+        generoService.deshabilitarGenero(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

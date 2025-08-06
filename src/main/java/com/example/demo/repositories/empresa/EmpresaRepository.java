@@ -13,15 +13,16 @@ import com.example.demo.repositories.BaseRepository;
 
 @Repository
 public interface EmpresaRepository extends BaseRepository<Empresa, Long>  {
-
-    @Query(
-        value = "SELECT * FROM empresa " + 
-                "WHERE (:idsRubros IS NULL OR id_rubro IN (:idsRubros)) " + 
-                "AND (:idsProvincias IS NULL OR id_provincia IN (:idsProvincias)) " + //TODO: Agregar el filtro de ofertas
-                "AND fecha_hora_baja IS NULL",                                                                 
-        nativeQuery = true
+    @Query(//TODO: Agregar el filtro por ofertas abiertas
+        """ 
+            SELECT e FROM Empresa e
+            WHERE (:nombreEmpresa IS NULL OR LOWER(e.nombreEmpresa) LIKE LOWER(CONCAT('%', :nombreEmpresa, '%')))
+            AND (:idsRubros IS NULL OR e.rubro.id IN :idsRubros)
+            AND (:idsProvincias IS NULL OR e.provincia.id IN :idsProvincias)
+            AND e.fechaHoraBaja IS NULL        
+        """
     )
-    public List<Empresa> buscarEmpresasConFiltros(@Param("idsRubros") List<Long> idsRubros, @Param("idsProvincias") List<Long> idsProvincias);
+    public List<Empresa> buscarEmpresasConFiltros(@Param("idsRubros") List<Long> idsRubros, @Param("idsProvincias") List<Long> idsProvincias, @Param("nombreEmpresa") String nombreEmpresa);
 
     @Query(
         value = "SELECT * FROM empresa e " + 

@@ -17,13 +17,9 @@ public interface EmpresaService extends BaseService<Empresa, Long>{
 
    public List<Empresa> buscarEmpresasPorNombre(String nombreEmpresa);
 
-   //public Boolean eliminarCuenta(Long idEmpresa);
-
    public Empresa crearEmpresa(EmpresaRequestDTO empresaRequestDTO);
 
    public List<EmpresaPendienteHabilitacionDTO> buscarEmpresasPendientesDeHabilitacion(String nombreEstado);
-
-   //public Boolean habilitarEmpresa(Long idEmpresa);
 
    public Boolean rechazarOAceptarEmpresa(Long idEmpresa, String nuevoEstado);
 

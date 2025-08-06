@@ -10,6 +10,8 @@ import com.example.demo.entities.params.EstadoBusqueda;
 import com.example.demo.exceptions.EntityAlreadyEnabledException;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
 import com.example.demo.exceptions.EntityNotValidException;
+import com.example.demo.exceptions.EntityReferencedException;
+import com.example.demo.repositories.candidato.CandidatoRepository;
 import com.example.demo.repositories.params.EstadoBusquedaRepository;
 import com.example.demo.services.BaseServiceImpl;
 
@@ -19,10 +21,12 @@ import jakarta.transaction.Transactional;
 public class EstadoBusquedaServiceImpl extends BaseServiceImpl<EstadoBusqueda, Long> implements EstadoBusquedaService {
     
     private final EstadoBusquedaRepository estadoBusquedaRepository;
+    private final CandidatoRepository candidatoRepository;
    
-    public EstadoBusquedaServiceImpl(EstadoBusquedaRepository estadoBusquedaRepository) {
+    public EstadoBusquedaServiceImpl(EstadoBusquedaRepository estadoBusquedaRepository, CandidatoRepository candidatoRepository) {
         super(estadoBusquedaRepository);
         this.estadoBusquedaRepository = estadoBusquedaRepository;
+        this.candidatoRepository = candidatoRepository;
     }
 
     @Override
@@ -86,5 +90,20 @@ public class EstadoBusquedaServiceImpl extends BaseServiceImpl<EstadoBusqueda, L
         return estadoBusquedaExiste
         .filter(e -> idAExcluir == null || !e.getId().equals(idAExcluir))
         .isPresent();
+    }
+
+    @Override
+    @Transactional
+    public Boolean deshabilitarEstadoBusqueda(Long idEstadoBusqueda) {
+        if(idEstadoBusqueda == null) {
+            throw new EntityNotValidException("El ID del estado de búsqueda no puede ser nulo");
+        }
+
+        boolean enUso = candidatoRepository.existsByEstadoBusquedaIdAndFechaHoraBajaIsNull(idEstadoBusqueda);
+        if(enUso) {
+            throw new EntityReferencedException("La entidad se encuentra en uso, no puede deshabilitarla");
+        } else {
+            return delete(idEstadoBusqueda);
+        }
     }
 }

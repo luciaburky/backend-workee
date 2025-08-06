@@ -14,13 +14,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -42,10 +41,24 @@ public class CandidatoController {
         return ResponseEntity.ok().body(candidatoActualizado);
     }
 
+    @Operation(summary = "Actualizar o crear CV de un Candidato")
+    @PutMapping("/{id}/cv")
+    public ResponseEntity<Void> actualizarOCrearCV(@PathVariable("id") Long idCandidato, @RequestBody String enlaceCV) {
+        candidatoService.actualizaroCrearCV(idCandidato, enlaceCV);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Eliminar CV de un Candidato")
+    @DeleteMapping("/{id}/cv")
+    public ResponseEntity<Void> eliminarCv(@PathVariable("id") Long idCandidato) {
+        candidatoService.eliminarCv(idCandidato);
+        return ResponseEntity.noContent().build();
+    }
+
     @Operation(summary = "Obtener un Candidato por su ID")
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('BUSCAR_CANDIDATOS') or hasAuthority('VER_PERFIL_CANDIDATO')")
-    public ResponseEntity<Candidato> obtenerCandidatoPorId(@RequestParam Long idCandidato) {
+    public ResponseEntity<Candidato> obtenerCandidatoPorId(@PathVariable("id") Long idCandidato) {
         Candidato candidato = candidatoService.findById(idCandidato);
         return ResponseEntity.ok().body(candidato);
     }
@@ -60,7 +73,7 @@ public class CandidatoController {
     @Operation(summary = "Obtener habilidades de un Candidato")
     @GetMapping("/{id}/habilidades")
     @PreAuthorize("hasAuthority('BUSCAR_CANDIDATOS') or hasAuthority('VER_PERFIL_CANDIDATO') or hasAuthority('ACTUALIZAR_CANDIDATO')") //TODO: agregarle los que falten
-    public ResponseEntity<List<Habilidad>> obtenerHabilidades(@RequestParam Long idCandidato) {
+    public ResponseEntity<List<Habilidad>> obtenerHabilidades(@PathVariable("id") Long idCandidato) {
         List<Habilidad> habilidades = candidatoService.obtenerHabilidades(idCandidato);
         return ResponseEntity.ok().body(habilidades);
     }

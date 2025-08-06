@@ -90,11 +90,11 @@ public class UsuarioController {
         Usuario usuario = usuarioService.obtenerUsuarioAutenticado();
 
         if (empleadoEmpresaService.existeEmpleadoPorUsuarioId(usuario.getId())) {
-            return ResponseEntity.ok(empleadoEmpresaService.buscarEmpleadoEmpresaPorUsuarioId(usuario.getId()));
+            return ResponseEntity.ok(empleadoEmpresaService.buscarEmpleadoEmpresaPorUsuarioId(usuario.getId()).get());
         } else if (empresaService.existeEmpresaPorUsuarioId(usuario.getId())) {
-            return ResponseEntity.ok(empresaService.buscarEmpresaPorIdUsuario(usuario.getId()));
+            return ResponseEntity.ok(empresaService.buscarEmpresaPorIdUsuario(usuario.getId()).get());
         } else if (candidatoService.existeCandidatoPorUsuarioId(usuario.getId())) {
-            return ResponseEntity.ok(candidatoService.buscarCandidatoPorIdUsuario(usuario.getId()));
+            return ResponseEntity.ok(candidatoService.buscarCandidatoPorIdUsuario(usuario.getId()).get());
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No tiene perfil asociado.");
         }

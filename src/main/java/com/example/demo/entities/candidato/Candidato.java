@@ -75,4 +75,3 @@ public class Candidato extends Base {
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 }
-

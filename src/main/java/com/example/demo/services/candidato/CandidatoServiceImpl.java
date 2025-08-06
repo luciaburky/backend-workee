@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.CandidatoRequestDTO;
+import com.example.demo.dtos.FiltrosCandidatoRequestDTO;
 import com.example.demo.dtos.UsuarioDTO;
 import com.example.demo.entities.candidato.Candidato;
 import com.example.demo.entities.candidato.CandidatoCV;
@@ -27,7 +28,6 @@ import com.example.demo.entities.params.Provincia;
 import com.example.demo.entities.seguridad.CodigoRol;
 import com.example.demo.entities.seguridad.Usuario;
 import com.example.demo.entities.seguridad.tokens.TokenConfirmacion;
-import com.example.demo.exceptions.EntityAlreadyExistsException;
 import com.example.demo.exceptions.EntityNotFoundException;
 import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.mappers.CandidatoMapper;
@@ -53,9 +53,10 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
     private final EstadoBusquedaService estadoBusquedaService;
     private final HabilidadService habilidadService;
     private final CandidatoCVService candidatoCVService;
-    private final UsuarioService usuarioService;
+     private final UsuarioService usuarioService;
     private final MailService mailService;
     private final TokenConfirmacionRepository tokenConfirmacionRepository;
+
 
     public CandidatoServiceImpl(CandidatoRepository candidatoRepository, CandidatoMapper candidatoMapper, ProvinciaService provinciaService, GeneroService generoService, EstadoBusquedaService estadoBusquedaService, HabilidadService habilidadService, CandidatoCVService candidatoCVService, UsuarioService usuarioService, MailService mailService, TokenConfirmacionRepository tokenConfirmacionRepository) {
         super(candidatoRepository);
@@ -74,26 +75,27 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
     @Override
     @Transactional
     public Candidato crearCandidato(CandidatoRequestDTO candidatoDTO) {
-        if(!candidatoDTO.getContrasenia().equals(candidatoDTO.getRepetirContrasenia())){
+        if(!candidatoDTO.getContrasenia().equals(candidatoDTO.getRepetirContrasenia())) {
             throw new EntityNotValidException("Las contraseñas deben coincidir");
         }
-        
+        //Creo el nuevo candidato a partir del DTO
         Candidato nuevoCandidato = candidatoMapper.toEntity(candidatoDTO);
 
+        //Seteo los Atributos complejos
         Provincia provincia = provinciaService.findById(candidatoDTO.getIdProvincia());
         Genero genero = generoService.findById(candidatoDTO.getIdGenero());
-
+        
         //Creacion de usuario
         UsuarioDTO usuarioDTO = new UsuarioDTO(candidatoDTO.getCorreoCandidato(), candidatoDTO.getContrasenia(), candidatoDTO.getUrlFotoPerfil(), CodigoEstadoUsuario.PENDIENTE, CodigoRol.CANDIDATO);
         Usuario nuevoUsuario = usuarioService.registrarUsuario(usuarioDTO);
-
+        
         if(candidatoDTO.getIdEstadoBusqueda() != null){
             EstadoBusqueda estadoBusqueda = estadoBusquedaService.findById(candidatoDTO.getIdEstadoBusqueda());
             nuevoCandidato.setEstadoBusqueda(estadoBusqueda);
         }
         
+        //Seteo las habilidades
         if(candidatoDTO.getIdHabilidades() != null && !candidatoDTO.getIdHabilidades().isEmpty()) {
-
             List<CandidatoHabilidad> habilidades = candidatoDTO.getIdHabilidades().stream()
             .distinct()
             .map(idHabilidad -> {
@@ -110,7 +112,7 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
             nuevoCandidato.setHabilidades(new ArrayList<>());
         }
 
-        
+        //Setear el CV 
         if(candidatoDTO.getEnlaceCV() != null && !candidatoDTO.getEnlaceCV().isEmpty()) {
             CandidatoCV candidatoCV = candidatoCVService.actualizarOCrearCV(nuevoCandidato, candidatoDTO.getEnlaceCV());
             nuevoCandidato.setCandidatoCV(candidatoCV);
@@ -120,9 +122,8 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
         nuevoCandidato.setProvincia(provincia);
         nuevoCandidato.setGenero(genero);
 
-                
         nuevoCandidato.setUsuario(nuevoUsuario);
-
+        
         candidatoRepository.save(nuevoCandidato);
 
         //Parte del token
@@ -141,6 +142,7 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
         enviarMailConfirmacionACandidato(candidatoDTO.getCorreoCandidato(), candidatoDTO.getNombreCandidato(), linkConfirmacion);
         
         return nuevoCandidato;
+
     }
 
     private void enviarMailConfirmacionACandidato(String mailTo, String nombreCandidato, String urlConfirmacion){
@@ -153,10 +155,15 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
         String subject = "¡Bienvenido a Workee! Confirma tu cuenta.";
         mailService.enviar(mailTo, subject, templateName, variables);
     }
+
  
     @Override
     @Transactional
     public Candidato modificarCandidato(Long idCandidato, CandidatoRequestDTO candidatoDTO) {
+        if(!candidatoDTO.getContrasenia().equals(candidatoDTO.getRepetirContrasenia())) {
+            throw new EntityNotValidException("Las contraseñas deben coincidir");
+        }
+        
         Candidato candidatoOriginal = findById(idCandidato);
         candidatoMapper.updateEntityFromDto(candidatoDTO, candidatoOriginal);
         
@@ -175,6 +182,7 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
 
         // Actualizar habilidades
         actualizarHabilidadesCandidato(candidatoOriginal, candidatoDTO);
+     
         // Actualizar o crear CV
         candidatoCVService.actualizarOCrearCV(candidatoOriginal, candidatoDTO.getEnlaceCV());
 
@@ -197,33 +205,8 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
         List<Candidato> listaCandidatos = candidatoRepository.findAllByOrderByNombreCandidatoAsc();
         return listaCandidatos;
     }
-
-    @Override
-    @Transactional
-    public List<Habilidad> agregarHabilidad(Long idCandidato, Long idHabilidad) {
-        Candidato candidato = candidatoRepository.findByIdWithHabilidades(idCandidato)
-        .orElseThrow(() -> new EntityNotFoundException("Candidato no encontrado con ID " + idCandidato));
-
-        Habilidad habilidad = habilidadService.findById(idHabilidad);
-        
-        // Verificar si la habilidad ya está asociada al candidato
-        boolean yaExiste = candidato.getHabilidades().stream()
-            .anyMatch(candidatoHabilidad -> candidatoHabilidad.getHabilidad().getId().equals(idHabilidad));
-
-        // Agregar la nueva habilidad     
-        if (!yaExiste) {
-            CandidatoHabilidad nuevaHabilidad = new CandidatoHabilidad();
-            nuevaHabilidad.setHabilidad(habilidad);
-            nuevaHabilidad.setFechaHoraAlta(new Date());
-            candidato.getHabilidades().add(nuevaHabilidad);
-            candidatoRepository.save(candidato);
-        } else {
-            throw new EntityAlreadyExistsException("La habilidad ya está asociada al candidato.");
-        }
-        return obtenerHabilidades(idCandidato);
-    }
-
-    private void actualizarHabilidadesCandidato(Candidato candidato, CandidatoRequestDTO dto) {
+ 
+    private void actualizarHabilidadesCandidato(Candidato candidato,  CandidatoRequestDTO dto) {
         if (dto.getIdHabilidades() == null) return;
 
         Set<Long> nuevasIds = new HashSet<>(dto.getIdHabilidades());
@@ -233,29 +216,70 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
             candidato.setHabilidades(new ArrayList<>());
         }
 
-        // Eliminar habilidades que no están en la nueva lista
-        candidato.getHabilidades().removeIf(ch -> 
-        !nuevasIds.contains(ch.getHabilidad().getId())
-        );
+        Map<Long, CandidatoHabilidad> mapaActuales = mapearHabilidadesPorId(candidato);
+        
+        procesarBajasYReactivaciones(mapaActuales, nuevasIds);
 
-        // Recupera los IDs actuales para comparar  
-        Set<Long> idsActuales = candidato.getHabilidades()
-            .stream()
-            .map(ch -> ch.getHabilidad().getId())
-            .collect(Collectors.toSet());
+        agregarNuevasHabilidades(candidato, nuevasIds, mapaActuales);
+    }
 
-        // Agregar nuevas habilidades que no están en la lista actual
+    private void agregarNuevasHabilidades(Candidato candidato, Set<Long> nuevasIds, Map<Long, CandidatoHabilidad> actuales) {
         for (Long idNueva : nuevasIds) {
-            if (!idsActuales.contains(idNueva)) {
+            if (!actuales.containsKey(idNueva)) {
                 Habilidad habilidad = habilidadService.findById(idNueva);
                 CandidatoHabilidad candidatoHabilidad = new CandidatoHabilidad();
                 candidatoHabilidad.setHabilidad(habilidad);
                 candidatoHabilidad.setFechaHoraAlta(new Date());
+                candidatoHabilidad.setFechaHoraBaja(null); 
                 candidato.getHabilidades().add(candidatoHabilidad);
             }
-        } 
+        }
     }
 
+    private void procesarBajasYReactivaciones(Map<Long, CandidatoHabilidad> actuales, Set<Long> nuevasIds) {
+        for (CandidatoHabilidad ch : actuales.values()) {
+            Long idHabilidad = ch.getHabilidad().getId();
+            if (!nuevasIds.contains(idHabilidad)) {
+                // Si la habilidad no está en nuevasIds, marcar como baja
+                ch.setFechaHoraBaja(new Date());
+            } else {
+                // Si la habilidad está en nuevasIds, reactivar si estaba dada de baja
+                if (ch.getFechaHoraBaja() != null) {
+                    ch.setFechaHoraBaja(null);
+                }
+                
+            }
+        }
+    }
+
+    private Map<Long, CandidatoHabilidad> mapearHabilidadesPorId(Candidato candidato) {
+        return candidato.getHabilidades()
+            .stream()
+            .collect(Collectors.toMap(
+                ch -> ch.getHabilidad().getId(),
+                ch -> ch
+            ));
+    }
+
+    @Override
+    @Transactional
+    public void actualizaroCrearCV(Long idCandidato, String cv) {
+        Candidato candidato = findById(idCandidato);
+        candidatoCVService.actualizarOCrearCV(candidato, cv);
+    }
+
+    @Override
+    @Transactional
+    public void eliminarCv(Long idCandidato){
+        Candidato candidato = findById(idCandidato);
+        if (candidato.getCandidatoCV() != null) {
+            candidatoCVService.delete(candidato.getCandidatoCV().getId());
+            //candidato.setCandidatoCV(null);
+            candidatoRepository.save(candidato);
+        } else {
+            throw new EntityNotFoundException("El candidato no tiene un CV asociado.");
+        }
+    }
 
     @Override
     @Transactional
@@ -270,24 +294,6 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
 
     @Override
     @Transactional
-    public List<Habilidad> eliminarHabilidad(Long idCandidato, Long idHabilidad) {
-        Candidato candidato = candidatoRepository.findByIdWithHabilidades(idCandidato)
-        .orElseThrow(() -> new EntityNotFoundException("Candidato no encontrado con ID " + idCandidato));
-
-        CandidatoHabilidad habilidadAEliminar = candidato.getHabilidades()
-            .stream()
-            .filter(ch -> ch.getHabilidad().getId().equals(idHabilidad))
-            .findFirst()
-            .orElseThrow(() -> new EntityNotFoundException("Habilidad no encontrada para el candidato con ID " + idCandidato));
-
-        candidato.getHabilidades().remove(habilidadAEliminar);
-        candidatoRepository.save(candidato);
-        
-        return obtenerHabilidades(idCandidato);
-    }
-
-    @Override
-    @Transactional
     public List<Habilidad> obtenerHabilidadesPorTipo(Long idCandidato, Long idTipoHabilidad) {
         Candidato candidato = candidatoRepository.findByIdWithHabilidades(idCandidato)
         .orElseThrow(() -> new EntityNotFoundException("Candidato no encontrado con ID " + idCandidato));
@@ -297,6 +303,19 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
                         .map(CandidatoHabilidad::getHabilidad)
                         .filter(h -> h.getTipoHabilidad().getId().equals(idTipoHabilidad))
                         .collect(Collectors.toList());  
+    }
+
+    @Override
+    public List<Candidato> buscarCandidatosConFiltros(FiltrosCandidatoRequestDTO filtrosCandidatoRequestDTO){
+        return candidatoRepository.buscarCandidatosConFiltros(filtrosCandidatoRequestDTO.getNombreCandidato(), filtrosCandidatoRequestDTO.getIdsHabilidades(), filtrosCandidatoRequestDTO.getIdsProvincias(), filtrosCandidatoRequestDTO.getIdsPaises(), filtrosCandidatoRequestDTO.getIdsEstadosDeBusqueda());
+    }
+
+    @Override
+    public List<Candidato> buscarCandidatosPorNombre(String nombreCandidato){
+        if(nombreCandidato.isBlank() || nombreCandidato == null){
+            throw new IllegalArgumentException("El nombre del candidato no puede estar vacío");
+        }
+        return candidatoRepository.buscarCandidatosPorNombre(nombreCandidato);
     }
 
     @Override
@@ -319,7 +338,6 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
         candidatoRepository.save(candidato);
         return true;
     }
-
 
     @Override
     public Boolean existeCandidatoPorUsuarioId(Long usuarioId){

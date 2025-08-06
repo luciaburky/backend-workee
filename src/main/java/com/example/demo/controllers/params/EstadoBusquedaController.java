@@ -78,7 +78,7 @@ public class EstadoBusquedaController {
     @DeleteMapping("/deshabilitar/{id}")
     @PreAuthorize("hasAuthority('HABILITACION_ESTADO_BUSQUEDA')")
     public ResponseEntity<Void> deshabilitarEstadoBusqueda(@PathVariable Long id) {
-        estadoBusquedaService.delete(id);
+        estadoBusquedaService.deshabilitarEstadoBusqueda(id);
         return ResponseEntity.ok().build();
     }
     

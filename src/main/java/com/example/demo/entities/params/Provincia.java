@@ -27,9 +27,7 @@ public class Provincia extends Base {
     @Column(name = "nombre_provincia")
     private String nombreProvincia;
 
-
     @ManyToOne()
     @JoinColumn(name = "id_pais")
     private Pais pais;
-
 }

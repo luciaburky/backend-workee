@@ -8,6 +8,8 @@ import com.example.demo.entities.params.TipoHabilidad;
 import com.example.demo.exceptions.EntityAlreadyEnabledException;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
 import com.example.demo.exceptions.EntityNotValidException;
+import com.example.demo.exceptions.EntityReferencedException;
+import com.example.demo.repositories.candidato.CandidatoRepository;
 import com.example.demo.repositories.params.HabilidadRepository;
 import com.example.demo.services.BaseServiceImpl;
 
@@ -23,11 +25,13 @@ public class HabilidadServiceImpl extends BaseServiceImpl<Habilidad, Long> imple
     
     private final HabilidadRepository habilidadRepository;
     private final TipoHabilidadService tipoHabilidadService;
+    private final CandidatoRepository candidatoRepository;
     
-    public HabilidadServiceImpl(HabilidadRepository habilidadRepository, TipoHabilidadService tipoHabilidadService){
+    public HabilidadServiceImpl(HabilidadRepository habilidadRepository, TipoHabilidadService tipoHabilidadService, CandidatoRepository candidatoRepository) {
         super(habilidadRepository);
         this.habilidadRepository = habilidadRepository;
         this.tipoHabilidadService = tipoHabilidadService;
+        this.candidatoRepository = candidatoRepository;
     }
 
     @Override
@@ -118,5 +122,20 @@ public class HabilidadServiceImpl extends BaseServiceImpl<Habilidad, Long> imple
         return habilidadExiste
         .filter(h -> idAExcluir == null || !h.getId().equals(idAExcluir))
         .isPresent();
+    }
+
+    @Override
+    @Transactional
+    public Boolean deshabilitarHabilidad(Long id) {
+        if(id == null) {
+            throw new EntityNotValidException("El ID de la habilidad no puede ser nulo");
+        }
+        boolean enUso = candidatoRepository.existsByHabilidades_Habilidad_IdAndFechaHoraBajaIsNull(id);
+        if(enUso) {
+            throw new EntityReferencedException("La entidad se encuentra en uso, no puede deshabilitarla");
+        } else {
+            return delete(id);
+        }
+
     }
 }

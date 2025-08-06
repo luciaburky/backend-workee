@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.demo.dtos.CandidatoRequestDTO;
+import com.example.demo.dtos.FiltrosCandidatoRequestDTO;
 import com.example.demo.entities.candidato.Candidato;
 import com.example.demo.entities.params.Habilidad;
 import com.example.demo.services.BaseService;
@@ -18,11 +19,14 @@ public interface CandidatoService extends BaseService<Candidato, Long> {
 
     List<Habilidad> obtenerHabilidades(Long idCandidato);
 
-    List<Habilidad> agregarHabilidad(Long idCandidato, Long idHabilidad);
-
-    List<Habilidad> eliminarHabilidad(Long idCandidato, Long idHabilidad);
-
     List<Habilidad> obtenerHabilidadesPorTipo(Long idCandidato, Long idTipoHabilidad);
+    
+    void actualizaroCrearCV(Long idCandidato, String cv);
+    
+    void eliminarCv(Long idCandidato);
+
+    public List<Candidato> buscarCandidatosConFiltros(FiltrosCandidatoRequestDTO filtrosCandidatoRequestDTO);
+    public List<Candidato> buscarCandidatosPorNombre(String nombreCandidato);
 
     public Optional<Candidato> buscarCandidatoPorIdUsuario(Long idUsuario);
 

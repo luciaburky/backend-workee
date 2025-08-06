@@ -24,4 +24,7 @@ public interface ProvinciaService extends BaseService<Provincia, Long>{
 
     public Boolean deshabilitarProvincia(Long id);
 
+    public List<Provincia> obtenerProvinciasActivasPorPaisId(Long idPais);
+
+
 }
