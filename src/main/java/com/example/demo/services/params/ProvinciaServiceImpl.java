@@ -37,11 +37,7 @@ public class ProvinciaServiceImpl extends BaseServiceImpl<Provincia,Long> implem
 
     @Override
     public List<Provincia> findProvinciaByPaisId(Long idPais) {
-        try{
-            return provinciaRepository.findProvinciaByPaisId(idPais);
-        } catch (Exception e){
-            throw new org.springframework.dao.DataRetrievalFailureException("Error al acceder a los datos de provincias.", e);
-        }
+        return provinciaRepository.findProvinciaByPaisId(idPais);
     }
 
     @Override
@@ -92,6 +88,12 @@ public class ProvinciaServiceImpl extends BaseServiceImpl<Provincia,Long> implem
     public List<Provincia> obtenerProvinciasActivas(){
         return provinciaRepository.buscarProvinciasActivas();
     }
+
+    @Override
+    public List<Provincia> obtenerProvinciasActivasPorPaisId(Long idPais){
+        return provinciaRepository.findProvinciasActivasByPaisId(idPais);
+    }
+
 
     @Override
     @Transactional

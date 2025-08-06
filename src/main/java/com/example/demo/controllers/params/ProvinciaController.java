@@ -70,6 +70,13 @@ public class ProvinciaController {
         return ResponseEntity.status(HttpStatus.OK).body(provincias);
     }
 
+    @Operation(summary = "Obtiene todas las provincias ACTIVAS de un pais")
+    @GetMapping("/activas/{idPais}")
+    public ResponseEntity<?> obtenerProvinciasActivasPorPais(@PathVariable Long idPais) {
+        List<Provincia> provincias = provinciaService.obtenerProvinciasActivasPorPaisId(idPais);
+        return ResponseEntity.status(HttpStatus.OK).body(provincias);
+    }
+
     @Operation(summary = "Obtiene una provincia por su ID")
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerProvincia(@PathVariable Long id) {

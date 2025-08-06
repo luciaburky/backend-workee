@@ -43,4 +43,12 @@ public interface ProvinciaRepository extends BaseRepository<Provincia, Long> {
             """
     )
     List<UbicacionDTO> obtenerUbicaciones();
+
+
+    @Query(
+        value = "SELECT * FROM provincia p WHERE p.id_pais = :idPais AND p.fecha_hora_baja IS NULL " + 
+                "ORDER BY p.nombre_provincia ASC ",
+        nativeQuery = true
+        )
+        List<Provincia> findProvinciasActivasByPaisId(@Param("idPais") Long idPais);
 }
