@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -74,11 +75,6 @@ public class GlobalExceptionHandler {
         String mensaje = ex.getBindingResult().getFieldErrors().stream()
                 .map(error -> error.getDefaultMessage())
                 .collect(Collectors.joining(", "));
-        
-        /*StringBuilder mensaje = new StringBuilder("Errores de validación en ");
-        ex.getBindingResult().getFieldErrors().forEach(error ->
-            mensaje.append(error.getField()).append(": ").append(error.getDefaultMessage()).append("; ")
-        );*/
 
         ErrorResponse error = new ErrorResponse(HttpStatus.BAD_REQUEST, mensaje.toString());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
@@ -99,5 +95,14 @@ public class GlobalExceptionHandler {
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 "Un error inesperado ha ocurrido: " + ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    //Para el login
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<?> handleBadCredentialsException(BadCredentialsException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.UNAUTHORIZED,
+                "Credenciales inválidas: " + ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 }

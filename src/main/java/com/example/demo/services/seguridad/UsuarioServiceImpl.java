@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -408,6 +409,21 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
 
     @Override
     public String login(LoginRequestDTO loginRequestDTO) {
+        Optional<Usuario> usuarioOptional = usuarioRepository.buscarUsuarioPorCorreo(loginRequestDTO.getCorreo());
+        if(!usuarioOptional.isPresent()){
+            throw new EntityNotFoundException("No se encontró un usuario con el correo ingresado");
+        }
+        Usuario usuario = usuarioOptional.get();
+        boolean estadoHabilitado = usuario.getUsuarioEstadoList().stream()
+            .anyMatch(estado ->
+                estado.getEstadoUsuario().getCodigoEstadoUsuario().equals(CodigoEstadoUsuario.HABILITADO) 
+                && 
+                estado.getFechaHoraBaja() == null);
+        
+        if(!estadoHabilitado){
+            throw new BadCredentialsException("El usuario no se encuentra habilitado para iniciar sesión");
+        }
+        
         Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
                 loginRequestDTO.getCorreo(),
