@@ -44,10 +44,6 @@ public class Empresa extends Base{
     private Integer telefonoEmpresa;
 
     @NotNull
-    @Column(name = "email_empresa")
-    private String emailEmpresa;
-
-    @NotNull
     @Column(name = "direccion_empresa")
     private String direccionEmpresa;
 
