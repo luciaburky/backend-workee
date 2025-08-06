@@ -104,5 +104,5 @@ public class RubroServiceImpl extends BaseServiceImpl<Rubro, Long> implements Ru
     
     private Boolean validarUsoRubro(Long idRubro){
         return empresaRepository.existsByRubroIdAndFechaHoraBajaIsNull(idRubro);
-    }
+    }   
 }

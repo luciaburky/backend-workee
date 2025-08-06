@@ -18,4 +18,6 @@ public interface TipoHabilidadService extends BaseService<TipoHabilidad, Long> {
 
     Boolean habilitarTipoHabilidad(Long id);
     
+    Boolean deshabilitarTipoHabilidad(Long id);
+    
 } 

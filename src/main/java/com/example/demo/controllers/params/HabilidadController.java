@@ -82,7 +82,7 @@ public class HabilidadController {
     @Operation(summary = "Deshabilitar Habilidad")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deshabilitarHabillidad(@PathVariable Long id) {
-        habilidadService.delete(id);
+        habilidadService.deshabilitarHabilidad(id);
         return ResponseEntity.ok().build();
     }
     

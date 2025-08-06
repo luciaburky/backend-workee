@@ -72,7 +72,7 @@ public class EstadoBusquedaController {
     @Operation(summary = "Deshabilitar un Estado de Busqueda")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deshabilitarEstadoBusqueda(@PathVariable Long id) {
-        estadoBusquedaService.delete(id);
+        estadoBusquedaService.deshabilitarEstadoBusqueda(id);
         return ResponseEntity.ok().build();
     }
     

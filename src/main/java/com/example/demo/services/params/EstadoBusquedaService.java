@@ -11,10 +11,12 @@ public interface EstadoBusquedaService extends BaseService<EstadoBusqueda, Long>
     EstadoBusqueda guardarEstadoBusqueda(EstadoBusquedaRequestDTO estadoBusquedaDTO);
     
     EstadoBusqueda actualizarEstadoBusqueda(Long id, EstadoBusquedaRequestDTO estadoBusquedaDTO);
-    
-    Boolean habilitarEstadoBusqueda(Long id);
-    
+        
     List<EstadoBusqueda> obtenerEstadosBusqueda();
 
     List<EstadoBusqueda> obtenerEstadosBusquedaActivos();
+    
+    Boolean habilitarEstadoBusqueda(Long id);
+
+    Boolean deshabilitarEstadoBusqueda(Long id);
 }

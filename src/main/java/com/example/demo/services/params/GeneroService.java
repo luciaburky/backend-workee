@@ -6,14 +6,15 @@ import com.example.demo.entities.params.Genero;
 import com.example.demo.services.BaseService;
 
 public interface GeneroService extends BaseService<Genero, Long>{
-    public Genero guardarGenero(GeneroRequestDTO GeneroRequestDTO);
+    Genero guardarGenero(GeneroRequestDTO GeneroRequestDTO);
 
-    public Genero actualizarGenero(Long id, GeneroRequestDTO GeneroRequestDTO);
+    Genero actualizarGenero(Long id, GeneroRequestDTO GeneroRequestDTO);
 
-    public List<Genero> obtenerGeneros();
+    List<Genero> obtenerGeneros();
 
-    public List<Genero> obtenerGenerosActivos();
+    List<Genero> obtenerGenerosActivos();
 
-    public Boolean habilitarGenero(Long id);
+    Boolean habilitarGenero(Long id);
 
+    Boolean deshabilitarGenero(Long id);
 }

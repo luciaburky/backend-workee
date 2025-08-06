@@ -11,9 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dtos.FiltrosCandidatoRequestDTO;
 import com.example.demo.dtos.FiltrosEmpresaRequestDTO;
 import com.example.demo.dtos.UbicacionDTO;
+import com.example.demo.entities.candidato.Candidato;
 import com.example.demo.entities.empresa.Empresa;
+import com.example.demo.services.candidato.CandidatoService;
 import com.example.demo.services.empresa.EmpresaService;
 import com.example.demo.services.params.ProvinciaService;
 
@@ -27,10 +30,12 @@ public class BusquedaController {
 
     private final EmpresaService empresaService;
     private final ProvinciaService provinciaService;
+    private final CandidatoService candidatoService;
 
-    public BusquedaController(EmpresaService empresaService, ProvinciaService provinciaService){
+    public BusquedaController(EmpresaService empresaService, ProvinciaService provinciaService, CandidatoService candidatoService){
         this.empresaService = empresaService;
         this.provinciaService = provinciaService;
+        this.candidatoService = candidatoService;
     }
 
     @Operation(summary = "Trae empresas según los filtros aplicados")
@@ -54,6 +59,21 @@ public class BusquedaController {
     public ResponseEntity<?> buscarEmpresasPorNombre(@RequestParam String nombreEmpresa){
         List<Empresa> empresas = empresaService.buscarEmpresasPorNombre(nombreEmpresa);
         return ResponseEntity.status(HttpStatus.OK).body(empresas);
+    }
+
+    @Operation(summary = "Trae candidatos según los filtros aplicados")
+    @PostMapping("/candidatosFiltrados")
+    public ResponseEntity<?> filtrarCandidatos(@RequestBody FiltrosCandidatoRequestDTO filtrosCandidatoRequestDTO){
+        List<Candidato> candidatos = candidatoService.buscarCandidatosConFiltros(filtrosCandidatoRequestDTO);
+
+        return ResponseEntity.status(HttpStatus.OK).body(candidatos);
+    }
+
+    @Operation(summary = "Busca candidatos según el nombre ingresado")
+    @GetMapping("/candidatosPorNombre")
+    public ResponseEntity<?> buscarCandidatosPorNombre(@RequestParam String nombreCandidato){
+        List<Candidato> candidatos = candidatoService.buscarCandidatosPorNombre(nombreCandidato);
+        return ResponseEntity.status(HttpStatus.OK).body(candidatos);
     }
 
 }
