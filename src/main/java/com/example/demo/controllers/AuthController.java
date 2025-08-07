@@ -1,5 +1,8 @@
 package com.example.demo.controllers;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -58,8 +61,11 @@ public class AuthController {
     @PutMapping("/confirmarCuenta")
     @Parameter(name = "token", description = "Token recibido por correo", required = true)
     public ResponseEntity<?> confirmarRecuperacionContrasenia(@RequestParam String token){
+        Map<String, String> response = new HashMap<>();
+        response.put("estado", "habilitado");
+        response.put("mensaje", "Cuenta verificada exitosamente");
         this.usuarioService.confirmarTokenCandidato(token);
-        return ResponseEntity.status(HttpStatus.OK).body("Cuenta verificada exitosamente");
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PostMapping("/login")
