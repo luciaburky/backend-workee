@@ -1,5 +1,6 @@
 package com.example.demo.entities.oferta;
 
+import java.util.Date;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -40,19 +41,21 @@ public class Oferta extends Base {
     @Column(name = "descripcion")
     private String descripcion;
 
-    /* Fecha finalizacion ¿?
-    private LocalDate fechaFinalizacion;
-    */ 
+    @Column(name = "fecha_finalizacion")
+    private Date fechaFinalizacion; 
 
     //String o List<String>
     @NotBlank
     @Column(name = "responsabilidades")
     private String responsabilidades;
     
-    //@NotBlank 
-    //¿Lo seteamos como null al inicio? 
     @Column(name = "finalizada_con_exito")
-    private boolean finalizadaConExtito;
+    private Boolean finalizadaConExtito;
+
+    //Pais que tiene asociado la Empresa que crea la oferta
+    @NotBlank
+    @Column(name = "pais")
+    private String pais;
 
     @ManyToOne
     @JoinColumn(name = "id_empresa", nullable = false)
@@ -77,6 +80,7 @@ public class Oferta extends Base {
     @JoinColumn(name = "id_oferta", nullable = false)
     private List<OfertaEstadoOferta> estadosOfertas;
 
-    //Falta: OfertaEtapa, Estado oferta ¿? 
-    
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "id_oferta_etapa")
+    private List<OfertaEtapa> ofertaEtapas;
 }
