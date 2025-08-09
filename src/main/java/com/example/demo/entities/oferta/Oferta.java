@@ -44,13 +44,12 @@ public class Oferta extends Base {
     @Column(name = "fecha_finalizacion")
     private Date fechaFinalizacion; 
 
-    //String o List<String>
     @NotBlank
     @Column(name = "responsabilidades")
     private String responsabilidades;
     
     @Column(name = "finalizada_con_exito")
-    private Boolean finalizadaConExtito;
+    private Boolean finalizadaConExito;
 
     //Pais que tiene asociado la Empresa que crea la oferta
     @NotBlank
@@ -78,9 +77,10 @@ public class Oferta extends Base {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "id_oferta", nullable = false)
-    private List<OfertaEstadoOferta> estadosOfertas;
+    private List<OfertaEstadoOferta> estadosOferta;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "id_oferta_etapa")
     private List<OfertaEtapa> ofertaEtapas;
+
 }

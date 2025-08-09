@@ -37,9 +37,6 @@ public class OfertaRequestDTO {
 
     private List<Long> idHabilidades;
 
-    @NotNull(message = "El id del estado de la oferta no puede estar vacío")
-    private Long idEstadosOferta;
-
     @NotEmpty(message = "La lista de etapas de la oferta no puede estar vacía")
     private List<OfertaEtapaRequestDTO> ofertaEtapas;
 

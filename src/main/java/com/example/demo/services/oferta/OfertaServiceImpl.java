@@ -1,5 +1,7 @@
 package com.example.demo.services.oferta;
 
+import java.util.ArrayList;
+
 import com.example.demo.dtos.OfertaRequestDTO;
 import com.example.demo.entities.empresa.Empresa;
 import com.example.demo.entities.oferta.Oferta;
@@ -49,22 +51,28 @@ public class OfertaServiceImpl extends BaseServiceImpl<Oferta, Long> implements 
         Empresa empresa = empresaService.findById(ofertaDTO.getIdEmpresa());
         ModalidadOferta modalidadOferta = modalidadOfertaService.findById(ofertaDTO.getIdModalidadOferta());
         TipoContratoOferta tipoContratoOferta = tipoContratoOfertaService.findById(ofertaDTO.getIdTipoContratoOferta());
-
-        //Crear primera instancia de EstadoOferta como Abierta y asociarla a la lista de estados de la oferta
-        OfertaEstadoOferta primerEstadoOferta = new OfertaEstadoOferta().setEstadoOferta("Abierto");;
-        
-        
-        //TODO: EstadoOferta, OfertaHabilidades y OfertaEtapas
-
-
-
         oferta.setEmpresa(empresa);
         oferta.setPais(empresa.getProvincia().getPais().getNombrePais());
         oferta.setModalidadOferta(modalidadOferta);
         oferta.setTipoContratoOferta(tipoContratoOferta);
-        oferta.setFinalizadaConExtito(null); // Inicialmente no se sabe si la oferta se finalizó con éxito
+
+        //Crear primera instancia de EstadoOferta como Abierta
+        OfertaEstadoOferta estadoInicial = ofertaEstadoOfertaService.abrirOferta();
+        if (oferta.getEstadosOferta() == null) {
+            oferta.setEstadosOferta(new ArrayList<>());
+        }
+        oferta.getEstadosOferta().add(estadoInicial);
+        
+        //TODO: OfertaHabilidades y OfertaEtapas
+        if (ofertaDTO.getHabilidades() == null) {
+            oferta.setHabilidades(new ArrayList<>());
+        } else {
+            return;
+        }
+
+        oferta.setFinalizadaConExito(null); // Inicialmente no se sabe si la oferta se finalizó con éxito
         oferta.setFechaFinalizacion(null); // Inicialmente no hay fecha de finalización
 
-        return null; // Implementar la lógica de creación de la oferta aquí
+        return ofertaRepository.save(oferta); // Implementar la lógica de creación de la oferta aquí
     }
 }
