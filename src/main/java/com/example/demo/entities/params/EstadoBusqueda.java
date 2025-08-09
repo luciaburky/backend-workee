@@ -24,4 +24,7 @@ public class EstadoBusqueda extends Base {
     @NotNull
     @Column(name = "nombre_estado_busqueda")
     private String nombreEstadoBusqueda;
+
+    @Column(name = "codigo_estado_busqueda", unique = true)
+    private String codigoEstadoBusqueda;
 }
