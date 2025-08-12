@@ -16,6 +16,7 @@ import com.example.demo.dtos.CandidatoRequestDTO;
 import com.example.demo.dtos.CorreoRequestDTO;
 import com.example.demo.dtos.EmpresaRequestDTO;
 import com.example.demo.dtos.RecuperarContraseniaDTO;
+import com.example.demo.dtos.TokenRequestDTO;
 import com.example.demo.dtos.login.LoginRequestDTO;
 import com.example.demo.entities.candidato.Candidato;
 import com.example.demo.entities.empresa.Empresa;
@@ -60,11 +61,11 @@ public class AuthController {
     @Operation(summary = "Usuario verifica su cuenta")
     @PutMapping("/confirmarCuenta")
     @Parameter(name = "token", description = "Token recibido por correo", required = true)
-    public ResponseEntity<?> confirmarRecuperacionContrasenia(@RequestParam String token){
+    public ResponseEntity<?> confirmarRecuperacionContrasenia(@RequestBody TokenRequestDTO tokenRequestDTO){
         Map<String, String> response = new HashMap<>();
         response.put("estado", "habilitado");
         response.put("mensaje", "Cuenta verificada exitosamente");
-        this.usuarioService.confirmarTokenCandidato(token);
+        this.usuarioService.confirmarTokenCandidato(tokenRequestDTO.getToken());
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
