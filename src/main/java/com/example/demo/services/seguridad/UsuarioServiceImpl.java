@@ -263,11 +263,6 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
     }
 
     @Override
-    public List<UsuarioResponseDTO> buscarUsuariosActivos(){
-        return usuarioRolRepository.buscarUsuariosActivos();
-    }
-
-    @Override
     public List<UsuarioResponseDTO> buscarUsuariosActivosPorRol(String nombreRol){
         return usuarioRolRepository.buscarUsuariosActivosPorRol(nombreRol);
     }
@@ -347,6 +342,16 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
         }
 
         return usuarioResponseDTO;
+    }
+
+    @Override
+    public List<UsuarioResponseDTO> buscarUsuariosActivos(){
+        List<UsuarioResponseDTO> usuarios = usuarioRolRepository.buscarUsuariosActivos();
+        for (UsuarioResponseDTO usuario : usuarios) {
+            String nombreEntidad = nombreEntidadResolverService.obtenerNombreEntidadPorIdUsuario(usuario.getIdUsuario());
+            usuario.setNombreEntidad(nombreEntidad);
+        }
+        return usuarios;
     }
 
     @Override
