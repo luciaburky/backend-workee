@@ -1,5 +1,6 @@
 package com.example.demo.repositories.params;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,4 +23,7 @@ public interface HabilidadRepository extends BaseRepository<Habilidad, Long> {
     Optional<Habilidad> findByNombreHabilidadIgnoreCase(String nombreHabilidad);
     
     List<Habilidad> findAllByOrderByNombreHabilidadAsc();
+
+    List<Habilidad> findAllById(Collection<Long> ids);
+
 }

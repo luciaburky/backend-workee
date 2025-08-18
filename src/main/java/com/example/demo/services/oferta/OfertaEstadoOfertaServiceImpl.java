@@ -33,7 +33,7 @@ public class OfertaEstadoOfertaServiceImpl extends BaseServiceImpl<OfertaEstadoO
         nuevoEstado.setFechaHoraBaja(null); // Inicialmente no hay baja
         nuevoEstado.setEstadoOferta(estado);
 
-        return nuevoEstado;
+        return nuevoEstado; 
     }
     
     @Override

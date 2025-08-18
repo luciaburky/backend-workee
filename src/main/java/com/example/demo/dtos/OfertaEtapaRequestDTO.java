@@ -23,5 +23,7 @@ public class OfertaEtapaRequestDTO {
     private Long idEmpleadoEmpresa;
 
     private Long idArchivoAdjunto; // Puede ser null si no hay archivo adjunto
+
+    private String descripcionAdicional;
     
 }

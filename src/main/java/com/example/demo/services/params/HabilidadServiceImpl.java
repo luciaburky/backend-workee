@@ -1,5 +1,6 @@
 package com.example.demo.services.params;
 
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.params.HabilidadRequestDTO;
@@ -7,6 +8,7 @@ import com.example.demo.entities.params.Habilidad;
 import com.example.demo.entities.params.TipoHabilidad;
 import com.example.demo.exceptions.EntityAlreadyEnabledException;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
+import com.example.demo.exceptions.EntityNotFoundException;
 import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.exceptions.EntityReferencedException;
 import com.example.demo.repositories.candidato.CandidatoRepository;
@@ -15,9 +17,14 @@ import com.example.demo.services.BaseServiceImpl;
 
 import jakarta.transaction.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -137,5 +144,25 @@ public class HabilidadServiceImpl extends BaseServiceImpl<Habilidad, Long> imple
             return delete(id);
         }
 
+    }
+
+    @Override
+    public List<Habilidad> findAllById(Collection<Long> ids) {
+        // 1) Llama a JPA en lote (1 sola query)
+        Iterable<Habilidad> it = habilidadRepository.findAllById(ids);
+        // 2) Convierte a lista
+        List<Habilidad> result = new ArrayList<>();
+        it.forEach(result::add);
+
+        // 3) (Opcional) Validar que existan todas
+        Set<Long> encontrados = result.stream().map(Habilidad::getId).collect(Collectors.toSet());
+        Set<Long> solicitados = new HashSet<>(ids);
+        solicitados.removeAll(encontrados);
+        if (!solicitados.isEmpty()) {
+            throw new EntityNotFoundException("Habilidades inexistentes: " + solicitados);
+        }
+
+        // 4) Devuelve la lista con todas las entidades
+        return result;
     }
 }

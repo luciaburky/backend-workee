@@ -33,7 +33,7 @@ public class OfertaEtapa extends Base {
 
     //Descripcion de la Etapa asociada a esta OfertaEtapa.
     @Column(name = "descripcion_oferta_etapa")
-    private String descripcionOfertaEtapa;
+    private String descripcionAdicional;
 
     //Hace referencia a si el Candidato adjunta enlace en esa etapa.
     @NotNull

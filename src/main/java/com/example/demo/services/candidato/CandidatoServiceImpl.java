@@ -18,7 +18,6 @@ import com.example.demo.entities.params.EstadoBusqueda;
 import com.example.demo.entities.params.Genero;
 import com.example.demo.entities.params.Habilidad;
 import com.example.demo.entities.params.Provincia;
-import com.example.demo.exceptions.EntityAlreadyExistsException;
 import com.example.demo.exceptions.EntityNotFoundException;
 import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.mappers.CandidatoMapper;

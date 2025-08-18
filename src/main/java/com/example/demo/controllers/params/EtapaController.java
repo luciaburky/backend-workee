@@ -35,7 +35,7 @@ public class EtapaController {
     @Operation(summary = "Crear una nueva Etapa")
     @PostMapping
     public ResponseEntity<Etapa> crearEtapa(@Valid @RequestBody EtapaRequestDTO etapaRequestDTO){
-        Etapa nuevaEtapa = etapaService.guardarEtapa(etapaRequestDTO);
+        Etapa nuevaEtapa = etapaService.crearPredeterminada(etapaRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevaEtapa);
     }
 
