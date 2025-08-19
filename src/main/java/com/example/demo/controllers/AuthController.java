@@ -51,7 +51,7 @@ public class AuthController {
     }
 
     @Operation(summary = "Usuario recupera su contraseña")
-    @PutMapping("/recuperarContrasenia/{idUsuario}")
+    @PutMapping("/confirmarRecuperacionContrasenia/")
     @Parameter(name = "token", description = "Token recibido por correo", required = true)
     public ResponseEntity<?> confirmarRecuperacionContrasenia(@RequestParam String token, @RequestBody RecuperarContraseniaDTO recuperarContraseniaDTO){
         this.usuarioService.confirmarRecuperacionContrasenia(token, recuperarContraseniaDTO);
