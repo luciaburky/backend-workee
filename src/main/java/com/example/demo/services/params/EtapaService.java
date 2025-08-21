@@ -25,6 +25,8 @@ public interface EtapaService extends BaseService<Etapa, Long> {
     //Ver si es util
     List<Etapa> obtenerEtapasActivos();
 
+    List<Etapa> findAllByIdIn(Collection<Long> ids);
+
     //TODO 
     /* 
     List<Etapa> findDisponiblesParaEmpresa(Long empresaId);

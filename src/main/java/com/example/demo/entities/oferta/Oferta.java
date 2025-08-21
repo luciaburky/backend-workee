@@ -1,5 +1,6 @@
 package com.example.demo.entities.oferta;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -72,15 +73,15 @@ public class Oferta extends Base {
     private TipoContratoOferta tipoContratoOferta;
     
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "id_oferta", nullable = true)
-    List<OfertaHabilidad> habilidades;
+    @JoinColumn(name = "id_oferta", nullable = false)
+    private List<OfertaHabilidad> habilidades = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "id_oferta", nullable = false)
-    private List<OfertaEstadoOferta> estadosOferta;
+    private List<OfertaEstadoOferta> estadosOferta = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "id_oferta_etapa")
-    private List<OfertaEtapa> ofertaEtapas;
+    @JoinColumn(name = "id_oferta", nullable = false)
+    private List<OfertaEtapa> ofertaEtapas = new ArrayList<>();
 
 }

@@ -14,6 +14,7 @@ import com.example.demo.dtos.OfertaRequestDTO;
 import com.example.demo.entities.empresa.Empresa;
 import com.example.demo.entities.oferta.Oferta;
 import com.example.demo.entities.oferta.OfertaEstadoOferta;
+import com.example.demo.entities.oferta.OfertaEtapa;
 import com.example.demo.entities.oferta.OfertaHabilidad;
 import com.example.demo.entities.params.Habilidad;
 import com.example.demo.entities.params.ModalidadOferta;
@@ -35,8 +36,9 @@ public class OfertaServiceImpl extends BaseServiceImpl<Oferta, Long> implements 
     private final TipoContratoOfertaService tipoContratoOfertaService;
     private final OfertaEstadoOfertaService ofertaEstadoOfertaService;
     private final HabilidadService habilidadService;
+    private final OfertaEtapaService ofertaEtapaService;
 
-    public OfertaServiceImpl(OfertaRepository ofertaRepository, OfertaMapper ofertaMapper, EmpresaService empresaService, ModalidadOfertaService modalidadOfertaService, TipoContratoOfertaService tipoContratoOfertaService, OfertaEstadoOfertaService ofertaEstadoOfertaService, HabilidadService habilidadService) {
+    public OfertaServiceImpl(OfertaRepository ofertaRepository, OfertaMapper ofertaMapper, EmpresaService empresaService, ModalidadOfertaService modalidadOfertaService, TipoContratoOfertaService tipoContratoOfertaService, OfertaEstadoOfertaService ofertaEstadoOfertaService, HabilidadService habilidadService, OfertaEtapaService ofertaEtapaService) {
         super(ofertaRepository);
         this.ofertaRepository = ofertaRepository;
         this.ofertaMapper = ofertaMapper;
@@ -45,6 +47,7 @@ public class OfertaServiceImpl extends BaseServiceImpl<Oferta, Long> implements 
         this.tipoContratoOfertaService = tipoContratoOfertaService;
         this.ofertaEstadoOfertaService = ofertaEstadoOfertaService;
         this.habilidadService = habilidadService; 
+        this.ofertaEtapaService = ofertaEtapaService;
     }
 
     @Override
@@ -99,8 +102,18 @@ public class OfertaServiceImpl extends BaseServiceImpl<Oferta, Long> implements 
             oferta.getHabilidades().addAll(habilidades);
         }
         
-        //TODO: OfertaEtapas
-        
+        //OfertaEtapas
+        if (ofertaDTO.getOfertaEtapas() != null && !ofertaDTO.getOfertaEtapas().isEmpty()) {
+            List<OfertaEtapa> etapas = ofertaEtapaService.crearOfertaEtapasDesdeDto(
+                empresa.getId(), 
+                ofertaDTO.getOfertaEtapas()
+            );
+            if (oferta.getOfertaEtapas() == null) {
+                oferta.setOfertaEtapas(new ArrayList<>());
+            }
+            oferta.getOfertaEtapas().addAll(etapas);
+        }
+                
         oferta.setFinalizadaConExito(null); // Inicialmente no se sabe si la oferta se finalizó con éxito
         oferta.setFechaFinalizacion(null); // Inicialmente no hay fecha de finalización
 

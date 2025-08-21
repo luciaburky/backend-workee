@@ -22,7 +22,7 @@ public class OfertaEtapaRequestDTO {
     @NotNull(message = "El id del empleado de la empresa no puede estar vacío")
     private Long idEmpleadoEmpresa;
 
-    private Long idArchivoAdjunto; // Puede ser null si no hay archivo adjunto
+    private String archivoAdjunto; // Puede ser null si no hay archivo adjunto
 
     private String descripcionAdicional;
     

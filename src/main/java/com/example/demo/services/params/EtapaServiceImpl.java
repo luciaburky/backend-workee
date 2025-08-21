@@ -1,5 +1,6 @@
 package com.example.demo.services.params;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -122,6 +123,15 @@ public class EtapaServiceImpl extends BaseServiceImpl<Etapa, Long> implements Et
         return etapaExiste
         .filter(e -> idAExcluir == null || !e.getId().equals(idAExcluir))
         .isPresent();
+    }
+
+    @Override
+    @Transactional
+    public List<Etapa> findAllByIdIn(Collection<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            throw new IllegalArgumentException("La colección de IDs no puede ser nula o vacía");
+        }
+        return etapaRepository.findAllByIdIn(ids);
     }
 
     //TODO
