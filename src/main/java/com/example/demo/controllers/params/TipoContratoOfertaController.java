@@ -67,7 +67,7 @@ public class TipoContratoOfertaController {
     
     @Operation(summary = "Obtiene un TipoContratoOferta por su ID")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('VER_CONTRATO_OFERTA')")
+    @PreAuthorize("hasAuthority('VER_DETALLE_PARAMETRO')")
     public ResponseEntity<?> obtenerTipoContratoOfertaPorId(@PathVariable Long id) {
         TipoContratoOferta tipoContratoOferta = tipoContratoOfertaService.findById(id); 
         return ResponseEntity.status(HttpStatus.OK).body(tipoContratoOferta);

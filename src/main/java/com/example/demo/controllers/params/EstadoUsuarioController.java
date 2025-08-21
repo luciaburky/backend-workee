@@ -69,7 +69,7 @@ public class EstadoUsuarioController {
     
     @Operation(summary = "Obtiene un EstadoUsuario por su ID")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('VER_ESTADO_USUARIO')")
+    @PreAuthorize("hasAuthority('VER_DETALLE_PARAMETRO')")
     public ResponseEntity<?> obtenerEstadoUsuarioPorId(@PathVariable Long id) {
         EstadoUsuario estadoUsuario = estadoUsuarioService.findById(id); 
         return ResponseEntity.status(HttpStatus.OK).body(estadoUsuario);

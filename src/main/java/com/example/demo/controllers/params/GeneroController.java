@@ -66,7 +66,7 @@ public class GeneroController {
     
     @Operation(summary = "Obtiene un Genero por su ID")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('VER_GENERO')")
+    @PreAuthorize("hasAuthority('VER_DETALLE_PARAMETRO')")
     public ResponseEntity<?> obtenerGeneroPorId(@PathVariable Long id) {
         Genero genero = generoService.findById(id);
         return ResponseEntity.status(HttpStatus.OK).body(genero);
