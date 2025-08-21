@@ -148,21 +148,28 @@ public class HabilidadServiceImpl extends BaseServiceImpl<Habilidad, Long> imple
 
     @Override
     public List<Habilidad> findAllById(Collection<Long> ids) {
-        // 1) Llama a JPA en lote (1 sola query)
-        Iterable<Habilidad> it = habilidadRepository.findAllById(ids);
-        // 2) Convierte a lista
-        List<Habilidad> result = new ArrayList<>();
-        it.forEach(result::add);
+        
+        if (ids == null || ids.isEmpty()) {
+            throw new IllegalArgumentException("La colección de IDs no puede ser nula o vacía");
+        }
+        
+        List<Long> idsDistintos = ids.stream().distinct().toList();
 
+        List<Habilidad> habilidades = habilidadRepository.findAllByIdIn(idsDistintos);
+        
         // 3) (Opcional) Validar que existan todas
-        Set<Long> encontrados = result.stream().map(Habilidad::getId).collect(Collectors.toSet());
-        Set<Long> solicitados = new HashSet<>(ids);
-        solicitados.removeAll(encontrados);
-        if (!solicitados.isEmpty()) {
-            throw new EntityNotFoundException("Habilidades inexistentes: " + solicitados);
+        Set<Long> encontrados = habilidades.stream()
+                                            .map(Habilidad::getId)
+                                            .collect(Collectors.toSet());
+        List<Long> faltantes = idsDistintos.stream()
+                                            .filter(id -> !encontrados.contains(id))
+                                            .toList();
+        
+        if (!faltantes.isEmpty()) {
+            throw new EntityNotFoundException("Habilidades inexistentes: " + faltantes);
         }
 
         // 4) Devuelve la lista con todas las entidades
-        return result;
+        return habilidades;
     }
 }

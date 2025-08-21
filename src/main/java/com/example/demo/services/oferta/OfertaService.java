@@ -6,4 +6,8 @@ import com.example.demo.services.BaseService;
 
 public interface OfertaService extends BaseService<Oferta, Long>{
     Oferta crearOferta(OfertaRequestDTO ofertaDTO);    
+
+    Oferta cambiarEstado(Long ofertaId, String nuevoCodigo);
+
+    Oferta marcarResultadoFinal(Long ofertaId, boolean conExito);
 }

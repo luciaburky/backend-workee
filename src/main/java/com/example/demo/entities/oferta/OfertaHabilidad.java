@@ -5,6 +5,7 @@ import com.example.demo.entities.params.Habilidad;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -24,7 +25,7 @@ import lombok.Setter;
 public class OfertaHabilidad extends Base {
 
     @ManyToOne
-    @Column(name = "habilidad_id")
+    @JoinColumn(name = "id_habilidad", nullable = false)
     @NotNull
     private Habilidad habilidad; 
 }

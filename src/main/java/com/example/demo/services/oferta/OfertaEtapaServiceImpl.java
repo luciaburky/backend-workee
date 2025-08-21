@@ -75,6 +75,7 @@ public class OfertaEtapaServiceImpl extends BaseServiceImpl<OfertaEtapa, Long> i
             if (dto.getArchivoAdjunto() != null&& !dto.getArchivoAdjunto().isBlank()) {
                 ArchivoAdjunto archivoAdjunto = new ArchivoAdjunto();
                 archivoAdjunto.setEnlaceArchivo(dto.getArchivoAdjunto().trim());
+                archivoAdjunto.setFechaHoraAlta(new Date());
                 ofertaEtapa.setArchivoAdjunto(archivoAdjunto);
             }
             return ofertaEtapa;

@@ -5,6 +5,7 @@ import java.util.List;
 import com.example.demo.entities.oferta.Oferta;
 import com.example.demo.entities.oferta.OfertaEtapa;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -38,7 +39,7 @@ public class OfertaRequestDTO {
     private List<Long> idHabilidades;
 
     @NotEmpty(message = "La lista de etapas de la oferta no puede estar vacía")
-    private List<OfertaEtapaRequestDTO> ofertaEtapas;
+    private List<@Valid OfertaEtapaRequestDTO> ofertaEtapas;
 
     /*
     Nota: Se setean solos: 

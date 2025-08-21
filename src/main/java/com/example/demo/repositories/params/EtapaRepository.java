@@ -34,9 +34,9 @@ public interface EtapaRepository extends BaseRepository<Etapa, Long> {
     List<Etapa> findAllByIdIn(Collection<Long> ids);
 
     @Query("""
-            SELECT e FROM Etapa E
+            SELECT e FROM Etapa e
             WHERE e.fechaHoraBaja IS NULL
-                AND esPredeterminada = false 
+                AND e.esPredeterminada = false 
                 AND e.empresa.id = :empresaId
             ORDER BY e.nombreEtapa ASC
             """)

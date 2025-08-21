@@ -24,6 +24,6 @@ public interface HabilidadRepository extends BaseRepository<Habilidad, Long> {
     
     List<Habilidad> findAllByOrderByNombreHabilidadAsc();
 
-    List<Habilidad> findAllById(Collection<Long> ids);
+    List<Habilidad> findAllByIdIn(Collection<Long> ids);
 
 }
