@@ -66,7 +66,7 @@ public class RubroController{
     
     @Operation(summary = "Obtener un Rubro por ID")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('VER_RUBRO')")
+    @PreAuthorize("hasAuthority('VER_DETALLE_PARAMETRO')")
     public ResponseEntity<Rubro> obtenerRubroPorId(@PathVariable Long id) {
         Rubro rubro = rubroService.findById(id);
         return ResponseEntity.ok(rubro);

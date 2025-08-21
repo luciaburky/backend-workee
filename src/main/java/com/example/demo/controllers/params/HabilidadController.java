@@ -78,7 +78,7 @@ public class HabilidadController {
     
     @Operation(summary = "Obtener una Habilidad por ID")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('VER_HABILIDAD')")
+    @PreAuthorize("hasAuthority('VER_DETALLE_PARAMETRO')")
     public ResponseEntity<Habilidad> obtenerHabilidadPorId(@PathVariable Long id) {
         Habilidad habilidad = habilidadService.findById(id);
         return ResponseEntity.ok(habilidad);

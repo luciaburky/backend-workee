@@ -67,7 +67,7 @@ public class PaisController  {
 
     @Operation(summary = "Obtiene un pais por su ID")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('VER_PAIS')")
+    @PreAuthorize("hasAuthority('VER_DETALLE_PARAMETRO')")
     public ResponseEntity<?> obtenerPais(@PathVariable Long id) {
         Pais pais = paisService.findById(id);
 

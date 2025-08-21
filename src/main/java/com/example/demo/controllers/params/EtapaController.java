@@ -67,7 +67,7 @@ public class EtapaController {
     
     @Operation(summary = "Obtener una Etapa por ID")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('VER_ETAPA')")
+    @PreAuthorize("hasAuthority('VER_DETALLE_PARAMETRO')")
     public ResponseEntity<Etapa> obtenerEtapaPorId(@PathVariable Long id) {
         Etapa etapa = etapaService.findById(id);
         return ResponseEntity.ok(etapa);

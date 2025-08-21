@@ -68,7 +68,7 @@ public class EstadoBusquedaController {
     
     @Operation(summary = "Obtener un Estado de Busqueda por ID")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('VER_ESTADO_BUSQUEDA')")
+    @PreAuthorize("hasAuthority('VER_DETALLE_PARAMETRO')")
     public ResponseEntity<EstadoBusqueda> obtenerEstadoBusquedaPorId(@PathVariable Long id) {
         EstadoBusqueda estadoBusqueda = estadoBusquedaService.findById(id);
         return ResponseEntity.ok(estadoBusqueda);

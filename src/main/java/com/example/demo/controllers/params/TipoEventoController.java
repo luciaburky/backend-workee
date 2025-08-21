@@ -67,7 +67,7 @@ public class TipoEventoController  {
     
     @Operation(summary = "Obtiene un TipoEvento por su ID")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('VER_TIPO_EVENTO')")
+    @PreAuthorize("hasAuthority('VER_DETALLE_PARAMETRO')")
     public ResponseEntity<?> TipoEventoPorId(@PathVariable Long id) {
         TipoEvento tipoEvento = tipoEventoService.buscarTipoEventoPorId(id);
         return ResponseEntity.status(HttpStatus.OK).body(tipoEvento);

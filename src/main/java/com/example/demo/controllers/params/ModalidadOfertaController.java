@@ -67,7 +67,7 @@ public class ModalidadOfertaController {
     
     @Operation(summary = "Obtener una Modalidad Oferta por ID")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('VER_MODALIDAD_OFERTA')")
+    @PreAuthorize("hasAuthority('VER_DETALLE_PARAMETRO')")
     public ResponseEntity<ModalidadOferta> obtenerModalidadOfertaPorId(@PathVariable Long id) {
         ModalidadOferta modalidadOferta = modalidadOfertaService.findById(id);
         return ResponseEntity.ok(modalidadOferta);

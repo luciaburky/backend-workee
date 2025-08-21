@@ -82,7 +82,7 @@ public class ProvinciaController {
 
     @Operation(summary = "Obtiene una provincia por su ID")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('VER_PROVINCIA')")
+    @PreAuthorize("hasAuthority('VER_DETALLE_PARAMETRO')")
     public ResponseEntity<?> obtenerProvincia(@PathVariable Long id) {
         Provincia provincia = provinciaService.findById(id); 
         return ResponseEntity.status(HttpStatus.OK).body(provincia);

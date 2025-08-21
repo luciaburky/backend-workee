@@ -70,7 +70,7 @@ public class EstadoOfertaController {
     
     @Operation(summary = "Obtener un Estado Oferta por ID")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('VER_ESTADO_OFERTA')")
+    @PreAuthorize("hasAuthority('VER_DETALLE_PARAMETRO')")
     public ResponseEntity<EstadoOferta> obtenerEstadoOfertaPorId(@PathVariable Long id) {
         EstadoOferta estadoOferta = estadoOfertaService.findById(id);
         return ResponseEntity.ok(estadoOferta);
