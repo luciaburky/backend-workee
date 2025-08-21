@@ -55,3 +55,4 @@ public class Evento extends Base{
     @JoinColumn(name = "id_postulacion_oferta_etapa", nullable = false)
     private PostulacionOfertaEtapa postulacionOfertaEtapa;
 }
+    
