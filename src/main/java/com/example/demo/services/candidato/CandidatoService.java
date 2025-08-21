@@ -1,7 +1,7 @@
 package com.example.demo.services.candidato;
 
 import java.util.List;
-
+import java.util.Optional;
 
 import com.example.demo.dtos.CandidatoRequestDTO;
 import com.example.demo.dtos.FiltrosCandidatoRequestDTO;
@@ -27,4 +27,10 @@ public interface CandidatoService extends BaseService<Candidato, Long> {
 
     public List<Candidato> buscarCandidatosConFiltros(FiltrosCandidatoRequestDTO filtrosCandidatoRequestDTO);
     public List<Candidato> buscarCandidatosPorNombre(String nombreCandidato);
+
+    public Optional<Candidato> buscarCandidatoPorIdUsuario(Long idUsuario);
+
+    public Boolean eliminarCuentaCandidato(Long idCandidato);
+    
+    public Boolean existeCandidatoPorUsuarioId(Long usuarioId);
 }

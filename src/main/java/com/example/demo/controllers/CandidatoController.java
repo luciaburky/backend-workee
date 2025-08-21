@@ -11,14 +11,13 @@ import com.example.demo.services.candidato.CandidatoService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -34,15 +33,9 @@ public class CandidatoController {
         this.candidatoService = candidatoService;
     }
 
-    @Operation(summary = "Crear un nuevo Candidato")
-    @PostMapping
-        public ResponseEntity<Candidato> crearCandidato(@Valid @RequestBody CandidatoRequestDTO candidatoDTO) {
-        Candidato nuevoCandidato = candidatoService.crearCandidato(candidatoDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(nuevoCandidato);
-    }
-
     @Operation(summary = "Actualizar un Candidato")
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ACTUALIZAR_MI_PERFIL')")
     public ResponseEntity<Candidato> actualizarCandidato(@PathVariable("id") Long idCandidato, @RequestBody CandidatoRequestDTO candidatoDTO) {
         Candidato candidatoActualizado = candidatoService.modificarCandidato(idCandidato, candidatoDTO);
         return ResponseEntity.ok().body(candidatoActualizado);
@@ -64,22 +57,33 @@ public class CandidatoController {
 
     @Operation(summary = "Obtener un Candidato por su ID")
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('BUSCAR_CANDIDATOS') or hasAuthority('VER_PERFIL_CANDIDATO')")
     public ResponseEntity<Candidato> obtenerCandidatoPorId(@PathVariable("id") Long idCandidato) {
         Candidato candidato = candidatoService.findById(idCandidato);
         return ResponseEntity.ok().body(candidato);
     }
 
-    @Operation(summary = "Obtener todos los Candidatos")
-    @GetMapping
+    /*@Operation(summary = "Obtener todos los Candidatos")
+    @GetMapping("")
     public ResponseEntity<List<Candidato>> obtenerCandidatos() {
         List<Candidato> listaCandidatos = candidatoService.obtenerCandidatos();
         return ResponseEntity.ok().body(listaCandidatos);
-    }
+    }*/
 
     @Operation(summary = "Obtener habilidades de un Candidato")
     @GetMapping("/{id}/habilidades")
+    @PreAuthorize("hasAuthority('BUSCAR_CANDIDATOS') or hasAuthority('VER_PERFIL_CANDIDATO') or hasAuthority('ACTUALIZAR_CANDIDATO')") //TODO: agregarle los que falten
     public ResponseEntity<List<Habilidad>> obtenerHabilidades(@PathVariable("id") Long idCandidato) {
         List<Habilidad> habilidades = candidatoService.obtenerHabilidades(idCandidato);
         return ResponseEntity.ok().body(habilidades);
     }
+
+    @Operation(summary = "Elimina una cuenta de candidato y todo lo relacionado a ella")
+    @DeleteMapping("/{idCandidato}")
+    @PreAuthorize("hasAuthority('ELIMINAR_CANDIDATO')")
+    public ResponseEntity<?> eliminarCandidato(@PathVariable Long idCandidato){
+        candidatoService.eliminarCuentaCandidato(idCandidato);
+        return ResponseEntity.status(HttpStatus.OK).body("Cuenta de candidato eliminada correctamente");
+    }
+
 }

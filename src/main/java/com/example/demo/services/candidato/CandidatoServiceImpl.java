@@ -1,33 +1,45 @@
 package com.example.demo.services.candidato;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.CandidatoRequestDTO;
 import com.example.demo.dtos.FiltrosCandidatoRequestDTO;
+import com.example.demo.dtos.UsuarioDTO;
 import com.example.demo.entities.candidato.Candidato;
 import com.example.demo.entities.candidato.CandidatoCV;
 import com.example.demo.entities.candidato.CandidatoHabilidad;
+import com.example.demo.entities.params.CodigoEstadoUsuario;
 import com.example.demo.entities.params.EstadoBusqueda;
 import com.example.demo.entities.params.Genero;
 import com.example.demo.entities.params.Habilidad;
 import com.example.demo.entities.params.Provincia;
+import com.example.demo.entities.seguridad.CodigoRol;
+import com.example.demo.entities.seguridad.Usuario;
+import com.example.demo.entities.seguridad.tokens.TokenConfirmacion;
 import com.example.demo.exceptions.EntityNotFoundException;
 import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.mappers.CandidatoMapper;
 import com.example.demo.repositories.candidato.CandidatoRepository;
+import com.example.demo.repositories.seguridad.tokens.TokenConfirmacionRepository;
 import com.example.demo.services.BaseServiceImpl;
+import com.example.demo.services.mail.MailService;
 import com.example.demo.services.params.EstadoBusquedaService;
 import com.example.demo.services.params.GeneroService;
 import com.example.demo.services.params.HabilidadService;
 import com.example.demo.services.params.ProvinciaService;
+import com.example.demo.services.seguridad.UsuarioService;
 
 import jakarta.transaction.Transactional;
 
@@ -41,8 +53,12 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
     private final EstadoBusquedaService estadoBusquedaService;
     private final HabilidadService habilidadService;
     private final CandidatoCVService candidatoCVService;
+     private final UsuarioService usuarioService;
+    private final MailService mailService;
+    private final TokenConfirmacionRepository tokenConfirmacionRepository;
 
-    public CandidatoServiceImpl(CandidatoRepository candidatoRepository, CandidatoMapper candidatoMapper, ProvinciaService provinciaService, GeneroService generoService, EstadoBusquedaService estadoBusquedaService, HabilidadService habilidadService, CandidatoCVService candidatoCVService) {
+
+    public CandidatoServiceImpl(CandidatoRepository candidatoRepository, CandidatoMapper candidatoMapper, ProvinciaService provinciaService, GeneroService generoService, EstadoBusquedaService estadoBusquedaService, HabilidadService habilidadService, CandidatoCVService candidatoCVService, UsuarioService usuarioService, MailService mailService, TokenConfirmacionRepository tokenConfirmacionRepository) {
         super(candidatoRepository);
         this.candidatoRepository = candidatoRepository;
         this.candidatoMapper = candidatoMapper;
@@ -51,6 +67,9 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
         this.estadoBusquedaService = estadoBusquedaService;
         this.habilidadService = habilidadService;
         this.candidatoCVService = candidatoCVService;
+        this.usuarioService = usuarioService;
+        this.mailService = mailService;
+        this.tokenConfirmacionRepository = tokenConfirmacionRepository;
     }
 
     @Override
@@ -65,6 +84,11 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
         //Seteo los Atributos complejos
         Provincia provincia = provinciaService.findById(candidatoDTO.getIdProvincia());
         Genero genero = generoService.findById(candidatoDTO.getIdGenero());
+        
+        //Creacion de usuario
+        UsuarioDTO usuarioDTO = new UsuarioDTO(candidatoDTO.getCorreoCandidato(), candidatoDTO.getContrasenia(), candidatoDTO.getUrlFotoPerfil(), CodigoEstadoUsuario.PENDIENTE, CodigoRol.CANDIDATO);
+        Usuario nuevoUsuario = usuarioService.registrarUsuario(usuarioDTO);
+        
         if(candidatoDTO.getIdEstadoBusqueda() != null){
             EstadoBusqueda estadoBusqueda = estadoBusquedaService.findById(candidatoDTO.getIdEstadoBusqueda());
             nuevoCandidato.setEstadoBusqueda(estadoBusqueda);
@@ -97,9 +121,41 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
         nuevoCandidato.setFechaHoraAlta(new Date());
         nuevoCandidato.setProvincia(provincia);
         nuevoCandidato.setGenero(genero);
+
+        nuevoCandidato.setUsuario(nuevoUsuario);
         
-        return candidatoRepository.save(nuevoCandidato);
+        candidatoRepository.save(nuevoCandidato);
+
+        //Parte del token
+        String token = UUID.randomUUID().toString();
+        TokenConfirmacion tokenConfirmacion = new TokenConfirmacion();
+        tokenConfirmacion.setToken(token);
+        LocalDateTime fechaCreacion = LocalDateTime.now();
+        tokenConfirmacion.setFechaCreacion(fechaCreacion);
+        tokenConfirmacion.setFechaExpiracion(fechaCreacion.plusMinutes(30));
+        tokenConfirmacion.setUsuario(nuevoUsuario);
+        tokenConfirmacionRepository.save(tokenConfirmacion);
+
+        String linkConfirmacion = "http://localhost:4200/cuentaVerificada?token=" + token; //TODO: Ver si lo dejamos asi
+
+        //Envio mail
+        enviarMailConfirmacionACandidato(candidatoDTO.getCorreoCandidato(), candidatoDTO.getNombreCandidato(), linkConfirmacion);
+        
+        return nuevoCandidato;
+
     }
+
+    private void enviarMailConfirmacionACandidato(String mailTo, String nombreCandidato, String urlConfirmacion){
+        String templateName = "mailConfirmacionCandidato"; 
+        Map<String, Object> variables = new HashMap<>();
+
+        variables.put("nombreCandidato", nombreCandidato);
+        variables.put("urlConfirmacion", urlConfirmacion);
+
+        String subject = "¡Bienvenido a Workee! Confirma tu cuenta.";
+        mailService.enviar(mailTo, subject, templateName, variables);
+    }
+
  
     @Override
     @Transactional
@@ -127,6 +183,12 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
         // Actualizar habilidades
         actualizarHabilidadesCandidato(candidatoOriginal, candidatoDTO);
      
+        // Actualizar o crear CV
+        candidatoCVService.actualizarOCrearCV(candidatoOriginal, candidatoDTO.getEnlaceCV());
+
+        //actualizar lo relacionado al usuario
+        usuarioService.actualizarDatosUsuario(idCandidato, candidatoDTO.getContrasenia(), candidatoDTO.getRepetirContrasenia(), candidatoDTO.getUrlFotoPerfil(), candidatoDTO.getContraseniaActual());
+        
         return candidatoRepository.save(candidatoOriginal);
     }
 
@@ -254,5 +316,31 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
             throw new IllegalArgumentException("El nombre del candidato no puede estar vacío");
         }
         return candidatoRepository.buscarCandidatosPorNombre(nombreCandidato);
+    }
+
+    @Override
+    public Optional<Candidato> buscarCandidatoPorIdUsuario(Long idUsuario){
+        if(idUsuario == null){
+            throw new IllegalArgumentException("El id del usuario no puede estar vacío");
+        }
+        Optional<Candidato> candidato = candidatoRepository.findByUsuarioId(idUsuario);
+
+        return candidato;
+
+    }
+
+    @Override
+    @Transactional
+    public Boolean eliminarCuentaCandidato(Long idCandidato){
+        Candidato candidato = findById(idCandidato);
+        candidato.setFechaHoraBaja(new Date());
+        usuarioService.darDeBajaUsuario(candidato.getUsuario().getId());
+        candidatoRepository.save(candidato);
+        return true;
+    }
+
+    @Override
+    public Boolean existeCandidatoPorUsuarioId(Long usuarioId){
+        return candidatoRepository.existsByUsuarioId(usuarioId);
     }
 }   

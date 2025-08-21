@@ -2,16 +2,22 @@ package com.example.demo.services.empresa;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.EmpleadoEmpresaRequestDTO;
+import com.example.demo.dtos.UsuarioDTO;
 import com.example.demo.entities.empresa.EmpleadoEmpresa;
 import com.example.demo.entities.empresa.Empresa;
+import com.example.demo.entities.params.CodigoEstadoUsuario;
+import com.example.demo.entities.seguridad.CodigoRol;
+import com.example.demo.entities.seguridad.Usuario;
 import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.mappers.EmpleadoEmpresaMapper;
 import com.example.demo.repositories.empresa.EmpleadoEmpresaRepository;
 import com.example.demo.services.BaseServiceImpl;
+import com.example.demo.services.seguridad.UsuarioService;
 
 import jakarta.transaction.Transactional;
 
@@ -22,11 +28,14 @@ public class EmpleadoEmpresaServiceImpl extends BaseServiceImpl<EmpleadoEmpresa,
     private final EmpresaService empresaService;
     private final EmpleadoEmpresaMapper empleadoEmpresaMapper;
 
-    public EmpleadoEmpresaServiceImpl(EmpleadoEmpresaRepository empleadoEmpresaRepository, EmpresaService empresaService, EmpleadoEmpresaMapper empleadoEmpresaMapper) {
+    private final UsuarioService usuarioService; 
+
+    public EmpleadoEmpresaServiceImpl(EmpleadoEmpresaRepository empleadoEmpresaRepository, EmpresaService empresaService, EmpleadoEmpresaMapper empleadoEmpresaMapper, UsuarioService usuarioService) {
         super(empleadoEmpresaRepository);
         this.empleadoEmpresaRepository = empleadoEmpresaRepository;
         this.empresaService = empresaService;
         this.empleadoEmpresaMapper = empleadoEmpresaMapper;
+        this.usuarioService = usuarioService;
     }
     
     @Override
@@ -39,16 +48,20 @@ public class EmpleadoEmpresaServiceImpl extends BaseServiceImpl<EmpleadoEmpresa,
         if(!empleadoEmpresaRequestDTO.getRepetirContrasenia().equals(empleadoEmpresaRequestDTO.getContrasenia()) ){
             throw new EntityNotValidException("Las contraseñas deben coincidir");
         }
+
+        UsuarioDTO dtoUsuario = new UsuarioDTO(empleadoEmpresaRequestDTO.getCorreoEmpleadoEmpresa(), empleadoEmpresaRequestDTO.getContrasenia(), empleadoEmpresaRequestDTO.getUrlFotoPerfil(), CodigoEstadoUsuario.HABILITADO, CodigoRol.EMPLEADO_EMPRESA);
+        Usuario usuarioCreado = usuarioService.registrarUsuario(dtoUsuario);
+
         Empresa empresa = empresaService.findById(empleadoEmpresaRequestDTO.getIdEmpresa());
         EmpleadoEmpresa nuevoEmpleado = new EmpleadoEmpresa();
 
         nuevoEmpleado = empleadoEmpresaMapper.toEntity(empleadoEmpresaRequestDTO);
         nuevoEmpleado.setEmpresa(empresa);
         nuevoEmpleado.setFechaHoraAlta(new Date());
+        nuevoEmpleado.setUsuario(usuarioCreado);
 
         empleadoEmpresaRepository.save(nuevoEmpleado);
 
-        //TODO: agregar validacion de que no exista el correo electronico
         return nuevoEmpleado;
     }
    
@@ -69,17 +82,9 @@ public class EmpleadoEmpresaServiceImpl extends BaseServiceImpl<EmpleadoEmpresa,
 
     private void modificarComoEmpleado(EmpleadoEmpresa empleadoEmpresa, EmpleadoEmpresaRequestDTO empleadoEmpresaRequestDTO){
         empleadoEmpresaMapper.updateEntityFromDto(empleadoEmpresaRequestDTO, empleadoEmpresa);
-        //Según el chat, cuando agreguemos lo del modulo de seguridad lo mejor es manejarlo con el PreAuthorize (iria en el controller). Ejemplo:
-        /*
-         * @PreAuthorize("hasRole('EMPLEADO') and #id == authentication.principal.id")
-            @PutMapping("/modificar-propio/{id}")
-            public ResponseEntity<?> modificarEmpleadoPropio(...) {
-            ...
-            y en el service (si usamos un unico metodo): 
-                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-                String email = auth.getName();
-            }
-         */
+        
+        //modificar datos de usuario
+        usuarioService.actualizarDatosUsuario(empleadoEmpresa.getUsuario().getId(), empleadoEmpresaRequestDTO.getContrasenia(), empleadoEmpresaRequestDTO.getRepetirContrasenia(), empleadoEmpresaRequestDTO.getUrlFotoPerfil(), empleadoEmpresaRequestDTO.getContraseniaActual());
 
     }
 
@@ -91,10 +96,12 @@ public class EmpleadoEmpresaServiceImpl extends BaseServiceImpl<EmpleadoEmpresa,
         }
     }
 
-    
+    @Override
+    @Transactional
     public Boolean darDeBajaEmpleadoEmpresa(Long id){
         //TODO: Agregar validacion de que si esta asociado a ofertas, q esten todas finalizadas
-
+        EmpleadoEmpresa empleadoEmpresa = findById(id);
+        usuarioService.delete(empleadoEmpresa.getUsuario().getId()); //TODO: Revisar si agrego que se valide que no este en uso
         return delete(id);
     }
 
@@ -107,6 +114,25 @@ public class EmpleadoEmpresaServiceImpl extends BaseServiceImpl<EmpleadoEmpresa,
     @Override
     public Long contarEmpleadosDeEmpresa(Long idempresa){
         return empleadoEmpresaRepository.contarEmpelados(idempresa);
+    }
+
+    @Override
+    public Optional<EmpleadoEmpresa> buscarEmpleadoEmpresaPorUsuarioId(Long idUsuario){
+        if(idUsuario == null){
+            throw new IllegalArgumentException("El id del usuario no puede estar vacío");
+        }
+        Optional<EmpleadoEmpresa> empleado = empleadoEmpresaRepository.findByUsuarioId(idUsuario);
+        return empleado;
+    }
+
+    @Override
+    public List<EmpleadoEmpresa> visualizarTodosLosEmpleadosDeUnaEmpresa(Long idEmpresa){
+        return empleadoEmpresaRepository.traerTodosLosEmpleadosDeUnaEmpresa(idEmpresa);
+    }
+
+    @Override
+    public Boolean existeEmpleadoPorUsuarioId(Long usuarioId){
+        return empleadoEmpresaRepository.existsByUsuarioId(usuarioId);
     }
 }
 

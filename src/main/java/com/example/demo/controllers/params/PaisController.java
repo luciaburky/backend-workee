@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,6 +36,7 @@ public class PaisController  {
 
     @Operation(summary = "Crea un pais")
     @PostMapping("")
+    @PreAuthorize("hasAuthority('CREAR_PAIS')")
     public ResponseEntity<?> crearPais(@Valid @RequestBody PaisRequestDTO paisRequestDTO) {
         Pais nuevoPais = paisService.guardarPais(paisRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoPais);
@@ -42,6 +44,7 @@ public class PaisController  {
 
     @Operation(summary = "Actualiza un pais")
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('MODIFICAR_PAIS')")
     public ResponseEntity<?> actualizarPais(@PathVariable Long id, @RequestBody PaisRequestDTO paisRequestDTO) {
         Pais paisActualizado = paisService.actualizarPais(id, paisRequestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(paisActualizado);
@@ -49,6 +52,7 @@ public class PaisController  {
 
     @Operation(summary = "Obtiene todos los paises")
     @GetMapping("")
+    @PreAuthorize("hasAuthority('VER_TODOS_PAISES')")
     public ResponseEntity<?> obtenerPaises() {
         List<Pais> paises = paisService.obtenerPaises();
         return ResponseEntity.status(HttpStatus.OK).body(paises);
@@ -63,8 +67,8 @@ public class PaisController  {
 
     @Operation(summary = "Obtiene un pais por su ID")
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('VER_DETALLE_PARAMETRO')")
     public ResponseEntity<?> obtenerPais(@PathVariable Long id) {
-        //Pais pais = paisService.buscarPaisPorId(id);
         Pais pais = paisService.findById(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(pais);
@@ -72,14 +76,16 @@ public class PaisController  {
 
 
     @Operation(summary = "Deshabilita un pais")
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deshabilitar/{id}")
+    @PreAuthorize("hasAuthority('HABILITACION_PAIS')")
     public ResponseEntity<?> deshabilitarPais(@PathVariable Long id) {
-        paisService.deshabilitarPais(id); //delete(id);
+        paisService.deshabilitarPais(id); 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @Operation(summary = "Habilita un pais")
     @PutMapping("/habilitar/{id}")
+    @PreAuthorize("hasAuthority('HABILITACION_PAIS')")
     public ResponseEntity<?> habilitarPais(@PathVariable Long id) {
         paisService.habilitarPais(id);
         return ResponseEntity.status(HttpStatus.OK).build();

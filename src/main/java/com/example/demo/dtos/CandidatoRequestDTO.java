@@ -51,5 +51,9 @@ public class CandidatoRequestDTO {
     @NotBlank(message = "Debes repetir la contraseña")
     @Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres")
     private String repetirContrasenia;
+
+    private String urlFotoPerfil;
+
+    private String contraseniaActual;
     
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
-//@CrossOrigin(origins = "*")
 @RequestMapping("/provincias")
 @Tag(name = "Provincia", description = "Controlador para operaciones CRUD de Provincias")
 public class ProvinciaController {
@@ -44,6 +44,7 @@ public class ProvinciaController {
 
     @Operation(summary = "Crea una provincia")
     @PostMapping("")
+    @PreAuthorize("hasAuthority('CREAR_PROVINCIA')")
     public ResponseEntity<?> crearProvincia(@Valid @RequestBody ProvinciaRequestDTO provinciaRequestDTO) {
         Provincia nuevaProvincia = provinciaService.guardarProvincia(provinciaRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevaProvincia);
@@ -51,6 +52,7 @@ public class ProvinciaController {
 
     @Operation(summary = "Actualiza una provincia")
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('MODIFICAR_PROVINCIA')")
     public ResponseEntity<?> actualizarProvincia(@PathVariable Long id, @RequestBody ProvinciaRequestDTO provinciaRequestDTO) {
         Provincia provinciaActualizada = provinciaService.actualizarProvincia(id, provinciaRequestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(provinciaActualizada);
@@ -58,6 +60,7 @@ public class ProvinciaController {
 
     @Operation(summary = "Obtiene todas las provincias")
     @GetMapping("")
+    @PreAuthorize("hasAuthority('VER_TODAS_PROVINCIAS')")
     public ResponseEntity<?> obtenerProvincias() {
         List<Provincia> provincias = provinciaService.obtenerProvincias();
         return ResponseEntity.status(HttpStatus.OK).body(provincias);
@@ -79,21 +82,24 @@ public class ProvinciaController {
 
     @Operation(summary = "Obtiene una provincia por su ID")
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('VER_DETALLE_PARAMETRO')")
     public ResponseEntity<?> obtenerProvincia(@PathVariable Long id) {
-        Provincia provincia = provinciaService.findById(id); //buscarProvinciaPorId(id);
+        Provincia provincia = provinciaService.findById(id); 
         return ResponseEntity.status(HttpStatus.OK).body(provincia);
     }
 
 
     @Operation(summary = "Deshabilita una provincia")
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deshabilitar/{id}")
+    @PreAuthorize("hasAuthority('HABILITACION_PROVINCIA')")
     public ResponseEntity<?> deshabilitarProvincia(@PathVariable Long id) {
-        provinciaService.deshabilitarProvincia(id); //delete(id);
+        provinciaService.deshabilitarProvincia(id); 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @Operation(summary = "Habilita una provincia")
     @PutMapping("/habilitar/{id}")
+    @PreAuthorize("hasAuthority('HABILITACION_PROVINCIA')")
     public ResponseEntity<?> habilitarProvincia(@PathVariable Long id) {
         provinciaService.habilitarProvincia(id);
         return ResponseEntity.status(HttpStatus.OK).build();

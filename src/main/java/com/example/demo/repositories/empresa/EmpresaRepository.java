@@ -1,11 +1,13 @@
 package com.example.demo.repositories.empresa;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.example.demo.dtos.EmpresaPendienteHabilitacionDTO;
 import com.example.demo.entities.empresa.Empresa;
 import com.example.demo.repositories.BaseRepository;
 
@@ -40,10 +42,27 @@ public interface EmpresaRepository extends BaseRepository<Empresa, Long>  {
             WHERE e.fechaHoraBaja IS NULL AND pa.id = :idPais
         """
     )
-    boolean existenEmpresasActivasUsandoPais(@Param("idPais")Long idPais);
+    public boolean existenEmpresasActivasUsandoPais(@Param("idPais")Long idPais);
 
     boolean existsByProvinciaIdAndFechaHoraBajaIsNull(Long provinciaId);
 
     boolean existsByRubroIdAndFechaHoraBajaIsNull(Long rubroId);
+
+    @Query(
+        """
+           SELECT new com.example.demo.dtos.EmpresaPendienteHabilitacionDTO(e.id, e.nombreEmpresa, u.urlFotoUsuario, u.correoUsuario, u.fechaHoraAlta, e.rubro)
+            FROM Empresa e
+            JOIN e.usuario u
+            JOIN u.usuarioEstadoList ue
+            JOIN ue.estadoUsuario est
+            WHERE ue.fechaHoraBaja IS NULL AND e.fechaHoraBaja IS NULL
+            AND LOWER(est.nombreEstadoUsuario) LIKE LOWER(:nombreEstado)     
+        """
+    )
+    public List<EmpresaPendienteHabilitacionDTO> buscarEmpresasPendientesParaHabilitar(@Param("nombreEstado") String nombreEstado);
+
+    Optional<Empresa> findByUsuarioId(Long usuarioId);
+
+    Boolean existsByUsuarioId(Long usuarioId);
 }
 

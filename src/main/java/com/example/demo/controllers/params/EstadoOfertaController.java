@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +26,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 
 @RestController
-@RequestMapping("/estados-oferta")
+@RequestMapping("/estadosOferta")
 @Tag(name = "Estado Oferta", description = "Controlador para operaciones CRUD")
 public class EstadoOfertaController {
 
@@ -36,7 +37,8 @@ public class EstadoOfertaController {
     }
 
     @Operation(summary = "Crear un Estado Oferta")
-    @PostMapping
+    @PostMapping()
+    @PreAuthorize("hasAuthority('CREAR_ESTADO_OFERTA')")
     public ResponseEntity<EstadoOferta> crearEstadoOFerta(@Valid @RequestBody EstadoOfertaRequestDTO estadoOfertaRequestDTO){
         EstadoOferta nuevoEstadoOferta = estadoOfertaService.guardarEstadoOferta(estadoOfertaRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoEstadoOferta);    
@@ -44,13 +46,15 @@ public class EstadoOfertaController {
 
     @Operation(summary = "Actualizar un Estado Oferta Existente")
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('MODIFICAR_ESTADO_OFERTA')")
     public ResponseEntity<EstadoOferta> actualizarEstadoOferta(@PathVariable Long id, @RequestBody EstadoOfertaRequestDTO estadoOfertaRequestDTO) {
         EstadoOferta estadoOfertaActualizado = estadoOfertaService.actualizarEstadoOferta(id, estadoOfertaRequestDTO);
         return ResponseEntity.ok(estadoOfertaActualizado);
     }
 
     @Operation(summary = "Obtener todos los Estado Oferta")
-    @GetMapping
+    @GetMapping()
+    @PreAuthorize("hasAuthority('VER_TODOS_EST_OFERTA')")
     public ResponseEntity<List<EstadoOferta>> obtenerEstadosOferta() {
         List<EstadoOferta> listaEstadosOferta = estadoOfertaService.obtenerEstadoOfertas();
         return ResponseEntity.ok(listaEstadosOferta);
@@ -58,6 +62,7 @@ public class EstadoOfertaController {
 
     @Operation(summary = "Obtener los Estados Oferta Activos")
     @GetMapping("/activos")
+    @PreAuthorize("hasAuthority('???')") //TODO: Agregar en base a lo que hagamos del modulo de ofertas
     public ResponseEntity<List<EstadoOferta>> obtenerEstadosOfertaActivos() {
         List<EstadoOferta> listaEstadosOfertaActivos = estadoOfertaService.obtenerEstadoOfertasActivos();
         return ResponseEntity.ok(listaEstadosOfertaActivos);
@@ -65,13 +70,15 @@ public class EstadoOfertaController {
     
     @Operation(summary = "Obtener un Estado Oferta por ID")
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('VER_DETALLE_PARAMETRO')")
     public ResponseEntity<EstadoOferta> obtenerEstadoOfertaPorId(@PathVariable Long id) {
         EstadoOferta estadoOferta = estadoOfertaService.findById(id);
         return ResponseEntity.ok(estadoOferta);
     }
 
     @Operation(summary = "Deshabilitar un Estado Oferta")
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deshabilitar/{id}")
+    @PreAuthorize("hasAuthority('HABILITACION_ESTADO_OFERTA')")
     public ResponseEntity<Void> deshabilitarEstadoOferta(@PathVariable Long id){
         estadoOfertaService.delete(id);
         return ResponseEntity.ok().build();
@@ -79,6 +86,7 @@ public class EstadoOfertaController {
 
     @Operation(summary = "Habilitar un Estado Oferta")
     @PutMapping("/habilitar/{id}")
+    @PreAuthorize("hasAuthority('HABILITACION_ESTADO_OFERTA')")
     public ResponseEntity<Void> habilitarEstadoOferta(@PathVariable Long id) {
         estadoOfertaService.habilitarEstadoOferta(id);
         return ResponseEntity.ok().build();

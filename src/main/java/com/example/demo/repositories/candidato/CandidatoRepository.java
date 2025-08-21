@@ -52,4 +52,9 @@ public interface CandidatoRepository extends BaseRepository<Candidato, Long> {
     """,
     nativeQuery = true)
     public List<Candidato> buscarCandidatosConFiltros(@Param("nombreCandidato") String nombreCandidato, @Param("idsHabilidades") List<Long> idsHabilidades, @Param("idsProvincias") List<Long> idsProvincias, @Param("idsPaises") List<Long> idsPaises, @Param("idsEstadosBusqueda") List<Long> idsEstadosBusqueda);
+
+
+    Optional<Candidato> findByUsuarioId(Long usuarioId);
+
+    Boolean existsByUsuarioId(Long usuarioId);
 }

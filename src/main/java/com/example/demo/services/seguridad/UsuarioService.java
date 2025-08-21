@@ -1,0 +1,37 @@
+package com.example.demo.services.seguridad;
+
+import java.util.List;
+
+import com.example.demo.dtos.RecuperarContraseniaDTO;
+import com.example.demo.dtos.UsuarioDTO;
+import com.example.demo.dtos.UsuarioResponseDTO;
+import com.example.demo.dtos.login.LoginRequestDTO;
+import com.example.demo.entities.seguridad.Usuario;
+import com.example.demo.services.BaseService;
+
+public interface UsuarioService extends BaseService<Usuario, Long>{
+    public Usuario registrarUsuario(UsuarioDTO usuarioDTO);
+
+    public void actualizarDatosUsuario(Long idUsuario, String nuevaContrasenia, String repetirContrasenia, String nuevaUrlFoto, String contraseniaActual);
+
+    public void darDeBajaUsuario(Long idUsuario);
+
+    public void solicitarRecuperarContrasenia(String correoUsuario);
+
+    public void confirmarRecuperacionContrasenia(String idEncriptado, RecuperarContraseniaDTO recuperarContraseniaDTO);
+
+    public List<UsuarioResponseDTO> buscarUsuariosActivos();
+
+    public List<UsuarioResponseDTO> buscarUsuariosActivosPorRol(String nombreRol);
+
+    public void modificarRolUsuario(Long idUsuario, Long idRol);
+
+    public UsuarioResponseDTO visualizarDetalleUsuario(Long idUsuario);
+
+    public void confirmarTokenCandidato(String token);
+
+    public Usuario obtenerUsuarioAutenticado();
+    
+    public String login(LoginRequestDTO loginRequestDTO);
+}
+

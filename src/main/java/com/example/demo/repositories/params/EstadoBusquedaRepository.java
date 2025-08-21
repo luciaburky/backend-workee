@@ -18,5 +18,7 @@ public interface EstadoBusquedaRepository extends BaseRepository<EstadoBusqueda,
     List<EstadoBusqueda> buscarEstadosBusquedaActivos();
     
     Optional<EstadoBusqueda> findByNombreEstadoBusquedaIgnoreCase(String nombreEstadoBusqueda);
+
+    boolean existsByCodigoEstadoBusqueda(String codigoEstado);
    
 }

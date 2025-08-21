@@ -32,7 +32,7 @@ public class Empresa extends Base{
     private String nombreEmpresa;
 
     @NotNull
-    @Column(name = "descripcion_empresa")
+    @Column(name = "descripcion_empresa", columnDefinition = "TEXT")
     private String descripcionEmpresa;
 
     @NotNull
@@ -40,8 +40,8 @@ public class Empresa extends Base{
     private String numeroIdentificacionFiscal;
 
     @NotNull
-    @Column(name = "telefono_empresa")
-    private Integer telefonoEmpresa;
+    @Column(name = "telefono_empresa", length = 20)
+    private String telefonoEmpresa;
 
     @NotNull
     @Column(name = "direccion_empresa")

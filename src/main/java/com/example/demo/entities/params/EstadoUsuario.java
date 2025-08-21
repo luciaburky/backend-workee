@@ -22,8 +22,10 @@ import lombok.Setter;
 @Setter
 public class EstadoUsuario extends Base {
     @NotNull
-    @Column(name = "nombre_estado_usuario")
+    @Column(name = "nombre_estado_usuario", unique = true)
     private String nombreEstadoUsuario;
  
+    @Column(name = "codigo_estado_usuario", unique = true)
+    private String codigoEstadoUsuario;
    
 }

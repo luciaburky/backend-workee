@@ -24,7 +24,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UsuarioEstadoUsuario extends Base{
     
-    @ManyToOne()
+    @ManyToOne() 
     @JoinColumn(name = "id_estado_usuario")
     @NotNull
     private EstadoUsuario estadoUsuario;

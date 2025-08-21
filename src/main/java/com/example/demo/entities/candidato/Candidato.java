@@ -71,7 +71,7 @@ public class Candidato extends Base {
     @JoinColumn(name = "id_cv", nullable = true)
     private CandidatoCV candidatoCV;
 
-    @OneToOne()
+    @OneToOne() 
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 }
