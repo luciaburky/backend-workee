@@ -29,7 +29,7 @@ public class NombreEntidadResolverServiceImpl implements NombreEntidadResolverSe
         Optional<Candidato> candidatoOptional = candidatoRepository.findByUsuarioId(idUsuario);
         if(candidatoOptional.isPresent()){
             Candidato candidato = candidatoOptional.get();
-            nombreEntidad = candidato.getNombreCandidato() + ",  " + candidato.getApellidoCandidato();
+            nombreEntidad = candidato.getNombreCandidato() + " " + candidato.getApellidoCandidato();
             return nombreEntidad;
 
         }
@@ -37,7 +37,7 @@ public class NombreEntidadResolverServiceImpl implements NombreEntidadResolverSe
         Optional<EmpleadoEmpresa> empleadoEmpresaOptional = empleadoEmpresaRepository.findByUsuarioId(idUsuario);
         if(empleadoEmpresaOptional.isPresent()){
             EmpleadoEmpresa empleadoEmpresa = empleadoEmpresaOptional.get();
-            nombreEntidad = empleadoEmpresa.getNombreEmpleadoEmpresa() + " " + empleadoEmpresa.getApellidoEmpleadoEmpresa() + ", de " + empleadoEmpresa.getEmpresa().getNombreEmpresa();
+            nombreEntidad = empleadoEmpresa.getNombreEmpleadoEmpresa() + " " + empleadoEmpresa.getApellidoEmpleadoEmpresa() + " - " + empleadoEmpresa.getEmpresa().getNombreEmpresa();
             return nombreEntidad;
 
         }
