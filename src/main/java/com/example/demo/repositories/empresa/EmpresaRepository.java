@@ -50,7 +50,7 @@ public interface EmpresaRepository extends BaseRepository<Empresa, Long>  {
 
     @Query(
         """
-           SELECT new com.example.demo.dtos.EmpresaPendienteHabilitacionDTO(e.id, e.nombreEmpresa, u.urlFotoUsuario, u.correoUsuario, u.fechaHoraAlta)
+           SELECT new com.example.demo.dtos.EmpresaPendienteHabilitacionDTO(e.id, e.nombreEmpresa, u.urlFotoUsuario, u.correoUsuario, u.fechaHoraAlta, e.rubro)
             FROM Empresa e
             JOIN e.usuario u
             JOIN u.usuarioEstadoList ue

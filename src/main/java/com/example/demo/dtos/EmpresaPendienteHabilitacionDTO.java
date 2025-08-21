@@ -2,6 +2,8 @@ package com.example.demo.dtos;
 
 import java.util.Date;
 
+import com.example.demo.entities.params.Rubro;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,4 +17,5 @@ public class EmpresaPendienteHabilitacionDTO {
     private String logoEmpresa;
     private String correoEmpresa;
     private Date fechaHoraRegistroEmpresa;
+    private Rubro rubro;
 }
