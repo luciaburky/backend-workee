@@ -1,5 +1,17 @@
-{"properties": [{
-  "name": "jwt.secret",
-  "type": "java.lang.String",
-  "description": "A description for 'jwt.secret'"
-}]}
+{"properties": [
+  {
+    "name": "jwt.secret",
+    "type": "java.lang.String",
+    "description": "A description for 'jwt.secret'"
+  },
+  {
+    "name": "backup.mysql.database",
+    "type": "java.lang.String",
+    "description": "A description for 'backup.mysql.database'"
+  },
+  {
+    "name": "backup.folder.path.win",
+    "type": "java.lang.String",
+    "description": "A description for 'backup.folder.path'"
+  }
+]}
