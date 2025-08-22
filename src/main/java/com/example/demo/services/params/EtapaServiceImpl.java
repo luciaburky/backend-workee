@@ -1,5 +1,6 @@
 package com.example.demo.services.params;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -7,11 +8,13 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.params.EtapaRequestDTO;
+import com.example.demo.entities.empresa.Empresa;
 import com.example.demo.entities.params.Etapa;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
 import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.repositories.params.EtapaRepository;
 import com.example.demo.services.BaseServiceImpl;
+import com.example.demo.services.empresa.EmpresaService;
 
 import jakarta.transaction.Transactional;
 
@@ -19,15 +22,17 @@ import jakarta.transaction.Transactional;
 public class EtapaServiceImpl extends BaseServiceImpl<Etapa, Long> implements EtapaService {
 
     private final EtapaRepository etapaRepository;
+    private final EmpresaService empresaService;
 
-    public EtapaServiceImpl(EtapaRepository etapaRepository) {
+    public EtapaServiceImpl(EtapaRepository etapaRepository, EmpresaService empresaService) {
         super(etapaRepository);
         this.etapaRepository = etapaRepository;
+        this.empresaService = empresaService;
     }
 
     @Override
     @Transactional
-    public Etapa guardarEtapa(EtapaRequestDTO etapaDTO) {
+    public Etapa crearPredeterminada(EtapaRequestDTO etapaDTO) {
         if (yaExisteEtapa(etapaDTO.getNombreEtapa(), null)) {
             throw new EntityAlreadyExistsException("Ya existe una etapa con ese nombre");
         }
@@ -35,6 +40,28 @@ public class EtapaServiceImpl extends BaseServiceImpl<Etapa, Long> implements Et
         Etapa nuevaEtapa = new Etapa();
         nuevaEtapa.setNombreEtapa(etapaDTO.getNombreEtapa());
         nuevaEtapa.setDescripcionEtapa(etapaDTO.getDescripcionEtapa());
+        nuevaEtapa.setEsPredeterminada(true);
+        nuevaEtapa.setEmpresa(null);
+        nuevaEtapa.setFechaHoraAlta(new Date());
+
+        return etapaRepository.save(nuevaEtapa);
+    }
+
+    @Override
+    @Transactional
+    public Etapa crearPropia(Long empresaId, EtapaRequestDTO etapaDTO) {
+        //cambiar para que verifique solo en las propias 
+        boolean existeNombre = etapaRepository.existsByNombreEtapaIgnoreCaseAndEmpresaIdAndEsPredeterminadaFalse(etapaDTO.getNombreEtapa().trim(), empresaId);
+        if (existeNombre) {
+            throw new EntityAlreadyExistsException("Ya existe una etapa con ese nombre");
+        }
+
+        Empresa empresa = empresaService.findById(empresaId);
+        Etapa nuevaEtapa = new Etapa();
+        nuevaEtapa.setNombreEtapa(etapaDTO.getNombreEtapa());
+        nuevaEtapa.setDescripcionEtapa(etapaDTO.getDescripcionEtapa());
+        nuevaEtapa.setEsPredeterminada(false);
+        nuevaEtapa.setEmpresa(empresa);
         nuevaEtapa.setFechaHoraAlta(new Date());
 
         return etapaRepository.save(nuevaEtapa);
@@ -97,4 +124,46 @@ public class EtapaServiceImpl extends BaseServiceImpl<Etapa, Long> implements Et
         .filter(e -> idAExcluir == null || !e.getId().equals(idAExcluir))
         .isPresent();
     }
+
+    @Override
+    @Transactional
+    public List<Etapa> findAllByIdIn(Collection<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            throw new IllegalArgumentException("La colección de IDs no puede ser nula o vacía");
+        }
+        return etapaRepository.findAllByIdIn(ids);
+    }
+
+    @Override
+    @Transactional
+    public List<Etapa> findDisponiblesParaEmpresa(Long empresaId) {
+        if (empresaId == null) {
+            throw new IllegalArgumentException("El ID de la empresa no puede ser nulo");
+        }
+        return etapaRepository.findDisponiblesParaEmpresa(empresaId);
+    }
+
+    //TODO
+    @Override
+    @Transactional
+    public void deshabilitarEtapa(Long idEtapa){
+        return;
+    }
+
+    /* TODO
+    @Override
+    @Transactional
+    public void eliminarEtapaPropia(Long idEtapa){
+        Optional<Etapa> etapa = etapaRepository.findById(idEtapa);
+
+        if(etapa.getEsPredeterminada().equals(true)){
+            throw new IllegalStateException("No se puede eliminar una etapa predeterminada");
+        }
+
+        boolean enUso = ofertaEtapa
+    }
+        */
+
+        //TODO
+
 }

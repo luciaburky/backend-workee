@@ -11,11 +11,13 @@ import com.example.demo.dtos.params.EstadoOfertaRequestDTO;
 import com.example.demo.entities.params.EstadoOferta;
 import com.example.demo.exceptions.EntityAlreadyEnabledException;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
+import com.example.demo.exceptions.EntityNotFoundException;
 import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.repositories.params.EstadoOfertaRepository;
 import com.example.demo.services.BaseServiceImpl;
 
 import jakarta.transaction.Transactional;
+import kotlin.OverloadResolutionByLambdaReturnType;
 
 @Service
 public class EstadoOfertaServiceImpl extends BaseServiceImpl<EstadoOferta, Long> implements EstadoOfertaService {
@@ -88,5 +90,15 @@ public class EstadoOfertaServiceImpl extends BaseServiceImpl<EstadoOferta, Long>
         return estadoOfertaExistente
         .filter(e -> idAExcluir == null || !e.getId().equals(idAExcluir))
         .isPresent();    
+    }
+
+    @Override
+    @Transactional
+    public EstadoOferta findByCodigo(String codigo) {
+        Optional<EstadoOferta> estadoOfertaOpt = estadoOfertaRepository.findByCodigo(codigo);
+        if (estadoOfertaOpt.isEmpty()) {
+            throw new EntityNotFoundException("No existe un estado de oferta con el código: " + codigo);
+        }
+        return estadoOfertaOpt.get();
     }
 }
