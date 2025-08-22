@@ -13,4 +13,5 @@ public class UsuarioResponseDTO {
     private String correoUsuario;
     private String rolActualusuario;
     private String nombreEntidad;
+    private Long idCategoria;
 }

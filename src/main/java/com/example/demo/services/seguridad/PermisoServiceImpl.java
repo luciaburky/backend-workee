@@ -21,4 +21,10 @@ public class PermisoServiceImpl extends BaseServiceImpl<Permiso, Long> implement
     public List<Permiso> obtenerPermisosDeUnaCategoria(Long idCategoria){
         return permisoRepository.buscarPermisosPorCategoria(idCategoria);
     }
+
+    @Override
+    public List<Permiso> obtenerPermisosDeUnRol(Long idRol){
+        return permisoRepository.buscarPermisosPorRol(idRol);
+    }
+
 }

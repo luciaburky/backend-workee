@@ -26,7 +26,7 @@ public interface UsuarioRolRepository extends BaseRepository<UsuarioRol, Long> {
 
     @Query(
         """
-             SELECT new com.example.demo.dtos.UsuarioResponseDTO(ur.usuario.id, ur.usuario.urlFotoUsuario, ur.usuario.correoUsuario, ur.rol.nombreRol, null)  
+             SELECT new com.example.demo.dtos.UsuarioResponseDTO(ur.usuario.id, ur.usuario.urlFotoUsuario, ur.usuario.correoUsuario, ur.rol.nombreRol, null, ur.rol.categoriaRol.id)  
              FROM UsuarioRol ur
              WHERE ur.usuario.fechaHoraBaja IS NULL
              AND ur.fechaHoraBaja IS NULL
@@ -36,11 +36,11 @@ public interface UsuarioRolRepository extends BaseRepository<UsuarioRol, Long> {
 
     @Query(
         """
-             SELECT new com.example.demo.dtos.UsuarioResponseDTO(ur.usuario.id, ur.usuario.urlFotoUsuario, ur.usuario.correoUsuario, ur.rol.nombreRol, null)  
+             SELECT new com.example.demo.dtos.UsuarioResponseDTO(ur.usuario.id, ur.usuario.urlFotoUsuario, ur.usuario.correoUsuario, ur.rol.nombreRol, null, ur.rol.categoriaRol.id)  
              FROM UsuarioRol ur
              WHERE ur.usuario.fechaHoraBaja IS NULL
              AND ur.fechaHoraBaja IS NULL
-             AND ur.rol.nombreRol LIKE :nombreRol
+             AND LOWER(ur.rol.nombreRol) LIKE CONCAT('%', LOWER(:nombreRol), '%')
         """
     )
     public List<UsuarioResponseDTO> buscarUsuariosActivosPorRol(String nombreRol);
