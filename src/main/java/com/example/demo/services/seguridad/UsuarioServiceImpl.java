@@ -338,6 +338,7 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
 
         if(usuarioRolOptional.isPresent()){
             UsuarioRol usuarioRol = usuarioRolOptional.get();
+            usuarioResponseDTO.setIdCategoria(usuarioRol.getRol().getCategoriaRol().getId());
             usuarioResponseDTO.setRolActualusuario(usuarioRol.getRol().getNombreRol());
         }
 
