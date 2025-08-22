@@ -26,11 +26,12 @@ public interface EtapaService extends BaseService<Etapa, Long> {
     List<Etapa> obtenerEtapasActivos();
 
     List<Etapa> findAllByIdIn(Collection<Long> ids);
+    
+    List<Etapa> findDisponiblesParaEmpresa(Long empresaId);
+
 
     //TODO 
     /* 
-    List<Etapa> findDisponiblesParaEmpresa(Long empresaId);
-
     List<Etapa> findAllByIdIn(Collection<Long> ids); //para OfertaEtapa
 
     void eliminarEtapaPropia(Long idEtapa);

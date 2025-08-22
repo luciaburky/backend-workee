@@ -134,6 +134,15 @@ public class EtapaServiceImpl extends BaseServiceImpl<Etapa, Long> implements Et
         return etapaRepository.findAllByIdIn(ids);
     }
 
+    @Override
+    @Transactional
+    public List<Etapa> findDisponiblesParaEmpresa(Long empresaId) {
+        if (empresaId == null) {
+            throw new IllegalArgumentException("El ID de la empresa no puede ser nulo");
+        }
+        return etapaRepository.findDisponiblesParaEmpresa(empresaId);
+    }
+
     //TODO
     @Override
     @Transactional
