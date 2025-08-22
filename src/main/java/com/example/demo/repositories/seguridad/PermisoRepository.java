@@ -19,4 +19,12 @@ public interface PermisoRepository extends BaseRepository<Permiso, Long> {
         nativeQuery = true
     )
     List<Permiso> buscarPermisosPorCategoria(@Param("idCategoriaRol") Long idCategoriaRol);
+
+    @Query(
+        value = "SELECT p.* FROM permiso p " + 
+            "INNER JOIN permiso_rol pr ON p.id = pr.id_permiso " + 
+            "WHERE pr.id_rol = :idRol",
+        nativeQuery = true
+    )
+    List<Permiso> buscarPermisosPorRol(@Param("idRol") Long idRol);
 }
