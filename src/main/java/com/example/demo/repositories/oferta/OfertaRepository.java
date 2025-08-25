@@ -26,5 +26,7 @@ public interface OfertaRepository extends BaseRepository<Oferta, Long> {
 
     List<Oferta> findAllByEmpresa_IdAndFechaHoraBajaIsNull(Long empresaId);
 
+    
+
 }
 

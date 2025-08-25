@@ -1,6 +1,5 @@
 package com.example.demo.entities.oferta;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -74,15 +73,15 @@ public class Oferta extends Base {
     
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "id_oferta", nullable = false)
-    private List<OfertaHabilidad> habilidades = new ArrayList<>();
+    private List<OfertaHabilidad> habilidades;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "id_oferta", nullable = false)
-    private List<OfertaEstadoOferta> estadosOferta = new ArrayList<>();
+    private List<OfertaEstadoOferta> estadosOferta;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "id_oferta", nullable = false)
-    private List<OfertaEtapa> ofertaEtapas = new ArrayList<>();
+    private List<OfertaEtapa> ofertaEtapas;
 
     //NOTA: Fecha de publicacion de la oferta = fecha de alta
 }
