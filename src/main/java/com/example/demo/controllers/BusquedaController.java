@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dtos.FiltrosCandidatoRequestDTO;
 import com.example.demo.dtos.FiltrosEmpresaRequestDTO;
+import com.example.demo.dtos.ResultadoBusquedaEmpresaDTO;
 import com.example.demo.dtos.UbicacionDTO;
 import com.example.demo.entities.candidato.Candidato;
-import com.example.demo.entities.empresa.Empresa;
 import com.example.demo.services.candidato.CandidatoService;
 import com.example.demo.services.empresa.EmpresaService;
 import com.example.demo.services.params.ProvinciaService;
@@ -41,7 +41,7 @@ public class BusquedaController {
     @Operation(summary = "Trae empresas según los filtros aplicados")
     @PostMapping("/empresasFiltradas")
     public ResponseEntity<?> filtrarEmpresas(@RequestBody FiltrosEmpresaRequestDTO filtrosEmpresaRequestDTO){
-        List<Empresa> empresas = empresaService.buscarEmpresasConFiltros(filtrosEmpresaRequestDTO);
+        List<ResultadoBusquedaEmpresaDTO> empresas = empresaService.buscarEmpresasConFiltros(filtrosEmpresaRequestDTO);
 
         return ResponseEntity.status(HttpStatus.OK).body(empresas);
     }
@@ -57,7 +57,7 @@ public class BusquedaController {
     @Operation(summary = "Busca empresas según el nombre ingresado")
     @GetMapping("/empresasPorNombre")
     public ResponseEntity<?> buscarEmpresasPorNombre(@RequestParam String nombreEmpresa){
-        List<Empresa> empresas = empresaService.buscarEmpresasPorNombre(nombreEmpresa);
+        List<ResultadoBusquedaEmpresaDTO> empresas = empresaService.buscarEmpresasPorNombre(nombreEmpresa);
         return ResponseEntity.status(HttpStatus.OK).body(empresas);
     }
 

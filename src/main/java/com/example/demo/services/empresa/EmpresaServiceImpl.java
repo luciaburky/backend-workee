@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.EmpresaRequestDTO;
 import com.example.demo.dtos.FiltrosEmpresaRequestDTO;
+import com.example.demo.dtos.ResultadoBusquedaEmpresaDTO;
 import com.example.demo.entities.empresa.Empresa;
 import com.example.demo.entities.params.Rubro;
 import com.example.demo.mappers.EmpresaMapper;
@@ -48,12 +49,12 @@ public class EmpresaServiceImpl extends BaseServiceImpl<Empresa, Long> implement
     }
 
     @Override
-    public List<Empresa> buscarEmpresasConFiltros(FiltrosEmpresaRequestDTO filtrosEmpresaRequestDTO){
-        return empresaRepository.buscarEmpresasConFiltros(filtrosEmpresaRequestDTO.getIdsRubros(), filtrosEmpresaRequestDTO.getIdsProvincias(), filtrosEmpresaRequestDTO.getNombreEmpresa());
+    public List<ResultadoBusquedaEmpresaDTO> buscarEmpresasConFiltros(FiltrosEmpresaRequestDTO filtrosEmpresaRequestDTO){
+        return empresaRepository.buscarEmpresasConFiltros(filtrosEmpresaRequestDTO.getIdsRubros(), filtrosEmpresaRequestDTO.getIdsProvincias(), filtrosEmpresaRequestDTO.getNombreEmpresa(), filtrosEmpresaRequestDTO.getTieneOfertasAbiertas());
     }
 
     @Override
-    public List<Empresa> buscarEmpresasPorNombre(String nombreEmpresa){
+    public List<ResultadoBusquedaEmpresaDTO> buscarEmpresasPorNombre(String nombreEmpresa){
         if(nombreEmpresa.isBlank() || nombreEmpresa == null){
             throw new IllegalArgumentException("El nombre de la empresa no puede estar vacío");
         }
