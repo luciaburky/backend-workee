@@ -27,4 +27,14 @@ public class PermisoServiceImpl extends BaseServiceImpl<Permiso, Long> implement
         return permisoRepository.buscarPermisosPorRol(idRol);
     }
 
+    @Override
+    public List<Permiso> obtenerPermisosActivos(){
+        return permisoRepository.buscarPermisosActivos();
+    }
+
+    @Override
+    public List<Permiso> obtenerPermisos(){
+        return permisoRepository.findByFechaHoraBajaIsNull();
+    }
+
 }

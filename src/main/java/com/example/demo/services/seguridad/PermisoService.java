@@ -9,4 +9,8 @@ public interface PermisoService extends BaseService<Permiso, Long>{
     public List<Permiso> obtenerPermisosDeUnaCategoria(Long idCategoria);
 
     public List<Permiso> obtenerPermisosDeUnRol(Long idRol);
+
+    public List<Permiso> obtenerPermisosActivos();
+
+    public List<Permiso> obtenerPermisos();
 }
