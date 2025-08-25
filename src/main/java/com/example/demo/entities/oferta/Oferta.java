@@ -84,4 +84,5 @@ public class Oferta extends Base {
     @JoinColumn(name = "id_oferta", nullable = false)
     private List<OfertaEtapa> ofertaEtapas = new ArrayList<>();
 
+    //NOTA: Fecha de publicacion de la oferta = fecha de alta
 }

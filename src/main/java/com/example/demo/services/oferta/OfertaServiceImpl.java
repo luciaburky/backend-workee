@@ -199,5 +199,13 @@ public class OfertaServiceImpl extends BaseServiceImpl<Oferta, Long> implements 
         return ofertaRepository.save(oferta);
     }
 
+    @Override
+    @Transactional
+    public List<Oferta> findAllByEmpresaId(Long empresaId) {
+        if (empresaId == null) {
+            throw new IllegalArgumentException("El ID de la empresa no puede ser nulo");
+        }
+        return ofertaRepository.findAllByEmpresa_IdAndFechaHoraBajaIsNull(empresaId);
+    }
     
 }

@@ -13,6 +13,9 @@ import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,6 +60,13 @@ public class OfertaController {
     public ResponseEntity<Oferta> marcarResultadoFinal(@PathVariable("id") Long id, @RequestBody boolean conExito) {
         Oferta ofertaActualizada = ofertaService.marcarResultadoFinal(id, conExito);
         return ResponseEntity.ok(ofertaActualizada);
+    }
+
+    @Operation(summary = "Obtener todas las Ofertas de una Empresa")
+    @GetMapping("/empresa/{empresaId}")
+    public ResponseEntity<List<Oferta>> getOfertasByEmpresaId(@PathVariable("empresaId") Long empresaId) {
+        List<Oferta> ofertas = ofertaService.findAllByEmpresaId(empresaId);
+        return ResponseEntity.ok().body(ofertas);
     }
     
 }
