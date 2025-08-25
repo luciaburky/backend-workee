@@ -17,7 +17,6 @@ import com.example.demo.repositories.params.EstadoOfertaRepository;
 import com.example.demo.services.BaseServiceImpl;
 
 import jakarta.transaction.Transactional;
-import kotlin.OverloadResolutionByLambdaReturnType;
 
 @Service
 public class EstadoOfertaServiceImpl extends BaseServiceImpl<EstadoOferta, Long> implements EstadoOfertaService {

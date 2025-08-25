@@ -1,6 +1,5 @@
 package com.example.demo.services.params;
 
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.params.HabilidadRequestDTO;
@@ -17,10 +16,8 @@ import com.example.demo.services.BaseServiceImpl;
 
 import jakarta.transaction.Transactional;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;

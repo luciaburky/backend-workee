@@ -3,7 +3,6 @@ package com.example.demo.entities.oferta;
 import com.example.demo.entities.Base;
 import com.example.demo.entities.params.Habilidad;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
