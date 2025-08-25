@@ -22,7 +22,7 @@ public interface UsuarioService extends BaseService<Usuario, Long>{
 
     public List<UsuarioResponseDTO> buscarUsuariosActivos();
 
-    public List<UsuarioResponseDTO> buscarUsuariosActivosPorRol(String nombreRol);
+    public List<UsuarioResponseDTO> buscarUsuariosActivosPorRol(List<Long> idsRol);
 
     public void modificarRolUsuario(Long idUsuario, Long idRol);
 

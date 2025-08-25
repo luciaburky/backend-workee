@@ -263,8 +263,12 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
     }
 
     @Override
-    public List<UsuarioResponseDTO> buscarUsuariosActivosPorRol(String nombreRol){
-        return usuarioRolRepository.buscarUsuariosActivosPorRol(nombreRol);
+    public List<UsuarioResponseDTO> buscarUsuariosActivosPorRol(List<Long> idsRol){
+        System.out.println("entre al service");
+        if(idsRol == null || idsRol.isEmpty()){
+            throw new EntityNotValidException("La lista de ids de rol no puede estar vacía");
+        }
+        return usuarioRolRepository.buscarUsuariosActivosPorRol(idsRol);
     }
 
     @Override

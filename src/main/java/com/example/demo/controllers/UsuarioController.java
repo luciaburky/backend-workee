@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dtos.FiltrosUsuariosRequestDTO;
 import com.example.demo.dtos.UsuarioResponseDTO;
 import com.example.demo.entities.seguridad.Usuario;
 import com.example.demo.services.BajaOrquestadorService;
@@ -23,6 +24,7 @@ import com.example.demo.services.seguridad.UsuarioService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path ="/usuarios")
@@ -54,10 +56,11 @@ public class UsuarioController {
     }
 
     @Operation(summary = "Trae a todos los usuarios que se encuentran activos según el rol ingresado")
-    @GetMapping("/porRol/{nombreRol}")
+    @PutMapping("/porRol")
     @PreAuthorize("hasAuthority('VER_USUARIOS')") 
-    public ResponseEntity<?> buscarUsuariosActivosPorRol(@PathVariable String nombreRol){
-        List<UsuarioResponseDTO> usuarios = usuarioService.buscarUsuariosActivosPorRol(nombreRol);
+    public ResponseEntity<?> buscarUsuariosActivosPorRol(@Valid @RequestBody FiltrosUsuariosRequestDTO filtroUsuario){
+        System.out.println("entreee");
+        List<UsuarioResponseDTO> usuarios = usuarioService.buscarUsuariosActivosPorRol(filtroUsuario.getIdsRol());
         return ResponseEntity.status(HttpStatus.OK).body(usuarios);
     }
 

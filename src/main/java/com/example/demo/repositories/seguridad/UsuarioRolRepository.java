@@ -40,10 +40,10 @@ public interface UsuarioRolRepository extends BaseRepository<UsuarioRol, Long> {
              FROM UsuarioRol ur
              WHERE ur.usuario.fechaHoraBaja IS NULL
              AND ur.fechaHoraBaja IS NULL
-             AND LOWER(ur.rol.nombreRol) LIKE CONCAT('%', LOWER(:nombreRol), '%')
+             AND ur.rol.id IN :idsRol
         """
     )
-    public List<UsuarioResponseDTO> buscarUsuariosActivosPorRol(String nombreRol);
+    public List<UsuarioResponseDTO> buscarUsuariosActivosPorRol(List<Long> idsRol);
 
 
     @Query(
