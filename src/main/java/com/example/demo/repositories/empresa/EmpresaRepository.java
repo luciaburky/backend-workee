@@ -16,7 +16,9 @@ public interface EmpresaRepository extends BaseRepository<Empresa, Long>  {
         """ 
             SELECT new com.example.demo.dtos.ResultadoBusquedaEmpresaDTO(
                 e, 
-                COUNT(DISTINCT o.id)
+                COUNT(DISTINCT CASE 
+                    WHEN (oeo.fechaHoraBaja IS NULL AND eo.codigo = 'ABIERTA') THEN o.id 
+                END)
             )
             FROM Empresa e
             LEFT JOIN Oferta o ON o.empresa.id = e.id 
@@ -26,8 +28,6 @@ public interface EmpresaRepository extends BaseRepository<Empresa, Long>  {
             AND (:idsRubros IS NULL OR e.rubro.id IN :idsRubros)
             AND (:idsProvincias IS NULL OR e.provincia.id IN :idsProvincias)
             AND e.fechaHoraBaja IS NULL  
-            AND o.fechaFinalizacion IS NULL
-            AND o.fechaHoraBaja IS NULL
             AND (
                 :tieneOfertasAbiertas IS NULL
                 OR (
@@ -58,14 +58,17 @@ public interface EmpresaRepository extends BaseRepository<Empresa, Long>  {
         """
             SELECT new com.example.demo.dtos.ResultadoBusquedaEmpresaDTO(
                     e, 
-                    COUNT(DISTINCT o.id)
+                    COUNT(DISTINCT CASE 
+                        WHEN (oeo.fechaHoraBaja IS NULL AND eo.codigo = 'ABIERTA') THEN o.id 
+                    END)
                 )
             FROM Empresa e
             LEFT JOIN Oferta o ON o.empresa.id = e.id 
             LEFT JOIN o.estadosOferta oeo
             LEFT JOIN oeo.estadoOferta eo 
-            WHERE (LOWER(e.nombre_empresa) LIKE LOWER(CONCAT('%', :nombreEmpresa, '%')) ) 
-            AND e.fecha_hora_baja IS NULL
+            WHERE (LOWER(e.nombreEmpresa) LIKE LOWER(CONCAT('%', :nombreEmpresa, '%')) ) 
+            AND e.fechaHoraBaja IS NULL
+            GROUP BY e
         """
     )
     public List<ResultadoBusquedaEmpresaDTO> buscarEmpresasPorNombre(@Param("nombreEmpresa") String nombreEmpresa);     
