@@ -50,9 +50,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
-        } else {
+        } /*else {
             throw new EntityNotValidException("El token no es valido");
-        }
+        }*/
 
         filterChain.doFilter(request, response);
     }
