@@ -26,6 +26,8 @@ public interface EmpresaRepository extends BaseRepository<Empresa, Long>  {
             AND (:idsRubros IS NULL OR e.rubro.id IN :idsRubros)
             AND (:idsProvincias IS NULL OR e.provincia.id IN :idsProvincias)
             AND e.fechaHoraBaja IS NULL  
+            AND o.fechaFinalizacion IS NULL
+            AND o.fechaHoraBaja IS NULL
             AND (
                 :tieneOfertasAbiertas IS NULL
                 OR (
