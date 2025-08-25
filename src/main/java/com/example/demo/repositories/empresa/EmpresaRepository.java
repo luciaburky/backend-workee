@@ -31,7 +31,7 @@ public interface EmpresaRepository extends BaseRepository<Empresa, Long>  {
             AND (
                 :tieneOfertasAbiertas IS NULL
                 OR (
-                    :tieneOfertasAbiertas = TRUE  AND EXISTS (
+                    :tieneOfertasAbiertas = TRUE AND EXISTS (
                         SELECT 1 FROM Oferta o2 
                         JOIN o2.estadosOferta oeo2 
                         JOIN oeo2.estadoOferta eo2
