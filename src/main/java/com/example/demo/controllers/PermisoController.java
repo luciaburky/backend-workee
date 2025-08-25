@@ -41,4 +41,22 @@ public class PermisoController {
         List<Permiso> permisos = permisoService.obtenerPermisosDeUnRol(idRol);
         return ResponseEntity.status(HttpStatus.OK).body(permisos);
     }
+
+    @Operation(summary = "Obtiene todos los permisos")
+    @GetMapping("")
+    @PreAuthorize("hasAuthority('VER_PERMISOS')") 
+    public ResponseEntity<?> obtenerTodosLosPermisos() {
+        List<Permiso> permisos = permisoService.obtenerPermisos();
+        return ResponseEntity.status(HttpStatus.OK).body(permisos);
+
+    }
+
+    @Operation(summary = "Obtiene todos los permisos ACTIVOS")
+    @GetMapping("/activos")
+    @PreAuthorize("hasAuthority('VER_PERMISOS')") 
+    public ResponseEntity<?> obtenerTodosLosPermisosActivos() {
+        List<Permiso> permisos = permisoService.obtenerPermisosActivos();
+        return ResponseEntity.status(HttpStatus.OK).body(permisos);
+
+    }
 }
