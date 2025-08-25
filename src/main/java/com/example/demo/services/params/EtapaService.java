@@ -3,6 +3,8 @@ package com.example.demo.services.params;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.data.repository.query.Param;
+
 import com.example.demo.dtos.params.EtapaRequestDTO;
 import com.example.demo.entities.params.Etapa;
 import com.example.demo.services.BaseService;
@@ -29,12 +31,7 @@ public interface EtapaService extends BaseService<Etapa, Long> {
     
     List<Etapa> findDisponiblesParaEmpresa(Long empresaId);
 
+    void eliminarEtapaPropia(Long idEtapa, Long empresaId);
 
-    //TODO 
-    /* 
-    List<Etapa> findAllByIdIn(Collection<Long> ids); //para OfertaEtapa
 
-    void eliminarEtapaPropia(Long idEtapa);
-    
-    */
 }

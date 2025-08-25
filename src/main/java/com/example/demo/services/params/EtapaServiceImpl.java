@@ -9,9 +9,12 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.params.EtapaRequestDTO;
 import com.example.demo.entities.empresa.Empresa;
+import com.example.demo.entities.oferta.CodigoEstadoOferta;
 import com.example.demo.entities.params.Etapa;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
+import com.example.demo.exceptions.EntityNotFoundException;
 import com.example.demo.exceptions.EntityNotValidException;
+import com.example.demo.repositories.oferta.OfertaRepository;
 import com.example.demo.repositories.params.EtapaRepository;
 import com.example.demo.services.BaseServiceImpl;
 import com.example.demo.services.empresa.EmpresaService;
@@ -23,11 +26,13 @@ public class EtapaServiceImpl extends BaseServiceImpl<Etapa, Long> implements Et
 
     private final EtapaRepository etapaRepository;
     private final EmpresaService empresaService;
+    private final OfertaRepository ofertaRepository;
 
-    public EtapaServiceImpl(EtapaRepository etapaRepository, EmpresaService empresaService) {
+    public EtapaServiceImpl(EtapaRepository etapaRepository, EmpresaService empresaService, OfertaRepository ofertaRepository) {
         super(etapaRepository);
         this.etapaRepository = etapaRepository;
         this.empresaService = empresaService;
+        this.ofertaRepository = ofertaRepository;
     }
 
     @Override
@@ -143,27 +148,45 @@ public class EtapaServiceImpl extends BaseServiceImpl<Etapa, Long> implements Et
         return etapaRepository.findDisponiblesParaEmpresa(empresaId);
     }
 
-    //TODO
+    //ADMIN: puede deshabilitar cualquier etapa que no esté en uso
     @Override
     @Transactional
     public void deshabilitarEtapa(Long idEtapa){
-        return;
-    }
+        if (idEtapa == null) {
+            throw new EntityNotValidException("El ID de la etapa no puede ser nulo");
+        }
+       
+        Etapa etapa = this.findById(idEtapa);
+        
+        boolean estaEnUso = ofertaRepository.existsOfertaNoFinalizadaQueUsaEtapa(idEtapa, CodigoEstadoOferta.FINALIZADA);
+        
+        if (estaEnUso) {
+            throw new EntityNotValidException("La etapa no puede ser deshabilitada porque está en uso por una oferta activa");
+        } 
 
-    /* TODO
+        if (etapa.getFechaHoraBaja() == null) {
+            etapa.setFechaHoraBaja(new Date());
+            etapaRepository.save(etapa);
+        }
+
+    }
+    // EMPRESA: solo puede eliminar sus etapas propias, no las predeterminadas.    
     @Override
     @Transactional
-    public void eliminarEtapaPropia(Long idEtapa){
-        Optional<Etapa> etapa = etapaRepository.findById(idEtapa);
+    public void eliminarEtapaPropia(Long idEtapa, Long empresaId) {
 
-        if(etapa.getEsPredeterminada().equals(true)){
+        Etapa etapa = etapaRepository.findByIdAndEmpresaIdAndFechaHoraBajaIsNull(idEtapa, empresaId)
+        .orElseThrow(() -> new EntityNotFoundException("No existe la etapa para esa empresa o ya está deshabilitada"));
+
+        if (Boolean.TRUE.equals(etapa.getEsPredeterminada())) {
             throw new IllegalStateException("No se puede eliminar una etapa predeterminada");
         }
 
-        boolean enUso = ofertaEtapa
+        boolean enUso = ofertaRepository.existsOfertaNoFinalizadaQueUsaEtapa(idEtapa, CodigoEstadoOferta.FINALIZADA);
+        if (enUso) throw new IllegalStateException("La etapa está en uso por una oferta activa");
+
+        etapa.setFechaHoraBaja(new Date());
+        etapaRepository.save(etapa);
+
     }
-        */
-
-        //TODO
-
 }

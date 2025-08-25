@@ -42,4 +42,7 @@ public interface EtapaRepository extends BaseRepository<Etapa, Long> {
             """)
     List<Etapa> findPropiasActivas(Long empresaId);
 
+    Optional<Etapa> findByIdAndEmpresaIdAndFechaHoraBajaIsNull(Long idEtapa, Long empresaId);
+
+
 }
