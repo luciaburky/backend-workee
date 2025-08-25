@@ -268,7 +268,13 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
         if(idsRol == null || idsRol.isEmpty()){
             throw new EntityNotValidException("La lista de ids de rol no puede estar vacía");
         }
-        return usuarioRolRepository.buscarUsuariosActivosPorRol(idsRol);
+
+        List<UsuarioResponseDTO> usuarios = usuarioRolRepository.buscarUsuariosActivosPorRol(idsRol);
+        for (UsuarioResponseDTO usuario : usuarios) {
+            String nombreEntidad = nombreEntidadResolverService.obtenerNombreEntidadPorIdUsuario(usuario.getIdUsuario());
+            usuario.setNombreEntidad(nombreEntidad);
+        }
+        return usuarios;
     }
 
     @Override
