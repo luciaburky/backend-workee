@@ -1,5 +1,6 @@
 package com.example.demo.services.params;
 
+import java.text.Normalizer;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -49,7 +50,29 @@ public class EtapaServiceImpl extends BaseServiceImpl<Etapa, Long> implements Et
         nuevaEtapa.setEmpresa(null);
         nuevaEtapa.setFechaHoraAlta(new Date());
 
+        //Generar código para identificarla
+        String codigoEtapa = generarCodigoUnico(etapaDTO.getNombreEtapa());
+        nuevaEtapa.setCodigoEtapa(codigoEtapa);
+        
         return etapaRepository.save(nuevaEtapa);
+    }
+
+    private String generarCodigoUnico(String nombreEtapa){
+        String base = normalizar(nombreEtapa);
+        String codigoEtapa = base;
+        int contador = 1;
+
+        while(etapaRepository.existsByCodigoEtapa(codigoEtapa)){
+            codigoEtapa = base + "_" + contador;
+            contador++;
+        }
+        return codigoEtapa;
+    }
+
+    private String normalizar(String texto){
+        String sinAcentos = Normalizer.normalize(texto, Normalizer.Form.NFD)
+            .replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+        return sinAcentos.trim().toUpperCase().replaceAll("[^A-Z0-9]", "_");
     }
 
     @Override
@@ -188,5 +211,14 @@ public class EtapaServiceImpl extends BaseServiceImpl<Etapa, Long> implements Et
         etapa.setFechaHoraBaja(new Date());
         etapaRepository.save(etapa);
 
+    }
+
+    @Override
+    public Etapa obtenerEtapaPorCodigo(String codigoEtapa){
+        Etapa etapa = etapaRepository.findByCodigoEtapaAndFechaHoraBajaIsNull(codigoEtapa);
+        if(etapa == null){
+            throw new EntityNotFoundException("No se encontró la etapa buscada");
+        }
+        return etapa;
     }
 }

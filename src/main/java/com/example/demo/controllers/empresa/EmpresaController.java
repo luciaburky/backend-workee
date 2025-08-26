@@ -1,4 +1,4 @@
-package com.example.demo.controllers;
+package com.example.demo.controllers.empresa;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

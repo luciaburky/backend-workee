@@ -1,8 +1,11 @@
 package com.example.demo.entities.postulaciones;
 
+import java.util.Date;
+
 import com.example.demo.entities.Base;
 import com.example.demo.entities.params.Etapa;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -25,4 +28,13 @@ public class PostulacionOfertaEtapa extends Base{
     @ManyToOne()
     @JoinColumn(name = "id_etapa")
     private Etapa etapa;
+
+    @Column(name = "respuesta_candidato")
+    private String respuestaCandidato;
+
+    @Column(name = "retroalimentacion_empresa", columnDefinition = "TEXT")
+    private String retroalimentacionEmpresa;
+
+    @Column(name = "fecha_hora_fin_postulacion_oferta_etapa")
+    private Date fechaHoraFinPostulacionOfertaEtapa;
 }

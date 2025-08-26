@@ -1,0 +1,8 @@
+package com.example.demo.entities.params;
+
+public class CodigoEtapa {
+    public static final String PENDIENTE = "PENDIENTE";
+    public static final String RECHAZADO = "RECHAZADO";
+    public static final String SELECCIONADO = "SELECCIONADO";
+    public static final String ENTREVISTA_RRHH = "ENTREVISTA_RRHH";
+}

@@ -44,5 +44,7 @@ public interface EtapaRepository extends BaseRepository<Etapa, Long> {
 
     Optional<Etapa> findByIdAndEmpresaIdAndFechaHoraBajaIsNull(Long idEtapa, Long empresaId);
 
+    boolean existsByCodigoEtapa(String codigoEtapa);
 
+    Etapa findByCodigoEtapaAndFechaHoraBajaIsNull(String codigoEtapa);
 }

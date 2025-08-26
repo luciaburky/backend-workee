@@ -1,4 +1,4 @@
-package com.example.demo.controllers;
+package com.example.demo.controllers.seguridad;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -60,7 +60,6 @@ public class AuthController {
 
     @Operation(summary = "Usuario verifica su cuenta")
     @PutMapping("/confirmarCuenta")
-    @Parameter(name = "token", description = "Token recibido por correo", required = true)
     public ResponseEntity<?> confirmarRecuperacionContrasenia(@RequestBody TokenRequestDTO tokenRequestDTO){
         Map<String, String> response = new HashMap<>();
         response.put("estado", "habilitado");
