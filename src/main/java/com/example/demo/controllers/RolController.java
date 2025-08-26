@@ -78,4 +78,12 @@ public class RolController {
         List<Rol> roles = rolService.obtenerRolesSegunCategoria(idCategoria);
         return ResponseEntity.status(HttpStatus.OK).body(roles);
     }
+
+    @Operation(summary = "Ver detalle de un rol segun su ID")
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('VER_ROLES')")
+    public ResponseEntity<?> visualizarDetalleRol(@PathVariable Long id){
+        Rol rol = rolService.findById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(rol);
+    }
 }
