@@ -3,12 +3,15 @@ package com.example.demo.entities.postulaciones;
 import java.util.List;
 
 import com.example.demo.entities.Base;
+import com.example.demo.entities.candidato.Candidato;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,4 +30,10 @@ public class PostulacionOferta extends Base{
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "id_postulacion_oferta")
     private List<PostulacionOfertaEtapa> postulacionOfertaEtapaList;
+
+
+    @ManyToOne()
+    @JoinColumn(name = "id_candidato")
+    @NotNull
+    private Candidato candidato;
 }
