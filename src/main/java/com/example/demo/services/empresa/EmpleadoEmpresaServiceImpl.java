@@ -1,5 +1,6 @@
 package com.example.demo.services.empresa;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -114,6 +115,15 @@ public class EmpleadoEmpresaServiceImpl extends BaseServiceImpl<EmpleadoEmpresa,
     @Override
     public Long contarEmpleadosDeEmpresa(Long idempresa){
         return empleadoEmpresaRepository.contarEmpelados(idempresa);
+    }
+
+    @Override
+    @Transactional
+    public List<EmpleadoEmpresa> findAllById(Collection<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            throw new IllegalArgumentException("La colección de IDs no puede ser nula o vacía");
+        }
+        return empleadoEmpresaRepository.findAllByIdIn(ids);
     }
 
     @Override

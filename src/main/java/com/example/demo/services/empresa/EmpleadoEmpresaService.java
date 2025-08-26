@@ -1,5 +1,6 @@
 package com.example.demo.services.empresa;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +18,9 @@ public interface EmpleadoEmpresaService extends BaseService<EmpleadoEmpresa, Lon
     public List<EmpleadoEmpresa> visualizarEmpleados(Long idEmpresa);
 
     public Long contarEmpleadosDeEmpresa(Long idempresa);
+
+    public List<EmpleadoEmpresa> findAllById(Collection<Long> ids);
+
 
     public Optional<EmpleadoEmpresa> buscarEmpleadoEmpresaPorUsuarioId(Long idUsuario);
 

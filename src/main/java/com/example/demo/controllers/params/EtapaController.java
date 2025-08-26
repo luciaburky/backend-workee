@@ -33,11 +33,18 @@ public class EtapaController {
         this.etapaService = etapaService;
     }
     
-    @Operation(summary = "Crear una nueva Etapa")
-    @PostMapping()
+    @Operation(summary = "Crear una nueva Etapa Predeterminada")
+    @PostMapping
     @PreAuthorize("hasAuthority('CREAR_ETAPA')")
     public ResponseEntity<Etapa> crearEtapa(@Valid @RequestBody EtapaRequestDTO etapaRequestDTO){
-        Etapa nuevaEtapa = etapaService.guardarEtapa(etapaRequestDTO);
+        Etapa nuevaEtapa = etapaService.crearPredeterminada(etapaRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(nuevaEtapa);
+    }
+
+    @Operation(summary = "Crear una nueva Etapa Propia de una Empresa")
+    @PostMapping("/empresa/{empresaId}")
+    public ResponseEntity<Etapa> crearEtapaPropia(@PathVariable Long empresaId, @Valid @RequestBody EtapaRequestDTO etapaRequestDTO) {
+        Etapa nuevaEtapa = etapaService.crearPropia(empresaId, etapaRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevaEtapa);
     }
 
@@ -73,12 +80,11 @@ public class EtapaController {
         return ResponseEntity.ok(etapa);
     }
 
-    @Operation(summary = "Deshabilitar un Etapa")
-    @DeleteMapping("/deshabilitar/{id}")
-    @PreAuthorize("hasAuthority('HABILITACION_ETAPA')")
-    public ResponseEntity<Void> deshabilitarEtapa(@PathVariable Long id) {
-        etapaService.delete(id);
-        return ResponseEntity.ok().build();
+    @Operation(summary = "Obtener Etapas Disponibles para una Empresa")
+    @GetMapping("/disponibles/empresa/{empresaId}")
+    public ResponseEntity<List<Etapa>> obtenerEtapasDisponiblesParaEmpresa(@PathVariable Long empresaId) {
+        List<Etapa> etapasDisponibles = etapaService.findDisponiblesParaEmpresa(empresaId);
+        return ResponseEntity.ok(etapasDisponibles);
     }
     
     @Operation(summary = "Habilitar un Etapa")
@@ -86,6 +92,22 @@ public class EtapaController {
     @PreAuthorize("hasAuthority('HABILITACION_ETAPA')")
     public ResponseEntity<Void> habilitarEtapa(@PathVariable Long id) {
         etapaService.habilitarEtapa(id);
+        return ResponseEntity.ok().build();
+    }
+
+    //ADMIN: puede deshabilitar cualquier etapa que no esté en uso
+    @Operation(summary = "Deshabilitar un Etapa")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deshabilitarEtapa(@PathVariable Long id) {
+        etapaService.delete(id);
+        return ResponseEntity.ok().build();
+    }
+    
+    // EMPRESA: solo puede eliminar sus etapas propias, no las predeterminadas.    
+    @Operation(summary = "Eliminar una Etapa Propia de una Empresa")
+    @DeleteMapping("/{id}/empresa/{empresaId}")
+    public ResponseEntity<Void> eliminarEtapaPropia(@PathVariable Long id, @PathVariable Long empresaId) {
+        etapaService.eliminarEtapaPropia(id, empresaId);
         return ResponseEntity.ok().build();
     }
     

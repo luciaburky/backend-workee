@@ -1,5 +1,6 @@
 package com.example.demo.repositories.empresa;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +29,9 @@ public interface EmpleadoEmpresaRepository extends BaseRepository<EmpleadoEmpres
         nativeQuery = true
      )
      public List<EmpleadoEmpresa> traerEmpleadosActivos(@Param("idEmpresa") Long idEmpresa);
+     
+     List<EmpleadoEmpresa> findAllByIdIn(Collection<Long> ids);
+
 
      Optional<EmpleadoEmpresa> findByUsuarioId(Long usuarioId);
 

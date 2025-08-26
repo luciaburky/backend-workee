@@ -17,5 +17,6 @@ public interface EstadoOfertaRepository extends BaseRepository<EstadoOferta, Lon
     List<EstadoOferta> buscarEstadoOfertasActivos();
     
     Optional<EstadoOferta> findByNombreEstadoOfertaIgnoreCase(String nombreEstadoOferta);
-    
+
+    Optional<EstadoOferta> findByCodigo(String codigo);    
 } 

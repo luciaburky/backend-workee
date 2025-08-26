@@ -5,8 +5,11 @@ import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 
 import com.example.demo.entities.Base;
+import com.example.demo.entities.empresa.Empresa;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +25,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Etapa extends Base {
+    
     @NotNull
     @Column(name = "nombre_etapa")
     private String nombreEtapa;
@@ -29,5 +33,13 @@ public class Etapa extends Base {
     @NotNull
     @Column(name = "descripcion_etapa")
     private String descripcionEtapa;
+
+    @ManyToOne
+    @JoinColumn(name = "id_empresa")
+    private Empresa empresa;
+
+    @NotNull
+    @Column(name = "es_predeterminada")
+    private Boolean esPredeterminada;
 }
 
