@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.postulaciones.PostulacionCandidatoRequestDTO;
 import com.example.demo.entities.candidato.Candidato;
+import com.example.demo.entities.eventos.Notificacion;
+import com.example.demo.entities.eventos.TipoNotificacion;
 import com.example.demo.entities.oferta.CodigoEstadoOferta;
 import com.example.demo.entities.oferta.Oferta;
 import com.example.demo.entities.oferta.OfertaEstadoOferta;
@@ -19,6 +21,7 @@ import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.repositories.postulaciones.PostulacionOfertaRepository;
 import com.example.demo.services.BaseServiceImpl;
 import com.example.demo.services.candidato.CandidatoService;
+import com.example.demo.services.eventos.NotificacionService;
 import com.example.demo.services.oferta.OfertaService;
 import com.example.demo.services.params.EtapaService;
 
@@ -27,17 +30,19 @@ import jakarta.transaction.Transactional;
 @Service
 public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOferta, Long> implements PostulacionOfertaService{
     private final PostulacionOfertaRepository postulacionOfertaRepository;
+    private final NotificacionService notificacionService;
     
     private final CandidatoService candidatoService;
     private final OfertaService ofertaService;
     private final EtapaService etapaService;
 
-    public PostulacionOfertaServiceImpl(PostulacionOfertaRepository postulacionOfertaRepository, CandidatoService candidatoService, OfertaService ofertaService, EtapaService etapaService) {
+    public PostulacionOfertaServiceImpl(PostulacionOfertaRepository postulacionOfertaRepository, CandidatoService candidatoService, OfertaService ofertaService, EtapaService etapaService, NotificacionService notificacionService) {
         super(postulacionOfertaRepository);
         this.postulacionOfertaRepository = postulacionOfertaRepository;
         this.candidatoService = candidatoService;
         this.ofertaService = ofertaService;
         this.etapaService = etapaService;
+        this.notificacionService = notificacionService;
     }
 
     @Override
@@ -89,15 +94,29 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         postulacionOfertaEtapa.setFechaHoraAlta(new Date());
         
         postulacionOferta.getPostulacionOfertaEtapaList().add(postulacionOfertaEtapa);
+
+        //Creacion de la notificacion para la empresa
+        Notificacion notificacion = new Notificacion();
+        notificacion.setFechaHoraAlta(new Date());
+        notificacion.setTipoNotificacion(TipoNotificacion.SOLICITUD_POSTULACION_OFERTA);
+        String descripcion = "El candidato " + candidato.getNombreCandidato() + " " + candidato.getApellidoCandidato() + " ha solicitado participar en la oferta " + oferta.getTitulo();
+        notificacion.setDescripcionNotificacion(descripcion);
+        String titulo = "Han solicitado participar en una oferta";
+        notificacion.setTituloNotificacion(titulo);
+        notificacion.setLecturaNotificacion(false);
+
+        notificacionService.guardarNotificacion(notificacion);
         
         return postulacionOfertaRepository.save(postulacionOferta);
-        //TODO: Faltaria que envie la solicitud de postulacion a la empresa (tiene que ver con las notificaciones)
-        //TODO: verificar que no exista ya una postulacion del candidato a esta oferta
+        //TODO: Faltaria que envie la solicitud de postulacion a la empresa
     }
 
     private Boolean verificarSiCandidatoYaPostulo(Long idCandidato, Long idOferta){
         Optional<PostulacionOferta> postulacionExistenteOptional = postulacionOfertaRepository.findByCandidatoIdAndOfertaIdAndFechaHoraFinPostulacionOfertaIsNull(idCandidato, idOferta);
         return postulacionExistenteOptional.isPresent();
     }
+
+
+
 }
 
