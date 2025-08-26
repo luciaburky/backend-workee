@@ -92,6 +92,10 @@ public class EtapaServiceImpl extends BaseServiceImpl<Etapa, Long> implements Et
         nuevaEtapa.setEmpresa(empresa);
         nuevaEtapa.setFechaHoraAlta(new Date());
 
+        //Generar código para identificarla
+        String codigoEtapa = generarCodigoUnico(etapaDTO.getNombreEtapa());
+        nuevaEtapa.setCodigoEtapa(codigoEtapa);
+
         return etapaRepository.save(nuevaEtapa);
     }
 
