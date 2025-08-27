@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 public class OfertaEtapaRequestDTO {
 
     @NotNull(message = "El numero de la etapa no puede estar vacío")
-    private Long numeroEtapa;
+    private Integer numeroEtapa;
 
     @NotNull(message = "El campo adjunta enlace no puede estar vacío")
     private Boolean adjuntaEnlace;

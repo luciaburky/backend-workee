@@ -29,7 +29,7 @@ public class OfertaEtapa extends Base {
     
     @NotNull
     @Column(name = "numero_etapa", nullable = false)
-    private Long numeroEtapa;
+    private Integer numeroEtapa;
 
     //Descripcion de la Etapa asociada a esta OfertaEtapa.
     @Column(name = "descripcion_oferta_etapa")
