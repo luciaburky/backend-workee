@@ -1,5 +1,6 @@
 package com.example.demo.repositories.postulaciones;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
@@ -11,4 +12,6 @@ import com.example.demo.repositories.BaseRepository;
 public interface PostulacionOfertaRepository extends BaseRepository<PostulacionOferta, Long> {
 
     public Optional<PostulacionOferta> findByCandidatoIdAndOfertaIdAndFechaHoraFinPostulacionOfertaIsNull(Long idCandidato, Long idOferta);
+
+    public List<PostulacionOferta> findByCandidatoId(Long idCandidato);
 }

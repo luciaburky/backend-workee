@@ -2,6 +2,7 @@ package com.example.demo.services.postulaciones;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -116,7 +117,45 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         return postulacionExistenteOptional.isPresent();
     }
 
+    @Override
+    public List<PostulacionOferta> obtenerPostulacionesDeUnCandidato(Long idCandidato){
+        return postulacionOfertaRepository.findByCandidatoId(idCandidato);
+    }
 
+    @Override
+    public PostulacionOferta abandonarPostulacionComoCandidato(Long idPostulacion){
+        PostulacionOferta postulacionOferta = this.findById(idPostulacion);
+
+        //Verificar que el candidato no haya sido seleccionado
+        PostulacionOfertaEtapa postulacionOfertaEtapaActual = postulacionOferta.getPostulacionOfertaEtapaList().stream()
+            .filter(poe -> poe.getFechaHoraBaja() == null)
+            .findFirst()
+            .orElseThrow(() -> new EntityNotValidException("La postulacion no tiene una etapa actual asignada")
+            );
+        if(postulacionOfertaEtapaActual.getEtapa().getCodigoEtapa().equals(CodigoEtapa.SELECCIONADO)){
+            throw new EntityNotValidException("No es posible abandonar la postulacion porque el candidato ya ha sido seleccionado");
+        }
+        
+        //Verificar que la oferta no se encuentre finalizada
+        OfertaEstadoOferta ofertaEstadoOferta = postulacionOferta.getOferta().getEstadosOferta().stream()
+            .filter(eo -> eo.getFechaHoraBaja() == null)
+            .findFirst()
+            .orElseThrow(() -> new EntityNotValidException("La oferta no tiene un estado actual asignado"));
+
+        if(ofertaEstadoOferta.getEstadoOferta().getCodigo().equals(CodigoEstadoOferta.FINALIZADA)){
+            throw new EntityNotValidException("No es posible abandonar la postulacion porque la oferta se encuentra finalizada");
+        }
+        
+        Etapa etapaAbandono = etapaService.obtenerEtapaPorCodigo(CodigoEtapa.ABANDONADO);
+        postulacionOfertaEtapaActual.setFechaHoraBaja(new Date());
+
+        PostulacionOfertaEtapa postulacionOfertaEtapaAbandono = new PostulacionOfertaEtapa();
+        postulacionOfertaEtapaAbandono.setEtapa(etapaAbandono);
+        postulacionOfertaEtapaAbandono.setFechaHoraAlta(new Date());
+
+        postulacionOferta.getPostulacionOfertaEtapaList().add(postulacionOfertaEtapaAbandono);
+
+        return postulacionOfertaRepository.save(postulacionOferta);
+    }
 
 }
-
