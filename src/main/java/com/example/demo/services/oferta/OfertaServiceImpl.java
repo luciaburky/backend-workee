@@ -1,5 +1,7 @@
 package com.example.demo.services.oferta;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -12,11 +14,12 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
+import com.example.demo.dtos.FiltrosOfertaRequestDTO;
 import com.example.demo.dtos.OfertaRequestDTO;
 import com.example.demo.entities.Base;
 import com.example.demo.entities.empresa.Empresa;
 import com.example.demo.entities.oferta.CodigoEstadoOferta;
+import com.example.demo.entities.oferta.FechaFiltroOfertaEnum;
 import com.example.demo.entities.oferta.Oferta;
 import com.example.demo.entities.oferta.OfertaEstadoOferta;
 import com.example.demo.entities.oferta.OfertaEtapa;
@@ -206,6 +209,29 @@ public class OfertaServiceImpl extends BaseServiceImpl<Oferta, Long> implements 
             throw new IllegalArgumentException("El ID de la empresa no puede ser nulo");
         }
         return ofertaRepository.findAllByEmpresa_IdAndFechaHoraBajaIsNull(empresaId);
+    }
+
+    @Override
+    public List<Oferta> buscarOfertasSegunFiltros(FiltrosOfertaRequestDTO filtrosOfertaRequestDTO){
+        LocalDateTime fechaDesde = calcularFechaDesde(filtrosOfertaRequestDTO.getFechaFiltro());
+        System.out.println("fechaDesde " + fechaDesde);
+        return ofertaRepository.buscarOfertasSegunFiltros(filtrosOfertaRequestDTO.getNombreOferta(), filtrosOfertaRequestDTO.getIdsProvincias(), filtrosOfertaRequestDTO.getIdsTipoContrato(), filtrosOfertaRequestDTO.getIdsModalidadOferta(), fechaDesde);
+    }
+
+    @Override
+    public List<Oferta> buscarOfertasPorNombre(String nombreOferta){
+        return ofertaRepository.buscarOfertasPorNombre(nombreOferta);
+    }
+
+    private LocalDateTime calcularFechaDesde(FechaFiltroOfertaEnum fechaFiltroOfertaEnum){
+        if(fechaFiltroOfertaEnum == null){
+            return null;
+        }
+        return switch (fechaFiltroOfertaEnum) {
+            case HORAS_24 -> LocalDateTime.now().minusHours(24);
+            case DIAS_7 -> LocalDateTime.now().minusDays(7).truncatedTo(ChronoUnit.SECONDS);
+            case MES_1 -> LocalDateTime.now().minusMonths(1);
+        };
     }
     
 }
