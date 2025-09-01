@@ -37,7 +37,7 @@ public class EstadoUsuarioController {
 
     @Operation(summary = "Crear un nuevo EstadoUsuario")
     @PostMapping("")
-    @PreAuthorize("hasAuthority('CREAR_ESTADO_USUARIO')")
+    @PreAuthorize("hasAuthority('GESTIONAR_ESTADO_USUARIO')")
     public ResponseEntity<?> crearEstadoUsuario(@Valid @RequestBody EstadoUsuarioRequestDTO estadoUsuarioRequestDTO){
         EstadoUsuario nuevoEstadoUsuario = estadoUsuarioService.guardarEstadoUsuario(estadoUsuarioRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoEstadoUsuario);
@@ -45,7 +45,7 @@ public class EstadoUsuarioController {
 
     @Operation(summary = "Actualizar un EstadoUsuario existente")
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('MODIFICAR_ESTADO_USUARIO')")
+    @PreAuthorize("hasAuthority('GESTIONAR_ESTADO_USUARIO')")
     public ResponseEntity<?> actualizarEstadoUsuario(@PathVariable Long id, @RequestBody EstadoUsuarioRequestDTO estadoUsuarioRequestDTO) {
         EstadoUsuario estadoUsuarioActualizado = estadoUsuarioService.actualizarEstadoUsuario(id, estadoUsuarioRequestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(estadoUsuarioActualizado);
@@ -53,7 +53,7 @@ public class EstadoUsuarioController {
 
     @Operation(summary = "Obtiene todos los EstadoUsuario")
     @GetMapping("")
-    @PreAuthorize("hasAuthority('VER_TODOS_EST_USUARIO')")
+    @PreAuthorize("hasAuthority('GESTIONAR_ESTADO_USUARIO')")
     public ResponseEntity<?> obtenerEstadosUsuario(){
         List<EstadoUsuario> estadosUsuario = estadoUsuarioService.obtenerEstadosUsuario();
         return ResponseEntity.status(HttpStatus.OK).body(estadosUsuario);
@@ -61,7 +61,7 @@ public class EstadoUsuarioController {
 
     @Operation(summary = "Obtiene todos los EstadoUsuario ACTIVOS")
     @GetMapping("/activos")
-    @PreAuthorize("hasAuthority('VER_TODOS_EST_USUARIO')") //TODO: Ver si esto se usa o no para ver si se borra o que se hace
+    @PreAuthorize("hasAuthority('GESTIONAR_ESTADO_USUARIO')") //TODO: Ver si esto se usa o no para ver si se borra o que se hace
     public ResponseEntity<?> obtenerEstadosUsuarioActivos(){
         List<EstadoUsuario> estadosUsuarioActivos = estadoUsuarioService.obtenerEstadosUsuarioActivos();
         return ResponseEntity.status(HttpStatus.OK).body(estadosUsuarioActivos);
@@ -69,7 +69,7 @@ public class EstadoUsuarioController {
     
     @Operation(summary = "Obtiene un EstadoUsuario por su ID")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('VER_DETALLE_PARAMETRO')")
+    @PreAuthorize("hasAuthority('GESTIONAR_ESTADO_USUARIO')")
     public ResponseEntity<?> obtenerEstadoUsuarioPorId(@PathVariable Long id) {
         EstadoUsuario estadoUsuario = estadoUsuarioService.findById(id); 
         return ResponseEntity.status(HttpStatus.OK).body(estadoUsuario);
@@ -77,7 +77,7 @@ public class EstadoUsuarioController {
 
     @Operation(summary = "Deshabilita un EstadoUsuario")
     @DeleteMapping("/deshabilitar/{id}")
-    @PreAuthorize("hasAuthority('HABILITACION_ESTADO_USUARIO')")
+    @PreAuthorize("hasAuthority('GESTIONAR_ESTADO_USUARIO')")
     public ResponseEntity<?> deshabilitarEstadoUsuario(@PathVariable Long id) {
         estadoUsuarioService.deshabilitarEstadoUsuario(id);
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -85,7 +85,7 @@ public class EstadoUsuarioController {
 
     @Operation(summary = "Habilita un EstadoUsuario")
     @PutMapping("/habilitar/{id}")
-    @PreAuthorize("hasAuthority('HABILITACION_ESTADO_USUARIO')")
+    @PreAuthorize("hasAuthority('GESTIONAR_ESTADO_USUARIO')")
     public ResponseEntity<?> habilitarEstadoUsuario(@PathVariable Long id) {
         estadoUsuarioService.habilitarEstadoUsuario(id);
         return ResponseEntity.status(HttpStatus.OK).build();

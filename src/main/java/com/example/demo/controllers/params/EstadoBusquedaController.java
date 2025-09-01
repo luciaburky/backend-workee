@@ -37,7 +37,7 @@ public class EstadoBusquedaController {
     
     @Operation(summary = "Crear un nuevo Estado de Busqueda")
     @PostMapping("")
-    @PreAuthorize("hasAuthority('CREAR_ESTADO_BUSQUEDA')")
+    @PreAuthorize("hasAuthority('GESTIONAR_ESTADO_BUSQUEDA')")
     public ResponseEntity<EstadoBusqueda> crearEstadoBusqueda(@Valid @RequestBody EstadoBusquedaRequestDTO estadoBusquedaRequestDTO){
         EstadoBusqueda nuevoEstadoBusqueda = estadoBusquedaService.guardarEstadoBusqueda(estadoBusquedaRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoEstadoBusqueda);
@@ -45,7 +45,7 @@ public class EstadoBusquedaController {
 
     @Operation(summary = "Actualizar un Estado de Busqueda Existente")
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('MODIFICAR_ESTADO_BUSQUEDA')")
+    @PreAuthorize("hasAuthority('GESTIONAR_ESTADO_BUSQUEDA')")
     public ResponseEntity<EstadoBusqueda> actualizarEstadoBusqueda(@PathVariable Long id, @RequestBody EstadoBusquedaRequestDTO estadoBusquedaRequestDTO) {
         EstadoBusqueda estadoBusquedaActualizado = estadoBusquedaService.actualizarEstadoBusqueda(id, estadoBusquedaRequestDTO);
         return ResponseEntity.ok(estadoBusquedaActualizado);
@@ -53,7 +53,7 @@ public class EstadoBusquedaController {
 
     @Operation(summary = "Obtener todos los Estados Busqueda")
     @GetMapping()
-    @PreAuthorize("hasAuthority('VER_TODOS_EST_BUSQ')")
+    @PreAuthorize("hasAuthority('GESTIONAR_ESTADO_BUSQUEDA')")
     public ResponseEntity<List<EstadoBusqueda>> obtenerEstadosBusqueda() {
         List<EstadoBusqueda> listaEstadosBusqueda = estadoBusquedaService.obtenerEstadosBusqueda();
         return ResponseEntity.ok(listaEstadosBusqueda);
@@ -61,6 +61,7 @@ public class EstadoBusquedaController {
 
     @Operation(summary = "Obtener todos los Estados Busqueda Activos")
     @GetMapping("/activos")
+    @PreAuthorize("hasAuthority('GESTIONAR_ESTADO_BUSQUEDA')")
     public ResponseEntity<List<EstadoBusqueda>> obtenerEstadosBusquedaActivos() {
         List<EstadoBusqueda> listaEstadosBusquedaActivos = estadoBusquedaService.obtenerEstadosBusquedaActivos();
         return ResponseEntity.ok(listaEstadosBusquedaActivos) ;
@@ -68,7 +69,7 @@ public class EstadoBusquedaController {
     
     @Operation(summary = "Obtener un Estado de Busqueda por ID")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('VER_DETALLE_PARAMETRO')")
+    @PreAuthorize("hasAuthority('GESTIONAR_ESTADO_BUSQUEDA') or hasAuthority('GESTIONAR_MI_PERFIL')")
     public ResponseEntity<EstadoBusqueda> obtenerEstadoBusquedaPorId(@PathVariable Long id) {
         EstadoBusqueda estadoBusqueda = estadoBusquedaService.findById(id);
         return ResponseEntity.ok(estadoBusqueda);
@@ -76,7 +77,7 @@ public class EstadoBusquedaController {
 
     @Operation(summary = "Deshabilitar un Estado de Busqueda")
     @DeleteMapping("/deshabilitar/{id}")
-    @PreAuthorize("hasAuthority('HABILITACION_ESTADO_BUSQUEDA')")
+    @PreAuthorize("hasAuthority('GESTIONAR_ESTADO_BUSQUEDA')")
     public ResponseEntity<Void> deshabilitarEstadoBusqueda(@PathVariable Long id) {
         estadoBusquedaService.deshabilitarEstadoBusqueda(id);
         return ResponseEntity.ok().build();
@@ -84,7 +85,7 @@ public class EstadoBusquedaController {
     
     @Operation(summary = "Habilitar un Estado de Busqueda")
     @PutMapping("/habilitar/{id}")
-    @PreAuthorize("hasAuthority('HABILITACION_ESTADO_BUSQUEDA')")
+    @PreAuthorize("hasAuthority('GESTIONAR_ESTADO_BUSQUEDA')")
     public ResponseEntity<Void> habilitarEstadoBusqueda(@PathVariable Long id) {
         estadoBusquedaService.habilitarEstadoBusqueda(id);
         return ResponseEntity.ok().build();

@@ -1,5 +1,6 @@
 package com.example.demo.services.params;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -7,11 +8,16 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.params.EtapaRequestDTO;
+import com.example.demo.entities.empresa.Empresa;
+import com.example.demo.entities.oferta.CodigoEstadoOferta;
 import com.example.demo.entities.params.Etapa;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
+import com.example.demo.exceptions.EntityNotFoundException;
 import com.example.demo.exceptions.EntityNotValidException;
+import com.example.demo.repositories.oferta.OfertaRepository;
 import com.example.demo.repositories.params.EtapaRepository;
 import com.example.demo.services.BaseServiceImpl;
+import com.example.demo.services.empresa.EmpresaService;
 
 import jakarta.transaction.Transactional;
 
@@ -19,15 +25,19 @@ import jakarta.transaction.Transactional;
 public class EtapaServiceImpl extends BaseServiceImpl<Etapa, Long> implements EtapaService {
 
     private final EtapaRepository etapaRepository;
+    private final EmpresaService empresaService;
+    private final OfertaRepository ofertaRepository;
 
-    public EtapaServiceImpl(EtapaRepository etapaRepository) {
+    public EtapaServiceImpl(EtapaRepository etapaRepository, EmpresaService empresaService, OfertaRepository ofertaRepository) {
         super(etapaRepository);
         this.etapaRepository = etapaRepository;
+        this.empresaService = empresaService;
+        this.ofertaRepository = ofertaRepository;
     }
 
     @Override
     @Transactional
-    public Etapa guardarEtapa(EtapaRequestDTO etapaDTO) {
+    public Etapa crearPredeterminada(EtapaRequestDTO etapaDTO) {
         if (yaExisteEtapa(etapaDTO.getNombreEtapa(), null)) {
             throw new EntityAlreadyExistsException("Ya existe una etapa con ese nombre");
         }
@@ -35,6 +45,28 @@ public class EtapaServiceImpl extends BaseServiceImpl<Etapa, Long> implements Et
         Etapa nuevaEtapa = new Etapa();
         nuevaEtapa.setNombreEtapa(etapaDTO.getNombreEtapa());
         nuevaEtapa.setDescripcionEtapa(etapaDTO.getDescripcionEtapa());
+        nuevaEtapa.setEsPredeterminada(true);
+        nuevaEtapa.setEmpresa(null);
+        nuevaEtapa.setFechaHoraAlta(new Date());
+
+        return etapaRepository.save(nuevaEtapa);
+    }
+
+    @Override
+    @Transactional
+    public Etapa crearPropia(Long empresaId, EtapaRequestDTO etapaDTO) {
+        //cambiar para que verifique solo en las propias 
+        boolean existeNombre = etapaRepository.existsByNombreEtapaIgnoreCaseAndEmpresaIdAndEsPredeterminadaFalse(etapaDTO.getNombreEtapa().trim(), empresaId);
+        if (existeNombre) {
+            throw new EntityAlreadyExistsException("Ya existe una etapa con ese nombre");
+        }
+
+        Empresa empresa = empresaService.findById(empresaId);
+        Etapa nuevaEtapa = new Etapa();
+        nuevaEtapa.setNombreEtapa(etapaDTO.getNombreEtapa());
+        nuevaEtapa.setDescripcionEtapa(etapaDTO.getDescripcionEtapa());
+        nuevaEtapa.setEsPredeterminada(false);
+        nuevaEtapa.setEmpresa(empresa);
         nuevaEtapa.setFechaHoraAlta(new Date());
 
         return etapaRepository.save(nuevaEtapa);
@@ -96,5 +128,65 @@ public class EtapaServiceImpl extends BaseServiceImpl<Etapa, Long> implements Et
         return etapaExiste
         .filter(e -> idAExcluir == null || !e.getId().equals(idAExcluir))
         .isPresent();
+    }
+
+    @Override
+    @Transactional
+    public List<Etapa> findAllByIdIn(Collection<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            throw new IllegalArgumentException("La colección de IDs no puede ser nula o vacía");
+        }
+        return etapaRepository.findAllByIdIn(ids);
+    }
+
+    @Override
+    @Transactional
+    public List<Etapa> findDisponiblesParaEmpresa(Long empresaId) {
+        if (empresaId == null) {
+            throw new IllegalArgumentException("El ID de la empresa no puede ser nulo");
+        }
+        return etapaRepository.findDisponiblesParaEmpresa(empresaId);
+    }
+
+    //ADMIN: puede deshabilitar cualquier etapa que no esté en uso
+    @Override
+    @Transactional
+    public void deshabilitarEtapa(Long idEtapa){
+        if (idEtapa == null) {
+            throw new EntityNotValidException("El ID de la etapa no puede ser nulo");
+        }
+       
+        Etapa etapa = this.findById(idEtapa);
+        
+        boolean estaEnUso = ofertaRepository.existsOfertaNoFinalizadaQueUsaEtapa(idEtapa, CodigoEstadoOferta.FINALIZADA);
+        
+        if (estaEnUso) {
+            throw new EntityNotValidException("La etapa no puede ser deshabilitada porque está en uso por una oferta activa");
+        } 
+
+        if (etapa.getFechaHoraBaja() == null) {
+            etapa.setFechaHoraBaja(new Date());
+            etapaRepository.save(etapa);
+        }
+
+    }
+    // EMPRESA: solo puede eliminar sus etapas propias, no las predeterminadas.    
+    @Override
+    @Transactional
+    public void eliminarEtapaPropia(Long idEtapa, Long empresaId) {
+
+        Etapa etapa = etapaRepository.findByIdAndEmpresaIdAndFechaHoraBajaIsNull(idEtapa, empresaId)
+        .orElseThrow(() -> new EntityNotFoundException("No existe la etapa para esa empresa o ya está deshabilitada"));
+
+        if (Boolean.TRUE.equals(etapa.getEsPredeterminada())) {
+            throw new IllegalStateException("No se puede eliminar una etapa predeterminada");
+        }
+
+        boolean enUso = ofertaRepository.existsOfertaNoFinalizadaQueUsaEtapa(idEtapa, CodigoEstadoOferta.FINALIZADA);
+        if (enUso) throw new IllegalStateException("La etapa está en uso por una oferta activa");
+
+        etapa.setFechaHoraBaja(new Date());
+        etapaRepository.save(etapa);
+
     }
 }

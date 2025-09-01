@@ -35,7 +35,7 @@ public class GeneroController {
 
     @Operation(summary = "Crear un nuevo Genero")
     @PostMapping("")
-    @PreAuthorize("hasAuthority('CREAR_GENERO')")
+    @PreAuthorize("hasAuthority('GESTIONAR_GENERO')")
     public ResponseEntity<?> crearGenero(@Valid @RequestBody GeneroRequestDTO generoRequestDTO){
         Genero nuevoGenero = generoService.guardarGenero(generoRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoGenero);
@@ -43,7 +43,7 @@ public class GeneroController {
 
     @Operation(summary = "Actualizar un Genero existente")
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('MODIFICAR_GENERO')")
+    @PreAuthorize("hasAuthority('GESTIONAR_GENERO')")
     public ResponseEntity<?> actualizarGenero(@PathVariable Long id, @RequestBody GeneroRequestDTO generoRequestDTO) {
         Genero generoActualizado = generoService.actualizarGenero(id, generoRequestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(generoActualizado);
@@ -51,7 +51,7 @@ public class GeneroController {
 
     @Operation(summary = "Obtiene todos los Generos")
     @GetMapping("")
-    @PreAuthorize("hasAuthority('VER_TODOS_GENEROS')")
+    @PreAuthorize("hasAuthority('GESTIONAR_GENERO')")
     public ResponseEntity<?> obtenerGeneros(){
         List<Genero> generos = generoService.obtenerGeneros();
         return ResponseEntity.status(HttpStatus.OK).body(generos);
@@ -59,6 +59,7 @@ public class GeneroController {
 
     @Operation(summary = "Obtiene todos los Generos ACTIVOS")
     @GetMapping("/activos")
+    @PreAuthorize("hasAuthority('GESTIONAR_GENERO')")
     public ResponseEntity<?> obtenerGenerosActivos(){
         List<Genero> generosActivos = generoService.obtenerGenerosActivos();
         return ResponseEntity.status(HttpStatus.OK).body(generosActivos);
@@ -66,7 +67,7 @@ public class GeneroController {
     
     @Operation(summary = "Obtiene un Genero por su ID")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('VER_DETALLE_PARAMETRO')")
+    @PreAuthorize("hasAuthority('GESTIONAR_GENERO')")
     public ResponseEntity<?> obtenerGeneroPorId(@PathVariable Long id) {
         Genero genero = generoService.findById(id);
         return ResponseEntity.status(HttpStatus.OK).body(genero);
@@ -74,7 +75,7 @@ public class GeneroController {
 
     @Operation(summary = "Deshabilita un Genero")
     @DeleteMapping("/deshabilitar/{id}")
-    @PreAuthorize("hasAuthority('HABILITACION_GENERO')")
+    @PreAuthorize("hasAuthority('GESTIONAR_GENERO')")
     public ResponseEntity<?> deshabilitarGenero(@PathVariable Long id) {
         generoService.deshabilitarGenero(id);
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -82,7 +83,7 @@ public class GeneroController {
 
     @Operation(summary = "Habilita un Genero")
     @PutMapping("/habilitar/{id}")
-    @PreAuthorize("hasAuthority('HABILITACION_GENERO')")
+    @PreAuthorize("hasAuthority('GESTIONAR_GENERO')")
     public ResponseEntity<?> habilitarGenero(@PathVariable Long id) {
         generoService.habilitarGenero(id);
         return ResponseEntity.status(HttpStatus.OK).build();

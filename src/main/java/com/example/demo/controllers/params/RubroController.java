@@ -35,7 +35,7 @@ public class RubroController{
 
     @Operation(summary = "Crear un nuevo Rubro")
     @PostMapping
-    @PreAuthorize("hasAuthority('CREAR_RUBRO')")
+    @PreAuthorize("hasAuthority('GESTIONAR_RUBRO')")
     public ResponseEntity<Rubro> crearRubro(@Valid @RequestBody RubroRequestDTO rubroRequestDTO){
         Rubro nuevoRubro = rubroService.guardarRubro(rubroRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoRubro);
@@ -43,7 +43,7 @@ public class RubroController{
 
     @Operation(summary = "Actualizar un Rubro Existente")
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('MODIFICAR_RUBRO')")
+    @PreAuthorize("hasAuthority('GESTIONAR_RUBRO')")
     public ResponseEntity<Rubro> actualizarRubro(@PathVariable Long id, @RequestBody RubroRequestDTO rubroRequestDTO) {
         Rubro rubroActualizado = rubroService.actualizarRubro(id, rubroRequestDTO);
         return ResponseEntity.ok(rubroActualizado);
@@ -51,7 +51,7 @@ public class RubroController{
 
     @Operation(summary = "Obtener todos los Rubros")
     @GetMapping
-    @PreAuthorize("hasAuthority('VER_TODOS_RUBROS')")
+    @PreAuthorize("hasAuthority('GESTIONAR_RUBRO')")
     public ResponseEntity<List<Rubro>> obtenerRubros() {
         List<Rubro> listaRubros = rubroService.obtenerRubros();
         return ResponseEntity.ok(listaRubros);
@@ -66,7 +66,7 @@ public class RubroController{
     
     @Operation(summary = "Obtener un Rubro por ID")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('VER_DETALLE_PARAMETRO')")
+    @PreAuthorize("hasAuthority('GESTIONAR_RUBRO')")
     public ResponseEntity<Rubro> obtenerRubroPorId(@PathVariable Long id) {
         Rubro rubro = rubroService.findById(id);
         return ResponseEntity.ok(rubro);
@@ -74,7 +74,7 @@ public class RubroController{
 
     @Operation(summary = "Deshabilitar un Rubro")
     @DeleteMapping("/deshabilitar/{id}")
-    @PreAuthorize("hasAuthority('HABILITACION_RUBRO')")
+    @PreAuthorize("hasAuthority('GESTIONAR_RUBRO')")
     public ResponseEntity<Void> deshabilitarRubro(@PathVariable Long id) {
         rubroService.deshabilitarRubro(id);
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -83,7 +83,7 @@ public class RubroController{
     
     @Operation(summary = "Habilitar un Rubro")
     @PutMapping("/habilitar/{id}")
-    @PreAuthorize("hasAuthority('HABILITACION_RUBRO')")
+    @PreAuthorize("hasAuthority('GESTIONAR_RUBRO')")
     public ResponseEntity<Void> habilitarRubro(@PathVariable Long id) {
         rubroService.habilitarRubro(id);
         return ResponseEntity.ok().build();

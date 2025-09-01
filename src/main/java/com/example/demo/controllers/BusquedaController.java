@@ -14,11 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dtos.FiltrosCandidatoRequestDTO;
 import com.example.demo.dtos.FiltrosEmpresaRequestDTO;
+import com.example.demo.dtos.FiltrosOfertaRequestDTO;
+import com.example.demo.dtos.ResultadoBusquedaEmpresaDTO;
 import com.example.demo.dtos.UbicacionDTO;
 import com.example.demo.entities.candidato.Candidato;
-import com.example.demo.entities.empresa.Empresa;
+import com.example.demo.entities.oferta.Oferta;
 import com.example.demo.services.candidato.CandidatoService;
 import com.example.demo.services.empresa.EmpresaService;
+import com.example.demo.services.oferta.OfertaService;
 import com.example.demo.services.params.ProvinciaService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,18 +35,20 @@ public class BusquedaController {
     private final EmpresaService empresaService;
     private final ProvinciaService provinciaService;
     private final CandidatoService candidatoService;
+    private final OfertaService ofertaService;
 
-    public BusquedaController(EmpresaService empresaService, ProvinciaService provinciaService, CandidatoService candidatoService){
+    public BusquedaController(EmpresaService empresaService, ProvinciaService provinciaService, CandidatoService candidatoService, OfertaService ofertaService){
         this.empresaService = empresaService;
         this.provinciaService = provinciaService;
         this.candidatoService = candidatoService;
+        this.ofertaService = ofertaService;
     }
 
     @Operation(summary = "Trae empresas según los filtros aplicados")
     @PostMapping("/empresasFiltradas")
     @PreAuthorize("hasAuthority('BUSCAR_EMPRESAS')")
     public ResponseEntity<?> filtrarEmpresas(@RequestBody FiltrosEmpresaRequestDTO filtrosEmpresaRequestDTO){
-        List<Empresa> empresas = empresaService.buscarEmpresasConFiltros(filtrosEmpresaRequestDTO);
+        List<ResultadoBusquedaEmpresaDTO> empresas = empresaService.buscarEmpresasConFiltros(filtrosEmpresaRequestDTO);
 
         return ResponseEntity.status(HttpStatus.OK).body(empresas);
     }
@@ -61,7 +66,7 @@ public class BusquedaController {
     @GetMapping("/empresasPorNombre")
     @PreAuthorize("hasAuthority('BUSCAR_EMPRESAS')")
     public ResponseEntity<?> buscarEmpresasPorNombre(@RequestParam String nombreEmpresa){
-        List<Empresa> empresas = empresaService.buscarEmpresasPorNombre(nombreEmpresa);
+        List<ResultadoBusquedaEmpresaDTO> empresas = empresaService.buscarEmpresasPorNombre(nombreEmpresa);
         return ResponseEntity.status(HttpStatus.OK).body(empresas);
     }
 
@@ -80,6 +85,21 @@ public class BusquedaController {
     public ResponseEntity<?> buscarCandidatosPorNombre(@RequestParam String nombreCandidato){
         List<Candidato> candidatos = candidatoService.buscarCandidatosPorNombre(nombreCandidato);
         return ResponseEntity.status(HttpStatus.OK).body(candidatos);
+    }
+
+    @Operation(summary = "Busca ofertas según el nombre ingresado")
+    @GetMapping("/ofertasPorNombre")
+    public ResponseEntity<?> buscarOfertasPorNombre(@RequestParam String nombreOferta){
+        List<Oferta> ofertas = ofertaService.buscarOfertasPorNombre(nombreOferta);
+        return ResponseEntity.status(HttpStatus.OK).body(ofertas);
+    }
+
+    @Operation(summary = "Trae ofertas según los filtros aplicados")
+    @PostMapping("/ofertasFiltradas")
+    public ResponseEntity<?> filtrarOferta(@RequestBody FiltrosOfertaRequestDTO filtrosOfertaRequestDTO){
+        List<Oferta> ofertas = ofertaService.buscarOfertasSegunFiltros(filtrosOfertaRequestDTO);
+
+        return ResponseEntity.status(HttpStatus.OK).body(ofertas);
     }
 
 }

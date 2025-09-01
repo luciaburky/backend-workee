@@ -35,7 +35,7 @@ public class ModalidadOfertaController {
 
     @Operation(summary = "Crear una nueva Modalidad Oferta")
     @PostMapping()
-    @PreAuthorize("hasAuthority('HABILITACION_HABILIDAD')")
+    @PreAuthorize("hasAuthority('GESTIONAR_MODALIDAD_OFERTA')")
     public ResponseEntity<ModalidadOferta> crearModalidadOferta(@Valid @RequestBody ModalidadOfertaRequestDTO modalidadOfertaRequestDTO){
         ModalidadOferta nuevaModalidadOferta = modalidadOfertaService.guardarModalidadOferta(modalidadOfertaRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevaModalidadOferta);
@@ -43,7 +43,7 @@ public class ModalidadOfertaController {
 
     @Operation(summary = "Actualizar una Modalidad Oferta Existente")
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('MODIFICAR_MODALIDAD_OFERTA')")
+    @PreAuthorize("hasAuthority('GESTIONAR_MODALIDAD_OFERTA')")
     public ResponseEntity<ModalidadOferta> actualizarModalidadOferta(@PathVariable Long id, @RequestBody ModalidadOfertaRequestDTO modalidadOfertaRequestDTO) {
         ModalidadOferta modalidadOfertaActualizada = modalidadOfertaService.actualizarModalidadOferta(id, modalidadOfertaRequestDTO);
         return ResponseEntity.ok(modalidadOfertaActualizada);
@@ -51,7 +51,7 @@ public class ModalidadOfertaController {
 
     @Operation(summary = "Obtener todas las Modalidad Oferta")
     @GetMapping
-    @PreAuthorize("hasAuthority('VER_TODAS_MODALIDADES_OF')")
+    @PreAuthorize("hasAuthority('GESTIONAR_MODALIDAD_OFERTA')")
     public ResponseEntity<List<ModalidadOferta>> obtenerModalidadOferta() {
         List<ModalidadOferta> listaModalidadOferta = modalidadOfertaService.obtenerModalidadesOfertas();
         return ResponseEntity.ok(listaModalidadOferta);
@@ -59,7 +59,7 @@ public class ModalidadOfertaController {
 
     @Operation(summary = "Obtener todas las Modalidades Oferta Activas")
     @GetMapping("/activas")
-    @PreAuthorize("hasAuthority('???') or hasAuthority('BUSCAR_OFERTAS')") //TODO: Cuando agreguemos lo del modulo de ofertas ponerle alguna
+    @PreAuthorize("hasAuthority('GESTIONAR_MODALIDAD_OFERTA') or hasAuthority('BUSCAR_OFERTAS')") //TODO: Cuando agreguemos lo del modulo de ofertas ponerle alguna
     public ResponseEntity<List<ModalidadOferta>> obtenerModalidadOfertaActivos() {
         List<ModalidadOferta> listaModalidadOfertaActivas = modalidadOfertaService.obtenerModalidadesOfertasActivos();
         return ResponseEntity.ok(listaModalidadOfertaActivas);
@@ -67,7 +67,7 @@ public class ModalidadOfertaController {
     
     @Operation(summary = "Obtener una Modalidad Oferta por ID")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('VER_DETALLE_PARAMETRO')")
+    @PreAuthorize("hasAuthority('GESTIONAR_MODALIDAD_OFERTA')")
     public ResponseEntity<ModalidadOferta> obtenerModalidadOfertaPorId(@PathVariable Long id) {
         ModalidadOferta modalidadOferta = modalidadOfertaService.findById(id);
         return ResponseEntity.ok(modalidadOferta);
@@ -75,7 +75,7 @@ public class ModalidadOfertaController {
 
     @Operation(summary = "Deshabilitar una Modalidad Oferta")
     @DeleteMapping("/deshabilitar/{id}")
-    @PreAuthorize("hasAuthority('HABILITACION_MODALIDAD_OFERTA')")
+    @PreAuthorize("hasAuthority('GESTIONAR_MODALIDAD_OFERTA')")
     public ResponseEntity<Void> deshabilitarModalidadOferta(@PathVariable Long id) {
         modalidadOfertaService.delete(id);
         return ResponseEntity.ok().build();
@@ -83,7 +83,7 @@ public class ModalidadOfertaController {
     
     @Operation(summary = "Habilitar una Modalidad Oferta")
     @PutMapping("/habilitar/{id}")
-    @PreAuthorize("hasAuthority('HABILITACION_MODALIDAD_OFERTA')")
+    @PreAuthorize("hasAuthority('GESTIONAR_MODALIDAD_OFERTA')")
     public ResponseEntity<Void> habilitarModalidadOferta(@PathVariable Long id) {
         modalidadOfertaService.habilitarModalidadOferta(id);
         return ResponseEntity.ok().build();

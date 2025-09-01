@@ -35,7 +35,7 @@ public class TipoEventoController  {
 
     @Operation(summary = "Crear un nuevo TipoEvento")
     @PostMapping("")
-    @PreAuthorize("hasAuthority('CREAR_TIPO_EVENTO')")
+    @PreAuthorize("hasAuthority('GESTIONAR_TIPO_EVENTO')")
     public ResponseEntity<?> TipoEvento(@Valid @RequestBody TipoEventoRequestDTO tipoEventoRequestDTO){
         TipoEvento nuevoTipoEvento = tipoEventoService.guardarTipoEvento(tipoEventoRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoTipoEvento);
@@ -43,7 +43,7 @@ public class TipoEventoController  {
 
     @Operation(summary = "Actualizar un TipoEvento existente")
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('MODIFICAR_TIPO_EVENTO')")
+    @PreAuthorize("hasAuthority('GESTIONAR_TIPO_EVENTO')")
     public ResponseEntity<?> TipoEvento(@PathVariable Long id, @RequestBody TipoEventoRequestDTO tipoEventoRequestDTO) {
         TipoEvento tipoEventoActualizado = tipoEventoService.actualizarTipoEvento(id, tipoEventoRequestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(tipoEventoActualizado);
@@ -51,7 +51,7 @@ public class TipoEventoController  {
 
     @Operation(summary = "Obtiene todos los TipoEvento")
     @GetMapping("")
-    @PreAuthorize("hasAuthority('VER_TODOS_TIPO_EVENTO')")
+    @PreAuthorize("hasAuthority('GESTIONAR_TIPO_EVENTO')")
     public ResponseEntity<?> TipoEvento(){
         List<TipoEvento> tiposEventos = tipoEventoService.obtenerTiposEventos();
         return ResponseEntity.status(HttpStatus.OK).body(tiposEventos);
@@ -59,7 +59,7 @@ public class TipoEventoController  {
 
     @Operation(summary = "Obtiene todos los TipoEvento ACTIVOS")
     @GetMapping("/activos")
-    @PreAuthorize("hasAuthority('???')") //TODO: Ver que permiso le ponemos en base al modulo de calendario
+    @PreAuthorize("hasAuthority('GESTIONAR_TIPO_EVENTO')") //TODO: Ver que permiso le ponemos en base al modulo de calendario
     public ResponseEntity<?> obtenerEstadosUsuarioActivos(){
         List<TipoEvento> tiposEventosActivos = tipoEventoService.obtenerTiposEventosActivos();
         return ResponseEntity.status(HttpStatus.OK).body(tiposEventosActivos);
@@ -67,7 +67,7 @@ public class TipoEventoController  {
     
     @Operation(summary = "Obtiene un TipoEvento por su ID")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('VER_DETALLE_PARAMETRO')")
+    @PreAuthorize("hasAuthority('GESTIONAR_TIPO_EVENTO')")
     public ResponseEntity<?> TipoEventoPorId(@PathVariable Long id) {
         TipoEvento tipoEvento = tipoEventoService.buscarTipoEventoPorId(id);
         return ResponseEntity.status(HttpStatus.OK).body(tipoEvento);
@@ -75,7 +75,7 @@ public class TipoEventoController  {
 
     @Operation(summary = "Deshabilita un TipoEvento")
     @DeleteMapping("/deshabilitar/{id}")
-    @PreAuthorize("hasAuthority('HABILITACION_TIPO_EVENTO')")
+    @PreAuthorize("hasAuthority('GESTIONAR_TIPO_EVENTO')")
     public ResponseEntity<?> deshabilitarTipoEvento(@PathVariable Long id) {
         tipoEventoService.deshabilitarTipoEvento(id);
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -83,7 +83,7 @@ public class TipoEventoController  {
 
     @Operation(summary = "Habilita un TipoEvento")
     @PutMapping("/habilitar/{id}")
-    @PreAuthorize("hasAuthority('HABILITACION_TIPO_EVENTO')")
+    @PreAuthorize("hasAuthority('GESTIONAR_TIPO_EVENTO')")
     public ResponseEntity<?> habilitaripoEvento(@PathVariable Long id) {
         tipoEventoService.habilitarTipoEvento(id);
         return ResponseEntity.status(HttpStatus.OK).build();
