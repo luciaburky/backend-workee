@@ -35,7 +35,7 @@ public class EmpleadoEmpresaController {
 
     @Operation(summary = "Crear un empleado empresa")
     @PostMapping("")
-    @PreAuthorize("hasAuthority('CREAR_EMPLEADO')")
+    @PreAuthorize("hasAuthority('GESTIONAR_EMPLEADOS')")
     public ResponseEntity<?> crearEmpleado(@Valid @RequestBody EmpleadoEmpresaRequestDTO empleadoEmpresaRequestDTO){
         EmpleadoEmpresa nuevoEmpleadoEmpresa = empleadoEmpresaService.darDeAltaEmpleado(empleadoEmpresaRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoEmpleadoEmpresa);
@@ -43,7 +43,7 @@ public class EmpleadoEmpresaController {
 
     @Operation(summary = "Un EmpleadoEmpresa actualiza su perfil")
     @PutMapping("/actualizarPerfilPropio/{id}")
-    @PreAuthorize("hasAuthority('ACTUALIZAR_MI_PERFIL')")
+    @PreAuthorize("hasAuthority('GESTIONAR_MI_PERFIL')")
     public ResponseEntity<?> actualizarEmpleadoComoEmpleado(@RequestBody EmpleadoEmpresaRequestDTO empleadoEmpresaRequestDTO, @PathVariable Long id){
         EmpleadoEmpresa empleadoEmpresa = empleadoEmpresaService.modificarEmpleado(empleadoEmpresaRequestDTO,true, id);
         return ResponseEntity.status(HttpStatus.CREATED).body(empleadoEmpresa);
@@ -51,7 +51,7 @@ public class EmpleadoEmpresaController {
 
     @Operation(summary = "Un Administrador de Empresa actualiza el perfil de un Empleado")
     @PutMapping("/actualizarPerfilPorAdmin/{id}")
-    @PreAuthorize("hasAuthority('ACTUALIZAR_EMPLEADO')")
+    @PreAuthorize("hasAuthority('GESTIONAR_EMPLEADOS')")
     public ResponseEntity<?> actualizarEmpleadoComoAdminEmpresa(@RequestBody EmpleadoEmpresaRequestDTO empleadoEmpresaRequestDTO, @PathVariable Long id){
         EmpleadoEmpresa empleadoEmpresa = empleadoEmpresaService.modificarEmpleado(empleadoEmpresaRequestDTO,false, id);
         return ResponseEntity.status(HttpStatus.CREATED).body(empleadoEmpresa);
@@ -60,7 +60,7 @@ public class EmpleadoEmpresaController {
 
     @Operation(summary = "Trae todos los empleados ACTIVOS de una empresa")
     @GetMapping("/traerTodos/{id}")
-    @PreAuthorize("hasAuthority('VER_EMPLEADOS')") //TODO: Agregar el permiso de cuando crea una oferta que puede seleccionar el empleado que va a participar !!!!
+    @PreAuthorize("hasAuthority('GESTIONAR_EMPLEADOS')") //TODO: Agregar el permiso de cuando crea una oferta que puede seleccionar el empleado que va a participar !!!!
     public ResponseEntity<?> visualizarEmpleadosActivos(@PathVariable Long id){
         List<EmpleadoEmpresa> empleados = empleadoEmpresaService.visualizarEmpleados(id);
         return ResponseEntity.status(HttpStatus.OK).body(empleados);
@@ -68,7 +68,7 @@ public class EmpleadoEmpresaController {
 
     @Operation(summary = "Dice la cantidad de empleados ACTIVOS que tiene una empresa")
     @GetMapping("/contarEmpleados/{id}")
-    @PreAuthorize("hasAuthority('VER_EMPLEADOS')") //TODO: Ver si con otro modulo (por ej metricas o alguno otro), hay que agregarle un permiso 
+    @PreAuthorize("hasAuthority('GESTIONAR_EMPLEADOS')") //TODO: Ver si con otro modulo (por ej metricas o alguno otro), hay que agregarle un permiso 
     public ResponseEntity<?> contarCantidadEmpleadosDeEmpresa(@PathVariable Long id){
         Long cantidadEmpleados = empleadoEmpresaService.contarEmpleadosDeEmpresa(id);
         return ResponseEntity.status(HttpStatus.OK).body(cantidadEmpleados);
@@ -77,7 +77,7 @@ public class EmpleadoEmpresaController {
 
     @Operation(summary = "Trae a un EmpleadoEmpresa por su ID")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('VER_EMPLEADOS') or hasAuthority('ACTUALIZAR_MI_PERFIL')") 
+    @PreAuthorize("hasAuthority('GESTIONAR_EMPLEADOS') or hasAuthority('GESTIONAR_MI_PERFIL')") 
     public ResponseEntity<?> visualizarDatosEmpleado(@PathVariable Long id){
         EmpleadoEmpresa empleado = empleadoEmpresaService.findById(id);
         return ResponseEntity.status(HttpStatus.OK).body(empleado);
@@ -85,7 +85,7 @@ public class EmpleadoEmpresaController {
 
     @Operation(summary = "Administrador empresa da de baja un empelado empresa")
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ELIMINAR_EMPLEADO')") 
+    @PreAuthorize("hasAuthority('GESTIONAR_EMPLEADOS')") 
     public ResponseEntity<?> darDeBajaEmpleado(@PathVariable Long id){
         Boolean seDioBaja = empleadoEmpresaService.darDeBajaEmpleadoEmpresa(id);
         return ResponseEntity.status(HttpStatus.OK).body(seDioBaja);

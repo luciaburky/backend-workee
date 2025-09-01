@@ -27,7 +27,7 @@ public class CategoriaRolController {
 
     @Operation(summary = "Obtiene todas las categorías de roles ACTIVAS")
     @GetMapping("")
-    @PreAuthorize("hasAuthority('CREAR_ROL')")
+    @PreAuthorize("hasAuthority('GESTIONAR_ROLES')")
     public ResponseEntity<?> obtenerCategoriasRoles(){
         List<CategoriaRol> categorias = categoriaRolService.obtenerCategoriasRoles();
         return ResponseEntity.status(HttpStatus.OK).body(categorias);

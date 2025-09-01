@@ -30,7 +30,7 @@ public class BackupController {
 
     @Operation(summary = "Listar los backups disponibles")
     @GetMapping("/listarBackups")
-    @PreAuthorize("hasAuthority('BACKUP')")//TODO: Revisar los nombres de los permisos a ver cual le ponemos, si es uno para todos o si es para cada cosa
+    @PreAuthorize("hasAuthority('BACKUP')")
     public ResponseEntity<?> listarBackups() {
         List<String> backups = backupService.listarBackups();
         return ResponseEntity.status(HttpStatus.OK).body(backups);
@@ -38,7 +38,7 @@ public class BackupController {
 
     @Operation(summary = "Genera un backup de la base de datos")
     @PostMapping("/generarBackup")
-    @PreAuthorize("hasAuthority('BACKUP')")//TODO: Revisar los nombres de los permisos a ver cual le ponemos, si es uno para todos o si es para cada cosa
+    @PreAuthorize("hasAuthority('BACKUP')")
     public ResponseEntity<?> generarBackup() {
         String mensaje = backupService.generarBackup();
         return ResponseEntity.status(HttpStatus.OK).body(mensaje);
@@ -46,7 +46,7 @@ public class BackupController {
 
     @Operation(summary = "Restaurar un backup de la base de datos")
     @PostMapping("/restaurarBackup/{nombreBackup}")
-    @PreAuthorize("hasAuthority('BACKUP')")//TODO: Revisar los nombres de los permisos a ver cual le ponemos, si es uno para todos o si es para cada cosa
+    @PreAuthorize("hasAuthority('BACKUP')")
     public ResponseEntity<?> restaurarBackup(@PathVariable String nombreBackup) {
         String mensaje = backupService.restaurarBackup(nombreBackup);
         return ResponseEntity.status(HttpStatus.OK).body(mensaje);

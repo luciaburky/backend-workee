@@ -34,7 +34,7 @@ public class EmpresaController {
 
     @Operation(summary = "Modificar perfil de administrador empresa")
     @PutMapping("/modificarPerfil/{id}")
-    @PreAuthorize("hasAuthority('ACTUALIZAR_MI_PERFIL')") 
+    @PreAuthorize("hasAuthority('GESTIONAR_MI_PERFIL')") 
     public ResponseEntity<?> modificarEmpresa(@PathVariable Long id, @RequestBody EmpresaRequestDTO empresaRequestDTO){
         Empresa empresaModificada = empresaService.modificarEmpresa(id, empresaRequestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(empresaModificada);
@@ -42,7 +42,7 @@ public class EmpresaController {
 
     @Operation(summary = "Ver detalle de una empresa segun su ID")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ACTUALIZAR_MI_PERFIL', 'VER_MI_PERFIL', 'VER_PERFIL_EMPRESA')")
+    @PreAuthorize("hasAnyAuthority('GESTIONAR_MI_PERFIL', 'BUSCAR_EMPRESAS'. 'POSTULAR_OFERTA')")
     public ResponseEntity<?> visualizarDetalleEmpresa(@PathVariable Long id){
         Empresa empresa = empresaService.findById(id);
         return ResponseEntity.status(HttpStatus.OK).body(empresa);
@@ -50,7 +50,7 @@ public class EmpresaController {
 
     @Operation(summary = "Elimina una cuenta de empresa y todo lo relacionado a ella")
     @DeleteMapping("/{idEmpresa}")
-    @PreAuthorize("hasAuthority('ELIMINAR_EMPRESA')") 
+    @PreAuthorize("hasAuthority('GESTIONAR_MI_PERFIL')") 
     public ResponseEntity<?> eliminarEmpresa(@PathVariable Long idEmpresa){
         bajaOrquestadorService.darDeBajaEmpresaYRelacionados(idEmpresa);
         return ResponseEntity.status(HttpStatus.OK).body("Cuenta de empresa eliminada correctamente");

@@ -49,7 +49,7 @@ public class UsuarioController {
 
     @Operation(summary = "Trae a todos los usuarios que se encuentran activos")
     @GetMapping("")
-    @PreAuthorize("hasAuthority('VER_USUARIOS')") 
+    @PreAuthorize("hasAuthority('GESTIONAR_USUARIOS')") 
     public ResponseEntity<?> buscarUsuariosActivos(){
         List<UsuarioResponseDTO> usuarios = usuarioService.buscarUsuariosActivos();
         return ResponseEntity.status(HttpStatus.OK).body(usuarios);
@@ -57,16 +57,15 @@ public class UsuarioController {
 
     @Operation(summary = "Trae a todos los usuarios que se encuentran activos según el rol ingresado")
     @PutMapping("/porRol")
-    @PreAuthorize("hasAuthority('VER_USUARIOS')") 
+    @PreAuthorize("hasAuthority('GESTIONAR_USUARIOS')") 
     public ResponseEntity<?> buscarUsuariosActivosPorRol(@Valid @RequestBody FiltrosUsuariosRequestDTO filtroUsuario){
-        System.out.println("entreee");
         List<UsuarioResponseDTO> usuarios = usuarioService.buscarUsuariosActivosPorRol(filtroUsuario.getIdsRol());
         return ResponseEntity.status(HttpStatus.OK).body(usuarios);
     }
 
     @Operation(summary = "Para dar de baja un usuario y su entidad relacionada")
     @DeleteMapping("/{idUsuario}")
-    @PreAuthorize("hasAuthority('ELIMINAR_USUARIO')") 
+    @PreAuthorize("hasAuthority('GESTIONAR_USUARIOS')") 
     public ResponseEntity<?> darDeBajaUsuario(@PathVariable Long idUsuario){
         this.bajaOrquestadorService.darDeBajaUsuarioYEntidadRelacionada(idUsuario);
         return ResponseEntity.status(HttpStatus.OK).body("Usuario dado de baja correctamente");
@@ -74,7 +73,7 @@ public class UsuarioController {
 
     @Operation(summary = "Modificar el rol de un usuario")
     @PutMapping("/modificarRol/{idUsuario}")
-    @PreAuthorize("hasAuthority('MODIFICAR_ROL_USUARIO')") 
+    @PreAuthorize("hasAuthority('GESTIONAR_USUARIOS')") 
     public ResponseEntity<?> modificarRolDeUsuario(@PathVariable Long idUsuario, @RequestBody Long idRol){
         usuarioService.modificarRolUsuario(idUsuario, idRol);
         return ResponseEntity.status(HttpStatus.OK).body("Rol modificado correctamente");
@@ -82,14 +81,14 @@ public class UsuarioController {
 
     @Operation(summary = "Visualizar detalle de usuario")
     @GetMapping("/{idUsuario}")
-    @PreAuthorize("hasAuthority('VER_DETALLE_USUARIO') or hasAuthority('MODIFICAR_ROL_USUARIO')") 
+    @PreAuthorize("hasAuthority('GESTIONAR_USUARIOS')") 
     public ResponseEntity<?> visualizarDetalleUsuario(@PathVariable Long idUsuario){
         UsuarioResponseDTO usuario = usuarioService.visualizarDetalleUsuario(idUsuario);
         return ResponseEntity.status(HttpStatus.OK).body(usuario);
     }
 
     @GetMapping("/miPerfil")
-    @PreAuthorize("hasAuthority('VER_MI_PERFIL')")
+    @PreAuthorize("hasAuthority('GESTIONAR_MI_PERFIL')")
     public ResponseEntity<?> verPerfilUsuario(){
         Usuario usuario = usuarioService.obtenerUsuarioAutenticado();
 

@@ -35,7 +35,7 @@ public class CandidatoController {
 
     @Operation(summary = "Actualizar un Candidato")
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('ACTUALIZAR_MI_PERFIL')")
+    @PreAuthorize("hasAuthority('GESTIONAR_MI_PERFIL')")
     public ResponseEntity<Candidato> actualizarCandidato(@PathVariable("id") Long idCandidato, @RequestBody CandidatoRequestDTO candidatoDTO) {
         Candidato candidatoActualizado = candidatoService.modificarCandidato(idCandidato, candidatoDTO);
         return ResponseEntity.ok().body(candidatoActualizado);
@@ -43,6 +43,7 @@ public class CandidatoController {
 
     @Operation(summary = "Actualizar o crear CV de un Candidato")
     @PutMapping("/{id}/cv")
+    @PreAuthorize("hasAuthority('GESTIONAR_MI_PERFIL')")
     public ResponseEntity<Void> actualizarOCrearCV(@PathVariable("id") Long idCandidato, @RequestBody String enlaceCV) {
         candidatoService.actualizaroCrearCV(idCandidato, enlaceCV);
         return ResponseEntity.noContent().build();
@@ -50,6 +51,7 @@ public class CandidatoController {
 
     @Operation(summary = "Eliminar CV de un Candidato")
     @DeleteMapping("/{id}/cv")
+    @PreAuthorize("hasAuthority('GESTIONAR_MI_PERFIL')")
     public ResponseEntity<Void> eliminarCv(@PathVariable("id") Long idCandidato) {
         candidatoService.eliminarCv(idCandidato);
         return ResponseEntity.noContent().build();
@@ -57,7 +59,7 @@ public class CandidatoController {
 
     @Operation(summary = "Obtener un Candidato por su ID")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('BUSCAR_CANDIDATOS') or hasAuthority('VER_PERFIL_CANDIDATO')")
+    @PreAuthorize("hasAuthority('BUSCAR_CANDIDATOS') or hasAuthority('GESTIONAR_MI_PERFIL')")
     public ResponseEntity<Candidato> obtenerCandidatoPorId(@PathVariable("id") Long idCandidato) {
         Candidato candidato = candidatoService.findById(idCandidato);
         return ResponseEntity.ok().body(candidato);
@@ -72,7 +74,7 @@ public class CandidatoController {
 
     @Operation(summary = "Obtener habilidades de un Candidato")
     @GetMapping("/{id}/habilidades")
-    @PreAuthorize("hasAuthority('BUSCAR_CANDIDATOS') or hasAuthority('VER_PERFIL_CANDIDATO') or hasAuthority('ACTUALIZAR_CANDIDATO')") //TODO: agregarle los que falten
+    @PreAuthorize("hasAuthority('BUSCAR_CANDIDATOS') or hasAuthority('GESTIONAR_MI_PERFIL')")
     public ResponseEntity<List<Habilidad>> obtenerHabilidades(@PathVariable("id") Long idCandidato) {
         List<Habilidad> habilidades = candidatoService.obtenerHabilidades(idCandidato);
         return ResponseEntity.ok().body(habilidades);
@@ -80,7 +82,7 @@ public class CandidatoController {
 
     @Operation(summary = "Elimina una cuenta de candidato y todo lo relacionado a ella")
     @DeleteMapping("/{idCandidato}")
-    @PreAuthorize("hasAuthority('ELIMINAR_CANDIDATO')")
+    @PreAuthorize("hasAuthority('GESTIONAR_MI_PERFIL')")
     public ResponseEntity<?> eliminarCandidato(@PathVariable Long idCandidato){
         candidatoService.eliminarCuentaCandidato(idCandidato);
         return ResponseEntity.status(HttpStatus.OK).body("Cuenta de candidato eliminada correctamente");

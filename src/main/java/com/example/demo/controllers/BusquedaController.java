@@ -67,6 +67,7 @@ public class BusquedaController {
 
     @Operation(summary = "Trae candidatos según los filtros aplicados")
     @PostMapping("/candidatosFiltrados")
+    @PreAuthorize("hasAuthority('BUSCAR_CANDIDATOS')")
     public ResponseEntity<?> filtrarCandidatos(@RequestBody FiltrosCandidatoRequestDTO filtrosCandidatoRequestDTO){
         List<Candidato> candidatos = candidatoService.buscarCandidatosConFiltros(filtrosCandidatoRequestDTO);
 
@@ -75,6 +76,7 @@ public class BusquedaController {
 
     @Operation(summary = "Busca candidatos según el nombre ingresado")
     @GetMapping("/candidatosPorNombre")
+    @PreAuthorize("hasAuthority('BUSCAR_CANDIDATOS')")
     public ResponseEntity<?> buscarCandidatosPorNombre(@RequestParam String nombreCandidato){
         List<Candidato> candidatos = candidatoService.buscarCandidatosPorNombre(nombreCandidato);
         return ResponseEntity.status(HttpStatus.OK).body(candidatos);

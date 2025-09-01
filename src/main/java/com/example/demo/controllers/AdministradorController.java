@@ -46,7 +46,7 @@ public class AdministradorController {
 
     @Operation(summary = "Ver empresas pendientes por habilitar")
     @GetMapping("/habilitaciones")
-    @PreAuthorize("hasAuthority('VER_HABILITACIONES')")
+    @PreAuthorize("hasAuthority('HABILITACION_EMPRESA')")
     public ResponseEntity<?> visualizarEmpresasPendientesDeHabiltiacion(){
         List<EmpresaPendienteHabilitacionDTO> empresasPendientes = empresaService.buscarEmpresasPendientesDeHabilitacion("Pendiente");
         return ResponseEntity.status(HttpStatus.OK).body(empresasPendientes);

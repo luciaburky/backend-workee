@@ -33,7 +33,7 @@ public class RolController {
 
     @Operation(summary = "Obtiene todos los roles")
     @GetMapping("")    
-    @PreAuthorize("hasAuthority('VER_ROLES')") 
+    @PreAuthorize("hasAuthority('GESTIONAR_ROLES')") 
     public ResponseEntity<?> obtenerRoles(){
         List<Rol> roles = rolService.obtenerRoles();
         return ResponseEntity.status(HttpStatus.OK).body(roles);
@@ -41,7 +41,7 @@ public class RolController {
 
     @Operation(summary = "Crea un nuevo rol")
     @PostMapping("")
-    @PreAuthorize("hasAuthority('CREAR_ROL')") 
+    @PreAuthorize("hasAuthority('GESTIONAR_ROLES')") 
     public ResponseEntity<?> crearRol(@RequestBody RolRequestDTO rolRequestDTO){
         Rol nuevoRol = rolService.crearRol(rolRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoRol);
@@ -49,7 +49,7 @@ public class RolController {
 
     @Operation(summary = "Modificar un rol existente")
     @PutMapping("/{idRol}")
-    @PreAuthorize("hasAuthority('MODIFICAR_ROL')") 
+    @PreAuthorize("hasAuthority('GESTIONAR_ROLES')") 
     public ResponseEntity<?> modificarRol(@RequestBody RolRequestDTO rolRequestDTO, @PathVariable Long idRol){
         Rol rolExistente = rolService.modificarRol(rolRequestDTO, idRol);
         return ResponseEntity.status(HttpStatus.OK).body(rolExistente);
@@ -57,7 +57,7 @@ public class RolController {
 
     @Operation(summary = "Deshabilitar un rol por su id")
     @DeleteMapping("/deshabilitar/{idRol}")
-    @PreAuthorize("hasAuthority('HABILITACION_ROL')") 
+    @PreAuthorize("hasAuthority('GESTIONAR_ROLES')") 
     public ResponseEntity<?> deshabilitarRol(@PathVariable Long idRol){
         rolService.deshabilitarRol(idRol);
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -65,7 +65,7 @@ public class RolController {
 
     @Operation(summary = "Habilitar un rol por su id")
     @PutMapping("/habilitar/{idRol}")
-    @PreAuthorize("hasAuthority('HABILITACION_ROL')") 
+    @PreAuthorize("hasAuthority('GESTIONAR_ROLES')") 
     public ResponseEntity<?> habilitarRol(@PathVariable Long idRol){
         rolService.habilitarRol(idRol);
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -73,7 +73,7 @@ public class RolController {
 
     @Operation(summary = "Traer roles activos segun una categoría")
     @GetMapping("/porCategoria/{idCategoria}")
-    @PreAuthorize("hasAuthority('MODIFICAR_ROL_USUARIO')") 
+    @PreAuthorize("hasAuthority('GESTIONAR_ROLES') or hasAuthority('GESTIONAR_USUARIOS')") 
     public ResponseEntity<?> buscarRolesSegunCategoria(@PathVariable Long idCategoria){
         List<Rol> roles = rolService.obtenerRolesSegunCategoria(idCategoria);
         return ResponseEntity.status(HttpStatus.OK).body(roles);
@@ -81,7 +81,7 @@ public class RolController {
 
     @Operation(summary = "Ver detalle de un rol segun su ID")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('VER_ROLES')")
+    @PreAuthorize("hasAuthority('GESTIONAR_ROLES')")
     public ResponseEntity<?> visualizarDetalleRol(@PathVariable Long id){
         Rol rol = rolService.findById(id);
         return ResponseEntity.status(HttpStatus.OK).body(rol);
@@ -89,7 +89,7 @@ public class RolController {
 
     @Operation(summary = "Ver detalle de un rol segun el correo del usuario")
     @GetMapping("/porCorreo/{correo}")
-    @PreAuthorize("hasAuthority('VER_ROLES')")
+    @PreAuthorize("hasAuthority('GESTIONAR_ROLES')")
     public ResponseEntity<?> buscarRolPorCorreoUsuario(@PathVariable String correo){
         Rol rol = rolService.obtenerRolSegunCorreoUsuario(correo);
         return ResponseEntity.status(HttpStatus.OK).body(rol);
