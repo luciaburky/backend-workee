@@ -61,7 +61,6 @@ public class EstadoBusquedaController {
 
     @Operation(summary = "Obtener todos los Estados Busqueda Activos")
     @GetMapping("/activos")
-    @PreAuthorize("hasAuthority('GESTIONAR_ESTADO_BUSQUEDA')")
     public ResponseEntity<List<EstadoBusqueda>> obtenerEstadosBusquedaActivos() {
         List<EstadoBusqueda> listaEstadosBusquedaActivos = estadoBusquedaService.obtenerEstadosBusquedaActivos();
         return ResponseEntity.ok(listaEstadosBusquedaActivos) ;

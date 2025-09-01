@@ -59,7 +59,6 @@ public class GeneroController {
 
     @Operation(summary = "Obtiene todos los Generos ACTIVOS")
     @GetMapping("/activos")
-    @PreAuthorize("hasAuthority('GESTIONAR_GENERO')")
     public ResponseEntity<?> obtenerGenerosActivos(){
         List<Genero> generosActivos = generoService.obtenerGenerosActivos();
         return ResponseEntity.status(HttpStatus.OK).body(generosActivos);

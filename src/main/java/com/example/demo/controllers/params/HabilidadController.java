@@ -37,7 +37,6 @@ public class HabilidadController {
 
     @Operation(summary = "Obtener Habilidades por Tipo Habilidad")
     @GetMapping("/habilidadesPorTipoHabilidad/{idTipoHabilidad}")
-    @PreAuthorize("hasAuthority('GESTIONAR_HABILIDAD')")
     public ResponseEntity<List<Habilidad>> getHabilidadesByTipoHabilidad(@PathVariable Long idTipoHabilidad) {
         List<Habilidad> listaHabilidadesPorTipo = habilidadService.findHabilidadByTipoHabilidad(idTipoHabilidad);
         return ResponseEntity.ok(listaHabilidadesPorTipo);
@@ -46,10 +45,7 @@ public class HabilidadController {
     @Operation(summary = "Crear una nueva Habilidad")
     @PostMapping()
     @PreAuthorize("hasAuthority('GESTIONAR_HABILIDAD')")
-    public ResponseEntity<Habilidad> crearHabilidad(@Valid @RequestBody HabilidadRequestDTO habilidadRequestDTO){
-        System.out.println("==> Recibido DTO: " + habilidadRequestDTO);
-        System.out.println("==> nombreHabilidad DTO: " + habilidadRequestDTO.getNombreHabilidad());
-        System.out.println("==> idTipoHabilidad DTO: " + habilidadRequestDTO.getIdTipoHabilidad());        
+    public ResponseEntity<Habilidad> crearHabilidad(@Valid @RequestBody HabilidadRequestDTO habilidadRequestDTO){      
         Habilidad nuevaHabilidad = habilidadService.guardarHabilidad(habilidadRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevaHabilidad);
     }
@@ -72,7 +68,6 @@ public class HabilidadController {
 
     @Operation(summary = "Obtener todas las Habilidades Activas")
     @GetMapping("/activas")
-    @PreAuthorize("hasAuthority('GESTIONAR_HABILIDAD')")
     public ResponseEntity<List<Habilidad>> obtenerHabilidadesActivas() {
         List<Habilidad> listaHabilidadesActivas = habilidadService.obtenerHabilidadesActivas();
         return ResponseEntity.ok(listaHabilidadesActivas) ;
