@@ -18,4 +18,6 @@ public interface RolService extends BaseService<Rol, Long>{
     public Rol buscarRolActivoPorId(Long idRol);
 
     public Rol buscarRolPorCodigoRol(String codigoRol);
+
+    public Rol obtenerRolSegunCorreoUsuario(String correo);
 }

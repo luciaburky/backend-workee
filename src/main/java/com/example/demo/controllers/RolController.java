@@ -86,4 +86,12 @@ public class RolController {
         Rol rol = rolService.findById(id);
         return ResponseEntity.status(HttpStatus.OK).body(rol);
     }
+
+    @Operation(summary = "Ver detalle de un rol segun el correo del usuario")
+    @GetMapping("/porCorreo/{correo}")
+    @PreAuthorize("hasAuthority('VER_ROLES')")
+    public ResponseEntity<?> buscarRolPorCorreoUsuario(@PathVariable String correo){
+        Rol rol = rolService.obtenerRolSegunCorreoUsuario(correo);
+        return ResponseEntity.status(HttpStatus.OK).body(rol);
+    }
 }

@@ -27,5 +27,13 @@ public interface RolRepository extends BaseRepository<Rol, Long>{
             SELECT ur.rol FROM UsuarioRol ur 
             WHERE ur.usuario.correoUsuario = :correo
         """)
-    List<Rol> findRolesByCorreoUsuario(@Param("correo") String correo);
+    List<Rol> findRolesByCorreoUsuario(@Param("correo") String correo); //mala practica xd, ver si despues lo movemos al repo q corresponde
+
+    @Query("""
+            SELECT ur.rol FROM UsuarioRol ur 
+            WHERE ur.usuario.correoUsuario = :correo
+            AND ur.fechaHoraBaja IS NULL
+        """)
+    Optional<Rol> findRolActualByCorreoUsuario(@Param("correo") String correo); //mala practica xd ver si despues lo movemos al repo q corresponde
+    
 }

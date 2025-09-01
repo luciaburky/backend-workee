@@ -205,4 +205,13 @@ public class RolServiceImpl extends BaseServiceImpl<Rol, Long> implements RolSer
         }
         return rol;
     }
+
+    @Override
+    public Rol obtenerRolSegunCorreoUsuario(String correo){
+        Optional<Rol> rolOptional = rolRepository.findRolActualByCorreoUsuario(correo);
+        if(!rolOptional.isPresent()){
+            throw new EntityNotFoundException("No se encontró ningún rol activo para el usuario con el correo ingresado");
+        }
+        return rolOptional.get();
+    }
 }
