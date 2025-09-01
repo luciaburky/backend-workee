@@ -12,21 +12,22 @@ import com.example.demo.repositories.BaseRepository;
 @Repository
 public interface OfertaRepository extends BaseRepository<Oferta, Long> {  
 
-    @Query("""
+  @Query("""
         select (count(o) > 0)
         from Oferta o
           join o.ofertaEtapas oe
           join o.estadosOferta he
           join he.estadoOferta est
-        where oe.etapa.id = :etapaId
-          and he.fechaHoraBaja is null      
-          and est.codigo <> :finalizada    
+        where o.fechaHoraBaja is null                  
+          and oe.etapa.id = :etapaId
+          and oe.fechaHoraBaja is null                 
+          and he.fechaHoraBaja is null                 
+          and est.codigo <> :finalizada                
     """)
     boolean existsOfertaNoFinalizadaQueUsaEtapa(@Param("etapaId") Long etapaId,
                                                 @Param("finalizada") String finalizadaCodigo);
 
     List<Oferta> findAllByEmpresa_IdAndFechaHoraBajaIsNull(Long empresaId);
-
     Boolean existsByModalidadOfertaIdAndFechaHoraBajaIsNull(Long modalidadOfertaId);
     //existsByGeneroIdAndFechaHoraBajaIsNull(idGenero)
 
