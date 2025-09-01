@@ -17,4 +17,6 @@ public interface TipoContratoOfertaService extends BaseService<TipoContratoOfert
 
     public Boolean habilitarTipoContratoOferta(Long id);
 
+    public Boolean deshabilitarTipoContratoOferta(Long id);
+
 }

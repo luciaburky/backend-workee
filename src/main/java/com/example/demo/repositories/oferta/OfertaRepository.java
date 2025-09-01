@@ -27,6 +27,9 @@ public interface OfertaRepository extends BaseRepository<Oferta, Long> {
 
     List<Oferta> findAllByEmpresa_IdAndFechaHoraBajaIsNull(Long empresaId);
 
+    Boolean existsByModalidadOfertaIdAndFechaHoraBajaIsNull(Long modalidadOfertaId);
+    //existsByGeneroIdAndFechaHoraBajaIsNull(idGenero)
+
     
     @Query("""
         SELECT o

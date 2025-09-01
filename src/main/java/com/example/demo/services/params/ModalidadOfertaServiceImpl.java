@@ -11,6 +11,8 @@ import com.example.demo.entities.params.ModalidadOferta;
 import com.example.demo.exceptions.EntityAlreadyEnabledException;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
 import com.example.demo.exceptions.EntityNotValidException;
+import com.example.demo.exceptions.EntityReferencedException;
+import com.example.demo.repositories.oferta.OfertaRepository;
 import com.example.demo.repositories.params.ModalidadOfertaRepository;
 import com.example.demo.services.BaseServiceImpl;
 
@@ -20,10 +22,12 @@ import jakarta.transaction.Transactional;
 public class ModalidadOfertaServiceImpl extends BaseServiceImpl<ModalidadOferta, Long> implements ModalidadOfertaService {
 
     private final ModalidadOfertaRepository modalidadOfertaRepository;
+    private final OfertaRepository ofertaRepository;
 
-    public ModalidadOfertaServiceImpl(ModalidadOfertaRepository modalidadOfertaRepository) {
+    public ModalidadOfertaServiceImpl(ModalidadOfertaRepository modalidadOfertaRepository, OfertaRepository ofertaRepository) {
         super(modalidadOfertaRepository);
         this.modalidadOfertaRepository = modalidadOfertaRepository;
+        this.ofertaRepository = ofertaRepository;
     } 
     
     @Override
@@ -85,4 +89,21 @@ public class ModalidadOfertaServiceImpl extends BaseServiceImpl<ModalidadOferta,
         return modalidadOfertaExistente
         .filter(e -> idAExcluir == null || !e.getId().equals(idAExcluir))
         .isPresent();    }
+
+    
+    @Override
+    @Transactional
+    public Boolean deshabilitarModalidadOferta(Long modalidadOfertaId){
+        if(modalidadOfertaId == null) {
+            throw new IllegalArgumentException("El ID no puede ser nulo");
+        }
+
+        boolean enUso = ofertaRepository.existsByModalidadOfertaIdAndFechaHoraBajaIsNull(modalidadOfertaId);
+        if(enUso){
+            throw new EntityReferencedException("La entidad se encuentra en uso, no puede deshabilitarla");
+
+        } else {
+            return delete(modalidadOfertaId);
+        }
+    }
 }

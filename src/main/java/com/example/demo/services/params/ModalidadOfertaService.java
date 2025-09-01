@@ -16,4 +16,6 @@ public interface ModalidadOfertaService extends BaseService<ModalidadOferta, Lon
     List<ModalidadOferta> obtenerModalidadesOfertas();
     
     List<ModalidadOferta> obtenerModalidadesOfertasActivos();
+
+    Boolean deshabilitarModalidadOferta(Long modalidadOfertaId);
 }

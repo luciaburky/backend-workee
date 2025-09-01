@@ -80,7 +80,7 @@ public class EstadoOfertaController {
     @DeleteMapping("/deshabilitar/{id}")
     @PreAuthorize("hasAuthority('GESTIONAR_ESTADO_OFERTA')")
     public ResponseEntity<Void> deshabilitarEstadoOferta(@PathVariable Long id){
-        estadoOfertaService.delete(id);
+        estadoOfertaService.deshabilitarEstadoOferta(id);
         return ResponseEntity.ok().build();
     }
 

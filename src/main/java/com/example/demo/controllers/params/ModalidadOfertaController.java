@@ -77,7 +77,7 @@ public class ModalidadOfertaController {
     @DeleteMapping("/deshabilitar/{id}")
     @PreAuthorize("hasAuthority('GESTIONAR_MODALIDAD_OFERTA')")
     public ResponseEntity<Void> deshabilitarModalidadOferta(@PathVariable Long id) {
-        modalidadOfertaService.delete(id);
+        modalidadOfertaService.deshabilitarModalidadOferta(id);
         return ResponseEntity.ok().build();
     }
     

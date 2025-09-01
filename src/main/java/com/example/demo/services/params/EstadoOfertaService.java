@@ -19,4 +19,6 @@ public interface EstadoOfertaService extends BaseService<EstadoOferta, Long> {
     Boolean habilitarEstadoOferta(Long id);
     
     EstadoOferta findByCodigo(String codigo);
+
+    Boolean deshabilitarEstadoOferta(Long idEstadoOferta);
 }
