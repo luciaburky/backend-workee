@@ -60,7 +60,7 @@ public class RolController {
     @PreAuthorize("hasAuthority('HABILITACION_ROL')") 
     public ResponseEntity<?> deshabilitarRol(@PathVariable Long idRol){
         rolService.deshabilitarRol(idRol);
-        return ResponseEntity.status(HttpStatus.OK).body("Rol deshabilitado correctamente");
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @Operation(summary = "Habilitar un rol por su id")
@@ -68,7 +68,7 @@ public class RolController {
     @PreAuthorize("hasAuthority('HABILITACION_ROL')") 
     public ResponseEntity<?> habilitarRol(@PathVariable Long idRol){
         rolService.habilitarRol(idRol);
-        return ResponseEntity.status(HttpStatus.OK).body("Rol habilitado correctamente");
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @Operation(summary = "Traer roles activos segun una categoría")
