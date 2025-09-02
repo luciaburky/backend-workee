@@ -187,8 +187,9 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
         candidatoCVService.actualizarOCrearCV(candidatoOriginal, candidatoDTO.getEnlaceCV());
 
         //actualizar lo relacionado al usuario
-        usuarioService.actualizarDatosUsuario(idCandidato, candidatoDTO.getContrasenia(), candidatoDTO.getRepetirContrasenia(), candidatoDTO.getUrlFotoPerfil(), candidatoDTO.getContraseniaActual());
-        
+        //usuarioService.actualizarDatosUsuario(idCandidato, candidatoDTO.getContrasenia(), candidatoDTO.getRepetirContrasenia(), candidatoDTO.getUrlFotoPerfil(), candidatoDTO.getContraseniaActual());
+        usuarioService.actualizarFotoPerfilUsuario(candidatoOriginal.getUsuario().getId(), candidatoDTO.getUrlFotoPerfil());
+
         return candidatoRepository.save(candidatoOriginal);
     }
 

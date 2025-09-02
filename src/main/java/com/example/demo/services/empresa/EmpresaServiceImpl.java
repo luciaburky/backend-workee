@@ -69,8 +69,8 @@ public class EmpresaServiceImpl extends BaseServiceImpl<Empresa, Long> implement
             empresaOriginal.setRubro(rubro);
         }
         
-        usuarioService.actualizarDatosUsuario(empresaOriginal.getUsuario().getId(), empresaRequestDTO.getContrasenia(), empresaRequestDTO.getRepetirContrasenia(), empresaRequestDTO.getUrlFotoPerfil(), empresaRequestDTO.getContraseniaActual());
-
+        //usuarioService.actualizarDatosUsuario(empresaOriginal.getUsuario().getId(), empresaRequestDTO.getContrasenia(), empresaRequestDTO.getRepetirContrasenia(), empresaRequestDTO.getUrlFotoPerfil(), empresaRequestDTO.getContraseniaActual());
+        usuarioService.actualizarFotoPerfilUsuario(empresaOriginal.getUsuario().getId(),empresaRequestDTO.getUrlFotoPerfil());
         return empresaRepository.save(empresaOriginal);
     }
 

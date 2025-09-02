@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dtos.ActualizarContraseniaDTO;
 import com.example.demo.dtos.FiltrosUsuariosRequestDTO;
 import com.example.demo.dtos.UsuarioResponseDTO;
 import com.example.demo.entities.seguridad.Usuario;
@@ -87,6 +88,7 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.OK).body(usuario);
     }
 
+    @Operation(summary = "Permite a un usuario ver su propio perfil")
     @GetMapping("/miPerfil")
     @PreAuthorize("hasAuthority('GESTIONAR_MI_PERFIL')")
     public ResponseEntity<?> verPerfilUsuario(){
@@ -101,5 +103,13 @@ public class UsuarioController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No tiene perfil asociado.");
         }
+    }
+
+    @Operation(summary = "Permite a un usuario modificar su contraseña desde su perfil")
+    @PutMapping("/actualizarContrasenia/{idUsuario}")
+    @PreAuthorize("hasAuthority('GESTIONAR_MI_PERFIL')")
+    public ResponseEntity<?> actualizarContrasenia(@RequestBody ActualizarContraseniaDTO actualizarContraseniaDTO, @PathVariable Long idUsuario){
+        usuarioService.actualizarContraseniaUsuario(idUsuario, actualizarContraseniaDTO.getContraseniaNueva(), actualizarContraseniaDTO.getRepetirContrasenia(), actualizarContraseniaDTO.getContraseniaActual());
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

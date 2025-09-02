@@ -56,9 +56,7 @@ public class CustomUserDetailsService implements UserDetailsService{
             .map(permisoRol -> new SimpleGrantedAuthority(permisoRol.getPermiso().getCodigoPermiso())) 
             .collect(Collectors.toList());  
 
-        for(GrantedAuthority authority : authorities){
-            System.out.println("Authority: " + authority.getAuthority());
-        }
+        
         return new org.springframework.security.core.userdetails.User(
                 usuario.getCorreoUsuario(),
                 usuario.getContraseniaUsuario(),

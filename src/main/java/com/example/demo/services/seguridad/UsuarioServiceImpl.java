@@ -137,28 +137,37 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
 
     @Override
     @Transactional
-    public void actualizarDatosUsuario(Long idUsuario, String nuevaContrasenia, String repetirContrasenia, String nuevaUrlFoto, String contraseniaActual){
-        boolean seCambio = false;
+    public void actualizarContraseniaUsuario(Long idUsuario, String nuevaContrasenia, String repetirContrasenia, String contraseniaActual){
         Usuario usuario = findById(idUsuario);
-        String contraseniaEncriptada = encriptarContrasenia(contraseniaActual);
-
-        if(nuevaContrasenia != null && !nuevaContrasenia.isBlank()){
-            if(!usuario.getContraseniaUsuario().equals(contraseniaEncriptada)){
-                throw new EntityNotValidException("La contraseña actual ingresada no coincide con la contraseña guardada");
-            }
-            String contrasenia = modificarContrasenia(nuevaContrasenia, repetirContrasenia);
-            usuario.setContraseniaUsuario(contrasenia);
-            seCambio = true;
+        
+        if(nuevaContrasenia.isBlank() || repetirContrasenia.isBlank() || contraseniaActual.isBlank()){
+            throw new EntityNotValidException("Debe ingresar el campo faltante");
+        }
+        if(nuevaContrasenia.length() < 8 || repetirContrasenia.length() < 8){
+            throw new EntityNotValidException("Las contrasñas deben tener al menos 8 caracteres");
         }
 
-        if(nuevaUrlFoto != null && !nuevaUrlFoto.isBlank()){
-            usuario.setUrlFotoUsuario(nuevaUrlFoto);
-            seCambio = true;
+        if(!nuevaContrasenia.equals(repetirContrasenia)){
+            throw new EntityNotValidException("Las contraseñas deben coincidir");
         }
+        
+        if(!bCryptPasswordEncoder.matches(contraseniaActual, usuario.getContraseniaUsuario())){
+            throw new EntityNotValidException("La contraseña actual ingresada no coincide con la contraseña guardada");
+        }
+        String contrasenia = modificarContrasenia(nuevaContrasenia, repetirContrasenia);
+        usuario.setContraseniaUsuario(contrasenia);
+        
+        usuarioRepository.save(usuario);
+    }
 
-        if(seCambio){
-            usuarioRepository.save(usuario);
+    @Override
+    @Transactional
+    public void actualizarFotoPerfilUsuario(Long idUsuario, String urlFotoPerfil){
+        Usuario usuario = findById(idUsuario);
+        if(urlFotoPerfil != null && !urlFotoPerfil.isBlank()){
+            usuario.setUrlFotoUsuario(urlFotoPerfil);
         }
+        usuarioRepository.save(usuario);
     }
     
     @Transactional
