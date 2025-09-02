@@ -13,6 +13,8 @@ import com.example.demo.exceptions.EntityAlreadyEnabledException;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
 import com.example.demo.exceptions.EntityNotFoundException;
 import com.example.demo.exceptions.EntityNotValidException;
+import com.example.demo.exceptions.EntityReferencedException;
+import com.example.demo.repositories.oferta.OfertaEstadoOfertaRepository;
 import com.example.demo.repositories.params.EstadoOfertaRepository;
 import com.example.demo.services.BaseServiceImpl;
 
@@ -22,10 +24,12 @@ import jakarta.transaction.Transactional;
 public class EstadoOfertaServiceImpl extends BaseServiceImpl<EstadoOferta, Long> implements EstadoOfertaService {
 
     private final EstadoOfertaRepository estadoOfertaRepository;
+    private final OfertaEstadoOfertaRepository ofertaEstadoOfertaRepository;
 
-    public EstadoOfertaServiceImpl(EstadoOfertaRepository estadoOfertaRepository) {
+    public EstadoOfertaServiceImpl(EstadoOfertaRepository estadoOfertaRepository, OfertaEstadoOfertaRepository ofertaEstadoOfertaRepository) {
         super(estadoOfertaRepository);
         this.estadoOfertaRepository = estadoOfertaRepository;
+        this.ofertaEstadoOfertaRepository = ofertaEstadoOfertaRepository;
     }
 
     @Override
@@ -100,4 +104,19 @@ public class EstadoOfertaServiceImpl extends BaseServiceImpl<EstadoOferta, Long>
         }
         return estadoOfertaOpt.get();
     }
+
+    @Override
+    @Transactional
+    public Boolean deshabilitarEstadoOferta(Long estadoOfertaId){
+        if(estadoOfertaId == null) {
+            throw new IllegalArgumentException("El ID no puede ser nulo");
+        }
+        
+        boolean enUso = ofertaEstadoOfertaRepository.existsByEstadoOfertaIdAndFechaHoraBajaIsNull(estadoOfertaId);
+        if(enUso) {
+            throw new EntityReferencedException("La entidad se encuentra en uso, no puede deshabilitarla");
+        } else {
+            return delete(estadoOfertaId);
+        }
+    }   
 }

@@ -10,6 +10,8 @@ import com.example.demo.dtos.params.TipoContratoOfertaRequestDTO;
 import com.example.demo.entities.params.TipoContratoOferta;
 import com.example.demo.exceptions.EntityAlreadyEnabledException;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
+import com.example.demo.exceptions.EntityReferencedException;
+import com.example.demo.repositories.oferta.OfertaRepository;
 import com.example.demo.repositories.params.TipoContratoOfertaRepository;
 import com.example.demo.services.BaseServiceImpl;
 
@@ -19,10 +21,13 @@ import jakarta.transaction.Transactional;
 public class TipoContratoOfertaServiceImpl extends BaseServiceImpl<TipoContratoOferta,Long> implements TipoContratoOfertaService {
 
     private final TipoContratoOfertaRepository tipoContratoOfertaRepository;
+    private final OfertaRepository ofertaRepository;
 
-    public TipoContratoOfertaServiceImpl(TipoContratoOfertaRepository tipoContratoOfertaRepository) {
+
+    public TipoContratoOfertaServiceImpl(TipoContratoOfertaRepository tipoContratoOfertaRepository, OfertaRepository ofertaRepository) {
         super(tipoContratoOfertaRepository);
         this.tipoContratoOfertaRepository = tipoContratoOfertaRepository;
+        this.ofertaRepository = ofertaRepository;
     }
 
     @Override
@@ -87,6 +92,21 @@ public class TipoContratoOfertaServiceImpl extends BaseServiceImpl<TipoContratoO
             }
         }
         return tipoContratoOfertaExistente.isPresent();
+    }
+
+    @Override
+    @Transactional
+    public Boolean deshabilitarTipoContratoOferta(Long tipoContratoOfertaId){
+        if (tipoContratoOfertaId == null){
+            throw new IllegalArgumentException("El ID no puede ser nulo");
+        }
+
+        boolean enUso = ofertaRepository.existsByModalidadOfertaIdAndFechaHoraBajaIsNull(tipoContratoOfertaId);
+        if(enUso){
+            throw new EntityReferencedException("La entidad se encuentra en uso, no puede deshabilitarla");
+        } else {
+            return delete(tipoContratoOfertaId);
+        }
     }
 
 }

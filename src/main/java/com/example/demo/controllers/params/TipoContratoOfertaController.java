@@ -77,7 +77,7 @@ public class TipoContratoOfertaController {
     @DeleteMapping("/deshabilitar/{id}")
     @PreAuthorize("hasAuthority('GESTIONAR_CONRATO_OFERTA')")
     public ResponseEntity<?> deshabilitarTipoContratoOferta(@PathVariable Long id) {
-        tipoContratoOfertaService.delete(id); 
+        tipoContratoOfertaService.deshabilitarTipoContratoOferta(id); 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

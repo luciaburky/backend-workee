@@ -27,6 +27,7 @@ public interface CandidatoRepository extends BaseRepository<Candidato, Long> {
     boolean existsByHabilidades_Habilidad_IdAndFechaHoraBajaIsNull(Long habilidadId);
 
     boolean existsByHabilidades_Habilidad_TipoHabilidad_IdAndFechaHoraBajaIsNull(long tipoHabilidadId);
+    
 
     @Query(
         value = "SELECT * FROM candidato c " + 

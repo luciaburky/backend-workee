@@ -8,5 +8,5 @@ import com.example.demo.repositories.BaseRepository;
 @Repository
 public interface OfertaEstadoOfertaRepository extends BaseRepository<OfertaEstadoOferta, Long> {
     // Define any additional methods specific to OfertaEstadoOferta if needed
-    
+    Boolean existsByEstadoOfertaIdAndFechaHoraBajaIsNull(Long estadoOfertaId);  
 }

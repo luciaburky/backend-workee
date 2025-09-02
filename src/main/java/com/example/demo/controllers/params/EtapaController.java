@@ -102,7 +102,7 @@ public class EtapaController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('GESTIONAR_ETAPA_PARAMETRO') or hasAuthority('GESTION_ETAPA_PERSONALIZADA')")
     public ResponseEntity<Void> deshabilitarEtapa(@PathVariable Long id) {
-        etapaService.delete(id);
+        etapaService.deshabilitarEtapa(id);
         return ResponseEntity.ok().build();
     }
     
