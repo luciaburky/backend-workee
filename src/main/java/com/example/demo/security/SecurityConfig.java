@@ -65,7 +65,7 @@ public class SecurityConfig {
                 "/provincias/provinciasPorPais/**", 
                 "/rubros/activos",
                 "/tipoHabilidades/activos",
-                "roles/porCorreo/**").permitAll()
+                "/roles/porCorreo/**").permitAll()
                 .anyRequest().authenticated()
             )
             .userDetailsService(userDetailsService) 
