@@ -19,8 +19,5 @@ public interface TipoHabilidadRepository extends BaseRepository<TipoHabilidad, L
             nativeQuery = true)
      List<TipoHabilidad> buscarTipoHabilidadesActivos(); 
     
-    Optional<TipoHabilidad> findByNombreTipoHabilidadIgnoreCase(String nombreTipoHabilidad);
-    
-    
-    
+    Optional<TipoHabilidad> findByNombreTipoHabilidadIgnoreCase(String nombreTipoHabilidad); 
 } 

@@ -1,5 +1,12 @@
 package com.example.demo.services.params;
 
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.params.HabilidadRequestDTO;
@@ -10,18 +17,12 @@ import com.example.demo.exceptions.EntityAlreadyExistsException;
 import com.example.demo.exceptions.EntityNotFoundException;
 import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.exceptions.EntityReferencedException;
-import com.example.demo.repositories.candidato.CandidatoRepository;
+import com.example.demo.repositories.candidato.CandidatoHabilidadRepository;
+import com.example.demo.repositories.oferta.OfertaHabilidadRepository;
 import com.example.demo.repositories.params.HabilidadRepository;
 import com.example.demo.services.BaseServiceImpl;
 
 import jakarta.transaction.Transactional;
-
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -29,13 +30,15 @@ public class HabilidadServiceImpl extends BaseServiceImpl<Habilidad, Long> imple
     
     private final HabilidadRepository habilidadRepository;
     private final TipoHabilidadService tipoHabilidadService;
-    private final CandidatoRepository candidatoRepository;
+    private final CandidatoHabilidadRepository candidatoHabilidadRepository;
+    private final OfertaHabilidadRepository ofertaHabilidadRepository;
     
-    public HabilidadServiceImpl(HabilidadRepository habilidadRepository, TipoHabilidadService tipoHabilidadService, CandidatoRepository candidatoRepository) {
+    public HabilidadServiceImpl(HabilidadRepository habilidadRepository, TipoHabilidadService tipoHabilidadService, CandidatoHabilidadRepository candidatoHabilidadRepository, OfertaHabilidadRepository ofertaHabilidadRepository) {
         super(habilidadRepository);
         this.habilidadRepository = habilidadRepository;
         this.tipoHabilidadService = tipoHabilidadService;
-        this.candidatoRepository = candidatoRepository;
+        this.candidatoHabilidadRepository = candidatoHabilidadRepository;
+        this.ofertaHabilidadRepository = ofertaHabilidadRepository;
     }
 
     @Override
@@ -134,13 +137,22 @@ public class HabilidadServiceImpl extends BaseServiceImpl<Habilidad, Long> imple
         if(id == null) {
             throw new EntityNotValidException("El ID de la habilidad no puede ser nulo");
         }
-        boolean enUso = candidatoRepository.existsByHabilidades_Habilidad_IdAndFechaHoraBajaIsNull(id);
-        if(enUso) {
+        if(enUso(id)) {
             throw new EntityReferencedException("La entidad se encuentra en uso, no puede deshabilitarla");
         } else {
             return delete(id);
         }
 
+    }
+
+    private Boolean enUso(Long habilidadId) {
+        Boolean usadaEnOfertas = ofertaHabilidadRepository
+                .existsByHabilidadIdAndFechaHoraBajaIsNull(habilidadId);
+
+        Boolean usadaEnCandidatos = candidatoHabilidadRepository
+                .existsByHabilidadIdAndFechaHoraBajaIsNull(habilidadId);
+
+        return usadaEnOfertas || usadaEnCandidatos;
     }
 
     @Override

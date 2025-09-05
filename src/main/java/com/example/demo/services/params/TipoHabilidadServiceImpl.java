@@ -7,11 +7,14 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.params.TipoHabilidadRequestDTO;
+import com.example.demo.entities.candidato.Candidato;
 import com.example.demo.entities.params.TipoHabilidad;
 import com.example.demo.exceptions.EntityAlreadyEnabledException;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
 import com.example.demo.exceptions.EntityNotValidException;
+import com.example.demo.repositories.candidato.CandidatoHabilidadRepository;
 import com.example.demo.repositories.candidato.CandidatoRepository;
+import com.example.demo.repositories.oferta.OfertaHabilidadRepository;
 import com.example.demo.repositories.params.TipoHabilidadRepository;
 import com.example.demo.services.BaseServiceImpl;
 
@@ -22,11 +25,15 @@ public class TipoHabilidadServiceImpl extends BaseServiceImpl<TipoHabilidad, Lon
     
     private final TipoHabilidadRepository tipoHabilidadRepository;
     private final CandidatoRepository candidatoRepository;
+    private final CandidatoHabilidadRepository candidatoHabilidadRepository;
+    private final OfertaHabilidadRepository ofertaHabilidadRepository;
     
-    public TipoHabilidadServiceImpl(TipoHabilidadRepository tipoHabilidadRepository, CandidatoRepository candidatoRepository) {
+    public TipoHabilidadServiceImpl(TipoHabilidadRepository tipoHabilidadRepository, CandidatoRepository candidatoRepository, OfertaHabilidadRepository ofertaHabilidadRepository, CandidatoHabilidadRepository candidatoHabilidadRepository) {
         super(tipoHabilidadRepository);
         this.tipoHabilidadRepository = tipoHabilidadRepository;
         this.candidatoRepository = candidatoRepository;
+        this.ofertaHabilidadRepository = ofertaHabilidadRepository;
+        this.candidatoHabilidadRepository = candidatoHabilidadRepository;
     }
 
     @Override
@@ -91,19 +98,24 @@ public class TipoHabilidadServiceImpl extends BaseServiceImpl<TipoHabilidad, Lon
         .filter(e -> idAExcluir == null || !e.getId().equals(idAExcluir))
         .isPresent();
     }
-
+ 
     @Override
     @Transactional
     public Boolean deshabilitarTipoHabilidad(Long id) {
         if(id == null) {
             throw new EntityNotValidException("El ID del tipo de habilidad no puede ser nulo");
         }
-        boolean enUso = candidatoRepository.existsByHabilidades_Habilidad_TipoHabilidad_IdAndFechaHoraBajaIsNull(id);
-        if(enUso) {
+        if(enUso(id)) {
             throw new EntityNotValidException("La entidad se encuentra en uso, no puede deshabilitarla");
         } else {
             return delete(id);
         }
     }
+
+    private Boolean enUso(Long idTipoHabilidad) {
+        boolean enUsoPorCandidatos = candidatoHabilidadRepository.existsByHabilidad_TipoHabilidad_IdAndFechaHoraBajaIsNull(idTipoHabilidad);
+        boolean enUsoPorOfertas = ofertaHabilidadRepository.existsByHabilidad_TipoHabilidad_IdAndFechaHoraBajaIsNull(idTipoHabilidad);
+        return enUsoPorCandidatos || enUsoPorOfertas;
+    }   
 }
 

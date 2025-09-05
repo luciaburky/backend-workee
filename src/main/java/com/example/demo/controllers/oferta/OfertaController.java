@@ -74,5 +74,4 @@ public class OfertaController {
         List<Oferta> ofertas = ofertaService.findAllByEmpresaId(empresaId);
         return ResponseEntity.ok().body(ofertas);
     }
-    
 }

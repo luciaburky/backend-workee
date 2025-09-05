@@ -14,6 +14,7 @@ import com.example.demo.entities.params.Etapa;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
 import com.example.demo.exceptions.EntityNotFoundException;
 import com.example.demo.exceptions.EntityNotValidException;
+import com.example.demo.exceptions.EntityReferencedException;
 import com.example.demo.repositories.oferta.OfertaRepository;
 import com.example.demo.repositories.params.EtapaRepository;
 import com.example.demo.services.BaseServiceImpl;
@@ -158,18 +159,13 @@ public class EtapaServiceImpl extends BaseServiceImpl<Etapa, Long> implements Et
        
         Etapa etapa = this.findById(idEtapa);
         
-        boolean estaEnUso = ofertaRepository.existsOfertaNoFinalizadaQueUsaEtapa(idEtapa, CodigoEstadoOferta.FINALIZADA);
-        
-        if (estaEnUso) {
-            throw new EntityNotValidException("La etapa no puede ser deshabilitada porque está en uso por una oferta activa");
-        } 
+        boolean enUso = ofertaRepository.existsOfertaNoFinalizadaQueUsaEtapa(idEtapa, CodigoEstadoOferta.FINALIZADA);
+        if (enUso) throw new EntityReferencedException("La entidad se encuentra en uso, no puede deshabilitarla");
 
-        if (etapa.getFechaHoraBaja() == null) {
-            etapa.setFechaHoraBaja(new Date());
-            etapaRepository.save(etapa);
-        }
-
+        etapa.setFechaHoraBaja(new Date());
+        etapaRepository.save(etapa);
     }
+
     // EMPRESA: solo puede eliminar sus etapas propias, no las predeterminadas.    
     @Override
     @Transactional
@@ -183,10 +179,9 @@ public class EtapaServiceImpl extends BaseServiceImpl<Etapa, Long> implements Et
         }
 
         boolean enUso = ofertaRepository.existsOfertaNoFinalizadaQueUsaEtapa(idEtapa, CodigoEstadoOferta.FINALIZADA);
-        if (enUso) throw new IllegalStateException("La etapa está en uso por una oferta activa");
+        if (enUso) throw new EntityReferencedException("La entidad se encuentra en uso, no puede deshabilitarla");
 
         etapa.setFechaHoraBaja(new Date());
         etapaRepository.save(etapa);
-
     }
 }
