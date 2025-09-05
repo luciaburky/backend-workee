@@ -21,7 +21,7 @@ public class EmpresaRequestDTO {
     private String descripcionEmpresa;
 
     @NotNull(message = "El teléfono de la empresa no puede estar vacío")
-    private Integer telefonoEmpresa;
+    private String telefonoEmpresa;
 
     @NotBlank(message = "La dirección de la empresa no puede estar vacía")
     private String direccionEmpresa;
@@ -52,5 +52,4 @@ public class EmpresaRequestDTO {
 
     private String urlDocumentoLegal;
 
-    private String contraseniaActual;
 }
