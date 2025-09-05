@@ -65,4 +65,7 @@ public class Empresa extends Base{
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
+    @NotNull
+    @Column(name = "url_documento_legal")
+    private String urlDocumentoLegal;
 }
