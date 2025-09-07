@@ -29,6 +29,8 @@ public interface EmpresaService extends BaseService<Empresa, Long>{
    public Optional<Empresa> buscarEmpresaPorIdUsuario(Long idUsuario);
 
    public Boolean existeEmpresaPorUsuarioId(Long usuarioId);
+
+   public Long obtenerIdEmpresaSegunCorreoUsuario(String correo);
 }
 
 

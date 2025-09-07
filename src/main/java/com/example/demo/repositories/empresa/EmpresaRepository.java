@@ -105,5 +105,14 @@ public interface EmpresaRepository extends BaseRepository<Empresa, Long>  {
     Optional<Empresa> findByUsuarioId(Long usuarioId);
 
     Boolean existsByUsuarioId(Long usuarioId);
+
+    @Query(
+        """
+            SELECT e.id FROM Empresa e
+            JOIN e.usuario u
+            WHERE u.correoUsuario LIKE :correoUsuario
+        """       
+    )
+    Optional<Long> buscarIdEmpresaSegunCorreo(String correoUsuario);
 }
 
