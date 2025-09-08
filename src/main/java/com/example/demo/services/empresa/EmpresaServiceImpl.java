@@ -21,6 +21,7 @@ import com.example.demo.entities.params.Rubro;
 import com.example.demo.entities.seguridad.CodigoRol;
 import com.example.demo.entities.seguridad.Usuario;
 import com.example.demo.entities.seguridad.UsuarioEstadoUsuario;
+import com.example.demo.exceptions.EntityNotFoundException;
 import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.mappers.EmpresaMapper;
 import com.example.demo.repositories.empresa.EmpresaRepository;
@@ -220,6 +221,15 @@ public class EmpresaServiceImpl extends BaseServiceImpl<Empresa, Long> implement
     @Override
     public Boolean existeEmpresaPorUsuarioId(Long usuarioId){
         return empresaRepository.existsByUsuarioId(usuarioId);
+    }
+
+    @Override
+    public Long obtenerIdEmpresaSegunCorreoUsuario(String correo){
+        Optional<Long> idEmpresa = empresaRepository.buscarIdEmpresaSegunCorreo(correo);
+        if(!idEmpresa.isPresent()){
+            throw new EntityNotFoundException("No existe una empresa con el correo ingresado");
+        }
+        return idEmpresa.get();
     }
     
 }

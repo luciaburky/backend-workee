@@ -52,5 +52,4 @@ public class EmpresaRequestDTO {
 
     private String urlDocumentoLegal;
 
-    private String contraseniaActual;
 }

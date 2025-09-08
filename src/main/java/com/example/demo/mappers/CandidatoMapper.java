@@ -4,7 +4,6 @@ import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.Builder;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import com.example.demo.dtos.CandidatoRequestDTO;

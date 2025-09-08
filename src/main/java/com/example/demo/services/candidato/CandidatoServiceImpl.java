@@ -160,9 +160,6 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
     @Override
     @Transactional
     public Candidato modificarCandidato(Long idCandidato, CandidatoRequestDTO candidatoDTO) {
-        if(!candidatoDTO.getContrasenia().equals(candidatoDTO.getRepetirContrasenia())) {
-            throw new EntityNotValidException("Las contraseñas deben coincidir");
-        }
         
         Candidato candidatoOriginal = findById(idCandidato);
         candidatoMapper.updateEntityFromDto(candidatoDTO, candidatoOriginal);
@@ -187,7 +184,6 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
         candidatoCVService.actualizarOCrearCV(candidatoOriginal, candidatoDTO.getEnlaceCV());
 
         //actualizar lo relacionado al usuario
-        //usuarioService.actualizarDatosUsuario(idCandidato, candidatoDTO.getContrasenia(), candidatoDTO.getRepetirContrasenia(), candidatoDTO.getUrlFotoPerfil(), candidatoDTO.getContraseniaActual());
         usuarioService.actualizarFotoPerfilUsuario(candidatoOriginal.getUsuario().getId(), candidatoDTO.getUrlFotoPerfil());
 
         return candidatoRepository.save(candidatoOriginal);

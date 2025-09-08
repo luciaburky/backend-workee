@@ -89,7 +89,6 @@ public class EmpleadoEmpresaServiceImpl extends BaseServiceImpl<EmpleadoEmpresa,
         empleadoEmpresaMapper.updateEntityFromDto(empleadoEmpresaRequestDTO, empleadoEmpresa);
         
         //modificar datos de usuario
-        //usuarioService.actualizarDatosUsuario(empleadoEmpresa.getUsuario().getId(), empleadoEmpresaRequestDTO.getContrasenia(), empleadoEmpresaRequestDTO.getRepetirContrasenia(), empleadoEmpresaRequestDTO.getUrlFotoPerfil(), empleadoEmpresaRequestDTO.getContraseniaActual());
         usuarioService.actualizarFotoPerfilUsuario(empleadoEmpresa.getUsuario().getId(), empleadoEmpresaRequestDTO.getUrlFotoPerfil());
     }
 
