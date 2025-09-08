@@ -36,7 +36,7 @@ public class PermisoController {
 
     @Operation(summary = "Obtiene todos los permisos pertenecientes a un rol")
     @GetMapping("/porRol/{idRol}")
-    @PreAuthorize("hasAuthority('GESTIONAR_ROLES')") 
+    //@PreAuthorize("hasAuthority('GESTIONAR_ROLES')") 
     public ResponseEntity<?> obtenerPermisosSegunRol(@PathVariable Long idRol){
         List<Permiso> permisos = permisoService.obtenerPermisosDeUnRol(idRol);
         return ResponseEntity.status(HttpStatus.OK).body(permisos);
