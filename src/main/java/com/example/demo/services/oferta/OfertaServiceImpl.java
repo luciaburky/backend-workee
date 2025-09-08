@@ -77,7 +77,6 @@ public class OfertaServiceImpl extends BaseServiceImpl<Oferta, Long> implements 
         ModalidadOferta modalidadOferta = modalidadOfertaService.findById(ofertaDTO.getIdModalidadOferta());
         TipoContratoOferta tipoContratoOferta = tipoContratoOfertaService.findById(ofertaDTO.getIdTipoContratoOferta());
         oferta.setEmpresa(empresa);
-        oferta.setPais(empresa.getProvincia().getPais().getNombrePais());
         oferta.setModalidadOferta(modalidadOferta);
         oferta.setTipoContratoOferta(tipoContratoOferta);
 
@@ -127,10 +126,10 @@ public class OfertaServiceImpl extends BaseServiceImpl<Oferta, Long> implements 
         }
     
         oferta.setFechaHoraAlta(new Date());
-        oferta.setFinalizadaConExito(null); // Inicialmente no se sabe si la oferta se finalizó con éxito
-        oferta.setFechaFinalizacion(null); // Inicialmente no hay fecha de finalización
+        oferta.setFinalizadaConExito(null); 
+        oferta.setFechaFinalizacion(null); 
 
-        return ofertaRepository.save(oferta); // Implementar la lógica de creación de la oferta aquí
+        return ofertaRepository.save(oferta); 
     }
 
     @Override
@@ -267,27 +266,4 @@ public class OfertaServiceImpl extends BaseServiceImpl<Oferta, Long> implements 
         return new ArrayList<>(porOferta.values());
     }
     
-    /*List<String> codigos = List.of(CodigoEstadoOferta.ABIERTA, CodigoEstadoOferta.CERRADA);
-
-        List<Object[]> rows = ofertaRepository.findOfertaCardsFilasPlanas(empleadoId, codigos);
-
-        Map<Long, OfertaCardDTO> porOferta = new LinkedHashMap<>();
-        for (Object[] r : rows) {
-            Long   ofertaId     = (Long)   r[0];
-            String titulo       = (String) r[1];
-            String descripcion  = (String) r[2];
-            String estadoCodigo = (String) r[3];
-            String nombreEtapa  = (String) r[4];
-
-            OfertaCardDTO dto = porOferta.get(ofertaId);
-            if (dto == null) {
-                dto = new OfertaCardDTO(ofertaId, titulo, descripcion, estadoCodigo, new ArrayList<>());
-                porOferta.put(ofertaId, dto);
-            }
-            if (nombreEtapa != null && !dto.getEtapas().contains(nombreEtapa)) {
-                dto.getEtapas().add(nombreEtapa);
-            }
-        }
-        porOferta.values().forEach(d -> d.getEtapas().sort(String::compareToIgnoreCase));
-        return new ArrayList<>(porOferta.values()); */
 }

@@ -19,7 +19,6 @@ public interface OfertaMapper {
     @Mapping(target = "habilidades", ignore = true)
     @Mapping(target = "estadosOferta", ignore = true)
     @Mapping(target = "ofertaEtapas", ignore = true)
-    @Mapping(target = "pais", ignore = true)
     @Mapping(target = "finalizadaConExito", ignore = true)
     @Mapping(target = "fechaFinalizacion", ignore = true)
     Oferta toEntity(OfertaRequestDTO dto);
