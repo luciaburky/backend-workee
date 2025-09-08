@@ -11,12 +11,14 @@ import com.example.demo.dtos.EmpleadoEmpresaRequestDTO;
 import com.example.demo.dtos.UsuarioDTO;
 import com.example.demo.entities.empresa.EmpleadoEmpresa;
 import com.example.demo.entities.empresa.Empresa;
+import com.example.demo.entities.oferta.CodigoEstadoOferta;
 import com.example.demo.entities.params.CodigoEstadoUsuario;
 import com.example.demo.entities.seguridad.CodigoRol;
 import com.example.demo.entities.seguridad.Usuario;
 import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.mappers.EmpleadoEmpresaMapper;
 import com.example.demo.repositories.empresa.EmpleadoEmpresaRepository;
+import com.example.demo.repositories.oferta.OfertaRepository;
 import com.example.demo.services.BaseServiceImpl;
 import com.example.demo.services.seguridad.UsuarioService;
 
@@ -28,15 +30,17 @@ public class EmpleadoEmpresaServiceImpl extends BaseServiceImpl<EmpleadoEmpresa,
     private final EmpleadoEmpresaRepository empleadoEmpresaRepository;
     private final EmpresaService empresaService;
     private final EmpleadoEmpresaMapper empleadoEmpresaMapper;
+    private final OfertaRepository ofertaRepository;
 
     private final UsuarioService usuarioService; 
 
-    public EmpleadoEmpresaServiceImpl(EmpleadoEmpresaRepository empleadoEmpresaRepository, EmpresaService empresaService, EmpleadoEmpresaMapper empleadoEmpresaMapper, UsuarioService usuarioService) {
+    public EmpleadoEmpresaServiceImpl(EmpleadoEmpresaRepository empleadoEmpresaRepository, EmpresaService empresaService, EmpleadoEmpresaMapper empleadoEmpresaMapper, UsuarioService usuarioService, OfertaRepository ofertaRepository) {
         super(empleadoEmpresaRepository);
         this.empleadoEmpresaRepository = empleadoEmpresaRepository;
         this.empresaService = empresaService;
         this.empleadoEmpresaMapper = empleadoEmpresaMapper;
         this.usuarioService = usuarioService;
+        this.ofertaRepository = ofertaRepository;
     }
     
     @Override
@@ -101,11 +105,18 @@ public class EmpleadoEmpresaServiceImpl extends BaseServiceImpl<EmpleadoEmpresa,
     @Transactional
     public Boolean darDeBajaEmpleadoEmpresa(Long id){
         //TODO: Agregar validacion de que si esta asociado a ofertas, q esten todas finalizadas
+        if (id == null) throw new IllegalArgumentException("El ID del empleado no puede ser nulo");
+
+        List<String> noFinalizadas = List.of(CodigoEstadoOferta.ABIERTA, CodigoEstadoOferta.CERRADA);
+
+        boolean tieneNoFinalizadas = ofertaRepository.existsNoFinalizadaByEmpleado(id, noFinalizadas);
+        if (tieneNoFinalizadas) {
+            throw new IllegalStateException("No se puede dar de baja: el empleado participa en ofertas no finalizadas.");
+        }
         EmpleadoEmpresa empleadoEmpresa = findById(id);
         usuarioService.delete(empleadoEmpresa.getUsuario().getId()); //TODO: Revisar si agrego que se valide que no este en uso
         return delete(id);
     }
-
 
     @Override
     public List<EmpleadoEmpresa> visualizarEmpleados(Long idEmpresa){

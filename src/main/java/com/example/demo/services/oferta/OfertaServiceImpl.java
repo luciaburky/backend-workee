@@ -5,6 +5,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dtos.FiltrosOfertaRequestDTO;
 import com.example.demo.dtos.OfertaRequestDTO;
+import com.example.demo.dtos.params.OfertasEmpleadoDTO;
 import com.example.demo.entities.Base;
 import com.example.demo.entities.empresa.Empresa;
 import com.example.demo.entities.oferta.CodigoEstadoOferta;
@@ -233,5 +235,59 @@ public class OfertaServiceImpl extends BaseServiceImpl<Oferta, Long> implements 
             case MES_1 -> LocalDateTime.now().minusMonths(1);
         };
     }
+
+    @Override
+    @Transactional
+    public List<OfertasEmpleadoDTO> buscarOfertasEmpleado(Long empleadoId) {
+        if (empleadoId == null) {
+            throw new IllegalArgumentException("El ID del empleado no puede ser nulo");
+        }
+
+        List<String> codigos = List.of(CodigoEstadoOferta.ABIERTA, CodigoEstadoOferta.CERRADA);
+        List<Object[]> rows = ofertaRepository.findOfertasEmpleado(empleadoId, codigos);
+
+        Map<Long, OfertasEmpleadoDTO> porOferta = new LinkedHashMap<>();
+        for (Object[] r : rows) {
+            Long   ofertaId     = (Long)   r[0];
+            String titulo       = (String) r[1];
+            String descripcion  = (String) r[2];
+            String estadoCodigo = (String) r[3];
+            String nombreEtapa  = (String) r[4];
+
+            OfertasEmpleadoDTO dto = porOferta.get(ofertaId);
+            if (dto == null) {
+                dto = new OfertasEmpleadoDTO(ofertaId, titulo, descripcion, estadoCodigo, new ArrayList<>());
+                porOferta.put(ofertaId, dto);
+            }
+            if (nombreEtapa != null && !dto.getNombresEtapas().contains(nombreEtapa)) {
+                dto.getNombresEtapas().add(nombreEtapa);
+            }
+        }
+        porOferta.values().forEach(d -> d.getNombresEtapas().sort(String::compareToIgnoreCase));
+        return new ArrayList<>(porOferta.values());
+    }
     
+    /*List<String> codigos = List.of(CodigoEstadoOferta.ABIERTA, CodigoEstadoOferta.CERRADA);
+
+        List<Object[]> rows = ofertaRepository.findOfertaCardsFilasPlanas(empleadoId, codigos);
+
+        Map<Long, OfertaCardDTO> porOferta = new LinkedHashMap<>();
+        for (Object[] r : rows) {
+            Long   ofertaId     = (Long)   r[0];
+            String titulo       = (String) r[1];
+            String descripcion  = (String) r[2];
+            String estadoCodigo = (String) r[3];
+            String nombreEtapa  = (String) r[4];
+
+            OfertaCardDTO dto = porOferta.get(ofertaId);
+            if (dto == null) {
+                dto = new OfertaCardDTO(ofertaId, titulo, descripcion, estadoCodigo, new ArrayList<>());
+                porOferta.put(ofertaId, dto);
+            }
+            if (nombreEtapa != null && !dto.getEtapas().contains(nombreEtapa)) {
+                dto.getEtapas().add(nombreEtapa);
+            }
+        }
+        porOferta.values().forEach(d -> d.getEtapas().sort(String::compareToIgnoreCase));
+        return new ArrayList<>(porOferta.values()); */
 }
