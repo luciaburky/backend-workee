@@ -13,7 +13,15 @@ public interface CandidatoRepository extends BaseRepository<Candidato, Long> {
     
     List<Candidato> findAllByOrderByNombreCandidatoAsc();
     
-    @Query("SELECT c FROM Candidato c LEFT JOIN FETCH c.habilidades ch LEFT JOIN FETCH ch.habilidad WHERE c.id = :id")
+    //@Query("SELECT c FROM Candidato c LEFT JOIN FETCH c.habilidades ch LEFT JOIN FETCH ch.habilidad WHERE c.id = :id")
+    @Query("""
+        SELECT DISTINCT c
+        FROM Candidato c
+        LEFT JOIN FETCH c.habilidades ch
+        LEFT JOIN FETCH ch.habilidad h
+        LEFT JOIN FETCH h.tipoHabilidad
+        WHERE c.id = :id
+        """)
     Optional<Candidato> findByIdWithHabilidades(@Param("id") Long id);
 
     boolean existsByGeneroIdAndFechaHoraBajaIsNull(Long generoId);
