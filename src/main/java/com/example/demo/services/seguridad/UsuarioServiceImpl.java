@@ -446,7 +446,7 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
                 estado.getFechaHoraBaja() == null);
         
         if(!estadoHabilitado){
-            throw new BadCredentialsException("El usuario no se encuentra habilitado para iniciar sesión");
+            throw new EntityNotValidException("El usuario no se encuentra habilitado para iniciar sesión");
         }
         
         Authentication authentication = authenticationManager.authenticate(
