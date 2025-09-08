@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dtos.OfertaRequestDTO;
+import com.example.demo.dtos.params.OfertasEmpleadoDTO;
 import com.example.demo.entities.oferta.Oferta;
 import com.example.demo.services.oferta.OfertaService;
 
@@ -73,5 +74,13 @@ public class OfertaController {
     public ResponseEntity<List<Oferta>> getOfertasByEmpresaId(@PathVariable("empresaId") Long empresaId) {
         List<Oferta> ofertas = ofertaService.findAllByEmpresaId(empresaId);
         return ResponseEntity.ok().body(ofertas);
+    }
+
+    @Operation(summary = "Buscar Etapas de Ofertas Activas por Empleado")
+    @GetMapping("/empleado/{empleadoId}/etapas")
+    @PreAuthorize("hasAuthority('GESTION_OFERTAS')")
+    public ResponseEntity<List<OfertasEmpleadoDTO>> getEtapasByEmpleadoId(@PathVariable("empleadoId") Long empleadoId) {
+        List<OfertasEmpleadoDTO> etapas = ofertaService.buscarOfertasEmpleado(empleadoId);
+        return ResponseEntity.ok().body(etapas);
     }
 }

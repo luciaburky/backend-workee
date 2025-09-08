@@ -12,7 +12,7 @@ import com.example.demo.repositories.empresa.EmpleadoEmpresaRepository;
 import com.example.demo.repositories.empresa.EmpresaRepository;
 
 @Service
-public class NombreEntidadResolverServiceImpl implements NombreEntidadResolverService{
+public class NombreEntidadResolverServiceImpl implements NombreEntidadResolverService {
     public final CandidatoRepository candidatoRepository;
     public final EmpresaRepository empresaRepository;
     public final EmpleadoEmpresaRepository empleadoEmpresaRepository;

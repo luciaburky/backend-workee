@@ -51,11 +51,6 @@ public class Oferta extends Base {
     @Column(name = "finalizada_con_exito")
     private Boolean finalizadaConExito;
 
-    //Pais que tiene asociado la Empresa que crea la oferta
-    @NotBlank
-    @Column(name = "pais")
-    private String pais;
-
     @ManyToOne
     @JoinColumn(name = "id_empresa", nullable = false)
     @NotNull

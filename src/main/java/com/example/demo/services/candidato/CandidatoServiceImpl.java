@@ -192,10 +192,19 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
     @Override
     @Transactional
     public Candidato findById(Long id) {
-        return candidatoRepository.findByIdWithHabilidades(id)
+        Candidato candidato = candidatoRepository.findByIdWithHabilidades(id)
             .orElseThrow(() -> new EntityNotFoundException("Candidato no encontrado con ID: " + id));
+
+        List<CandidatoHabilidad> activas = candidato.getHabilidades().stream()
+            .filter(ch -> ch.getFechaHoraBaja() == null)
+            .toList();
+
+        candidato.getHabilidades().clear();
+        candidato.getHabilidades().addAll(activas);
+
+        return candidato;
     }
-    
+  
     @Override
     @Transactional
     public List<Candidato> obtenerCandidatos() {
@@ -282,9 +291,11 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
     @Transactional
     public List<Habilidad> obtenerHabilidades(Long idCandidato) {
         Candidato candidato = candidatoRepository.findByIdWithHabilidades(idCandidato)
-        .orElseThrow(() -> new EntityNotFoundException("Candidato no encontrado con ID " + idCandidato));        
+            .orElseThrow(() -> new EntityNotFoundException("Candidato no encontrado con ID " + idCandidato));        
+
         return candidato.getHabilidades()
                         .stream()
+                        .filter(ch -> ch.getFechaHoraBaja() == null)   
                         .map(CandidatoHabilidad::getHabilidad)
                         .collect(Collectors.toList());
     }
@@ -293,10 +304,11 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
     @Transactional
     public List<Habilidad> obtenerHabilidadesPorTipo(Long idCandidato, Long idTipoHabilidad) {
         Candidato candidato = candidatoRepository.findByIdWithHabilidades(idCandidato)
-        .orElseThrow(() -> new EntityNotFoundException("Candidato no encontrado con ID " + idCandidato));
+            .orElseThrow(() -> new EntityNotFoundException("Candidato no encontrado con ID " + idCandidato));
 
         return candidato.getHabilidades()
                         .stream()
+                        .filter(ch -> ch.getFechaHoraBaja() == null)   
                         .map(CandidatoHabilidad::getHabilidad)
                         .filter(h -> h.getTipoHabilidad().getId().equals(idTipoHabilidad))
                         .collect(Collectors.toList());  

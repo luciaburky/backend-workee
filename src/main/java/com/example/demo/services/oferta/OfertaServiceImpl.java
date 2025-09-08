@@ -5,6 +5,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dtos.FiltrosOfertaRequestDTO;
 import com.example.demo.dtos.OfertaRequestDTO;
+import com.example.demo.dtos.params.OfertasEmpleadoDTO;
 import com.example.demo.entities.Base;
 import com.example.demo.entities.empresa.Empresa;
 import com.example.demo.entities.oferta.CodigoEstadoOferta;
@@ -75,7 +77,6 @@ public class OfertaServiceImpl extends BaseServiceImpl<Oferta, Long> implements 
         ModalidadOferta modalidadOferta = modalidadOfertaService.findById(ofertaDTO.getIdModalidadOferta());
         TipoContratoOferta tipoContratoOferta = tipoContratoOfertaService.findById(ofertaDTO.getIdTipoContratoOferta());
         oferta.setEmpresa(empresa);
-        oferta.setPais(empresa.getProvincia().getPais().getNombrePais());
         oferta.setModalidadOferta(modalidadOferta);
         oferta.setTipoContratoOferta(tipoContratoOferta);
 
@@ -125,10 +126,10 @@ public class OfertaServiceImpl extends BaseServiceImpl<Oferta, Long> implements 
         }
     
         oferta.setFechaHoraAlta(new Date());
-        oferta.setFinalizadaConExito(null); // Inicialmente no se sabe si la oferta se finalizó con éxito
-        oferta.setFechaFinalizacion(null); // Inicialmente no hay fecha de finalización
+        oferta.setFinalizadaConExito(null); 
+        oferta.setFechaFinalizacion(null); 
 
-        return ofertaRepository.save(oferta); // Implementar la lógica de creación de la oferta aquí
+        return ofertaRepository.save(oferta); 
     }
 
     @Override
@@ -232,6 +233,37 @@ public class OfertaServiceImpl extends BaseServiceImpl<Oferta, Long> implements 
             case DIAS_7 -> LocalDateTime.now().minusDays(7).truncatedTo(ChronoUnit.SECONDS);
             case MES_1 -> LocalDateTime.now().minusMonths(1);
         };
+    }
+
+    @Override
+    @Transactional
+    public List<OfertasEmpleadoDTO> buscarOfertasEmpleado(Long empleadoId) {
+        if (empleadoId == null) {
+            throw new IllegalArgumentException("El ID del empleado no puede ser nulo");
+        }
+
+        List<String> codigos = List.of(CodigoEstadoOferta.ABIERTA, CodigoEstadoOferta.CERRADA);
+        List<Object[]> rows = ofertaRepository.findOfertasEmpleado(empleadoId, codigos);
+
+        Map<Long, OfertasEmpleadoDTO> porOferta = new LinkedHashMap<>();
+        for (Object[] r : rows) {
+            Long   ofertaId     = (Long)   r[0];
+            String titulo       = (String) r[1];
+            String descripcion  = (String) r[2];
+            String estadoCodigo = (String) r[3];
+            String nombreEtapa  = (String) r[4];
+
+            OfertasEmpleadoDTO dto = porOferta.get(ofertaId);
+            if (dto == null) {
+                dto = new OfertasEmpleadoDTO(ofertaId, titulo, descripcion, estadoCodigo, new ArrayList<>());
+                porOferta.put(ofertaId, dto);
+            }
+            if (nombreEtapa != null && !dto.getNombresEtapas().contains(nombreEtapa)) {
+                dto.getNombresEtapas().add(nombreEtapa);
+            }
+        }
+        porOferta.values().forEach(d -> d.getNombresEtapas().sort(String::compareToIgnoreCase));
+        return new ArrayList<>(porOferta.values());
     }
     
 }
