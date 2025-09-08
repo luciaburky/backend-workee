@@ -1,5 +1,6 @@
 package com.example.demo.repositories.oferta;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
@@ -30,7 +31,6 @@ public interface OfertaRepository extends BaseRepository<Oferta, Long> {
     List<Oferta> findAllByEmpresa_IdAndFechaHoraBajaIsNull(Long empresaId);
     Boolean existsByModalidadOfertaIdAndFechaHoraBajaIsNull(Long modalidadOfertaId);
     //existsByGeneroIdAndFechaHoraBajaIsNull(idGenero)
-
     
     @Query("""
         SELECT o
@@ -68,6 +68,53 @@ public interface OfertaRepository extends BaseRepository<Oferta, Long> {
                                                   @Param("idsTipoContrato") List<Long> idsTipoContrato,
                                                   @Param("idsModalidadOferta") List<Long> idsModalidadOferta,
                                                   @Param("fechaDesde") LocalDateTime fechaDesde);
+
+    //Buscar Ofertas con Etapas asociadas a un empleado y consturir DTO 
+    @Query("""
+        SELECT 
+            o.id,                 
+            o.titulo,             
+            o.descripcion,        
+            est.codigo,           
+            e.nombreEtapa         
+        FROM Oferta o
+          JOIN o.estadosOferta he
+          JOIN he.estadoOferta est
+          JOIN o.ofertaEtapas oe
+          JOIN oe.empleadoEmpresa ee
+          JOIN oe.etapa e
+        WHERE
+          o.fechaHoraBaja IS NULL
+          AND he.fechaHoraBaja IS NULL           
+          AND oe.fechaHoraBaja IS NULL           
+          AND ee.id = :empleadoId
+          AND est.codigo IN :codigosEstado       
+        ORDER BY o.id ASC, e.nombreEtapa ASC
+        """)
+    List<Object[]> findOfertasEmpleado(
+            @Param("empleadoId") Long empleadoId,
+            @Param("codigosEstado") Collection<String> codigosEstado
+    );
+
+    //Buscar ofertas ACTIVAS/CERRADAS por empleado 
+        @Query("""
+        SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END
+        FROM Oferta o
+          JOIN o.ofertaEtapas oe
+          JOIN oe.empleadoEmpresa ee
+          JOIN o.estadosOferta he
+          JOIN he.estadoOferta est
+        WHERE
+          ee.id = :empleadoId
+          AND o.fechaHoraBaja IS NULL
+          AND oe.fechaHoraBaja IS NULL
+          AND he.fechaHoraBaja IS NULL
+          AND est.codigo IN :noFinalizadas  
+        """)
+    boolean existsNoFinalizadaByEmpleado(
+            @Param("empleadoId") Long empleadoId,
+            @Param("noFinalizadas") Collection<String> noFinalizadas
+    );
 
 
 

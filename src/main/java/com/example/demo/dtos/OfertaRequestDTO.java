@@ -44,6 +44,5 @@ public class OfertaRequestDTO {
     - Estado (y EstadoOfertaEstado) como "Abierto",
     - fechaFinalizacion como null,
     - finalizadaConExito como null 
-    - Pais como el de la Empresa que crea la oferta.
     */
 }

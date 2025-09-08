@@ -8,5 +8,5 @@ import com.example.demo.repositories.BaseRepository;
 @Repository
 public interface OfertaEtapaRepository extends BaseRepository<OfertaEtapa, Long>{
     
-    
+  //Buscar las etapas de una oferta que estan asociadas a un empleado  
 } 
