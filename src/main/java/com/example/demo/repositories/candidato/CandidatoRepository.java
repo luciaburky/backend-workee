@@ -5,10 +5,12 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import com.example.demo.entities.candidato.Candidato;
 import com.example.demo.repositories.BaseRepository;
 
+@Repository
 public interface CandidatoRepository extends BaseRepository<Candidato, Long> {
     
     List<Candidato> findAllByOrderByNombreCandidatoAsc();
@@ -46,20 +48,21 @@ public interface CandidatoRepository extends BaseRepository<Candidato, Long> {
     public List<Candidato> buscarCandidatosPorNombre(@Param("nombreCandidato") String nombreCandidato);
 
 
-    @Query(value = """
-        SELECT DISTINCT c.* FROM candidato C
-        LEFT JOIN candidato_habilidad ch ON c.id = ch.id_candidato
-        LEFT JOIN habilidad h ON ch.id_habilidad = h.id
-        LEFT JOIN provincia p ON c.id_provincia = p.id
-        WHERE (:nombreCandidato IS NULL OR LOWER(CONCAT(c.nombre_candidato, ' ', c.apellido_candidato)) LIKE LOWER(CONCAT('%', :nombreCandidato, '%'))) 
-        AND (:idsEstadosBusqueda IS NULL OR c.id_estado_busqueda IN (:idsEstadosBusqueda))
-        AND (:idsProvincias IS NULL OR c.id_provincia IN (:idsProvincias))
-        AND (:idsPaises IS NULL OR p.id_pais IN (:idsPaises))
-        AND ch.fecha_hora_baja IS NULL
-        AND (:idsHabilidades IS NULL OR h.id IN (:idsHabilidades))
-        AND c.fecha_hora_baja IS NULL
-    """,
-    nativeQuery = true)
+    @Query(
+        """
+            SELECT DISTINCT c FROM Candidato c
+            LEFT JOIN c.habilidades ch
+            LEFT JOIN ch.habilidad h
+            LEFT JOIN c.provincia p
+            WHERE (:nombreCandidato IS NULL OR LOWER(CONCAT(c.nombreCandidato, ' ', c.apellidoCandidato)) LIKE LOWER(CONCAT('%', :nombreCandidato, '%'))) 
+            AND (:idsEstadosBusqueda IS NULL OR c.estadoBusqueda.id IN :idsEstadosBusqueda)
+            AND (:idsProvincias IS NULL OR c.provincia.id IN :idsProvincias)
+            AND (:idsPaises IS NULL OR p.pais.id IN :idsPaises)
+            AND ch.fechaHoraBaja IS NULL
+            AND (:idsHabilidades IS NULL OR h.id IN :idsHabilidades)
+            AND c.fechaHoraBaja IS NULL
+        """
+    )
     public List<Candidato> buscarCandidatosConFiltros(@Param("nombreCandidato") String nombreCandidato, @Param("idsHabilidades") List<Long> idsHabilidades, @Param("idsProvincias") List<Long> idsProvincias, @Param("idsPaises") List<Long> idsPaises, @Param("idsEstadosBusqueda") List<Long> idsEstadosBusqueda);
 
 
