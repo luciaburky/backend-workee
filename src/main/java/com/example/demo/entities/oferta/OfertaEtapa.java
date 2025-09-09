@@ -46,8 +46,7 @@ public class OfertaEtapa extends Base {
     private Etapa etapa;
 
     @ManyToOne
-    @JoinColumn(name = "id_empleado_empresa", nullable = false)
-    @NotNull
+    @JoinColumn(name = "id_empleado_empresa", nullable = true)
     private EmpleadoEmpresa empleadoEmpresa;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
