@@ -1,4 +1,4 @@
-cpackage com.example.demo.services.oferta;
+package com.example.demo.services.oferta;
 
 import java.util.List;
 
