@@ -32,7 +32,7 @@ public class OfertaEtapa extends Base {
     private Integer numeroEtapa;
 
     //Descripcion de la Etapa asociada a esta OfertaEtapa.
-    @Column(name = "descripcion_oferta_etapa")
+    @Column(name = "descripcion_oferta_etapa", columnDefinition = "TEXT")
     private String descripcionAdicional;
 
     //Hace referencia a si el Candidato adjunta enlace en esa etapa.
