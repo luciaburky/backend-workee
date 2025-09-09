@@ -46,7 +46,7 @@ public class OfertaController {
    
     @Operation(summary = "Obtener una Oferta por ID")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('GESTION_OFERTAS')")
+    @PreAuthorize("hasAuthority('GESTION_OFERTAS') or hasAuthority('BUSCAR_OFERTAS')")
     public ResponseEntity<Oferta> getOfertaById(@PathVariable("id") Long id) {
         Oferta oferta = ofertaService.findById(id);
         return ResponseEntity.ok().body(oferta);

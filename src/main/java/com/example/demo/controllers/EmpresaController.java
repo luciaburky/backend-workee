@@ -56,9 +56,10 @@ public class EmpresaController {
         return ResponseEntity.status(HttpStatus.OK).body("Cuenta de empresa eliminada correctamente");
     }
 
+
     @Operation(summary = "Obtener el ID de una empresa por el correo del usuario") //Maxi aca esta el metodo que pediste pero no le puse permiso pq no sabia q necesitabas
     @GetMapping("/idEmpresaPorCorreo/{correoUsuario}")
-    @PreAuthorize("hasAnyAuthority('?')")
+    @PreAuthorize("hasAuthority('GESTION_OFERTAS')")
     public ResponseEntity<?> obtenerIdEmpresaSegunCorreoUsuario(@PathVariable String correoUsuario){
         Long idEmpresa = empresaService.obtenerIdEmpresaSegunCorreoUsuario(correoUsuario);
 
