@@ -13,5 +13,10 @@
     "name": "backup.folder.path.win",
     "type": "java.lang.String",
     "description": "A description for 'backup.folder.path'"
+  },
+  {
+    "name": "firebase.storage.token",
+    "type": "java.lang.String",
+    "description": "A description for 'firebase.storage.token'"
   }
 ]}

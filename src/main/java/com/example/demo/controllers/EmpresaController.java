@@ -42,7 +42,7 @@ public class EmpresaController {
 
     @Operation(summary = "Ver detalle de una empresa segun su ID")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('GESTIONAR_MI_PERFIL', 'BUSCAR_EMPRESAS', 'POSTULAR_OFERTA')")
+    @PreAuthorize("hasAnyAuthority('GESTIONAR_MI_PERFIL', 'BUSCAR_EMPRESAS', 'POSTULAR_OFERTA', 'HABILITACION_EMPRESA')")
     public ResponseEntity<?> visualizarDetalleEmpresa(@PathVariable Long id){
         Empresa empresa = empresaService.findById(id);
         return ResponseEntity.status(HttpStatus.OK).body(empresa);

@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -65,6 +65,9 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
 
+    @Value("${firebase.storage.token}")
+    private String firebaseToken;
+
     public UsuarioServiceImpl(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper, EstadoUsuarioService estadoUsuarioService, 
     MailService mailService, UsuarioRolRepository usuarioRolRepository, RolService rolService, NombreEntidadResolverService nombreEntidadResolverService, 
     BCryptPasswordEncoder bCryptPasswordEncoder, TokenRecuperacionRepository tokenRecuperacionRepository, TokenConfirmacionRepository tokenConfirmacionRepository,
@@ -93,7 +96,10 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
         if(existeUsuarioConCorreo(usuarioDTO.getCorreoUsuario())){
             throw new EntityAlreadyExistsException("El correo ingresado ya se encuentra en uso");
         }
+        if(usuarioDTO.getUrlFotoUsuario() == null || usuarioDTO.getUrlFotoUsuario().isBlank()){
+            usuarioDTO.setUrlFotoUsuario("https://firebasestorage.googleapis.com/v0/b/workee-406b2.firebasestorage.app/o/foto%2Ffoto-perfil.png?alt=media&token=" + firebaseToken);
 
+        }
         String contraseniaCodificada = encriptarContrasenia(usuarioDTO.getContraseniaUsuario());
 
         Usuario nuevoUsuario = usuarioMapper.toEntity(usuarioDTO);
