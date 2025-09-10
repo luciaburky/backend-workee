@@ -38,14 +38,14 @@ public class Oferta extends Base {
     private String titulo;
     
     @NotBlank
-    @Column(name = "descripcion")
+    @Column(name = "descripcion", columnDefinition = "TEXT")
     private String descripcion;
 
     @Column(name = "fecha_finalizacion")
     private Date fechaFinalizacion; 
 
     @NotBlank
-    @Column(name = "responsabilidades")
+    @Column(name = "responsabilidades", columnDefinition = "TEXT")
     private String responsabilidades;
     
     @Column(name = "finalizada_con_exito")
