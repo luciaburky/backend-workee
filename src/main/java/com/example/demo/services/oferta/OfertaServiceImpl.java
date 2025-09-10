@@ -21,11 +21,13 @@ import com.example.demo.dtos.params.OfertasEmpleadoDTO;
 import com.example.demo.entities.Base;
 import com.example.demo.entities.empresa.Empresa;
 import com.example.demo.entities.oferta.CodigoEstadoOferta;
+import com.example.demo.entities.oferta.EtapasGlobales;
 import com.example.demo.entities.oferta.FechaFiltroOfertaEnum;
 import com.example.demo.entities.oferta.Oferta;
 import com.example.demo.entities.oferta.OfertaEstadoOferta;
 import com.example.demo.entities.oferta.OfertaEtapa;
 import com.example.demo.entities.oferta.OfertaHabilidad;
+import com.example.demo.entities.params.Etapa;
 import com.example.demo.entities.params.Habilidad;
 import com.example.demo.entities.params.ModalidadOferta;
 import com.example.demo.entities.params.TipoContratoOferta;
@@ -114,17 +116,30 @@ public class OfertaServiceImpl extends BaseServiceImpl<Oferta, Long> implements 
         }
         
         //OfertaEtapas
+        oferta.setOfertaEtapas(new ArrayList<>());
+        int orden = 1;
+        
+        // 1) PENDIENTE
+        oferta.getOfertaEtapas().add(ofertaEtapaService.crearEtapaPredeterminada(EtapasGlobales.PENDIENTE, orden++));
+
+        // 2) Etapas personalizadas Intermedias
         if (ofertaDTO.getOfertaEtapas() != null && !ofertaDTO.getOfertaEtapas().isEmpty()) {
-            List<OfertaEtapa> etapas = ofertaEtapaService.crearOfertaEtapasDesdeDto(
+            List<OfertaEtapa> intermedias = ofertaEtapaService.crearOfertaEtapasDesdeDto(
                 empresa.getId(), 
                 ofertaDTO.getOfertaEtapas()
             );
-            if (oferta.getOfertaEtapas() == null) {
-                oferta.setOfertaEtapas(new ArrayList<>());
+            for (OfertaEtapa oe : intermedias) {
+                oe.setNumeroEtapa(orden++);
             }
-            oferta.getOfertaEtapas().addAll(etapas);
+            oferta.getOfertaEtapas().addAll(intermedias);
         }
-    
+        
+        // 3) Etapa RECHAZADO
+        oferta.getOfertaEtapas().add(ofertaEtapaService.crearEtapaPredeterminada(EtapasGlobales.RECHAZADO, orden++));
+
+        // 4) Etapa SELECCIONADO
+        oferta.getOfertaEtapas().add(ofertaEtapaService.crearEtapaPredeterminada(EtapasGlobales.SELECCIONADO, orden++));
+        
         oferta.setFechaHoraAlta(new Date());
         oferta.setFinalizadaConExito(null); 
         oferta.setFechaFinalizacion(null); 

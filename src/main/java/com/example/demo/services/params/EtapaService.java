@@ -31,5 +31,5 @@ public interface EtapaService extends BaseService<Etapa, Long> {
 
     void eliminarEtapaPropia(Long idEtapa, Long empresaId);
 
-
+    Etapa findOrCreatePredeterminada(String nombre);
 }

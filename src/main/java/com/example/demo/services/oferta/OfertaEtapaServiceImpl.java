@@ -84,4 +84,18 @@ public class OfertaEtapaServiceImpl extends BaseServiceImpl<OfertaEtapa, Long> i
 
         return ofertaEtapas;
     }
+
+    @Override
+    @Transactional
+    public OfertaEtapa crearEtapaPredeterminada(String nombre, int numeroEtapa) {
+        Etapa etapa = etapaService.findOrCreatePredeterminada(nombre);
+
+        OfertaEtapa oe = new OfertaEtapa();
+        oe.setNumeroEtapa(numeroEtapa);
+        oe.setEtapa(etapa);
+        oe.setFechaHoraAlta(new Date());
+        oe.setAdjuntaEnlace(false);
+        oe.setEmpleadoEmpresa(null); 
+        return oe;
+    }
 }

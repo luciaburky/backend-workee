@@ -184,4 +184,24 @@ public class EtapaServiceImpl extends BaseServiceImpl<Etapa, Long> implements Et
         etapa.setFechaHoraBaja(new Date());
         etapaRepository.save(etapa);
     }
+
+    @Override
+    @Transactional
+    public Etapa findOrCreatePredeterminada(String nombre) {
+        if (nombre == null || nombre.isBlank()) {
+            throw new IllegalArgumentException("El nombre de la etapa no puede ser nulo/vacío");
+        }
+        return etapaRepository
+            .findByNombreEtapaIgnoreCaseAndEsPredeterminadaAndEmpresaIsNull(nombre, true)
+            .orElseGet(() -> {
+                Etapa e = new Etapa();
+                e.setNombreEtapa(nombre.toUpperCase());
+                e.setDescripcionEtapa(nombre);
+                e.setEsPredeterminada(true);
+                e.setEmpresa(null);
+                e.setFechaHoraAlta(new Date());
+                return etapaRepository.save(e);
+            });
+    }
+
 }
