@@ -35,11 +35,15 @@ public class Etapa extends Base {
     private String descripcionEtapa;
 
     @ManyToOne
-    @JoinColumn(name = "id_empresa")
+    @JoinColumn(name = "id_empresa", nullable = true)
     private Empresa empresa;
 
     @NotNull
     @Column(name = "es_predeterminada")
     private Boolean esPredeterminada;
+
+    @NotNull
+    @Column(name = "codigo_etapa", unique = true)
+    private String codigoEtapa;
 }
 

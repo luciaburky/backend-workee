@@ -3,6 +3,7 @@ package com.example.demo.services.params;
 import java.util.Collection;
 import java.util.List;
 
+
 import com.example.demo.dtos.params.EtapaRequestDTO;
 import com.example.demo.entities.params.Etapa;
 import com.example.demo.services.BaseService;
@@ -31,5 +32,6 @@ public interface EtapaService extends BaseService<Etapa, Long> {
 
     void eliminarEtapaPropia(Long idEtapa, Long empresaId);
 
+    public Etapa obtenerEtapaPorCodigo(String codigoEtapa);
     Etapa findOrCreatePredeterminada(String nombre);
 }

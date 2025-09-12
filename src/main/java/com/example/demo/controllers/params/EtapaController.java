@@ -34,8 +34,8 @@ public class EtapaController {
     }
     
     @Operation(summary = "Crear una nueva Etapa Predeterminada")
-    @PostMapping()
-    @PreAuthorize("hasAuthority('GESTIONAR_ETAPA_PARAMETRO')")
+    @PostMapping
+    @PreAuthorize("hasAuthority('CREAR_ETAPA')")
     public ResponseEntity<Etapa> crearEtapa(@Valid @RequestBody EtapaRequestDTO etapaRequestDTO){
         Etapa nuevaEtapa = etapaService.crearPredeterminada(etapaRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevaEtapa);

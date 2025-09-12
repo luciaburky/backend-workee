@@ -2,6 +2,8 @@ package com.example.demo.dtos;
 
 import java.util.List;
 
+import com.example.demo.entities.oferta.Oferta;
+import com.example.demo.entities.oferta.OfertaEtapa;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
