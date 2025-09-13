@@ -221,7 +221,7 @@ public class EtapaServiceImpl extends BaseServiceImpl<Etapa, Long> implements Et
         }
         return etapa;
     }
-    }
+    
 
     @Override
     @Transactional
@@ -230,7 +230,7 @@ public class EtapaServiceImpl extends BaseServiceImpl<Etapa, Long> implements Et
             throw new IllegalArgumentException("El nombre de la etapa no puede ser nulo/vacío");
         }
         return etapaRepository
-            .findByNombreEtapaIgnoreCaseAndEsPredeterminadaAndEmpresaIsNull(nombre, true)
+            .findByCodigoEtapaIgnoreCaseAndEsPredeterminadaAndEmpresaIsNull(nombre, true)
             .orElseGet(() -> {
                 Etapa e = new Etapa();
                 e.setNombreEtapa(nombre.toUpperCase());

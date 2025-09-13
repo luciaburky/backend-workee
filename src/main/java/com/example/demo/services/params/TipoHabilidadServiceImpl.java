@@ -7,7 +7,6 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.params.TipoHabilidadRequestDTO;
-import com.example.demo.entities.candidato.Candidato;
 import com.example.demo.entities.params.TipoHabilidad;
 import com.example.demo.exceptions.EntityAlreadyEnabledException;
 import com.example.demo.exceptions.EntityAlreadyExistsException;
