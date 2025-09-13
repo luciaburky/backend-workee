@@ -99,7 +99,7 @@ public class UsuarioController {
         } else if (empresaService.existeEmpresaPorUsuarioId(usuario.getId())) {
             return ResponseEntity.ok(empresaService.buscarEmpresaPorIdUsuario(usuario.getId()).get());
         } else if (candidatoService.existeCandidatoPorUsuarioId(usuario.getId())) {
-            return ResponseEntity.ok(candidatoService.buscarCandidatoPorIdUsuario(usuario.getId()).get());
+            return ResponseEntity.ok(candidatoService.traerPerfilCandidatoPorUsuario(usuario.getId()));//TODO: CAMBIAR
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No tiene perfil asociado.");
         }

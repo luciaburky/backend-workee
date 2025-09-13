@@ -30,6 +30,8 @@ public interface CandidatoService extends BaseService<Candidato, Long> {
 
     public Optional<Candidato> buscarCandidatoPorIdUsuario(Long idUsuario);
 
+    public Candidato traerPerfilCandidatoPorUsuario(Long idUsuario);
+
     public Boolean eliminarCuentaCandidato(Long idCandidato);
     
     public Boolean existeCandidatoPorUsuarioId(Long usuarioId);

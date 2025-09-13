@@ -333,9 +333,21 @@ public class CandidatoServiceImpl extends BaseServiceImpl<Candidato, Long> imple
             throw new IllegalArgumentException("El id del usuario no puede estar vacío");
         }
         Optional<Candidato> candidato = candidatoRepository.findByUsuarioId(idUsuario);
-
         return candidato;
-
+    }
+    @Override
+    public Candidato traerPerfilCandidatoPorUsuario(Long idUsuario){
+        Optional<Candidato> candidatoOptional = this.buscarCandidatoPorIdUsuario(idUsuario);
+        if(!candidatoOptional.isPresent()){
+            throw new EntityNotFoundException("No se encontró un candidato con el perfil buscado");
+        }
+        Candidato candidato = candidatoOptional.get();
+        List<CandidatoHabilidad> candidatoHabilidad = candidato.getHabilidades().stream()
+            .filter(ch -> ch.getFechaHoraBaja() == null)
+            .toList();
+        candidato.getHabilidades().clear();
+        candidato.getHabilidades().addAll(candidatoHabilidad);
+        return candidato;
     }
 
     @Override
