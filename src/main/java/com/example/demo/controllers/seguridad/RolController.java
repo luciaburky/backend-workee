@@ -20,6 +20,7 @@ import com.example.demo.services.seguridad.RolService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path ="/roles")
@@ -42,7 +43,7 @@ public class RolController {
     @Operation(summary = "Crea un nuevo rol")
     @PostMapping("")
     @PreAuthorize("hasAuthority('GESTIONAR_ROLES')") 
-    public ResponseEntity<?> crearRol(@RequestBody RolRequestDTO rolRequestDTO){
+    public ResponseEntity<?> crearRol(@Valid @RequestBody RolRequestDTO rolRequestDTO){
         Rol nuevoRol = rolService.crearRol(rolRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoRol);
     }
