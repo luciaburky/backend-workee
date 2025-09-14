@@ -38,6 +38,7 @@ public interface OfertaRepository extends BaseRepository<Oferta, Long> {
         JOIN o.estadosOferta eo
         JOIN eo.estadoOferta estado
         WHERE LOWER(o.titulo) LIKE LOWER(CONCAT('%', :nombreOferta, '%'))
+        AND eo.fechaHoraBaja IS NULL
         AND o.fechaFinalizacion IS NULL
         AND estado.codigo IN ('ABIERTA')
         ORDER BY o.fechaHoraAlta DESC
