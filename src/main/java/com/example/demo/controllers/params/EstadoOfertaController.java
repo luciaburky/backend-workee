@@ -62,7 +62,7 @@ public class EstadoOfertaController {
 
     @Operation(summary = "Obtener los Estados Oferta Activos")
     @GetMapping("/activos")
-    @PreAuthorize("hasAuthority('GESTIONAR_ESTADO_OFERTA')") //TODO: Agregar en base a lo que hagamos del modulo de ofertas
+    @PreAuthorize("hasAuthority('GESTIONAR_ESTADO_OFERTA') or hasAuthority('GESTION_OFERTAS')") //TODO: Agregar en base a lo que hagamos del modulo de ofertas
     public ResponseEntity<List<EstadoOferta>> obtenerEstadosOfertaActivos() {
         List<EstadoOferta> listaEstadosOfertaActivos = estadoOfertaService.obtenerEstadoOfertasActivos();
         return ResponseEntity.ok(listaEstadosOfertaActivos);

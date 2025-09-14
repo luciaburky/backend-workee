@@ -59,7 +59,7 @@ public class TipoContratoOfertaController {
 
     @Operation(summary = "Obtiene todos los TipoContratoOferta ACTIVOS")
     @GetMapping("/activos")
-    @PreAuthorize("hasAuthority('BUSCAR_OFERTAS') or hasAuthority('GESTIONAR_CONRATO_OFERTA')") //TODO: Agregar el q se relaciona con el buscar y el de cuando crea oferta
+    @PreAuthorize("hasAuthority('BUSCAR_OFERTAS') or hasAuthority('GESTIONAR_CONRATO_OFERTA') or hasAuthority('GESTION_OFERTAS')") //TODO: Agregar el q se relaciona con el buscar y el de cuando crea oferta
     public ResponseEntity<?> obtenerTiposContratosOfertaActivos(){
         List<TipoContratoOferta> tiposContratosOfertaActivos = tipoContratoOfertaService.obtenerTiposContratosOfertaActivos();
         return ResponseEntity.status(HttpStatus.OK).body(tiposContratosOfertaActivos);

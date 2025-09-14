@@ -59,7 +59,7 @@ public class ModalidadOfertaController {
 
     @Operation(summary = "Obtener todas las Modalidades Oferta Activas")
     @GetMapping("/activas")
-    @PreAuthorize("hasAuthority('GESTIONAR_MODALIDAD_OFERTA') or hasAuthority('BUSCAR_OFERTAS')") //TODO: Cuando agreguemos lo del modulo de ofertas ponerle alguna
+    @PreAuthorize("hasAuthority('GESTIONAR_MODALIDAD_OFERTA') or hasAuthority('BUSCAR_OFERTAS') or hasAuthority('GESTION_OFERTAS')") //TODO: Cuando agreguemos lo del modulo de ofertas ponerle alguna
     public ResponseEntity<List<ModalidadOferta>> obtenerModalidadOfertaActivos() {
         List<ModalidadOferta> listaModalidadOfertaActivas = modalidadOfertaService.obtenerModalidadesOfertasActivos();
         return ResponseEntity.ok(listaModalidadOfertaActivas);
