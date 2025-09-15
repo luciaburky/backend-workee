@@ -55,7 +55,7 @@ public class AuthController {
     @Parameter(name = "token", description = "Token recibido por correo", required = true)
     public ResponseEntity<?> confirmarRecuperacionContrasenia(@RequestParam String token, @RequestBody RecuperarContraseniaDTO recuperarContraseniaDTO){
         this.usuarioService.confirmarRecuperacionContrasenia(token, recuperarContraseniaDTO);
-        return ResponseEntity.status(HttpStatus.OK).body("Contraseña recuperada exitosamente");
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of("mensaje", "Contraseña recuperada exitosamente"));
     } //AVISO PARA CUANDO HAGAN EL FRONT: En este caso si va RequestParam pq el path es http://localhost:4200/nuevaContrasenia?token=...
 
     @Operation(summary = "Usuario verifica su cuenta")
