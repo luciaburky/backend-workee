@@ -35,7 +35,7 @@ public class TipoContratoOfertaController {
 
     @Operation(summary = "Crear un nuevo TipoContratoOferta")
     @PostMapping("")
-    @PreAuthorize("hasAuthority('GESTIONAR_CONRATO_OFERTA')")
+    @PreAuthorize("hasAuthority('GESTIONAR_CONTRATO_OFERTA')")
     public ResponseEntity<?> crearTipoContratoOferta(@Valid @RequestBody TipoContratoOfertaRequestDTO tipoContratoOfertaRequestDTO){
         TipoContratoOferta nuevoTipoContratoOferta = tipoContratoOfertaService.guardarTipoContratoOferta(tipoContratoOfertaRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoTipoContratoOferta);
@@ -43,7 +43,7 @@ public class TipoContratoOfertaController {
 
     @Operation(summary = "Actualizar un TipoContratoOferta existente")
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('GESTIONAR_CONRATO_OFERTA')")
+    @PreAuthorize("hasAuthority('GESTIONAR_CONTRATO_OFERTA')")
     public ResponseEntity<?> actualizarTipoContratoOferta(@PathVariable Long id, @RequestBody TipoContratoOfertaRequestDTO tipoContratoOfertaRequestDTO) {
         TipoContratoOferta tipoContratoOfertaActualizado = tipoContratoOfertaService.actualizarTipoContratoOferta(id, tipoContratoOfertaRequestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(tipoContratoOfertaActualizado);
@@ -51,7 +51,7 @@ public class TipoContratoOfertaController {
 
     @Operation(summary = "Obtiene todos los TipoContratoOferta")
     @GetMapping("")
-    @PreAuthorize("hasAuthority('GESTIONAR_CONRATO_OFERTA')")
+    @PreAuthorize("hasAuthority('GESTIONAR_CONTRATO_OFERTA')")
     public ResponseEntity<?> obtenerTiposContratosOferta(){
         List<TipoContratoOferta> tiposContratosOferta = tipoContratoOfertaService.obtenerTiposContratosOferta();
         return ResponseEntity.status(HttpStatus.OK).body(tiposContratosOferta);
@@ -59,7 +59,7 @@ public class TipoContratoOfertaController {
 
     @Operation(summary = "Obtiene todos los TipoContratoOferta ACTIVOS")
     @GetMapping("/activos")
-    @PreAuthorize("hasAuthority('BUSCAR_OFERTAS') or hasAuthority('GESTIONAR_CONRATO_OFERTA') or hasAuthority('GESTION_OFERTAS')") //TODO: Agregar el q se relaciona con el buscar y el de cuando crea oferta
+    @PreAuthorize("hasAuthority('BUSCAR_OFERTAS') or hasAuthority('GESTIONAR_CONTRATO_OFERTA') or hasAuthority('GESTION_OFERTAS')") //TODO: Agregar el q se relaciona con el buscar y el de cuando crea oferta
     public ResponseEntity<?> obtenerTiposContratosOfertaActivos(){
         List<TipoContratoOferta> tiposContratosOfertaActivos = tipoContratoOfertaService.obtenerTiposContratosOfertaActivos();
         return ResponseEntity.status(HttpStatus.OK).body(tiposContratosOfertaActivos);
@@ -67,7 +67,7 @@ public class TipoContratoOfertaController {
     
     @Operation(summary = "Obtiene un TipoContratoOferta por su ID")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('GESTIONAR_CONRATO_OFERTA')")
+    @PreAuthorize("hasAuthority('GESTIONAR_CONTRATO_OFERTA')")
     public ResponseEntity<?> obtenerTipoContratoOfertaPorId(@PathVariable Long id) {
         TipoContratoOferta tipoContratoOferta = tipoContratoOfertaService.findById(id); 
         return ResponseEntity.status(HttpStatus.OK).body(tipoContratoOferta);
@@ -75,7 +75,7 @@ public class TipoContratoOfertaController {
 
     @Operation(summary = "Deshabilita un TipoContratoOferta")
     @DeleteMapping("/deshabilitar/{id}")
-    @PreAuthorize("hasAuthority('GESTIONAR_CONRATO_OFERTA')")
+    @PreAuthorize("hasAuthority('GESTIONAR_CONTRATO_OFERTA')")
     public ResponseEntity<?> deshabilitarTipoContratoOferta(@PathVariable Long id) {
         tipoContratoOfertaService.deshabilitarTipoContratoOferta(id); 
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -83,7 +83,7 @@ public class TipoContratoOfertaController {
 
     @Operation(summary = "Habilita un TipoContratoOferta")
     @PutMapping("/habilitar/{id}")
-    @PreAuthorize("hasAuthority('GESTIONAR_CONRATO_OFERTA')")
+    @PreAuthorize("hasAuthority('GESTIONAR_CONTRATO_OFERTA')")
     public ResponseEntity<?> habilitarTipoContratoOferta(@PathVariable Long id) {
         tipoContratoOfertaService.habilitarTipoContratoOferta(id);
         return ResponseEntity.status(HttpStatus.OK).build();
