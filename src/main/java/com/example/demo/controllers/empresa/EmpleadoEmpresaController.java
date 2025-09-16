@@ -60,7 +60,7 @@ public class EmpleadoEmpresaController {
 
     @Operation(summary = "Trae todos los empleados ACTIVOS de una empresa")
     @GetMapping("/traerTodos/{id}")
-    @PreAuthorize("hasAuthority('GESTIONAR_EMPLEADOS')") //TODO: Agregar el permiso de cuando crea una oferta que puede seleccionar el empleado que va a participar !!!!
+    @PreAuthorize("hasAuthority('GESTIONAR_EMPLEADOS') or hasAuthority('GESTION_OFERTAS')") //TODO: Agregar el permiso de cuando crea una oferta que puede seleccionar el empleado que va a participar !!!!
     public ResponseEntity<?> visualizarEmpleadosActivos(@PathVariable Long id){
         List<EmpleadoEmpresa> empleados = empleadoEmpresaService.visualizarEmpleados(id);
         return ResponseEntity.status(HttpStatus.OK).body(empleados);
