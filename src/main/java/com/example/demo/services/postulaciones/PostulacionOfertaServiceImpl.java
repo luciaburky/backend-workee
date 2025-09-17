@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.postulaciones.PostulacionCandidatoRequestDTO;
+import com.example.demo.dtos.postulaciones.PostulacionSimplificadaDTO;
 import com.example.demo.entities.candidato.Candidato;
 import com.example.demo.entities.eventos.Notificacion;
 import com.example.demo.entities.eventos.TipoNotificacion;
@@ -48,7 +49,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
 
     @Override
     @Transactional
-    public PostulacionOferta postularComoCandidato(PostulacionCandidatoRequestDTO postulacionCandidatoRequestDTO) {
+    public PostulacionSimplificadaDTO postularComoCandidato(PostulacionCandidatoRequestDTO postulacionCandidatoRequestDTO) {
         PostulacionOferta postulacionOferta = new PostulacionOferta();
 
         Boolean yaPostulo = this.verificarSiCandidatoYaPostulo(postulacionCandidatoRequestDTO.getIdCandidato(), postulacionCandidatoRequestDTO.getIdOferta());
@@ -97,7 +98,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         postulacionOferta.getPostulacionOfertaEtapaList().add(postulacionOfertaEtapa);
 
         //Creacion de la notificacion para la empresa
-        Notificacion notificacion = new Notificacion();
+        /*Notificacion notificacion = new Notificacion();
         notificacion.setFechaHoraAlta(new Date());
         notificacion.setTipoNotificacion(TipoNotificacion.SOLICITUD_POSTULACION_OFERTA);
         String descripcion = "El candidato " + candidato.getNombreCandidato() + " " + candidato.getApellidoCandidato() + " ha solicitado participar en la oferta " + oferta.getTitulo();
@@ -106,10 +107,20 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         notificacion.setTituloNotificacion(titulo);
         notificacion.setLecturaNotificacion(false);
 
-        notificacionService.guardarNotificacion(notificacion);
+        notificacionService.guardarNotificacion(notificacion);*/
         
-        return postulacionOfertaRepository.save(postulacionOferta);
         //TODO: Faltaria que envie la solicitud de postulacion a la empresa
+
+        postulacionOfertaRepository.save(postulacionOferta);
+        
+        PostulacionSimplificadaDTO postulacionSimplificada = new PostulacionSimplificadaDTO();
+        postulacionSimplificada.setIdCandidato(postulacionOferta.getCandidato().getId());
+        postulacionSimplificada.setIdIniciadorPostulacion(postulacionOferta.getIdIniciadorPostulacion());
+        postulacionSimplificada.setIdOferta(postulacionOferta.getOferta().getId());
+        postulacionSimplificada.setEtapas(postulacionOferta.getPostulacionOfertaEtapaList());
+        postulacionSimplificada.setFechaHoraInicioPostulacion(postulacionOferta.getFechaHoraAlta());
+
+        return postulacionSimplificada;
     }
 
     private Boolean verificarSiCandidatoYaPostulo(Long idCandidato, Long idOferta){
@@ -123,7 +134,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
     }
 
     @Override
-    public PostulacionOferta abandonarPostulacionComoCandidato(Long idPostulacion){
+    public PostulacionSimplificadaDTO abandonarPostulacionComoCandidato(Long idPostulacion){
         PostulacionOferta postulacionOferta = this.findById(idPostulacion);
 
         //Verificar que el candidato no haya sido seleccionado
@@ -135,7 +146,11 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         if(postulacionOfertaEtapaActual.getEtapa().getCodigoEtapa().equals(CodigoEtapa.SELECCIONADO)){
             throw new EntityNotValidException("No es posible abandonar la postulacion porque el candidato ya ha sido seleccionado");
         }
-        
+
+        if(postulacionOfertaEtapaActual.getEtapa().getCodigoEtapa().equals(CodigoEtapa.RECHAZADO)){
+            throw new EntityNotValidException("No es posible abandonar la postulacion porque el candidato ya ha sido rechazado");
+        }
+
         //Verificar que la oferta no se encuentre finalizada
         OfertaEstadoOferta ofertaEstadoOferta = postulacionOferta.getOferta().getEstadosOferta().stream()
             .filter(eo -> eo.getFechaHoraBaja() == null)
@@ -154,8 +169,19 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         postulacionOfertaEtapaAbandono.setFechaHoraAlta(new Date());
 
         postulacionOferta.getPostulacionOfertaEtapaList().add(postulacionOfertaEtapaAbandono);
+        postulacionOferta.setFechaHoraAbandonoOferta(new Date());
 
-        return postulacionOfertaRepository.save(postulacionOferta);
+        postulacionOfertaRepository.save(postulacionOferta);
+    
+        PostulacionSimplificadaDTO postulacionSimplificada = new PostulacionSimplificadaDTO();
+        postulacionSimplificada.setIdCandidato(postulacionOferta.getCandidato().getId());
+        postulacionSimplificada.setIdIniciadorPostulacion(postulacionOferta.getIdIniciadorPostulacion());
+        postulacionSimplificada.setIdOferta(postulacionOferta.getOferta().getId());
+        postulacionSimplificada.setEtapas(postulacionOferta.getPostulacionOfertaEtapaList());
+        postulacionSimplificada.setFechaHoraInicioPostulacion(postulacionOferta.getFechaHoraAlta());
+        postulacionSimplificada.setFechaHoraAbandonoOferta(postulacionOferta.getFechaHoraAbandonoOferta());
+
+        return postulacionSimplificada;
     }
 
 }
