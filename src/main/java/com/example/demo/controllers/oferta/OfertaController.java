@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dtos.OfertaRequestDTO;
 import com.example.demo.dtos.params.OfertasEmpleadoDTO;
+import com.example.demo.dtos.postulaciones.OfertasEtapasDTO;
 import com.example.demo.entities.oferta.Oferta;
 import com.example.demo.services.oferta.OfertaService;
 
@@ -82,5 +83,13 @@ public class OfertaController {
     public ResponseEntity<List<OfertasEmpleadoDTO>> getEtapasByEmpleadoId(@PathVariable("empleadoId") Long empleadoId) {
         List<OfertasEmpleadoDTO> etapas = ofertaService.buscarOfertasEmpleado(empleadoId);
         return ResponseEntity.ok().body(etapas);
+    }
+
+    @Operation(summary = "Obtener todas las próximas etapas de una oferta")
+    @GetMapping("/{idOferta}/{nroEtapa}/etapas")
+    @PreAuthorize("hasAuthority('GESTION_OFERTAS') or hasAuthority('POSTULAR_OFERTA') or hasAuthority('GESTIONAR_POSTULACION')")
+    public ResponseEntity<?> getProximasEtapas(@PathVariable Long idOferta, @PathVariable Integer nroEtapa) {
+        List<OfertasEtapasDTO> proximas = ofertaService.buscarProximasEtapasEnOferta(idOferta, nroEtapa);
+        return ResponseEntity.ok().body(proximas);
     }
 }

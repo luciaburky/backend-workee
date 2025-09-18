@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.example.demo.dtos.postulaciones.OfertasEtapasDTO;
 import com.example.demo.entities.oferta.Oferta;
 import com.example.demo.repositories.BaseRepository;
 
@@ -118,6 +119,24 @@ public interface OfertaRepository extends BaseRepository<Oferta, Long> {
     );
 
 
+
+    @Query(
+        """
+        SELECT new com.example.demo.dtos.postulaciones.OfertasEtapasDTO(
+          oe.id,
+          e.id,
+          oe.numeroEtapa,
+          e.codigoEtapa,
+          e.nombreEtapa
+        )
+        FROM Oferta o
+        JOIN o.ofertaEtapas oe
+        JOIN oe.etapa e
+        WHERE o.id = :idOferta
+        AND oe.numeroEtapa > :nroEtapa
+        """
+  )
+  public List<OfertasEtapasDTO> buscarProximasEtapasDeOferta(@Param("idOferta") Long idOferta, @Param("nroEtapa") Integer nroEtapa);
 
 }
 

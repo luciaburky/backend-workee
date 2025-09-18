@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.dtos.CandidatoRequestDTO;
 import com.example.demo.dtos.CorreoRequestDTO;
 import com.example.demo.dtos.EmpresaRequestDTO;
 import com.example.demo.dtos.RecuperarContraseniaDTO;
 import com.example.demo.dtos.TokenRequestDTO;
+import com.example.demo.dtos.candidato.CandidatoRequestDTO;
 import com.example.demo.dtos.login.LoginRequestDTO;
 import com.example.demo.entities.candidato.Candidato;
 import com.example.demo.entities.empresa.Empresa;

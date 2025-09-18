@@ -3,8 +3,8 @@ package com.example.demo.services.candidato;
 import java.util.List;
 import java.util.Optional;
 
-import com.example.demo.dtos.CandidatoRequestDTO;
 import com.example.demo.dtos.FiltrosCandidatoRequestDTO;
+import com.example.demo.dtos.candidato.CandidatoRequestDTO;
 import com.example.demo.entities.candidato.Candidato;
 import com.example.demo.entities.params.Habilidad;
 import com.example.demo.services.BaseService;
