@@ -19,10 +19,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.dtos.RecuperarContraseniaDTO;
-import com.example.demo.dtos.UsuarioDTO;
-import com.example.demo.dtos.UsuarioResponseDTO;
 import com.example.demo.dtos.login.LoginRequestDTO;
+import com.example.demo.dtos.seguridad.RecuperarContraseniaDTO;
+import com.example.demo.dtos.seguridad.UsuarioDTO;
+import com.example.demo.dtos.seguridad.UsuarioResponseDTO;
 import com.example.demo.entities.params.CodigoEstadoUsuario;
 import com.example.demo.entities.params.EstadoUsuario;
 import com.example.demo.entities.seguridad.Rol;

@@ -1,7 +1,5 @@
 package com.example.demo.entities.postulaciones;
 
-import java.util.Date;
-
 import com.example.demo.entities.Base;
 import com.example.demo.entities.params.Etapa;
 
@@ -34,7 +32,4 @@ public class PostulacionOfertaEtapa extends Base{
 
     @Column(name = "retroalimentacion_empresa", columnDefinition = "TEXT")
     private String retroalimentacionEmpresa;
-
-    @Column(name = "fecha_hora_fin_postulacion_oferta_etapa")
-    private Date fechaHoraFinPostulacionOfertaEtapa;
 }

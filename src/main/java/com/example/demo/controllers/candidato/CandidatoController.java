@@ -4,7 +4,7 @@ import java.util.List;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.dtos.CandidatoRequestDTO;
+import com.example.demo.dtos.candidato.CandidatoRequestDTO;
 import com.example.demo.entities.candidato.Candidato;
 import com.example.demo.entities.params.Habilidad;
 import com.example.demo.services.candidato.CandidatoService;

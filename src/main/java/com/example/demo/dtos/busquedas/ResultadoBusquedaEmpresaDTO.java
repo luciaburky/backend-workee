@@ -1,4 +1,4 @@
-package com.example.demo.dtos;
+package com.example.demo.dtos.busquedas;
 
 import com.example.demo.entities.empresa.Empresa;
 

@@ -15,9 +15,10 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.demo.dtos.FiltrosOfertaRequestDTO;
-import com.example.demo.dtos.OfertaRequestDTO;
+import com.example.demo.dtos.busquedas.FiltrosOfertaRequestDTO;
+import com.example.demo.dtos.ofertas.OfertaRequestDTO;
 import com.example.demo.dtos.params.OfertasEmpleadoDTO;
+import com.example.demo.dtos.postulaciones.OfertasEtapasDTO;
 import com.example.demo.entities.Base;
 import com.example.demo.entities.empresa.Empresa;
 import com.example.demo.entities.oferta.CodigoEstadoOferta;
@@ -280,4 +281,9 @@ public class OfertaServiceImpl extends BaseServiceImpl<Oferta, Long> implements 
         return new ArrayList<>(porOferta.values());
     }
     
+
+    @Override
+    public List<OfertasEtapasDTO> buscarProximasEtapasEnOferta(Long idOferta, Integer nroEtapa){
+        return ofertaRepository.buscarProximasEtapasDeOferta(idOferta, nroEtapa);
+    }
 }

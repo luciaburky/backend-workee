@@ -2,7 +2,7 @@ package com.example.demo.services.oferta;
 
 import java.util.List;
 
-import com.example.demo.dtos.OfertaEtapaRequestDTO;
+import com.example.demo.dtos.ofertas.OfertaEtapaRequestDTO;
 import com.example.demo.entities.oferta.OfertaEtapa;
 import com.example.demo.services.BaseService;
 
