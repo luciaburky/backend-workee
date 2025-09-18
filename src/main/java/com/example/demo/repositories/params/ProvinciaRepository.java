@@ -34,7 +34,7 @@ public interface ProvinciaRepository extends BaseRepository<Provincia, Long> {
 
     //use JPQL porque era mas facil mapear al DTO
     @Query("""
-            SELECT new com.example.demo.dtos.UbicacionDTO(p.id, p.nombreProvincia, pais.nombrePais)
+            SELECT new com.example.demo.dtos.busquedas.UbicacionDTO(p.id, p.nombreProvincia, pais.nombrePais)
             FROM Provincia p
             JOIN p.pais 
             WHERE p.fechaHoraBaja IS NULL AND pais.fechaHoraBaja IS NULL

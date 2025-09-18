@@ -11,7 +11,7 @@ import com.example.demo.entities.candidato.Candidato;
 
 @Mapper(componentModel = "spring")
 public interface CandidatoMapper {
-
+ 
     // Mapea todos los atributos salvo los que se setean manualmente
     @Mapping(target = "provincia", ignore = true)
     @Mapping(target = "genero", ignore = true)

@@ -26,7 +26,7 @@ public interface UsuarioRolRepository extends BaseRepository<UsuarioRol, Long> {
 
     @Query(
         """
-             SELECT new com.example.demo.dtos.UsuarioResponseDTO(ur.usuario.id, ur.usuario.urlFotoUsuario, ur.usuario.correoUsuario, ur.rol.nombreRol, null, ur.rol.categoriaRol.id)  
+             SELECT new com.example.demo.dtos.seguridad.UsuarioResponseDTO(ur.usuario.id, ur.usuario.urlFotoUsuario, ur.usuario.correoUsuario, ur.rol.nombreRol, null, ur.rol.categoriaRol.id)  
              FROM UsuarioRol ur
              WHERE ur.usuario.fechaHoraBaja IS NULL
              AND ur.fechaHoraBaja IS NULL
@@ -36,7 +36,7 @@ public interface UsuarioRolRepository extends BaseRepository<UsuarioRol, Long> {
 
     @Query(
         """
-             SELECT new com.example.demo.dtos.UsuarioResponseDTO(ur.usuario.id, ur.usuario.urlFotoUsuario, ur.usuario.correoUsuario, ur.rol.nombreRol, null, ur.rol.categoriaRol.id)  
+             SELECT new com.example.demo.dtos.seguridad.UsuarioResponseDTO(ur.usuario.id, ur.usuario.urlFotoUsuario, ur.usuario.correoUsuario, ur.rol.nombreRol, null, ur.rol.categoriaRol.id)  
              FROM UsuarioRol ur
              WHERE ur.usuario.fechaHoraBaja IS NULL
              AND ur.fechaHoraBaja IS NULL
