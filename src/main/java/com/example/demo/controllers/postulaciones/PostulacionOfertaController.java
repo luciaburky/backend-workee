@@ -50,8 +50,8 @@ public class PostulacionOfertaController {
     }
 
     @Operation(summary = "Un candidato ve sus postulaciones")
-    @GetMapping("/{idCandidato}")
-    @PreAuthorize("hasAuthority('POSTULAR_OFERTA')")
+    @GetMapping("/{idCandidato}/postulaciones")
+    @PreAuthorize("hasAuthority('POSTULAR_OFERTA')") //or hasAuthority('GESTIONAR_POSTULACION')
     public ResponseEntity<?> verPostulacionesCandidato(@PathVariable Long idCandidato) {
         List<PostulacionSimplificadaDTO> postulaciones = postulacionOfertaService.obtenerPostulacionesDeUnCandidato(idCandidato);
         return ResponseEntity.status(HttpStatus.OK).body(postulaciones);
@@ -66,12 +66,22 @@ public class PostulacionOfertaController {
     }
 
 
-    @Operation(summary = "")
+    @Operation(summary = "Actualizar la postulación de un candidato")
     @PutMapping("/{idPostulacion}")
     @PreAuthorize("hasAuthority('GESTIONAR_POSTULACION')")
     public ResponseEntity<?> actualizarPostulacionCandidato(@PathVariable Long idPostulacion, @RequestBody CambioPostulacionDTO cambioPostulacionDTO) {
         PostulacionSimplificadaDTO postulacion = postulacionOfertaService.actualizarPostulacionDeCandidato(idPostulacion, cambioPostulacionDTO);
         return ResponseEntity.status(HttpStatus.OK).body(postulacion);
     }
+
+    @Operation(summary = "Ver el detalle de la postulacion de un candidato")
+    @GetMapping("/{idPostulacion}")
+    @PreAuthorize("hasAuthority('POSTULAR_OFERTA')")
+    public ResponseEntity<?> verPostulacionCandidato(@PathVariable Long idPostulacion) {
+        PostulacionSimplificadaDTO postulacion = postulacionOfertaService.verDetallePostulacionDeCandidato(idPostulacion);
+        return ResponseEntity.status(HttpStatus.OK).body(postulacion);
+    }
+
+
 
 }

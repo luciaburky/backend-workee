@@ -312,4 +312,20 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         return true;
     }
 
+    @Override
+    public PostulacionSimplificadaDTO verDetallePostulacionDeCandidato(Long idPostulacion){
+        PostulacionOferta postulacionOriginal = findById(idPostulacion);
+
+        PostulacionSimplificadaDTO postulacion = new PostulacionSimplificadaDTO();
+        postulacion.setEtapas(postulacionOriginal.getPostulacionOfertaEtapaList());
+        postulacion.setFechaHoraAbandonoOferta(postulacionOriginal.getFechaHoraAbandonoOferta());
+        postulacion.setFechaHoraFinPostulacionOferta(postulacionOriginal.getFechaHoraFinPostulacionOferta());
+        postulacion.setFechaHoraInicioPostulacion(postulacionOriginal.getFechaHoraAlta());
+        postulacion.setIdCandidato(postulacionOriginal.getCandidato().getId());
+        postulacion.setIdIniciadorPostulacion(postulacionOriginal.getIdIniciadorPostulacion());
+        postulacion.setIdOferta(postulacionOriginal.getOferta().getId());
+        postulacion.setIdPostulacionOferta(idPostulacion);
+
+        return postulacion;
+    }
 }

@@ -17,5 +17,7 @@ public interface PostulacionOfertaService {
     public PostulacionSimplificadaDTO actualizarPostulacionDeCandidato(Long idPostulacion, CambioPostulacionDTO cambioPostulacionDTO);
 
     public List<EtapaActualPostulacionDTO> buscarEtapasActualesDePostulacionesDeCandidato(Long idCandidato);
+
+    public PostulacionSimplificadaDTO verDetallePostulacionDeCandidato(Long idPostulacion);
 }
 
