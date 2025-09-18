@@ -14,9 +14,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.example.demo.dtos.FiltrosCandidatoRequestDTO;
-import com.example.demo.dtos.UsuarioDTO;
+import com.example.demo.dtos.busquedas.FiltrosCandidatoRequestDTO;
 import com.example.demo.dtos.candidato.CandidatoRequestDTO;
+import com.example.demo.dtos.seguridad.UsuarioDTO;
 import com.example.demo.entities.candidato.Candidato;
 import com.example.demo.entities.candidato.CandidatoCV;
 import com.example.demo.entities.candidato.CandidatoHabilidad;

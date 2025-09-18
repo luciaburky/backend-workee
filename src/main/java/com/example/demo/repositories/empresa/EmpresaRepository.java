@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.example.demo.dtos.ResultadoBusquedaEmpresaDTO;
-import com.example.demo.dtos.EmpresaPendienteHabilitacionDTO;
+import com.example.demo.dtos.busquedas.ResultadoBusquedaEmpresaDTO;
+import com.example.demo.dtos.seguridad.EmpresaPendienteHabilitacionDTO;
 import com.example.demo.entities.empresa.Empresa;
 import com.example.demo.repositories.BaseRepository;
 

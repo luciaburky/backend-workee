@@ -7,8 +7,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.example.demo.dtos.EmpleadoEmpresaRequestDTO;
-import com.example.demo.dtos.UsuarioDTO;
+import com.example.demo.dtos.empresa.EmpleadoEmpresaRequestDTO;
+import com.example.demo.dtos.seguridad.UsuarioDTO;
 import com.example.demo.entities.empresa.EmpleadoEmpresa;
 import com.example.demo.entities.empresa.Empresa;
 import com.example.demo.entities.oferta.CodigoEstadoOferta;

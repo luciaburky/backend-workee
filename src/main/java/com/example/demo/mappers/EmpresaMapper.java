@@ -2,10 +2,10 @@ package com.example.demo.mappers;
 
 import org.mapstruct.*;
 
-import com.example.demo.dtos.EmpresaRequestDTO;
+import com.example.demo.dtos.empresa.EmpresaRequestDTO;
 import com.example.demo.entities.empresa.Empresa;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring") 
 public interface EmpresaMapper {
 
     // Para creación

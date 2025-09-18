@@ -2,7 +2,7 @@ package com.example.demo.services.params;
 
 import java.util.List;
 
-import com.example.demo.dtos.UbicacionDTO;
+import com.example.demo.dtos.busquedas.UbicacionDTO;
 import com.example.demo.dtos.params.ProvinciaRequestDTO;
 import com.example.demo.entities.params.Provincia;
 import com.example.demo.services.BaseService;

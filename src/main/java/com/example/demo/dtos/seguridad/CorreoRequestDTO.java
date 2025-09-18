@@ -1,4 +1,4 @@
-package com.example.demo.dtos;
+package com.example.demo.dtos.seguridad;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

@@ -2,7 +2,7 @@ package com.example.demo.services.seguridad;
 
 import java.util.List;
 
-import com.example.demo.dtos.RolRequestDTO;
+import com.example.demo.dtos.seguridad.RolRequestDTO;
 import com.example.demo.entities.seguridad.Rol;
 import com.example.demo.services.BaseService;
 

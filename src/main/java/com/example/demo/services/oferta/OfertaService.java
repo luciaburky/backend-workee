@@ -2,8 +2,8 @@ package com.example.demo.services.oferta;
 
 import java.util.List;
 
-import com.example.demo.dtos.FiltrosOfertaRequestDTO;
-import com.example.demo.dtos.OfertaRequestDTO;
+import com.example.demo.dtos.busquedas.FiltrosOfertaRequestDTO;
+import com.example.demo.dtos.ofertas.OfertaRequestDTO;
 import com.example.demo.dtos.params.OfertasEmpleadoDTO;
 import com.example.demo.dtos.postulaciones.OfertasEtapasDTO;
 import com.example.demo.entities.oferta.Oferta;

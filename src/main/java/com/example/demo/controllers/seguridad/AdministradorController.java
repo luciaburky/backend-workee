@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.dtos.EmpresaPendienteHabilitacionDTO;
+import com.example.demo.dtos.seguridad.EmpresaPendienteHabilitacionDTO;
 import com.example.demo.entities.params.CodigoEstadoUsuario;
 import com.example.demo.services.empresa.EmpresaService;
 

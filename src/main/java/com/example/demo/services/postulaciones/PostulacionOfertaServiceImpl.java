@@ -265,6 +265,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         postulacionActualizada.setIdOferta(postulacion.getOferta().getId());
         postulacionActualizada.setIdPostulacionOferta(idPostulacion);
 
+        //TODO: Falta agregar lo de las notificaciones
         return postulacionActualizada;
 
     }

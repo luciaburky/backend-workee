@@ -8,11 +8,11 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.example.demo.dtos.EmpresaPendienteHabilitacionDTO;
-import com.example.demo.dtos.EmpresaRequestDTO;
-import com.example.demo.dtos.FiltrosEmpresaRequestDTO;
-import com.example.demo.dtos.ResultadoBusquedaEmpresaDTO;
-import com.example.demo.dtos.UsuarioDTO;
+import com.example.demo.dtos.busquedas.FiltrosEmpresaRequestDTO;
+import com.example.demo.dtos.busquedas.ResultadoBusquedaEmpresaDTO;
+import com.example.demo.dtos.empresa.EmpresaRequestDTO;
+import com.example.demo.dtos.seguridad.EmpresaPendienteHabilitacionDTO;
+import com.example.demo.dtos.seguridad.UsuarioDTO;
 import com.example.demo.entities.empresa.Empresa;
 import com.example.demo.entities.params.CodigoEstadoUsuario;
 import com.example.demo.entities.params.EstadoUsuario;

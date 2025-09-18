@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.dtos.ActualizarContraseniaDTO;
-import com.example.demo.dtos.FiltrosUsuariosRequestDTO;
-import com.example.demo.dtos.UsuarioResponseDTO;
+import com.example.demo.dtos.seguridad.ActualizarContraseniaDTO;
+import com.example.demo.dtos.seguridad.FiltrosUsuariosRequestDTO;
+import com.example.demo.dtos.seguridad.UsuarioResponseDTO;
 import com.example.demo.entities.seguridad.Usuario;
 import com.example.demo.services.BajaOrquestadorService;
 import com.example.demo.services.candidato.CandidatoService;

@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import com.example.demo.dtos.EmpleadoEmpresaRequestDTO;
+import com.example.demo.dtos.empresa.EmpleadoEmpresaRequestDTO;
 import com.example.demo.entities.empresa.EmpleadoEmpresa;
 import com.example.demo.services.BaseService;
 

@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.dtos.FiltrosCandidatoRequestDTO;
-import com.example.demo.dtos.FiltrosEmpresaRequestDTO;
-import com.example.demo.dtos.FiltrosOfertaRequestDTO;
-import com.example.demo.dtos.ResultadoBusquedaEmpresaDTO;
-import com.example.demo.dtos.UbicacionDTO;
+import com.example.demo.dtos.busquedas.FiltrosCandidatoRequestDTO;
+import com.example.demo.dtos.busquedas.FiltrosEmpresaRequestDTO;
+import com.example.demo.dtos.busquedas.FiltrosOfertaRequestDTO;
+import com.example.demo.dtos.busquedas.ResultadoBusquedaEmpresaDTO;
+import com.example.demo.dtos.busquedas.UbicacionDTO;
 import com.example.demo.entities.candidato.Candidato;
 import com.example.demo.entities.oferta.Oferta;
 import com.example.demo.services.candidato.CandidatoService;

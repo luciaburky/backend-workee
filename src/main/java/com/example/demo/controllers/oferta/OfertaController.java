@@ -3,7 +3,7 @@ package com.example.demo.controllers.oferta;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.dtos.OfertaRequestDTO;
+import com.example.demo.dtos.ofertas.OfertaRequestDTO;
 import com.example.demo.dtos.params.OfertasEmpleadoDTO;
 import com.example.demo.dtos.postulaciones.OfertasEtapasDTO;
 import com.example.demo.entities.oferta.Oferta;
