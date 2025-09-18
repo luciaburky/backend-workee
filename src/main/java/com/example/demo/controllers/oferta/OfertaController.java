@@ -72,7 +72,7 @@ public class OfertaController {
     @Operation(summary = "Obtener todas las Ofertas de una Empresa")
     @GetMapping("/empresa/{empresaId}")
     @PreAuthorize("hasAuthority('GESTION_OFERTAS') or hasAuthority('POSTULAR_OFERTA')")
-    public ResponseEntity<List<Oferta>> getOfertasByEmpresaId(@PathVariable("empresaId") Long empresaId) {
+    public ResponseEntity<List<Oferta>> getOfertasByEmpresaId(@PathVariable Long empresaId) {
         List<Oferta> ofertas = ofertaService.findAllByEmpresaId(empresaId);
         return ResponseEntity.ok().body(ofertas);
     }
@@ -91,5 +91,13 @@ public class OfertaController {
     public ResponseEntity<?> getProximasEtapas(@PathVariable Long idOferta, @PathVariable Integer nroEtapa) {
         List<OfertasEtapasDTO> proximas = ofertaService.buscarProximasEtapasEnOferta(idOferta, nroEtapa);
         return ResponseEntity.ok().body(proximas);
+    }
+
+    @Operation(summary = "Obtener todas las Ofertas ABIERTAS de una Empresa")
+    @GetMapping("/empresa/abiertas/{empresaId}")
+    @PreAuthorize("hasAuthority('GESTION_OFERTAS') or hasAuthority('POSTULAR_OFERTA')")
+    public ResponseEntity<List<Oferta>> getOfertasNoFinalizadas(@PathVariable Long empresaId) {
+        List<Oferta> ofertas = ofertaService.buscarOfertasAbiertas(empresaId);
+        return ResponseEntity.ok().body(ofertas);
     }
 }

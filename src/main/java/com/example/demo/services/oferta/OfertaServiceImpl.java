@@ -286,4 +286,12 @@ public class OfertaServiceImpl extends BaseServiceImpl<Oferta, Long> implements 
     public List<OfertasEtapasDTO> buscarProximasEtapasEnOferta(Long idOferta, Integer nroEtapa){
         return ofertaRepository.buscarProximasEtapasDeOferta(idOferta, nroEtapa);
     }
+
+    @Override
+    public List<Oferta> buscarOfertasAbiertas(Long idEmpresa) {
+        if (idEmpresa == null) {
+            throw new IllegalArgumentException("El ID de la empresa no puede ser nulo");
+        }
+        return ofertaRepository.buscarOfertasAbiertas(idEmpresa);
+    }
 }

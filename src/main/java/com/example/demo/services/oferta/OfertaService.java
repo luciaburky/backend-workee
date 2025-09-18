@@ -25,4 +25,6 @@ public interface OfertaService extends BaseService<Oferta, Long>{
     List<OfertasEmpleadoDTO> buscarOfertasEmpleado(Long empleadoId);
 
     public List<OfertasEtapasDTO> buscarProximasEtapasEnOferta(Long idOferta, Integer nroEtapa);
+
+    public List<Oferta> buscarOfertasAbiertas(Long idEmpresa);
 }

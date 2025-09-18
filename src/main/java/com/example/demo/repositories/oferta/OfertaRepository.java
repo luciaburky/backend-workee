@@ -32,6 +32,8 @@ public interface OfertaRepository extends BaseRepository<Oferta, Long> {
     List<Oferta> findAllByEmpresa_IdAndFechaHoraBajaIsNull(Long empresaId);
     Boolean existsByModalidadOfertaIdAndFechaHoraBajaIsNull(Long modalidadOfertaId);
     //existsByGeneroIdAndFechaHoraBajaIsNull(idGenero)
+
+    
     
     @Query("""
         SELECT o
@@ -138,5 +140,21 @@ public interface OfertaRepository extends BaseRepository<Oferta, Long> {
   )
   public List<OfertasEtapasDTO> buscarProximasEtapasDeOferta(@Param("idOferta") Long idOferta, @Param("nroEtapa") Integer nroEtapa);
 
+
+  /*@Query(value = "SELECT DISTINCT COUNT(*) " +
+                "FROM oferta o " +
+
+  nativeQuery = true)
+  public Integer obtenerCantidadDeCandidatosPostulados(@Param("idOferta") Long idOferta);
+*/
+
+
+  @Query("""
+      SELECT DISTINCT o FROM Oferta o
+      JOIN o.estadosOferta eo
+      JOIN eo.estadoOferta e
+      WHERE e.codigo = 'ABIERTA' AND eo.fechaHoraBaja IS NULL
+      """)
+  List<Oferta> buscarOfertasAbiertas(Long empresaId);
 }
 
