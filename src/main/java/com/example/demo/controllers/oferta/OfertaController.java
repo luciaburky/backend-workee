@@ -7,8 +7,10 @@ import com.example.demo.dtos.ofertas.CandidatoPostuladoDTO;
 import com.example.demo.dtos.ofertas.OfertaRequestDTO;
 import com.example.demo.dtos.params.OfertasEmpleadoDTO;
 import com.example.demo.dtos.postulaciones.OfertasEtapasDTO;
+import com.example.demo.entities.oferta.CodigoEstadoOferta;
 import com.example.demo.entities.oferta.Oferta;
 import com.example.demo.entities.params.Etapa;
+import com.example.demo.services.BajaOrquestadorService;
 import com.example.demo.services.oferta.OfertaService;
 import com.example.demo.services.postulaciones.PostulacionOfertaService;
 
@@ -36,10 +38,12 @@ public class OfertaController {
 
     private final OfertaService ofertaService;
     private final PostulacionOfertaService postulacionOfertaService;
+    private final BajaOrquestadorService bajaOrquestadorService;
 
-    public OfertaController(OfertaService ofertaService, PostulacionOfertaService postulacionOfertaService) {
+    public OfertaController(OfertaService ofertaService, PostulacionOfertaService postulacionOfertaService, BajaOrquestadorService bajaOrquestadorService) {
         this.ofertaService = ofertaService;
         this.postulacionOfertaService = postulacionOfertaService;
+        this.bajaOrquestadorService = bajaOrquestadorService;
     }
     
     @Operation(summary = "Crear una nueva Oferta")
@@ -62,7 +66,12 @@ public class OfertaController {
     @PostMapping("/{id}/cambiar-estado/{nuevoCodigo}")
     @PreAuthorize("hasAuthority('GESTION_OFERTAS')")
     public ResponseEntity<Oferta> cambiarEstado(@PathVariable("id") Long id, @PathVariable("nuevoCodigo") String nuevoCodigo) {
-        Oferta ofertaActualizada = ofertaService.cambiarEstado(id, nuevoCodigo);
+        Oferta ofertaActualizada;
+        if(nuevoCodigo.equals(CodigoEstadoOferta.FINALIZADA)){
+            ofertaActualizada = bajaOrquestadorService.rechazarATodosYFinalizarOferta(id);
+        }else {
+            ofertaActualizada = ofertaService.cambiarEstado(id, nuevoCodigo);
+        }
         return ResponseEntity.ok(ofertaActualizada);
     }
 

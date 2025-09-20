@@ -7,6 +7,7 @@ import com.example.demo.dtos.postulaciones.CambioPostulacionDTO;
 import com.example.demo.dtos.postulaciones.EtapaActualPostulacionDTO;
 import com.example.demo.dtos.postulaciones.PostulacionCandidatoRequestDTO;
 import com.example.demo.dtos.postulaciones.PostulacionSimplificadaDTO;
+import com.example.demo.entities.postulaciones.PostulacionOferta;
 
 public interface PostulacionOfertaService {
     public PostulacionSimplificadaDTO postularComoCandidato(PostulacionCandidatoRequestDTO postulacionCandidatoRequestDTO);
@@ -28,5 +29,7 @@ public interface PostulacionOfertaService {
     public Boolean aceptarPostulacionCandidato(Long idPostulacion);
 
     public Boolean rechazarPostulacionDeCandidatoPendiente(Long idPostulacion, CambioPostulacionDTO cambioPostulacionDTO);
+
+    public List<PostulacionOferta> buscarPostulacionesCandidatosEnCurso(Long idOferta);
 }
 

@@ -426,4 +426,10 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         //TODO: Falta lo de la notificacion
         return true;
     }
+
+
+    @Override
+    public List<PostulacionOferta> buscarPostulacionesCandidatosEnCurso(Long idOferta){
+        return postulacionOfertaRepository.traerPostulacionesCandidatosEnCurso(idOferta);
+    }
 }

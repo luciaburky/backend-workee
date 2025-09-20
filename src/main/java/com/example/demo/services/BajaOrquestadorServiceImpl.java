@@ -9,11 +9,22 @@ import org.springframework.stereotype.Service;
 import com.example.demo.entities.candidato.Candidato;
 import com.example.demo.entities.empresa.EmpleadoEmpresa;
 import com.example.demo.entities.empresa.Empresa;
+import com.example.demo.entities.oferta.CodigoEstadoOferta;
+import com.example.demo.entities.oferta.Oferta;
+import com.example.demo.entities.params.CodigoEtapa;
+import com.example.demo.entities.params.Etapa;
+import com.example.demo.entities.postulaciones.PostulacionOferta;
+import com.example.demo.entities.postulaciones.PostulacionOfertaEtapa;
 import com.example.demo.entities.seguridad.Usuario;
 import com.example.demo.exceptions.EntityAlreadyDisabledException;
+import com.example.demo.exceptions.EntityNotValidException;
+import com.example.demo.repositories.postulaciones.PostulacionOfertaRepository;
 import com.example.demo.services.candidato.CandidatoService;
 import com.example.demo.services.empresa.EmpleadoEmpresaService;
 import com.example.demo.services.empresa.EmpresaService;
+import com.example.demo.services.oferta.OfertaService;
+import com.example.demo.services.params.EtapaService;
+import com.example.demo.services.postulaciones.PostulacionOfertaService;
 import com.example.demo.services.seguridad.UsuarioService;
 
 import jakarta.transaction.Transactional;
@@ -24,12 +35,21 @@ public class BajaOrquestadorServiceImpl implements BajaOrquestadorService{
     private final EmpleadoEmpresaService empleadoEmpresaService;
     private final UsuarioService usuarioService;
     private final CandidatoService candidatoService;
+    private final PostulacionOfertaService postulacionOfertaService;
+    private final OfertaService ofertaService;
+    private final EtapaService etapaService;
+    private final PostulacionOfertaRepository postulacionOfertaRepository;
 
-    public BajaOrquestadorServiceImpl(EmpresaService empresaService, EmpleadoEmpresaService empleadoEmpresaService, UsuarioService usuarioService, CandidatoService candidatoService){
+    public BajaOrquestadorServiceImpl(EmpresaService empresaService, EmpleadoEmpresaService empleadoEmpresaService, UsuarioService usuarioService, 
+    CandidatoService candidatoService, PostulacionOfertaService postulacionOfertaService, OfertaService ofertaService, EtapaService etapaService, PostulacionOfertaRepository postulacionOfertaRepository){
         this.empresaService = empresaService;
         this.empleadoEmpresaService = empleadoEmpresaService;
         this.usuarioService = usuarioService;
         this.candidatoService = candidatoService;
+        this.postulacionOfertaService = postulacionOfertaService;
+        this.ofertaService = ofertaService;
+        this.etapaService = etapaService;
+        this.postulacionOfertaRepository = postulacionOfertaRepository;
     }
 
     @Override
@@ -80,5 +100,38 @@ public class BajaOrquestadorServiceImpl implements BajaOrquestadorService{
             usuarioService.darDeBajaUsuario(usuario.getId());
             return;
         }
+    }
+
+    @Override
+    @Transactional
+    public Oferta rechazarATodosYFinalizarOferta(Long idOferta){
+        //Finalizar oferta
+        Oferta oferta = ofertaService.cambiarEstado(idOferta, CodigoEstadoOferta.FINALIZADA);
+        
+        Etapa etapaRechazado = etapaService.obtenerEtapaPorCodigo(CodigoEtapa.RECHAZADO);
+        
+        //Rechazar a todos los candidatos restantes
+        List<PostulacionOferta> postulaciones = postulacionOfertaService.buscarPostulacionesCandidatosEnCurso(idOferta);
+
+        for(PostulacionOferta postulacion : postulaciones){
+            List<PostulacionOfertaEtapa> poeList = postulacion.getPostulacionOfertaEtapaList();
+            PostulacionOfertaEtapa postulacionOfertaEtapaActual = poeList.stream().filter(poe -> poe.getFechaHoraBaja() == null)
+                            .findFirst()
+                            .orElseThrow(() -> new EntityNotValidException("La postulacion no tiene un estado actual asignado"));
+
+            postulacionOfertaEtapaActual.setFechaHoraBaja(new Date());
+            postulacionOfertaEtapaActual.setRetroalimentacionEmpresa("La empresa ha decidido finalizar la oferta. Lamentablemente no has sido seleccionado.");
+
+            PostulacionOfertaEtapa postulacionOfertaEtapaNueva = new PostulacionOfertaEtapa();
+            postulacionOfertaEtapaNueva.setFechaHoraAlta(new Date());
+            postulacionOfertaEtapaNueva.setEtapa(etapaRechazado);
+
+            postulacion.setFechaHoraFinPostulacionOferta(new Date());
+            postulacion.getPostulacionOfertaEtapaList().add(postulacionOfertaEtapaNueva);
+
+            postulacionOfertaRepository.save(postulacion);
+        }
+
+        return oferta;
     }
 }

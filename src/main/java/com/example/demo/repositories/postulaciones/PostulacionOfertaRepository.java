@@ -78,4 +78,15 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
     """)
     List<CandidatoPostuladoDTO> traerCandidatosPostuladosPendientes(@Param("idOferta") Long idOferta, @Param("idEmpresa") Long idEmpresa); //Trae solo los postulados pendientes
 
+
+    @Query("""
+        SELECT DISTINCT po
+        FROM PostulacionOferta po
+        JOIN po.postulacionOfertaEtapaList poe
+        JOIN poe.etapa e
+        WHERE po.oferta.id = :idOferta
+        AND poe.fechaHoraBaja IS NULL
+        AND e.codigoEtapa NOT IN ('ABANDONADO', 'RECHAZADO', 'SELECCIONADO')
+    """)
+    List<PostulacionOferta> traerPostulacionesCandidatosEnCurso(@Param("idOferta") Long idOferta); //TODO: Agregar el estado de cuando un candidato rechaza una postulacion
 }
