@@ -6,8 +6,10 @@ import com.example.demo.dtos.postulaciones.CambioPostulacionDTO;
 import com.example.demo.dtos.postulaciones.EtapaActualPostulacionDTO;
 import com.example.demo.dtos.postulaciones.PostulacionCandidatoRequestDTO;
 import com.example.demo.dtos.postulaciones.PostulacionSimplificadaDTO;
+import com.example.demo.entities.postulaciones.PostulacionOferta;
+import com.example.demo.services.BaseService;
 
-public interface PostulacionOfertaService {
+public interface PostulacionOfertaService extends BaseService<PostulacionOferta, Long>{
     public PostulacionSimplificadaDTO postularComoCandidato(PostulacionCandidatoRequestDTO postulacionCandidatoRequestDTO);
 
     public List<PostulacionSimplificadaDTO> obtenerPostulacionesDeUnCandidato(Long idCandidato);
