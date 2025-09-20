@@ -1,6 +1,7 @@
 package com.example.demo.controllers.seguridad;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -77,7 +78,7 @@ public class UsuarioController {
     @PreAuthorize("hasAuthority('GESTIONAR_USUARIOS')") 
     public ResponseEntity<?> modificarRolDeUsuario(@PathVariable Long idUsuario, @RequestBody Long idRol){
         usuarioService.modificarRolUsuario(idUsuario, idRol);
-        return ResponseEntity.status(HttpStatus.OK).body("Rol modificado correctamente");
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of("mensaje", "Contraseña recuperada exitosamente"));
     }
 
     @Operation(summary = "Visualizar detalle de usuario")
