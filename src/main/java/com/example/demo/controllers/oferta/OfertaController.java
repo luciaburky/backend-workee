@@ -100,4 +100,12 @@ public class OfertaController {
         List<Oferta> ofertas = ofertaService.buscarOfertasAbiertas(empresaId);
         return ResponseEntity.ok().body(ofertas);
     }
+
+    @Operation(summary = "Obtener cantidad total de postulados (en curso)")
+    @GetMapping("/{idOferta}/postulados")
+    @PreAuthorize("hasAuthority('GESTION_OFERTAS') ")
+    public ResponseEntity<?> getCantidadPostulados(@PathVariable Long idOferta) {
+        Integer cantidad = ofertaService.obtenerCantidadDePostulados(idOferta);
+        return ResponseEntity.ok().body(cantidad);
+    }
 }

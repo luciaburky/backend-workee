@@ -30,5 +30,6 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
         AND poe.fechaHoraBaja IS NULL
     """)
     List<EtapaActualPostulacionDTO> findEtapasActualesByCandidato(@Param("idCandidato") Long idCandidato);
+    
 
 }

@@ -294,4 +294,9 @@ public class OfertaServiceImpl extends BaseServiceImpl<Oferta, Long> implements 
         }
         return ofertaRepository.buscarOfertasAbiertas(idEmpresa);
     }
+
+    @Override
+    public Integer obtenerCantidadDePostulados(Long idOferta){
+        return ofertaRepository.obtenerCantidadDeCandidatosPostulados(idOferta);
+    }
 }

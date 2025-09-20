@@ -141,13 +141,6 @@ public interface OfertaRepository extends BaseRepository<Oferta, Long> {
   public List<OfertasEtapasDTO> buscarProximasEtapasDeOferta(@Param("idOferta") Long idOferta, @Param("nroEtapa") Integer nroEtapa);
 
 
-  /*@Query(value = "SELECT DISTINCT COUNT(*) " +
-                "FROM oferta o " +
-
-  nativeQuery = true)
-  public Integer obtenerCantidadDeCandidatosPostulados(@Param("idOferta") Long idOferta);
-*/
-
 
   @Query("""
       SELECT DISTINCT o FROM Oferta o
@@ -156,5 +149,17 @@ public interface OfertaRepository extends BaseRepository<Oferta, Long> {
       WHERE e.codigo = 'ABIERTA' AND eo.fechaHoraBaja IS NULL
       """)
   List<Oferta> buscarOfertasAbiertas(Long empresaId);
+
+  @Query(value = "SELECT COUNT(DISTINCT po.id) " +
+                    "FROM oferta o " +
+                    "INNER JOIN postulacion_oferta AS po ON o.id = po.id_oferta " +
+                    "INNER JOIN postulacion_oferta_etapa AS poe ON po.id = poe.id_postulacion_oferta " + 
+                    "INNER JOIN etapa AS e ON poe.id_etapa = e.id " +
+                    "WHERE o.id = :idOferta " + 
+                    "AND poe.fecha_hora_baja IS NULL " +
+                    "AND e.codigo_etapa NOT IN ('ABANDONADO', 'SELECCIONADO', 'RECHAZADO')", //TODO: Si agregamos el de que el candidato rechaza la oferta, deberiamos agregar ese codigo aca
+    nativeQuery = true)
+    public Integer obtenerCantidadDeCandidatosPostulados(@Param("idOferta") Long idOferta); 
+
 }
 
