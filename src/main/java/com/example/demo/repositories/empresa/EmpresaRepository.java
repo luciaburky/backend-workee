@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.example.demo.dtos.ResultadoBusquedaEmpresaDTO;
-import com.example.demo.dtos.EmpresaPendienteHabilitacionDTO;
+import com.example.demo.dtos.busquedas.ResultadoBusquedaEmpresaDTO;
+import com.example.demo.dtos.seguridad.EmpresaPendienteHabilitacionDTO;
 import com.example.demo.entities.empresa.Empresa;
 import com.example.demo.repositories.BaseRepository;
 
@@ -16,7 +16,7 @@ import com.example.demo.repositories.BaseRepository;
 public interface EmpresaRepository extends BaseRepository<Empresa, Long>  {
     @Query(
         """ 
-            SELECT new com.example.demo.dtos.ResultadoBusquedaEmpresaDTO(
+            SELECT new com.example.demo.dtos.busquedas.ResultadoBusquedaEmpresaDTO(
                 e, 
                 COUNT(DISTINCT CASE 
                     WHEN (oeo.fechaHoraBaja IS NULL AND eo.codigo = 'ABIERTA') THEN o.id 
@@ -58,7 +58,7 @@ public interface EmpresaRepository extends BaseRepository<Empresa, Long>  {
 
     @Query(
         """
-            SELECT new com.example.demo.dtos.ResultadoBusquedaEmpresaDTO(
+            SELECT new com.example.demo.dtos.busquedas.ResultadoBusquedaEmpresaDTO(
                     e, 
                     COUNT(DISTINCT CASE 
                         WHEN (oeo.fechaHoraBaja IS NULL AND eo.codigo = 'ABIERTA') THEN o.id 
@@ -91,7 +91,7 @@ public interface EmpresaRepository extends BaseRepository<Empresa, Long>  {
 
     @Query(
         """
-           SELECT new com.example.demo.dtos.EmpresaPendienteHabilitacionDTO(e.id, e.nombreEmpresa, u.urlFotoUsuario, u.correoUsuario, u.fechaHoraAlta, e.rubro)
+           SELECT new com.example.demo.dtos.seguridad.EmpresaPendienteHabilitacionDTO(e.id, e.nombreEmpresa, u.urlFotoUsuario, u.correoUsuario, u.fechaHoraAlta, e.rubro)
             FROM Empresa e
             JOIN e.usuario u
             JOIN u.usuarioEstadoList ue

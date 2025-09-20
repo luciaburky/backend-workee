@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.example.demo.dtos.RolRequestDTO;
+import com.example.demo.dtos.seguridad.RolRequestDTO;
 import com.example.demo.entities.seguridad.CategoriaRol;
 import com.example.demo.entities.seguridad.Permiso;
 import com.example.demo.entities.seguridad.PermisoRol;

@@ -19,10 +19,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.dtos.RecuperarContraseniaDTO;
-import com.example.demo.dtos.UsuarioDTO;
-import com.example.demo.dtos.UsuarioResponseDTO;
 import com.example.demo.dtos.login.LoginRequestDTO;
+import com.example.demo.dtos.seguridad.RecuperarContraseniaDTO;
+import com.example.demo.dtos.seguridad.UsuarioDTO;
+import com.example.demo.dtos.seguridad.UsuarioResponseDTO;
 import com.example.demo.entities.params.CodigoEstadoUsuario;
 import com.example.demo.entities.params.EstadoUsuario;
 import com.example.demo.entities.seguridad.Rol;
@@ -464,5 +464,17 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
          UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         
         return jwtUtil.generateToken(userDetails);
+    }
+
+    @Override
+    public String obtenerCodigoRolMasViejo(Long idUsuario){
+        Optional<UsuarioRol> usuarioRolOptional = usuarioRolRepository.obtenerUsuarioRolMasViejo(idUsuario);
+        if(!usuarioRolOptional.isPresent()){
+            throw new EntityNotFoundException("No se encontró el rol buscado");
+        }
+
+        UsuarioRol usuarioRol = usuarioRolOptional.get();
+
+        return usuarioRol.getRol().getCodigoRol();
     }
 }

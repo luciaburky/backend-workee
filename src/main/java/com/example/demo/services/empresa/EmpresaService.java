@@ -3,10 +3,10 @@ package com.example.demo.services.empresa;
 import java.util.List;
 import java.util.Optional;
 
-import com.example.demo.dtos.EmpresaPendienteHabilitacionDTO;
-import com.example.demo.dtos.EmpresaRequestDTO;
-import com.example.demo.dtos.FiltrosEmpresaRequestDTO;
-import com.example.demo.dtos.ResultadoBusquedaEmpresaDTO;
+import com.example.demo.dtos.busquedas.FiltrosEmpresaRequestDTO;
+import com.example.demo.dtos.busquedas.ResultadoBusquedaEmpresaDTO;
+import com.example.demo.dtos.empresa.EmpresaRequestDTO;
+import com.example.demo.dtos.seguridad.EmpresaPendienteHabilitacionDTO;
 import com.example.demo.entities.empresa.Empresa;
 import com.example.demo.services.BaseService;
 

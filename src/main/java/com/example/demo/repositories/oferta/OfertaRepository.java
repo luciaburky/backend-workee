@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.example.demo.dtos.postulaciones.OfertasEtapasDTO;
 import com.example.demo.entities.oferta.Oferta;
 import com.example.demo.repositories.BaseRepository;
 
@@ -31,6 +32,8 @@ public interface OfertaRepository extends BaseRepository<Oferta, Long> {
     List<Oferta> findAllByEmpresa_IdAndFechaHoraBajaIsNull(Long empresaId);
     Boolean existsByModalidadOfertaIdAndFechaHoraBajaIsNull(Long modalidadOfertaId);
     //existsByGeneroIdAndFechaHoraBajaIsNull(idGenero)
+
+    
     
     @Query("""
         SELECT o
@@ -118,6 +121,45 @@ public interface OfertaRepository extends BaseRepository<Oferta, Long> {
     );
 
 
+
+    @Query(
+        """
+        SELECT new com.example.demo.dtos.postulaciones.OfertasEtapasDTO(
+          oe.id,
+          e.id,
+          oe.numeroEtapa,
+          e.codigoEtapa,
+          e.nombreEtapa
+        )
+        FROM Oferta o
+        JOIN o.ofertaEtapas oe
+        JOIN oe.etapa e
+        WHERE o.id = :idOferta
+        AND oe.numeroEtapa > :nroEtapa
+        """
+  )
+  public List<OfertasEtapasDTO> buscarProximasEtapasDeOferta(@Param("idOferta") Long idOferta, @Param("nroEtapa") Integer nroEtapa);
+
+
+
+  @Query("""
+      SELECT DISTINCT o FROM Oferta o
+      JOIN o.estadosOferta eo
+      JOIN eo.estadoOferta e
+      WHERE e.codigo = 'ABIERTA' AND eo.fechaHoraBaja IS NULL
+      """)
+  List<Oferta> buscarOfertasAbiertas(Long empresaId);
+
+  @Query(value = "SELECT COUNT(DISTINCT po.id) " +
+                    "FROM oferta o " +
+                    "INNER JOIN postulacion_oferta AS po ON o.id = po.id_oferta " +
+                    "INNER JOIN postulacion_oferta_etapa AS poe ON po.id = poe.id_postulacion_oferta " + 
+                    "INNER JOIN etapa AS e ON poe.id_etapa = e.id " +
+                    "WHERE o.id = :idOferta " + 
+                    "AND poe.fecha_hora_baja IS NULL " +
+                    "AND e.codigo_etapa NOT IN ('ABANDONADO', 'SELECCIONADO', 'RECHAZADO')", //TODO: Si agregamos el de que el candidato rechaza la oferta, deberiamos agregar ese codigo aca
+    nativeQuery = true)
+    public Integer obtenerCantidadDeCandidatosPostulados(@Param("idOferta") Long idOferta); 
 
 }
 

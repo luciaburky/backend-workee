@@ -3,8 +3,9 @@ package com.example.demo.controllers.oferta;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.dtos.OfertaRequestDTO;
+import com.example.demo.dtos.ofertas.OfertaRequestDTO;
 import com.example.demo.dtos.params.OfertasEmpleadoDTO;
+import com.example.demo.dtos.postulaciones.OfertasEtapasDTO;
 import com.example.demo.entities.oferta.Oferta;
 import com.example.demo.services.oferta.OfertaService;
 
@@ -71,7 +72,7 @@ public class OfertaController {
     @Operation(summary = "Obtener todas las Ofertas de una Empresa")
     @GetMapping("/empresa/{empresaId}")
     @PreAuthorize("hasAuthority('GESTION_OFERTAS') or hasAuthority('POSTULAR_OFERTA')")
-    public ResponseEntity<List<Oferta>> getOfertasByEmpresaId(@PathVariable("empresaId") Long empresaId) {
+    public ResponseEntity<List<Oferta>> getOfertasByEmpresaId(@PathVariable Long empresaId) {
         List<Oferta> ofertas = ofertaService.findAllByEmpresaId(empresaId);
         return ResponseEntity.ok().body(ofertas);
     }
@@ -82,5 +83,29 @@ public class OfertaController {
     public ResponseEntity<List<OfertasEmpleadoDTO>> getEtapasByEmpleadoId(@PathVariable("empleadoId") Long empleadoId) {
         List<OfertasEmpleadoDTO> etapas = ofertaService.buscarOfertasEmpleado(empleadoId);
         return ResponseEntity.ok().body(etapas);
+    }
+
+    @Operation(summary = "Obtener todas las próximas etapas de una oferta")
+    @GetMapping("/{idOferta}/{nroEtapa}/etapas")
+    @PreAuthorize("hasAuthority('GESTION_OFERTAS') or hasAuthority('POSTULAR_OFERTA') or hasAuthority('GESTIONAR_POSTULACION')")
+    public ResponseEntity<?> getProximasEtapas(@PathVariable Long idOferta, @PathVariable Integer nroEtapa) {
+        List<OfertasEtapasDTO> proximas = ofertaService.buscarProximasEtapasEnOferta(idOferta, nroEtapa);
+        return ResponseEntity.ok().body(proximas);
+    }
+
+    @Operation(summary = "Obtener todas las Ofertas ABIERTAS de una Empresa")
+    @GetMapping("/empresa/abiertas/{empresaId}")
+    @PreAuthorize("hasAuthority('GESTION_OFERTAS') or hasAuthority('POSTULAR_OFERTA')")
+    public ResponseEntity<List<Oferta>> getOfertasNoFinalizadas(@PathVariable Long empresaId) {
+        List<Oferta> ofertas = ofertaService.buscarOfertasAbiertas(empresaId);
+        return ResponseEntity.ok().body(ofertas);
+    }
+
+    @Operation(summary = "Obtener cantidad total de postulados (en curso)")
+    @GetMapping("/{idOferta}/postulados")
+    @PreAuthorize("hasAuthority('GESTION_OFERTAS') ")
+    public ResponseEntity<?> getCantidadPostulados(@PathVariable Long idOferta) {
+        Integer cantidad = ofertaService.obtenerCantidadDePostulados(idOferta);
+        return ResponseEntity.ok().body(cantidad);
     }
 }

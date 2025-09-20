@@ -8,7 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.dtos.EmpleadoEmpresaRequestDTO;
+import com.example.demo.dtos.empresa.EmpleadoEmpresaRequestDTO;
 import com.example.demo.entities.empresa.EmpleadoEmpresa;
 import com.example.demo.services.empresa.EmpleadoEmpresaService;
 

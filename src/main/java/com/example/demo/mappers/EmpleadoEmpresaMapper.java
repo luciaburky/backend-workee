@@ -1,17 +1,17 @@
 package com.example.demo.mappers;
-
+ 
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
-import com.example.demo.dtos.EmpleadoEmpresaRequestDTO;
+import com.example.demo.dtos.empresa.EmpleadoEmpresaRequestDTO;
 import com.example.demo.entities.empresa.EmpleadoEmpresa;
 
 @Mapper(componentModel = "spring")
 public interface EmpleadoEmpresaMapper {
-    
+     
     //Para creacion
     @Mapping(target = "empresa", ignore = true)
     @Mapping(target = "usuario", ignore = true)

@@ -1,4 +1,4 @@
-package com.example.demo.dtos;
+package com.example.demo.dtos.candidato;
 
 import java.time.LocalDate;
 import java.util.List;

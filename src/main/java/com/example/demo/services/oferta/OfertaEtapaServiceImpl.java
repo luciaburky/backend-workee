@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.example.demo.dtos.OfertaEtapaRequestDTO;
+import com.example.demo.dtos.ofertas.OfertaEtapaRequestDTO;
 import com.example.demo.entities.empresa.EmpleadoEmpresa;
 import com.example.demo.entities.oferta.ArchivoAdjunto;
 import com.example.demo.entities.oferta.OfertaEtapa;

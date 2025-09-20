@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.dtos.ActualizarContraseniaDTO;
-import com.example.demo.dtos.FiltrosUsuariosRequestDTO;
-import com.example.demo.dtos.UsuarioResponseDTO;
+import com.example.demo.dtos.seguridad.ActualizarContraseniaDTO;
+import com.example.demo.dtos.seguridad.FiltrosUsuariosRequestDTO;
+import com.example.demo.dtos.seguridad.UsuarioResponseDTO;
 import com.example.demo.entities.seguridad.Usuario;
 import com.example.demo.services.BajaOrquestadorService;
 import com.example.demo.services.candidato.CandidatoService;
@@ -113,4 +113,15 @@ public class UsuarioController {
         usuarioService.actualizarContraseniaUsuario(idUsuario, actualizarContraseniaDTO.getContraseniaNueva(), actualizarContraseniaDTO.getRepetirContrasenia(), actualizarContraseniaDTO.getContraseniaActual());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
+    
+    @Operation(summary = "Visualizar detalle de usuario")
+    @GetMapping("/rolViejo/{idUsuario}")
+    //@PreAuthorize("hasAuthority('GESTIONAR_USUARIOS')") 
+    public ResponseEntity<?> obtenerRolMasViejo(@PathVariable Long idUsuario){
+        String codigoRol = usuarioService.obtenerCodigoRolMasViejo(idUsuario);
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of("codigoRol", codigoRol));
+    }
+
+
 }

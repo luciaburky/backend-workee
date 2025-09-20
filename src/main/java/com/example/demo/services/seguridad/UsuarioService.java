@@ -2,10 +2,10 @@ package com.example.demo.services.seguridad;
 
 import java.util.List;
 
-import com.example.demo.dtos.RecuperarContraseniaDTO;
-import com.example.demo.dtos.UsuarioDTO;
-import com.example.demo.dtos.UsuarioResponseDTO;
 import com.example.demo.dtos.login.LoginRequestDTO;
+import com.example.demo.dtos.seguridad.RecuperarContraseniaDTO;
+import com.example.demo.dtos.seguridad.UsuarioDTO;
+import com.example.demo.dtos.seguridad.UsuarioResponseDTO;
 import com.example.demo.entities.seguridad.Usuario;
 import com.example.demo.services.BaseService;
 
@@ -35,5 +35,7 @@ public interface UsuarioService extends BaseService<Usuario, Long>{
     public Usuario obtenerUsuarioAutenticado();
     
     public String login(LoginRequestDTO loginRequestDTO);
+
+    public String obtenerCodigoRolMasViejo(Long idUsuario);
 }
 
