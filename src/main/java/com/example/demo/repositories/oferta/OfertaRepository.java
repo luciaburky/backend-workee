@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.example.demo.dtos.postulaciones.OfertasEtapasDTO;
 import com.example.demo.entities.oferta.Oferta;
+import com.example.demo.entities.params.Etapa;
 import com.example.demo.repositories.BaseRepository;
 
 @Repository
@@ -161,5 +162,17 @@ public interface OfertaRepository extends BaseRepository<Oferta, Long> {
     nativeQuery = true)
     public Integer obtenerCantidadDeCandidatosPostulados(@Param("idOferta") Long idOferta); 
 
+
+    @Query(
+      """
+         SELECT e FROM Oferta o
+         JOIN o.ofertaEtapas oe
+         JOIN oe.etapa e
+         WHERE oe.fechaHoraBaja IS NULL 
+         AND e.codigoEtapa NOT IN ('PENDIENTE')
+         AND o.id = :idOferta
+      """
+    )
+    public List<Etapa> traerEtapasDeUnaOferta(@Param("idOferta") Long idOferta);
 }
 

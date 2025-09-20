@@ -28,6 +28,7 @@ import com.example.demo.entities.oferta.OfertaEstadoOferta;
 import com.example.demo.entities.oferta.OfertaEtapa;
 import com.example.demo.entities.oferta.OfertaHabilidad;
 import com.example.demo.entities.params.CodigoEtapa;
+import com.example.demo.entities.params.Etapa;
 import com.example.demo.entities.params.Habilidad;
 import com.example.demo.entities.params.ModalidadOferta;
 import com.example.demo.entities.params.TipoContratoOferta;
@@ -298,5 +299,10 @@ public class OfertaServiceImpl extends BaseServiceImpl<Oferta, Long> implements 
     @Override
     public Integer obtenerCantidadDePostulados(Long idOferta){
         return ofertaRepository.obtenerCantidadDeCandidatosPostulados(idOferta);
+    }
+
+    @Override
+    public List<Etapa> obtenerEtapasDeOferta(Long idOferta){
+        return ofertaRepository.traerEtapasDeUnaOferta(idOferta);
     }
 }

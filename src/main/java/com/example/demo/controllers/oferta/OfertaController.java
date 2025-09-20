@@ -7,6 +7,7 @@ import com.example.demo.dtos.ofertas.OfertaRequestDTO;
 import com.example.demo.dtos.params.OfertasEmpleadoDTO;
 import com.example.demo.dtos.postulaciones.OfertasEtapasDTO;
 import com.example.demo.entities.oferta.Oferta;
+import com.example.demo.entities.params.Etapa;
 import com.example.demo.services.oferta.OfertaService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -107,5 +108,13 @@ public class OfertaController {
     public ResponseEntity<?> getCantidadPostulados(@PathVariable Long idOferta) {
         Integer cantidad = ofertaService.obtenerCantidadDePostulados(idOferta);
         return ResponseEntity.ok().body(cantidad);
+    }
+
+    @Operation(summary = "Obtener las etapas de una oferta (excepto PENDIENTE)")
+    @GetMapping("/{idOferta}/etapas")
+    @PreAuthorize("hasAuthority('GESTION_OFERTAS') ")
+    public ResponseEntity<?> getEtapasOferta(@PathVariable Long idOferta) {
+        List<Etapa> etapas = ofertaService.obtenerEtapasDeOferta(idOferta);
+        return ResponseEntity.ok().body(etapas);
     }
 }
