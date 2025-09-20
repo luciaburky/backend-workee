@@ -26,5 +26,7 @@ public interface PostulacionOfertaService {
     public List<CandidatoPostuladoDTO> traerCandidatosPendientesPostuladosAOferta(Long idOferta);
 
     public Boolean aceptarPostulacionCandidato(Long idPostulacion);
+
+    public Boolean rechazarPostulacionDeCandidatoPendiente(Long idPostulacion, CambioPostulacionDTO cambioPostulacionDTO);
 }
 

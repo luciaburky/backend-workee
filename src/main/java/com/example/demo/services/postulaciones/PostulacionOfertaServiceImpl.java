@@ -388,4 +388,42 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         //TODO: Falta lo de la notificacion
         return true;
     }
+
+    @Override
+    @Transactional
+    public Boolean rechazarPostulacionDeCandidatoPendiente(Long idPostulacion, CambioPostulacionDTO cambioPostulacionDTO){
+        if(cambioPostulacionDTO.getRetroalimentacion().isBlank() || cambioPostulacionDTO.getRetroalimentacion() == null){
+            throw new EntityNotValidException("Si va a rechazar a un candidato, se debe dar retroalimentación");
+        }
+        PostulacionOferta postulacion = this.findById(idPostulacion);
+
+
+        List<PostulacionOfertaEtapa> postulacionOfertasEtapa = postulacion.getPostulacionOfertaEtapaList();
+
+        PostulacionOfertaEtapa postulacionOfertaEtapaActual = postulacionOfertasEtapa.stream().
+                            filter(oe -> oe.getFechaHoraBaja() == null)
+                            .findFirst()
+                            .orElseThrow(() -> new EntityNotValidException("La postulacion no tiene un estado actual asignado"));
+
+        if(!postulacionOfertaEtapaActual.getEtapa().getCodigoEtapa().equals(CodigoEtapa.PENDIENTE)){
+            throw new EntityNotValidException("No puede aceptar la postulacion del candidato porque no está 'Pendiente");
+        }
+        
+        
+        postulacionOfertaEtapaActual.setFechaHoraBaja(new Date());
+        postulacionOfertaEtapaActual.setRetroalimentacionEmpresa(cambioPostulacionDTO.getRetroalimentacion());
+        
+        Etapa etapaRechazado = etapaService.obtenerEtapaPorCodigo(CodigoEtapa.RECHAZADO);
+
+        PostulacionOfertaEtapa postulacionOfertaEtapaNueva = new PostulacionOfertaEtapa();
+        postulacionOfertaEtapaNueva.setEtapa(etapaRechazado);
+        postulacionOfertaEtapaNueva.setFechaHoraAlta(new Date());
+        
+        postulacion.getPostulacionOfertaEtapaList().add(postulacionOfertaEtapaNueva);
+
+        postulacionOfertaRepository.save(postulacion);
+
+        //TODO: Falta lo de la notificacion
+        return true;
+    }
 }
