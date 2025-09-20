@@ -123,5 +123,12 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.OK).body(Map.of("codigoRol", codigoRol));
     }
 
+    @Operation(summary = "Obtener ID de usuario por su correo")
+    @GetMapping("/idPorCorreo/{correo}")
+    //@PreAuthorize("hasAuthority('GESTIONAR_USUARIOS')") 
+    public ResponseEntity<?> obtenerIdPorCorreo(@PathVariable String correo){
+        Long id = usuarioService.obtenerIdUsuarioPorCorreo(correo);
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of("id", id));
+    }
 
 }

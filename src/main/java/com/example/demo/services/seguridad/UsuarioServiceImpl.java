@@ -477,4 +477,16 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
 
         return usuarioRol.getRol().getCodigoRol();
     }
+
+    @Override
+    public Long obtenerIdUsuarioPorCorreo(String correo){
+        Optional<Usuario> usuarioOptional = usuarioRepository.buscarUsuarioPorCorreo(correo);
+        if(!usuarioOptional.isPresent()){
+            throw new EntityNotFoundException("No existe un usuario con el correo ingresado");
+        }
+        Usuario usuario = usuarioOptional.get();
+
+        return usuario.getId();
+    }
+
 }
