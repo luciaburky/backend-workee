@@ -129,4 +129,12 @@ public class OfertaController {
         List<CandidatoPostuladoDTO> candidatos = postulacionOfertaService.traerCandidatosPostuladosAOferta(idOferta);
         return ResponseEntity.ok().body(candidatos);
     }
+
+    @Operation(summary = "Traer los candidatos pendientes que postularon a la oferta")
+    @GetMapping("/{idOferta}/candidatosPostuladosPendientes")
+    @PreAuthorize("hasAuthority('GESTION_OFERTAS') or hasAuthority('GESTIONAR_POSTULACION')")
+    public ResponseEntity<?> getCandidatosPostuladosPendientes(@PathVariable Long idOferta) {
+        List<CandidatoPostuladoDTO> candidatos = postulacionOfertaService.traerCandidatosPendientesPostuladosAOferta(idOferta);
+        return ResponseEntity.ok().body(candidatos);
+    }
 }
