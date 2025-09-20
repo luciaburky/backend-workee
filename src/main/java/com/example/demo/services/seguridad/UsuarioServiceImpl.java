@@ -465,4 +465,16 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
         
         return jwtUtil.generateToken(userDetails);
     }
+
+    @Override
+    public String obtenerCodigoRolMasViejo(Long idUsuario){
+        Optional<UsuarioRol> usuarioRolOptional = usuarioRolRepository.obtenerUsuarioRolMasViejo(idUsuario);
+        if(!usuarioRolOptional.isPresent()){
+            throw new EntityNotFoundException("No se encontró el rol buscado");
+        }
+
+        UsuarioRol usuarioRol = usuarioRolOptional.get();
+
+        return usuarioRol.getRol().getCodigoRol();
+    }
 }

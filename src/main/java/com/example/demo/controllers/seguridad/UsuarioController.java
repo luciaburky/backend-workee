@@ -1,6 +1,7 @@
 package com.example.demo.controllers.seguridad;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -112,4 +113,15 @@ public class UsuarioController {
         usuarioService.actualizarContraseniaUsuario(idUsuario, actualizarContraseniaDTO.getContraseniaNueva(), actualizarContraseniaDTO.getRepetirContrasenia(), actualizarContraseniaDTO.getContraseniaActual());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
+    
+    @Operation(summary = "Visualizar detalle de usuario")
+    @GetMapping("/rolViejo/{idUsuario}")
+    //@PreAuthorize("hasAuthority('GESTIONAR_USUARIOS')") 
+    public ResponseEntity<?> obtenerRolMasViejo(@PathVariable Long idUsuario){
+        String codigoRol = usuarioService.obtenerCodigoRolMasViejo(idUsuario);
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of("codigoRol", codigoRol));
+    }
+
+
 }

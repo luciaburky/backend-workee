@@ -35,5 +35,7 @@ public interface UsuarioService extends BaseService<Usuario, Long>{
     public Usuario obtenerUsuarioAutenticado();
     
     public String login(LoginRequestDTO loginRequestDTO);
+
+    public String obtenerCodigoRolMasViejo(Long idUsuario);
 }
 
