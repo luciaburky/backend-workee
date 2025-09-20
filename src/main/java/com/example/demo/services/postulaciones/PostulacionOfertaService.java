@@ -31,5 +31,8 @@ public interface PostulacionOfertaService {
     public Boolean rechazarPostulacionDeCandidatoPendiente(Long idPostulacion, CambioPostulacionDTO cambioPostulacionDTO);
 
     public List<PostulacionOferta> buscarPostulacionesCandidatosEnCurso(Long idOferta);
+
+    public List<CandidatoPostuladoDTO> traerCandidatosSeleccionados(Long idOferta);
+
 }
 

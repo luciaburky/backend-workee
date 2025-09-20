@@ -89,4 +89,21 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
         AND e.codigoEtapa NOT IN ('ABANDONADO', 'RECHAZADO', 'SELECCIONADO')
     """)
     List<PostulacionOferta> traerPostulacionesCandidatosEnCurso(@Param("idOferta") Long idOferta); //TODO: Agregar el estado de cuando un candidato rechaza una postulacion
+
+
+     @Query("""
+        SELECT DISTINCT new com.example.demo.dtos.ofertas.CandidatoPostuladoDTO(
+            po.id,
+            po.candidato.id, po.candidato.nombreCandidato, 
+            po.candidato.apellidoCandidato, po.fechaHoraAlta, 
+            e.codigoEtapa, e.nombreEtapa
+        )
+        FROM PostulacionOferta po
+        JOIN po.postulacionOfertaEtapaList poe
+        JOIN poe.etapa e
+        WHERE po.oferta.id = :idOferta
+        AND poe.fechaHoraBaja IS NULL
+        AND e.codigoEtapa LIKE '%SELECCIONADO%'
+    """)
+    List<CandidatoPostuladoDTO> traerCandidatosSeleccionados(@Param("idOferta") Long idOferta); //Trae todos los candidatos seleccionados. Solo esos
 }

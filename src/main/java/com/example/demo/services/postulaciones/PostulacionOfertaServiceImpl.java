@@ -432,4 +432,11 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
     public List<PostulacionOferta> buscarPostulacionesCandidatosEnCurso(Long idOferta){
         return postulacionOfertaRepository.traerPostulacionesCandidatosEnCurso(idOferta);
     }
+
+
+    @Override
+    public List<CandidatoPostuladoDTO> traerCandidatosSeleccionados(Long idOferta){
+        return postulacionOfertaRepository.traerCandidatosSeleccionados(idOferta);
+    }
+    
 }

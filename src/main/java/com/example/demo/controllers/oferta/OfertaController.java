@@ -146,4 +146,12 @@ public class OfertaController {
         List<CandidatoPostuladoDTO> candidatos = postulacionOfertaService.traerCandidatosPendientesPostuladosAOferta(idOferta);
         return ResponseEntity.ok().body(candidatos);
     }
+
+    @Operation(summary = "Traer los candidatos seleccionados de la oferta")
+    @GetMapping("/{idOferta}/candidatosSeleccionados")
+    @PreAuthorize("hasAuthority('GESTION_OFERTAS') or hasAuthority('GESTIONAR_POSTULACION')")
+    public ResponseEntity<?> getCandidatosSeleccionados(@PathVariable Long idOferta) {
+        List<CandidatoPostuladoDTO> candidatos = postulacionOfertaService.traerCandidatosSeleccionados(idOferta);
+        return ResponseEntity.ok().body(candidatos);
+    }
 }
