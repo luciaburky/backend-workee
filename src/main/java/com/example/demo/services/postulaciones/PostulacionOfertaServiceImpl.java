@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.example.demo.dtos.ofertas.CandidatoPostuladoDTO;
 import com.example.demo.dtos.postulaciones.CambioPostulacionDTO;
 import com.example.demo.dtos.postulaciones.EtapaActualPostulacionDTO;
 import com.example.demo.dtos.postulaciones.PostulacionCandidatoRequestDTO;
@@ -327,5 +328,10 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         postulacion.setIdPostulacionOferta(idPostulacion);
 
         return postulacion;
+    }
+
+    @Override
+    public List<CandidatoPostuladoDTO> traerCandidatosPostuladosAOferta(Long idOferta){
+        return postulacionOfertaRepository.traerCandidatosPostulados(idOferta);
     }
 }

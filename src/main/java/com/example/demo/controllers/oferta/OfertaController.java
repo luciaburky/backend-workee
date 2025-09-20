@@ -3,12 +3,14 @@ package com.example.demo.controllers.oferta;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dtos.ofertas.CandidatoPostuladoDTO;
 import com.example.demo.dtos.ofertas.OfertaRequestDTO;
 import com.example.demo.dtos.params.OfertasEmpleadoDTO;
 import com.example.demo.dtos.postulaciones.OfertasEtapasDTO;
 import com.example.demo.entities.oferta.Oferta;
 import com.example.demo.entities.params.Etapa;
 import com.example.demo.services.oferta.OfertaService;
+import com.example.demo.services.postulaciones.PostulacionOfertaService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,9 +35,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class OfertaController {
 
     private final OfertaService ofertaService;
+    private final PostulacionOfertaService postulacionOfertaService;
 
-    public OfertaController(OfertaService ofertaService) {
+    public OfertaController(OfertaService ofertaService, PostulacionOfertaService postulacionOfertaService) {
         this.ofertaService = ofertaService;
+        this.postulacionOfertaService = postulacionOfertaService;
     }
     
     @Operation(summary = "Crear una nueva Oferta")
@@ -116,5 +120,13 @@ public class OfertaController {
     public ResponseEntity<?> getEtapasOferta(@PathVariable Long idOferta) {
         List<Etapa> etapas = ofertaService.obtenerEtapasDeOferta(idOferta);
         return ResponseEntity.ok().body(etapas);
+    }
+
+    @Operation(summary = "Traer todos los candidatos postulados (no PENDIENTES)")
+    @GetMapping("/{idOferta}/candidatosPostulados")
+    @PreAuthorize("hasAuthority('GESTION_OFERTAS') or hasAuthority('GESTIONAR_POSTULACION')")
+    public ResponseEntity<?> getCandidatosPostulados(@PathVariable Long idOferta) {
+        List<CandidatoPostuladoDTO> candidatos = postulacionOfertaService.traerCandidatosPostuladosAOferta(idOferta);
+        return ResponseEntity.ok().body(candidatos);
     }
 }

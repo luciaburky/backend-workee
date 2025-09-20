@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.example.demo.dtos.ofertas.CandidatoPostuladoDTO;
 import com.example.demo.dtos.postulaciones.EtapaActualPostulacionDTO;
 import com.example.demo.entities.postulaciones.PostulacionOferta;
 import com.example.demo.repositories.BaseRepository;
@@ -43,5 +44,20 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
     """)
     List<EtapaActualPostulacionDTO> findEtapasActualesByCandidato(@Param("idCandidato") Long idCandidato);
     
+
+     @Query("""
+        SELECT DISTINCT new com.example.demo.dtos.ofertas.CandidatoPostuladoDTO(
+            po.candidato.id, po.candidato.nombreCandidato, 
+            po.candidato.apellidoCandidato, po.fechaHoraAlta, 
+            e.codigoEtapa, e.nombreEtapa
+        )
+        FROM PostulacionOferta po
+        JOIN po.postulacionOfertaEtapaList poe
+        JOIN poe.etapa e
+        WHERE po.oferta.id = :idOferta
+        AND poe.fechaHoraBaja IS NULL
+        AND e.codigoEtapa NOT IN ('PENDIENTE')
+    """)
+    List<CandidatoPostuladoDTO> traerCandidatosPostulados(@Param("idOferta") Long idOferta); //Trae todos los postulados excepto los pendientes
 
 }
