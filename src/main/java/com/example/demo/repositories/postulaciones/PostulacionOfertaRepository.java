@@ -14,7 +14,19 @@ import com.example.demo.repositories.BaseRepository;
 @Repository
 public interface PostulacionOfertaRepository extends BaseRepository<PostulacionOferta, Long> {
 
-    public Optional<PostulacionOferta> findByCandidatoIdAndOfertaIdAndFechaHoraFinPostulacionOfertaIsNull(Long idCandidato, Long idOferta);
+    //public Optional<PostulacionOferta> findByCandidatoIdAndOfertaIdAndFechaHoraFinPostulacionOfertaIsNull(Long idCandidato, Long idOferta);
+    
+    @Query(
+        """
+              SELECT po FROM PostulacionOferta po
+              JOIN po.postulacionOfertaEtapaList poe
+              JOIN poe.etapa e
+              WHERE po.candidato.id = :idCandidato AND po.oferta.id = :idOferta
+              AND po.fechaHoraFinPostulacionOferta IS NULL AND po.fechaHoraAbandonoOferta IS NULL
+              AND poe.fechaHoraBaja IS NULL AND e.codigoEtapa NOT IN ('ABANDONADO', 'RECHAZADO', 'SELECCIONADO') 
+        """
+    )
+    public Optional<PostulacionOferta> buscarPostulacionEnCurso(@Param("idCandidato") Long idCandidato, @Param("idOferta") Long idOferta); //TODO: Agregar el del codigo de un candidato que rechaza la oferta
 
     public List<PostulacionOferta> findByCandidatoIdOrderByFechaHoraAltaDesc(Long idCandidato);
 

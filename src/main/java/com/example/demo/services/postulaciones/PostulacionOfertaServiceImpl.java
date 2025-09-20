@@ -126,7 +126,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
     }
 
     private Boolean verificarSiCandidatoYaPostulo(Long idCandidato, Long idOferta){
-        Optional<PostulacionOferta> postulacionExistenteOptional = postulacionOfertaRepository.findByCandidatoIdAndOfertaIdAndFechaHoraFinPostulacionOfertaIsNull(idCandidato, idOferta);
+        Optional<PostulacionOferta> postulacionExistenteOptional = postulacionOfertaRepository.buscarPostulacionEnCurso(idCandidato, idOferta);
         return postulacionExistenteOptional.isPresent();
     }
 
