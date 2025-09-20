@@ -47,6 +47,7 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
 
      @Query("""
         SELECT DISTINCT new com.example.demo.dtos.ofertas.CandidatoPostuladoDTO(
+            po.id,
             po.candidato.id, po.candidato.nombreCandidato, 
             po.candidato.apellidoCandidato, po.fechaHoraAlta, 
             e.codigoEtapa, e.nombreEtapa
@@ -62,6 +63,7 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
 
     @Query("""
         SELECT DISTINCT new com.example.demo.dtos.ofertas.CandidatoPostuladoDTO(
+            po.id,
             po.candidato.id, po.candidato.nombreCandidato, 
             po.candidato.apellidoCandidato, po.fechaHoraAlta, 
             e.codigoEtapa, e.nombreEtapa

@@ -82,6 +82,14 @@ public class PostulacionOfertaController {
         return ResponseEntity.status(HttpStatus.OK).body(postulacion);
     }
 
+    @Operation(summary = "Aceptar la postulacion de un candidato")
+    @PutMapping("/{idPostulacion}/aceptar")
+    @PreAuthorize("hasAuthority('GESTIONAR_POSTULACION')")
+    public ResponseEntity<?> aceptarPostulacionDeCandidato(@PathVariable Long idPostulacion) {
+        Boolean aceptado = postulacionOfertaService.aceptarPostulacionCandidato(idPostulacion);
+        return ResponseEntity.status(HttpStatus.OK).body(aceptado);
+    }
+
 
 
 }

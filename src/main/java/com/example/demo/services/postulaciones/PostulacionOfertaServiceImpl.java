@@ -342,4 +342,50 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
 
         return postulacionOfertaRepository.traerCandidatosPostuladosPendientes(idOferta, idEmpresa);
     }
+
+    @Override
+    @Transactional
+    public Boolean aceptarPostulacionCandidato(Long idPostulacion){
+        PostulacionOferta postulacion = this.findById(idPostulacion);
+
+
+        List<PostulacionOfertaEtapa> postulacionOfertasEtapa = postulacion.getPostulacionOfertaEtapaList();
+
+        PostulacionOfertaEtapa postulacionOfertaEtapaActual = postulacionOfertasEtapa.stream().
+                            filter(oe -> oe.getFechaHoraBaja() == null)
+                            .findFirst()
+                            .orElseThrow(() -> new EntityNotValidException("La postulacion no tiene un estado actual asignado"));
+
+        if(!postulacionOfertaEtapaActual.getEtapa().getCodigoEtapa().equals(CodigoEtapa.PENDIENTE)){
+            throw new EntityNotValidException("No puede aceptar la postulacion del candidato porque no está 'Pendiente");
+        }
+
+        Oferta oferta = postulacion.getOferta();
+        //Para obtener el nro de orden de la etapa Pendiente (igualmente deberia ser 1)
+        OfertaEtapa ofertaEtapaDeOfertaActual = oferta.getOfertaEtapas().stream()
+                                    .filter(oe -> oe.getEtapa().getCodigoEtapa().equals(CodigoEtapa.PENDIENTE))
+                                    .findFirst()
+                                    .orElseThrow(() -> new EntityNotValidException("No se encontró la etapa con el codigo buscado"));
+        
+        Integer nroEtapaPendiente = ofertaEtapaDeOfertaActual.getNumeroEtapa();
+
+        //Obtener proxima etapa
+        OfertaEtapa ofertaEtapaDeOfertaNueva = oferta.getOfertaEtapas().stream()
+                                    .filter(oe -> oe.getNumeroEtapa() == nroEtapaPendiente + 1)
+                                    .findFirst()
+                                    .orElseThrow(() -> new EntityNotValidException("No se la próxima etapa"));
+
+        postulacionOfertaEtapaActual.setFechaHoraBaja(new Date());
+
+        PostulacionOfertaEtapa postulacionOfertaEtapaNueva = new PostulacionOfertaEtapa();
+        postulacionOfertaEtapaNueva.setEtapa(ofertaEtapaDeOfertaNueva.getEtapa());
+        postulacionOfertaEtapaNueva.setFechaHoraAlta(new Date());
+        
+        postulacion.getPostulacionOfertaEtapaList().add(postulacionOfertaEtapaNueva);
+
+        postulacionOfertaRepository.save(postulacion);
+
+        //TODO: Falta lo de la notificacion
+        return true;
+    }
 }

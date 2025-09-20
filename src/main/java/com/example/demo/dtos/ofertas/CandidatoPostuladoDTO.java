@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CandidatoPostuladoDTO {
+    private Long idPostulacion;
     private Long idCandidato;
     private String nombreCandidato;
     private String apellidoCandidato;
