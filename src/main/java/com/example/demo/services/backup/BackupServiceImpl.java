@@ -24,13 +24,25 @@ public class BackupServiceImpl implements BackupService{
     private String dbName;
 
     @Value("${backup.folder.path.win}")
-    private String backupFilePathWindows; //dejo el de windows pq todos tenemos windows :), si hosteamos habria que ver
+    private String backupFilePathWindows; 
 
-    //TODO: Revisar si agregamos un if o algo para tener en cuenta MAC y Linux
+    @Value("${backup.folder.path.linux:${user.home}/backups-workee}") //TODO: Revisar
+    private String backupFilePathLinux;
+
+    private String getBackupFolder() {
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("win")) {
+            return backupFilePathWindows;
+        } else {
+            return System.getProperty("user.home") + File.separator + "backups-workee";
+        }
+    }
+
 
     @Override
     public List<String> listarBackups() {
-        File carpeta = new File(backupFilePathWindows);
+        
+        File carpeta = new File(getBackupFolder());
         if (!carpeta.exists() || !carpeta.isDirectory()) {
             return new ArrayList<>();
         }
@@ -52,11 +64,14 @@ public class BackupServiceImpl implements BackupService{
                                   .format(Calendar.getInstance().getTime());
             String outputFile = backupFilePathWindows + File.separator + "backup" + fechaHora + ".sql";
 
-            //TODO: Revisar si agregamos un if o algo para tener en cuenta MAC y Linux
-
-            File carpeta = new File(backupFilePathWindows);
-            if (!carpeta.exists()) carpeta.mkdirs();
             
+
+            File carpeta = new File(getBackupFolder());
+            if (!carpeta.exists()) {
+                carpeta.mkdirs();
+                carpeta.setReadable(true, false); //permite leer a TODOS (peligroso pero nos va a servir xd)
+                carpeta.setWritable(true, false); //permite escribir a TODOS (peligroso pero nos va a servir xd)
+            }
             List<String> comando = List.of(
                 "mysqldump",
                 "-u", dbUsername,
@@ -75,7 +90,7 @@ public class BackupServiceImpl implements BackupService{
     @Override
     public String restaurarBackup(String nombreBackup) {
         try {
-            String inputFile = backupFilePathWindows + File.separator + nombreBackup;
+            String inputFile = getBackupFolder() + File.separator + nombreBackup;
 
             File archivoExistente = new File(inputFile);
 
