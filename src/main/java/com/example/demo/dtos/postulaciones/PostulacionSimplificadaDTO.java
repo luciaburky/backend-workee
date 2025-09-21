@@ -21,5 +21,5 @@ public class PostulacionSimplificadaDTO {
     private Long idPostulacionOferta;
     private Long idOferta;
 
-    private List<PostulacionOfertaEtapa> etapas; //TODO: Ver si en vez de devolver esto, se devuelve otra cosa, pq la etapa trae a la empresa y la empresa trae el usuario, rubro, provincia, etc
+    private List<PostulacionOfertaEtapa> etapas; 
 }

@@ -103,7 +103,6 @@ public class EmpleadoEmpresaServiceImpl extends BaseServiceImpl<EmpleadoEmpresa,
     @Override
     @Transactional
     public Boolean darDeBajaEmpleadoEmpresa(Long id){
-        //TODO: Agregar validacion de que si esta asociado a ofertas, q esten todas finalizadas
         if (id == null) throw new IllegalArgumentException("El ID del empleado no puede ser nulo");
 
         List<String> noFinalizadas = List.of(CodigoEstadoOferta.ABIERTA, CodigoEstadoOferta.CERRADA);
@@ -113,7 +112,7 @@ public class EmpleadoEmpresaServiceImpl extends BaseServiceImpl<EmpleadoEmpresa,
             throw new IllegalStateException("No se puede dar de baja: el empleado participa en ofertas no finalizadas.");
         }
         EmpleadoEmpresa empleadoEmpresa = findById(id);
-        usuarioService.delete(empleadoEmpresa.getUsuario().getId()); //TODO: Revisar si agrego que se valide que no este en uso
+        usuarioService.delete(empleadoEmpresa.getUsuario().getId());
         return delete(id);
     }
 

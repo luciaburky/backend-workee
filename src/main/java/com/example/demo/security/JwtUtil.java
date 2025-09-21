@@ -14,7 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JwtUtil { //TODO: revisar el de los chicos pq tenian un extends
+public class JwtUtil { 
     @Value("${jwt.secret}")
     private String SECRET_KEY;
     

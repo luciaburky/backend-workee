@@ -20,7 +20,6 @@ public class DemoApplication {
 		SpringApplication.run(DemoApplication.class, args);
 	}
 
-	//TODO: VERIFICAR SI ESTO ES NECESARIO
 	@Configuration
 	public static class Myconfiguration{
 		@Bean
