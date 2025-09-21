@@ -345,7 +345,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
 
     @Override
     @Transactional
-    public Boolean aceptarPostulacionCandidato(Long idPostulacion){
+    public Boolean aceptarSolicitudDePostulacionCandidato(Long idPostulacion){
         PostulacionOferta postulacion = this.findById(idPostulacion);
 
 
@@ -391,7 +391,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
 
     @Override
     @Transactional
-    public Boolean rechazarPostulacionDeCandidatoPendiente(Long idPostulacion, CambioPostulacionDTO cambioPostulacionDTO){
+    public Boolean rechazarSolicitudDePostulacionDeCandidatoPendiente(Long idPostulacion, CambioPostulacionDTO cambioPostulacionDTO){
         if(cambioPostulacionDTO.getRetroalimentacion().isBlank() || cambioPostulacionDTO.getRetroalimentacion() == null){
             throw new EntityNotValidException("Si va a rechazar a un candidato, se debe dar retroalimentación");
         }

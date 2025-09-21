@@ -86,7 +86,7 @@ public class PostulacionOfertaController {
     @PutMapping("/{idPostulacion}/aceptar")
     @PreAuthorize("hasAuthority('GESTIONAR_POSTULACION')")
     public ResponseEntity<?> aceptarPostulacionDeCandidato(@PathVariable Long idPostulacion) {
-        Boolean aceptado = postulacionOfertaService.aceptarPostulacionCandidato(idPostulacion);
+        Boolean aceptado = postulacionOfertaService.aceptarSolicitudDePostulacionCandidato(idPostulacion);
         return ResponseEntity.status(HttpStatus.OK).body(aceptado);
     }
 
@@ -94,7 +94,7 @@ public class PostulacionOfertaController {
     @PutMapping("/{idPostulacion}/rechazar")
     @PreAuthorize("hasAuthority('GESTIONAR_POSTULACION')") //Aclaracion: lo unico importante que tienen que mandarle en el body es la retroalimentacion, lo otro aca no se usa (es pq recicle el DTO)
     public ResponseEntity<?> chazarPostulacionDeCandidatoPendiente(@PathVariable Long idPostulacion, @RequestBody CambioPostulacionDTO cambioPostulacionDTO) {
-        Boolean rechazado = postulacionOfertaService.rechazarPostulacionDeCandidatoPendiente(idPostulacion, cambioPostulacionDTO);
+        Boolean rechazado = postulacionOfertaService.rechazarSolicitudDePostulacionDeCandidatoPendiente(idPostulacion, cambioPostulacionDTO);
         return ResponseEntity.status(HttpStatus.OK).body(rechazado);
     }
 
