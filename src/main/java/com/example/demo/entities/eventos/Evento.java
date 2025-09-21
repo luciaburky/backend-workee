@@ -51,6 +51,7 @@ public class Evento extends Base{
     @JoinColumn(name = "id_tipo_evento", nullable = false)
     private TipoEvento tipoEvento;
 
+    @NotNull
     @ManyToOne()
     @JoinColumn(name = "id_postulacion_oferta_etapa", nullable = false)
     private PostulacionOfertaEtapa postulacionOfertaEtapa;

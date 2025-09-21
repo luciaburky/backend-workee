@@ -7,12 +7,12 @@ import org.springframework.stereotype.Service;
 import com.example.demo.dtos.eventos.EventoRequestDTO;
 import com.example.demo.entities.eventos.Evento;
 import com.example.demo.entities.params.TipoEvento;
-import com.example.demo.entities.postulaciones.PostulacionOferta;
 import com.example.demo.entities.postulaciones.PostulacionOfertaEtapa;
+import com.example.demo.entities.videollamadas.Videollamada;
 import com.example.demo.repositories.eventos.EventoRepository;
 import com.example.demo.services.BaseServiceImpl;
 import com.example.demo.services.params.TipoEventoService;
-import com.example.demo.services.postulaciones.PostulacionOfertaService;
+import com.example.demo.services.postulaciones.PostulacionOfertaEtapaService;
 
 import jakarta.transaction.Transactional;
 
@@ -21,13 +21,13 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements 
 
     private final EventoRepository eventoRepository;
     private final TipoEventoService tipoEventoService;
-    //private final PostulacionOfertaEtapaService postulacionOfertaService;
+    private final PostulacionOfertaEtapaService postulacionOfertaEtapaService;
 
-    public EventoServiceImpl(EventoRepository eventoRepository, TipoEventoService tipoEventoService, PostulacionOfertaService postulacionOfertaService) {
+    public EventoServiceImpl(EventoRepository eventoRepository, TipoEventoService tipoEventoService, PostulacionOfertaEtapaService postulacionOfertaEtapaService) {
         super(eventoRepository);
         this.eventoRepository = eventoRepository;
         this.tipoEventoService = tipoEventoService;
-        //this.postulacionOfertaService = postulacionOfertaService;
+        this.postulacionOfertaEtapaService = postulacionOfertaEtapaService;
     }
 
     @Override
@@ -35,18 +35,36 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements 
     public Evento crearEvento(EventoRequestDTO evento) {
 
         TipoEvento tipoEvento = tipoEventoService.findById(evento.getIdTipoEvento());
-        //PostulacionOferta postulacionOferta = postulacionOfertaService.findById(evento.getIdPostulacionOfertaEtapa());
+        PostulacionOfertaEtapa postulacionOfertaEtapa = postulacionOfertaEtapaService.findById(evento.getIdPostulacionOfertaEtapa());
 
         Evento nuevoEvento = new Evento();
-        nuevoEvento.setFechaHoraAlta(new Date());
-        nuevoEvento.setTipoEvento(tipoEvento);
-        //nuevoEvento.setPostulacionOfertaEtapa(postulacionOferta);
         nuevoEvento.setNombreEvento(evento.getNombreEvento());
         nuevoEvento.setDescripcionEvento(evento.getDescripcionEvento());
         nuevoEvento.setFechaHoraInicioEvento(evento.getFechaHoraInicioEvento());
+        nuevoEvento.setFechaHoraFinEvento(evento.getFechaHoraFinEvento()); // opcional
+        nuevoEvento.setFechaHoraAlta(new Date());
+        nuevoEvento.setTipoEvento(tipoEvento);
+        nuevoEvento.setPostulacionOfertaEtapa(postulacionOfertaEtapa);
+        
+        /// Si es videollamada, instanciar la relación
+        if ("Videollamada".equalsIgnoreCase(tipoEvento.getNombreTipoEvento())) {
+            Videollamada videollamada = new Videollamada();
+            videollamada.setEnlaceVideollamada(evento.getEnlaceVideollamada());
+            videollamada.setFechaHoraInicioPlanifVideollamada(evento.getFechaHoraInicioEvento());
+            videollamada.setFechaHoraFinPlanifVideollamada(evento.getFechaHoraFinEvento());
 
-        //Falta parte Videollamada
-        return null;
+            // Inicializar campos vacíos
+            videollamada.setFechaHoraInicioRealVideollamada(null);
+            videollamada.setFechaHoraFinRealVideollamada(null);
+            videollamada.setDuracionVideollamada(null);
+
+        nuevoEvento.setVideollamada(videollamada);
+        }
+
+        Evento eventoGuardado = eventoRepository.save(nuevoEvento);
+
+        //TODO: generar notificación inicial y programar recordatorios
+        return eventoGuardado;
     }
 
     @Override
