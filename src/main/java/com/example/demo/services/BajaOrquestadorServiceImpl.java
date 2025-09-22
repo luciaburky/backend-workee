@@ -11,13 +11,9 @@ import com.example.demo.entities.empresa.EmpleadoEmpresa;
 import com.example.demo.entities.empresa.Empresa;
 import com.example.demo.entities.oferta.CodigoEstadoOferta;
 import com.example.demo.entities.oferta.Oferta;
-import com.example.demo.entities.params.CodigoEtapa;
-import com.example.demo.entities.params.Etapa;
 import com.example.demo.entities.postulaciones.PostulacionOferta;
-import com.example.demo.entities.postulaciones.PostulacionOfertaEtapa;
 import com.example.demo.entities.seguridad.Usuario;
 import com.example.demo.exceptions.EntityAlreadyDisabledException;
-import com.example.demo.exceptions.EntityNotValidException;
 import com.example.demo.repositories.postulaciones.PostulacionOfertaRepository;
 import com.example.demo.services.candidato.CandidatoService;
 import com.example.demo.services.empresa.EmpleadoEmpresaService;
@@ -108,29 +104,9 @@ public class BajaOrquestadorServiceImpl implements BajaOrquestadorService{
         //Finalizar oferta
         Oferta oferta = ofertaService.cambiarEstado(idOferta, CodigoEstadoOferta.FINALIZADA);
         
-        Etapa etapaRechazado = etapaService.obtenerEtapaPorCodigo(CodigoEtapa.RECHAZADO);
-        
         //Rechazar a todos los candidatos restantes
         List<PostulacionOferta> postulaciones = postulacionOfertaService.buscarPostulacionesCandidatosEnCurso(idOferta);
-
-        for(PostulacionOferta postulacion : postulaciones){
-            List<PostulacionOfertaEtapa> poeList = postulacion.getPostulacionOfertaEtapaList();
-            PostulacionOfertaEtapa postulacionOfertaEtapaActual = poeList.stream().filter(poe -> poe.getFechaHoraBaja() == null)
-                            .findFirst()
-                            .orElseThrow(() -> new EntityNotValidException("La postulacion no tiene un estado actual asignado"));
-
-            postulacionOfertaEtapaActual.setFechaHoraBaja(new Date());
-            postulacionOfertaEtapaActual.setRetroalimentacionEmpresa("La empresa ha decidido finalizar la oferta. Lamentablemente no has sido seleccionado.");
-
-            PostulacionOfertaEtapa postulacionOfertaEtapaNueva = new PostulacionOfertaEtapa();
-            postulacionOfertaEtapaNueva.setFechaHoraAlta(new Date());
-            postulacionOfertaEtapaNueva.setEtapa(etapaRechazado);
-
-            postulacion.setFechaHoraFinPostulacionOferta(new Date());
-            postulacion.getPostulacionOfertaEtapaList().add(postulacionOfertaEtapaNueva);
-
-            postulacionOfertaRepository.save(postulacion);
-        }
+        postulacionOfertaService.rechazarListado(postulaciones);
 
         return oferta;
     }
