@@ -37,7 +37,7 @@ public interface PostulacionOfertaService extends BaseService<PostulacionOferta,
 
     public Boolean seleccionarCandidato(Long idPostulacion, Boolean soloEste);
 
-    public Boolean rechazarListado(List<PostulacionOferta> postulaciones);
+    public Boolean rechazarListado(List<PostulacionOferta> postulaciones, String retroalimentacion);
 
 }
 

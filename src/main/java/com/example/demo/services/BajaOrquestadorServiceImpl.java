@@ -106,7 +106,8 @@ public class BajaOrquestadorServiceImpl implements BajaOrquestadorService{
         
         //Rechazar a todos los candidatos restantes
         List<PostulacionOferta> postulaciones = postulacionOfertaService.buscarPostulacionesCandidatosEnCurso(idOferta);
-        postulacionOfertaService.rechazarListado(postulaciones);
+        String retroalimentacion = "La empresa ha decidido finalizar la oferta. Lamentablemente no has sido seleccionado.";
+        postulacionOfertaService.rechazarListado(postulaciones, retroalimentacion);
 
         return oferta;
     }

@@ -476,8 +476,8 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
             postulacionesARechazar = postulacionesARechazar.stream().
                                                             filter(po -> po.getId() != idPostulacion)
                                                             .toList();
-
-            rechazarListado(postulacionesARechazar);
+            String retroalimentacion = "Gracias por participar del proceso. En esta ocasión, otro candidato fue seleccionado, pero valoramos profundamente el tiempo y el esfuerzo que dedicaste. ¡Te deseamos mucho éxito en tu búsqueda!.";
+            rechazarListado(postulacionesARechazar, retroalimentacion);
         }
         
         postulacionOfertaRepository.save(postulacionSeleccionada); 
@@ -490,7 +490,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
 
     @Override
     @Transactional
-    public Boolean rechazarListado(List<PostulacionOferta> postulaciones){
+    public Boolean rechazarListado(List<PostulacionOferta> postulaciones, String retroalimentacion){
         Etapa etapaRechazado = etapaService.obtenerEtapaPorCodigo(CodigoEtapa.RECHAZADO);
         
         for(PostulacionOferta postulacion : postulaciones){
@@ -500,7 +500,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
                             .orElseThrow(() -> new EntityNotValidException("La postulacion no tiene un estado actual asignado"));
 
             postulacionOfertaEtapaActual.setFechaHoraBaja(new Date());
-            postulacionOfertaEtapaActual.setRetroalimentacionEmpresa("La empresa ha decidido finalizar la oferta. Lamentablemente no has sido seleccionado.");
+            postulacionOfertaEtapaActual.setRetroalimentacionEmpresa(retroalimentacion);
 
             PostulacionOfertaEtapa postulacionOfertaEtapaNueva = new PostulacionOfertaEtapa();
             postulacionOfertaEtapaNueva.setFechaHoraAlta(new Date());
