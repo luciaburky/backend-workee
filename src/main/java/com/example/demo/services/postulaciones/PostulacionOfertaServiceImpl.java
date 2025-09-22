@@ -460,7 +460,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
 
         postulacionSeleccionada.getPostulacionOfertaEtapaList().add(postulacionOfertaEtapaNueva);
         postulacionSeleccionada.setFechaHoraFinPostulacionOferta(new Date());
-        
+
         //Indicar que la oferta ha finalizado con éxito
         Oferta oferta = ofertaService.findById(postulacionSeleccionada.getOferta().getId());
 
@@ -482,7 +482,9 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         
         postulacionOfertaRepository.save(postulacionSeleccionada); 
         ofertaService.save(oferta);
-
+        
+        //TODO: Falta lo de la notificacion
+        
         return true;
     }
 
@@ -508,6 +510,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
             postulacion.getPostulacionOfertaEtapaList().add(postulacionOfertaEtapaNueva);
 
             postulacionOfertaRepository.save(postulacion);
+            //TODO: Falta lo de la notificacion
         }
 
         return true;
