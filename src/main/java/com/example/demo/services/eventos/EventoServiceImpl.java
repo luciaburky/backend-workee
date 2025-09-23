@@ -128,5 +128,22 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements 
 
         return listaEventos;
     }
+
+    @Override
+    @Transactional
+    public List<Evento> obtenerEventosPorEmpresa(Long idEmpresa) {
+        if(idEmpresa == null) {
+            throw new IllegalArgumentException("El ID de la empresa no puede ser nulo");
+        }
+
+        List<Evento> listaEventos = eventoRepository.findEventosByEmpresaId(idEmpresa);
+
+        if (listaEventos.isEmpty()) {
+            throw new EntityNotFoundException("No se encontraron Eventos para la Empresa con ID  " + idEmpresa);
+        }
+
+        return listaEventos;
+    }
+
     
 }

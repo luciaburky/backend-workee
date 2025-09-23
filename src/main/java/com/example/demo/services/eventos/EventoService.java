@@ -15,4 +15,6 @@ public interface EventoService extends BaseService<Evento, Long>{
     void eliminarEvento(Long id);
 
     List<Evento> obtenerEventosPorUsuario(Long idUsuario);
+
+    List<Evento> obtenerEventosPorEmpresa(Long idEmpresa);
 }
