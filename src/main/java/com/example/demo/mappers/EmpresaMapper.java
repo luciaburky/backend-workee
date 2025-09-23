@@ -7,7 +7,7 @@ import com.example.demo.entities.empresa.Empresa;
 
 @Mapper(componentModel = "spring") 
 public interface EmpresaMapper {
- 
+  
     // Para creación
     @Mapping(target = "provincia", ignore = true)
     @Mapping(target = "rubro", ignore = true)

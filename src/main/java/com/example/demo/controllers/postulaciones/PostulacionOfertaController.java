@@ -50,8 +50,8 @@ public class PostulacionOfertaController {
     }
 
     @Operation(summary = "Un candidato ve sus postulaciones")
-    @GetMapping("/{idCandidato}")
-    @PreAuthorize("hasAuthority('POSTULAR_OFERTA')")
+    @GetMapping("/{idCandidato}/postulaciones")
+    @PreAuthorize("hasAuthority('POSTULAR_OFERTA')") //or hasAuthority('GESTIONAR_POSTULACION')
     public ResponseEntity<?> verPostulacionesCandidato(@PathVariable Long idCandidato) {
         List<PostulacionSimplificadaDTO> postulaciones = postulacionOfertaService.obtenerPostulacionesDeUnCandidato(idCandidato);
         return ResponseEntity.status(HttpStatus.OK).body(postulaciones);
@@ -66,12 +66,46 @@ public class PostulacionOfertaController {
     }
 
 
-    @Operation(summary = "")
+    @Operation(summary = "Actualizar la postulación de un candidato")
     @PutMapping("/{idPostulacion}")
     @PreAuthorize("hasAuthority('GESTIONAR_POSTULACION')")
     public ResponseEntity<?> actualizarPostulacionCandidato(@PathVariable Long idPostulacion, @RequestBody CambioPostulacionDTO cambioPostulacionDTO) {
         PostulacionSimplificadaDTO postulacion = postulacionOfertaService.actualizarPostulacionDeCandidato(idPostulacion, cambioPostulacionDTO);
         return ResponseEntity.status(HttpStatus.OK).body(postulacion);
     }
+
+    @Operation(summary = "Ver el detalle de la postulacion de un candidato")
+    @GetMapping("/{idPostulacion}")
+    @PreAuthorize("hasAuthority('POSTULAR_OFERTA')")
+    public ResponseEntity<?> verPostulacionCandidato(@PathVariable Long idPostulacion) {
+        PostulacionSimplificadaDTO postulacion = postulacionOfertaService.verDetallePostulacionDeCandidato(idPostulacion);
+        return ResponseEntity.status(HttpStatus.OK).body(postulacion);
+    }
+
+    @Operation(summary = "Aceptar la postulacion de un candidato")
+    @PutMapping("/{idPostulacion}/aceptar")
+    @PreAuthorize("hasAuthority('GESTIONAR_POSTULACION')")
+    public ResponseEntity<?> aceptarPostulacionDeCandidato(@PathVariable Long idPostulacion) {
+        Boolean aceptado = postulacionOfertaService.aceptarSolicitudDePostulacionCandidato(idPostulacion);
+        return ResponseEntity.status(HttpStatus.OK).body(aceptado);
+    }
+
+    @Operation(summary = "Rechazar la postulacion de un candidato que estaba PENDIENTE")
+    @PutMapping("/{idPostulacion}/rechazar")
+    @PreAuthorize("hasAuthority('GESTIONAR_POSTULACION')") //Aclaracion: lo unico importante que tienen que mandarle en el body es la retroalimentacion, lo otro aca no se usa (es pq recicle el DTO)
+    public ResponseEntity<?> rechazarPostulacionDeCandidatoPendiente(@PathVariable Long idPostulacion, @RequestBody CambioPostulacionDTO cambioPostulacionDTO) {
+        Boolean rechazado = postulacionOfertaService.rechazarSolicitudDePostulacionDeCandidatoPendiente(idPostulacion, cambioPostulacionDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(rechazado);
+    }
+
+    @Operation(summary = "Seleccionar a un candidato")
+    @PutMapping("/{idPostulacion}/seleccionar")
+    @PreAuthorize("hasAuthority('GESTIONAR_POSTULACION')") 
+    public ResponseEntity<?> seleccionarCandidato(@PathVariable Long idPostulacion, @RequestBody Boolean soloEste) {
+        Boolean selecciono = postulacionOfertaService.seleccionarCandidato(idPostulacion, soloEste);
+        return ResponseEntity.status(HttpStatus.OK).body(selecciono);
+    }
+
+
 
 }

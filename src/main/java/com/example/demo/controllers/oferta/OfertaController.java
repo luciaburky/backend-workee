@@ -3,11 +3,16 @@ package com.example.demo.controllers.oferta;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dtos.ofertas.CandidatoPostuladoDTO;
 import com.example.demo.dtos.ofertas.OfertaRequestDTO;
 import com.example.demo.dtos.params.OfertasEmpleadoDTO;
 import com.example.demo.dtos.postulaciones.OfertasEtapasDTO;
+import com.example.demo.entities.oferta.CodigoEstadoOferta;
 import com.example.demo.entities.oferta.Oferta;
+import com.example.demo.entities.params.Etapa;
+import com.example.demo.services.BajaOrquestadorService;
 import com.example.demo.services.oferta.OfertaService;
+import com.example.demo.services.postulaciones.PostulacionOfertaService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,9 +37,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class OfertaController {
 
     private final OfertaService ofertaService;
+    private final PostulacionOfertaService postulacionOfertaService;
+    private final BajaOrquestadorService bajaOrquestadorService;
 
-    public OfertaController(OfertaService ofertaService) {
+    public OfertaController(OfertaService ofertaService, PostulacionOfertaService postulacionOfertaService, BajaOrquestadorService bajaOrquestadorService) {
         this.ofertaService = ofertaService;
+        this.postulacionOfertaService = postulacionOfertaService;
+        this.bajaOrquestadorService = bajaOrquestadorService;
     }
     
     @Operation(summary = "Crear una nueva Oferta")
@@ -57,7 +66,12 @@ public class OfertaController {
     @PostMapping("/{id}/cambiar-estado/{nuevoCodigo}")
     @PreAuthorize("hasAuthority('GESTION_OFERTAS')")
     public ResponseEntity<Oferta> cambiarEstado(@PathVariable("id") Long id, @PathVariable("nuevoCodigo") String nuevoCodigo) {
-        Oferta ofertaActualizada = ofertaService.cambiarEstado(id, nuevoCodigo);
+        Oferta ofertaActualizada;
+        if(nuevoCodigo.equals(CodigoEstadoOferta.FINALIZADA)){
+            ofertaActualizada = bajaOrquestadorService.rechazarATodosYFinalizarOferta(id);
+        }else {
+            ofertaActualizada = ofertaService.cambiarEstado(id, nuevoCodigo);
+        }
         return ResponseEntity.ok(ofertaActualizada);
     }
 
@@ -72,7 +86,7 @@ public class OfertaController {
     @Operation(summary = "Obtener todas las Ofertas de una Empresa")
     @GetMapping("/empresa/{empresaId}")
     @PreAuthorize("hasAuthority('GESTION_OFERTAS') or hasAuthority('POSTULAR_OFERTA')")
-    public ResponseEntity<List<Oferta>> getOfertasByEmpresaId(@PathVariable("empresaId") Long empresaId) {
+    public ResponseEntity<List<Oferta>> getOfertasByEmpresaId(@PathVariable Long empresaId) {
         List<Oferta> ofertas = ofertaService.findAllByEmpresaId(empresaId);
         return ResponseEntity.ok().body(ofertas);
     }
@@ -91,5 +105,53 @@ public class OfertaController {
     public ResponseEntity<?> getProximasEtapas(@PathVariable Long idOferta, @PathVariable Integer nroEtapa) {
         List<OfertasEtapasDTO> proximas = ofertaService.buscarProximasEtapasEnOferta(idOferta, nroEtapa);
         return ResponseEntity.ok().body(proximas);
+    }
+
+    @Operation(summary = "Obtener todas las Ofertas ABIERTAS de una Empresa")
+    @GetMapping("/empresa/abiertas/{empresaId}")
+    @PreAuthorize("hasAuthority('GESTION_OFERTAS') or hasAuthority('POSTULAR_OFERTA')")
+    public ResponseEntity<List<Oferta>> getOfertasNoFinalizadas(@PathVariable Long empresaId) {
+        List<Oferta> ofertas = ofertaService.buscarOfertasAbiertas(empresaId);
+        return ResponseEntity.ok().body(ofertas);
+    }
+
+    @Operation(summary = "Obtener cantidad total de postulados (en curso)")
+    @GetMapping("/{idOferta}/postulados")
+    @PreAuthorize("hasAuthority('GESTION_OFERTAS') ")
+    public ResponseEntity<?> getCantidadPostulados(@PathVariable Long idOferta) {
+        Integer cantidad = ofertaService.obtenerCantidadDePostulados(idOferta);
+        return ResponseEntity.ok().body(cantidad);
+    }
+
+    @Operation(summary = "Obtener las etapas de una oferta (excepto PENDIENTE)")
+    @GetMapping("/{idOferta}/etapas")
+    @PreAuthorize("hasAuthority('GESTION_OFERTAS') ")
+    public ResponseEntity<?> getEtapasOferta(@PathVariable Long idOferta) {
+        List<Etapa> etapas = ofertaService.obtenerEtapasDeOferta(idOferta);
+        return ResponseEntity.ok().body(etapas);
+    }
+
+    @Operation(summary = "Traer todos los candidatos postulados (no PENDIENTES)")
+    @GetMapping("/{idOferta}/candidatosPostulados")
+    @PreAuthorize("hasAuthority('GESTION_OFERTAS') or hasAuthority('GESTIONAR_POSTULACION')")
+    public ResponseEntity<?> getCandidatosPostulados(@PathVariable Long idOferta) {
+        List<CandidatoPostuladoDTO> candidatos = postulacionOfertaService.traerCandidatosPostuladosAOferta(idOferta);
+        return ResponseEntity.ok().body(candidatos);
+    }
+
+    @Operation(summary = "Traer los candidatos pendientes que postularon a la oferta")
+    @GetMapping("/{idOferta}/candidatosPostuladosPendientes")
+    @PreAuthorize("hasAuthority('GESTION_OFERTAS') or hasAuthority('GESTIONAR_POSTULACION')")
+    public ResponseEntity<?> getCandidatosPostuladosPendientes(@PathVariable Long idOferta) {
+        List<CandidatoPostuladoDTO> candidatos = postulacionOfertaService.traerCandidatosPendientesPostuladosAOferta(idOferta);
+        return ResponseEntity.ok().body(candidatos);
+    }
+
+    @Operation(summary = "Traer los candidatos seleccionados de la oferta")
+    @GetMapping("/{idOferta}/candidatosSeleccionados")
+    @PreAuthorize("hasAuthority('GESTION_OFERTAS') or hasAuthority('GESTIONAR_POSTULACION')")
+    public ResponseEntity<?> getCandidatosSeleccionados(@PathVariable Long idOferta) {
+        List<CandidatoPostuladoDTO> candidatos = postulacionOfertaService.traerCandidatosSeleccionados(idOferta);
+        return ResponseEntity.ok().body(candidatos);
     }
 }

@@ -2,6 +2,7 @@ package com.example.demo.services.postulaciones;
 
 import java.util.List;
 
+import com.example.demo.dtos.ofertas.CandidatoPostuladoDTO;
 import com.example.demo.dtos.postulaciones.CambioPostulacionDTO;
 import com.example.demo.dtos.postulaciones.EtapaActualPostulacionDTO;
 import com.example.demo.dtos.postulaciones.PostulacionCandidatoRequestDTO;
@@ -19,5 +20,24 @@ public interface PostulacionOfertaService extends BaseService<PostulacionOferta,
     public PostulacionSimplificadaDTO actualizarPostulacionDeCandidato(Long idPostulacion, CambioPostulacionDTO cambioPostulacionDTO);
 
     public List<EtapaActualPostulacionDTO> buscarEtapasActualesDePostulacionesDeCandidato(Long idCandidato);
+
+    public PostulacionSimplificadaDTO verDetallePostulacionDeCandidato(Long idPostulacion);
+
+    public List<CandidatoPostuladoDTO> traerCandidatosPostuladosAOferta(Long idOferta);
+
+    public List<CandidatoPostuladoDTO> traerCandidatosPendientesPostuladosAOferta(Long idOferta);
+
+    public Boolean aceptarSolicitudDePostulacionCandidato(Long idPostulacion);
+
+    public Boolean rechazarSolicitudDePostulacionDeCandidatoPendiente(Long idPostulacion, CambioPostulacionDTO cambioPostulacionDTO);
+
+    public List<PostulacionOferta> buscarPostulacionesCandidatosEnCurso(Long idOferta);
+
+    public List<CandidatoPostuladoDTO> traerCandidatosSeleccionados(Long idOferta);
+
+    public Boolean seleccionarCandidato(Long idPostulacion, Boolean soloEste);
+
+    public Boolean rechazarListado(List<PostulacionOferta> postulaciones, String retroalimentacion);
+
 }
 

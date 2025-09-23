@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.example.demo.dtos.ofertas.CandidatoPostuladoDTO;
 import com.example.demo.dtos.postulaciones.CambioPostulacionDTO;
 import com.example.demo.dtos.postulaciones.EtapaActualPostulacionDTO;
 import com.example.demo.dtos.postulaciones.PostulacionCandidatoRequestDTO;
@@ -40,7 +41,8 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
     private final OfertaService ofertaService;
     private final EtapaService etapaService;
 
-    public PostulacionOfertaServiceImpl(PostulacionOfertaRepository postulacionOfertaRepository, CandidatoService candidatoService, OfertaService ofertaService, EtapaService etapaService, NotificacionService notificacionService) {
+    public PostulacionOfertaServiceImpl(PostulacionOfertaRepository postulacionOfertaRepository, CandidatoService candidatoService, 
+    OfertaService ofertaService, EtapaService etapaService, NotificacionService notificacionService) {
         super(postulacionOfertaRepository);
         this.postulacionOfertaRepository = postulacionOfertaRepository;
         this.candidatoService = candidatoService;
@@ -126,7 +128,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
     }
 
     private Boolean verificarSiCandidatoYaPostulo(Long idCandidato, Long idOferta){
-        Optional<PostulacionOferta> postulacionExistenteOptional = postulacionOfertaRepository.findByCandidatoIdAndOfertaIdAndFechaHoraFinPostulacionOfertaIsNull(idCandidato, idOferta);
+        Optional<PostulacionOferta> postulacionExistenteOptional = postulacionOfertaRepository.buscarPostulacionEnCurso(idCandidato, idOferta);
         return postulacionExistenteOptional.isPresent();
     }
 
@@ -208,7 +210,6 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
     @Override
     @Transactional
     public PostulacionSimplificadaDTO actualizarPostulacionDeCandidato(Long idPostulacion, CambioPostulacionDTO cambioPostulacionDTO){
-        
         if(cambioPostulacionDTO.getCodigoEtapaNueva().equals(CodigoEtapa.SELECCIONADO)){
             throw new EntityNotValidException("Para cambiar a la etapa seleccionado debe usar otro endpoint");
         }
@@ -312,4 +313,207 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         return true;
     }
 
+    @Override
+    public PostulacionSimplificadaDTO verDetallePostulacionDeCandidato(Long idPostulacion){
+        PostulacionOferta postulacionOriginal = findById(idPostulacion);
+
+        PostulacionSimplificadaDTO postulacion = new PostulacionSimplificadaDTO();
+        postulacion.setEtapas(postulacionOriginal.getPostulacionOfertaEtapaList());
+        postulacion.setFechaHoraAbandonoOferta(postulacionOriginal.getFechaHoraAbandonoOferta());
+        postulacion.setFechaHoraFinPostulacionOferta(postulacionOriginal.getFechaHoraFinPostulacionOferta());
+        postulacion.setFechaHoraInicioPostulacion(postulacionOriginal.getFechaHoraAlta());
+        postulacion.setIdCandidato(postulacionOriginal.getCandidato().getId());
+        postulacion.setIdIniciadorPostulacion(postulacionOriginal.getIdIniciadorPostulacion());
+        postulacion.setIdOferta(postulacionOriginal.getOferta().getId());
+        postulacion.setIdPostulacionOferta(idPostulacion);
+
+        return postulacion;
+    }
+
+    @Override
+    public List<CandidatoPostuladoDTO> traerCandidatosPostuladosAOferta(Long idOferta){
+        return postulacionOfertaRepository.traerCandidatosPostulados(idOferta);
+    }
+
+    @Override
+    public List<CandidatoPostuladoDTO> traerCandidatosPendientesPostuladosAOferta(Long idOferta){
+        Oferta oferta = ofertaService.findById(idOferta);
+        Long idEmpresa = oferta.getEmpresa().getId();
+
+        return postulacionOfertaRepository.traerCandidatosPostuladosPendientes(idOferta, idEmpresa);
+    }
+
+    @Override
+    @Transactional
+    public Boolean aceptarSolicitudDePostulacionCandidato(Long idPostulacion){
+        PostulacionOferta postulacion = this.findById(idPostulacion);
+
+
+        List<PostulacionOfertaEtapa> postulacionOfertasEtapa = postulacion.getPostulacionOfertaEtapaList();
+
+        PostulacionOfertaEtapa postulacionOfertaEtapaActual = postulacionOfertasEtapa.stream().
+                            filter(oe -> oe.getFechaHoraBaja() == null)
+                            .findFirst()
+                            .orElseThrow(() -> new EntityNotValidException("La postulacion no tiene un estado actual asignado"));
+
+        if(!postulacionOfertaEtapaActual.getEtapa().getCodigoEtapa().equals(CodigoEtapa.PENDIENTE)){
+            throw new EntityNotValidException("No puede aceptar la postulacion del candidato porque no está 'Pendiente");
+        }
+
+        Oferta oferta = postulacion.getOferta();
+        //Para obtener el nro de orden de la etapa Pendiente (igualmente deberia ser 1)
+        OfertaEtapa ofertaEtapaDeOfertaActual = oferta.getOfertaEtapas().stream()
+                                    .filter(oe -> oe.getEtapa().getCodigoEtapa().equals(CodigoEtapa.PENDIENTE))
+                                    .findFirst()
+                                    .orElseThrow(() -> new EntityNotValidException("No se encontró la etapa con el codigo buscado"));
+        
+        Integer nroEtapaPendiente = ofertaEtapaDeOfertaActual.getNumeroEtapa();
+
+        //Obtener proxima etapa
+        OfertaEtapa ofertaEtapaDeOfertaNueva = oferta.getOfertaEtapas().stream()
+                                    .filter(oe -> oe.getNumeroEtapa() == nroEtapaPendiente + 1)
+                                    .findFirst()
+                                    .orElseThrow(() -> new EntityNotValidException("No se encontró la próxima etapa"));
+
+        postulacionOfertaEtapaActual.setFechaHoraBaja(new Date());
+
+        PostulacionOfertaEtapa postulacionOfertaEtapaNueva = new PostulacionOfertaEtapa();
+        postulacionOfertaEtapaNueva.setEtapa(ofertaEtapaDeOfertaNueva.getEtapa());
+        postulacionOfertaEtapaNueva.setFechaHoraAlta(new Date());
+        
+        postulacion.getPostulacionOfertaEtapaList().add(postulacionOfertaEtapaNueva);
+
+        postulacionOfertaRepository.save(postulacion);
+
+        //TODO: Falta lo de la notificacion
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public Boolean rechazarSolicitudDePostulacionDeCandidatoPendiente(Long idPostulacion, CambioPostulacionDTO cambioPostulacionDTO){
+        if(cambioPostulacionDTO.getRetroalimentacion().isBlank() || cambioPostulacionDTO.getRetroalimentacion() == null){
+            throw new EntityNotValidException("Si va a rechazar a un candidato, se debe dar retroalimentación");
+        }
+        PostulacionOferta postulacion = this.findById(idPostulacion);
+
+
+        List<PostulacionOfertaEtapa> postulacionOfertasEtapa = postulacion.getPostulacionOfertaEtapaList();
+
+        PostulacionOfertaEtapa postulacionOfertaEtapaActual = postulacionOfertasEtapa.stream().
+                            filter(oe -> oe.getFechaHoraBaja() == null)
+                            .findFirst()
+                            .orElseThrow(() -> new EntityNotValidException("La postulacion no tiene un estado actual asignado"));
+
+        if(!postulacionOfertaEtapaActual.getEtapa().getCodigoEtapa().equals(CodigoEtapa.PENDIENTE)){
+            throw new EntityNotValidException("No puede aceptar la postulacion del candidato porque no está 'Pendiente");
+        }
+        
+        
+        postulacionOfertaEtapaActual.setFechaHoraBaja(new Date());
+        postulacionOfertaEtapaActual.setRetroalimentacionEmpresa(cambioPostulacionDTO.getRetroalimentacion());
+        
+        Etapa etapaRechazado = etapaService.obtenerEtapaPorCodigo(CodigoEtapa.RECHAZADO);
+
+        PostulacionOfertaEtapa postulacionOfertaEtapaNueva = new PostulacionOfertaEtapa();
+        postulacionOfertaEtapaNueva.setEtapa(etapaRechazado);
+        postulacionOfertaEtapaNueva.setFechaHoraAlta(new Date());
+        
+        postulacion.getPostulacionOfertaEtapaList().add(postulacionOfertaEtapaNueva);
+
+        postulacionOfertaRepository.save(postulacion);
+
+        //TODO: Falta lo de la notificacion
+        return true;
+    }
+
+
+    @Override
+    public List<PostulacionOferta> buscarPostulacionesCandidatosEnCurso(Long idOferta){
+        return postulacionOfertaRepository.traerPostulacionesCandidatosEnCurso(idOferta);
+    }
+
+
+    @Override
+    public List<CandidatoPostuladoDTO> traerCandidatosSeleccionados(Long idOferta){
+        return postulacionOfertaRepository.traerCandidatosSeleccionados(idOferta);
+    }
+
+    @Override
+    @Transactional
+    public Boolean seleccionarCandidato(Long idPostulacion, Boolean soloEste){
+        PostulacionOferta postulacionSeleccionada = findById(idPostulacion);
+
+        PostulacionOfertaEtapa postulacionOfertaEtapaActual = postulacionSeleccionada.getPostulacionOfertaEtapaList().stream()
+                                                                .filter(poe -> poe.getFechaHoraBaja() == null)
+                                                                .findFirst()
+                                                                .orElseThrow(() -> new EntityNotValidException("No se encontró la etapa actual"));
+        
+        // Finalizo la etapa actual de la postulacion
+        postulacionOfertaEtapaActual.setFechaHoraBaja(new Date());
+        
+        //Seteo de la etapa seleccionado de la postulacion
+        Etapa etapaSeleccionado = etapaService.obtenerEtapaPorCodigo(CodigoEtapa.SELECCIONADO);
+        PostulacionOfertaEtapa postulacionOfertaEtapaNueva = new PostulacionOfertaEtapa();
+        postulacionOfertaEtapaNueva.setEtapa(etapaSeleccionado);
+        postulacionOfertaEtapaNueva.setFechaHoraAlta(new Date());
+
+        postulacionSeleccionada.getPostulacionOfertaEtapaList().add(postulacionOfertaEtapaNueva);
+        postulacionSeleccionada.setFechaHoraFinPostulacionOferta(new Date());
+
+        //Indicar que la oferta ha finalizado con éxito
+        Oferta oferta = ofertaService.findById(postulacionSeleccionada.getOferta().getId());
+
+        oferta.setFinalizadaConExito(true); //TODO: Revisar q onda el metodo de la juli pq hace este seteo, preguntar
+        
+        
+        // En caso de que solo seleccione al candidato indicado, finalizar la oferta y rechazar a los que quedan
+        if(soloEste){
+            ofertaService.cambiarEstado(oferta.getId(), CodigoEstadoOferta.FINALIZADA);
+            
+            //Rechazar a todos excepto a la que se seleccionó
+            List<PostulacionOferta> postulacionesARechazar = buscarPostulacionesCandidatosEnCurso(oferta.getId());
+            postulacionesARechazar = postulacionesARechazar.stream().
+                                                            filter(po -> po.getId() != idPostulacion)
+                                                            .toList();
+            String retroalimentacion = "Gracias por participar del proceso. En esta ocasión, otro candidato fue seleccionado, pero valoramos profundamente el tiempo y el esfuerzo que dedicaste. ¡Te deseamos mucho éxito en tu búsqueda!.";
+            rechazarListado(postulacionesARechazar, retroalimentacion);
+        }
+        
+        postulacionOfertaRepository.save(postulacionSeleccionada); 
+        ofertaService.save(oferta);
+        
+        //TODO: Falta lo de la notificacion
+        
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public Boolean rechazarListado(List<PostulacionOferta> postulaciones, String retroalimentacion){
+        Etapa etapaRechazado = etapaService.obtenerEtapaPorCodigo(CodigoEtapa.RECHAZADO);
+        
+        for(PostulacionOferta postulacion : postulaciones){
+            List<PostulacionOfertaEtapa> poeList = postulacion.getPostulacionOfertaEtapaList();
+            PostulacionOfertaEtapa postulacionOfertaEtapaActual = poeList.stream().filter(poe -> poe.getFechaHoraBaja() == null)
+                            .findFirst()
+                            .orElseThrow(() -> new EntityNotValidException("La postulacion no tiene un estado actual asignado"));
+
+            postulacionOfertaEtapaActual.setFechaHoraBaja(new Date());
+            postulacionOfertaEtapaActual.setRetroalimentacionEmpresa(retroalimentacion);
+
+            PostulacionOfertaEtapa postulacionOfertaEtapaNueva = new PostulacionOfertaEtapa();
+            postulacionOfertaEtapaNueva.setFechaHoraAlta(new Date());
+            postulacionOfertaEtapaNueva.setEtapa(etapaRechazado);
+
+            postulacion.setFechaHoraFinPostulacionOferta(new Date());
+            postulacion.getPostulacionOfertaEtapaList().add(postulacionOfertaEtapaNueva);
+
+            postulacionOfertaRepository.save(postulacion);
+            //TODO: Falta lo de la notificacion
+        }
+
+        return true;
+    }
+    
 }

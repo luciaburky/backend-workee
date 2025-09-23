@@ -23,3 +23,4 @@ public interface OfertaMapper {
     @Mapping(target = "fechaFinalizacion", ignore = true)
     Oferta toEntity(OfertaRequestDTO dto);
 }
+ 

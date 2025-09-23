@@ -13,4 +13,3 @@ public interface UsuarioMapper {
     @Mapping(target = "usuarioEstadoList", ignore = true)
     Usuario toEntity(UsuarioDTO dto);
 }
- 

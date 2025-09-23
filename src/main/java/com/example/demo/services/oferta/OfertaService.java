@@ -7,6 +7,7 @@ import com.example.demo.dtos.ofertas.OfertaRequestDTO;
 import com.example.demo.dtos.params.OfertasEmpleadoDTO;
 import com.example.demo.dtos.postulaciones.OfertasEtapasDTO;
 import com.example.demo.entities.oferta.Oferta;
+import com.example.demo.entities.params.Etapa;
 import com.example.demo.services.BaseService;
 
 public interface OfertaService extends BaseService<Oferta, Long>{
@@ -25,4 +26,10 @@ public interface OfertaService extends BaseService<Oferta, Long>{
     List<OfertasEmpleadoDTO> buscarOfertasEmpleado(Long empleadoId);
 
     public List<OfertasEtapasDTO> buscarProximasEtapasEnOferta(Long idOferta, Integer nroEtapa);
+
+    public List<Oferta> buscarOfertasAbiertas(Long idEmpresa);
+
+    public Integer obtenerCantidadDePostulados(Long idOferta);
+
+    public List<Etapa> obtenerEtapasDeOferta(Long idOferta);
 }

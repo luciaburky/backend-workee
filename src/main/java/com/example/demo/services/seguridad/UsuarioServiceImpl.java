@@ -465,4 +465,28 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
         
         return jwtUtil.generateToken(userDetails);
     }
+
+    @Override
+    public String obtenerCodigoRolMasViejo(Long idUsuario){
+        Optional<UsuarioRol> usuarioRolOptional = usuarioRolRepository.obtenerUsuarioRolMasViejo(idUsuario);
+        if(!usuarioRolOptional.isPresent()){
+            throw new EntityNotFoundException("No se encontró el rol buscado");
+        }
+
+        UsuarioRol usuarioRol = usuarioRolOptional.get();
+
+        return usuarioRol.getRol().getCodigoRol();
+    }
+
+    @Override
+    public Long obtenerIdUsuarioPorCorreo(String correo){
+        Optional<Usuario> usuarioOptional = usuarioRepository.buscarUsuarioPorCorreo(correo);
+        if(!usuarioOptional.isPresent()){
+            throw new EntityNotFoundException("No existe un usuario con el correo ingresado");
+        }
+        Usuario usuario = usuarioOptional.get();
+
+        return usuario.getId();
+    }
+
 }

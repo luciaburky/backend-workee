@@ -66,7 +66,9 @@ public class SecurityConfig {
                 "/rubros/activos",
                 "/tipoHabilidades/activos",
                 "/roles/porCorreo/**", 
-                "permisos/porRol/**").permitAll()
+                "/permisos/porRol/**",
+                "/usuarios/rolViejo/**",
+                "/usuarios/idPorCorreo/**").permitAll()
                 .anyRequest().authenticated()
             )
             .userDetailsService(userDetailsService) 

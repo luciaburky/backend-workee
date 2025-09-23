@@ -62,5 +62,14 @@ public interface UsuarioRolRepository extends BaseRepository<UsuarioRol, Long> {
     public Optional<UsuarioRol> buscarUsuarioRolAnteriorSegunIdUsuarioEIdRol(Long idRol, Long idUsuario);
 
     
+
+    @Query(
+        value = "SELECT * FROM usuario_rol " + 
+                "WHERE id_usuario = :idUsuario " +
+                "ORDER BY fecha_hora_alta ASC " +
+                "LIMIT 1",
+        nativeQuery = true
+    )
+    public Optional<UsuarioRol> obtenerUsuarioRolMasViejo(@Param("idUsuario") Long idUsuario);
 }
 
