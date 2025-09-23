@@ -5,6 +5,7 @@ import java.util.Date;
 import com.example.demo.entities.Base;
 import com.example.demo.entities.params.TipoEvento;
 import com.example.demo.entities.postulaciones.PostulacionOfertaEtapa;
+import com.example.demo.entities.seguridad.Usuario;
 import com.example.demo.entities.videollamadas.Videollamada;
 
 import jakarta.persistence.CascadeType;
@@ -42,6 +43,16 @@ public class Evento extends Base{
     
     @Column(name = "fecha_hora_fin_evento")
     private Date fechaHoraFinEvento;
+
+    @NotNull
+    @ManyToOne()
+    @JoinColumn(name = "id_usuario_candidato", nullable = false)
+    private Usuario usuarioCandidato;
+
+    @NotNull
+    @ManyToOne()
+    @JoinColumn(name = "id_usuario_empleado", nullable = false)
+    private Usuario usuarioEmpleado;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true) //TODO: Revisar si dejamos esto aca o si planteamos la relacion al reves, porque antes la teniamos asi pero creo que habiamos hablado de hacerla al reves...
     @JoinColumn(name = "id_videollamada", nullable = true)

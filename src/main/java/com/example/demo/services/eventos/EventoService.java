@@ -1,6 +1,6 @@
 package com.example.demo.services.eventos;
 
-import org.springframework.stereotype.Service;
+import java.util.List;
 
 import com.example.demo.dtos.eventos.EventoRequestDTO;
 import com.example.demo.entities.eventos.Evento;
@@ -11,4 +11,8 @@ public interface EventoService extends BaseService<Evento, Long>{
     Evento crearEvento(EventoRequestDTO evento);
 
     Evento modificarEvento(Long id, EventoRequestDTO eventoRequestDTO);
+
+    Evento obtenerEventoPorId(Long id);
+
+    List<Evento> obtenerEventosPorUsuario(Long idUsuario);
 }

@@ -19,7 +19,7 @@ public class EventoRequestDTO {
     @NotBlank(message = "La descripción del evento no puede estar vacía")
     private String descripcionEvento;
 
-    @NotBlank(message = "El tipo de evento no puede estar vacío")
+    @NotNull(message = "El tipo de evento no puede estar vacío")
     private Long idTipoEvento;
 
     @NotBlank(message = "La fecha y hora de inicio del evento no puede estar vacío")
@@ -30,6 +30,12 @@ public class EventoRequestDTO {
     @NotNull(message = "La postulaciónEtapa asociada es obligatoria")
     private Long idPostulacionOfertaEtapa; 
 
-    //Si es Videollamda
+    @NotNull(message = "El id del usuario candidato es obligatorio")
+    private Long idUsuarioCandidato;
+
+    @NotNull(message = "El id del usuario empleado es obligatorio")
+    private Long idUsuarioEmpleado;
+
+    //Solo si es Videollamada
     private String enlaceVideollamada; //no se si seria el id o el url de la videollamada
 }
