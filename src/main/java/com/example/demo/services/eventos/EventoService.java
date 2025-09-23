@@ -12,7 +12,7 @@ public interface EventoService extends BaseService<Evento, Long>{
 
     Evento modificarEvento(Long id, EventoRequestDTO eventoRequestDTO);
 
-    Evento obtenerEventoPorId(Long id);
+    void eliminarEvento(Long id);
 
     List<Evento> obtenerEventosPorUsuario(Long idUsuario);
 }

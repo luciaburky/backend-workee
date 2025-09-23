@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 
@@ -47,7 +46,7 @@ public class EventoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoEvento);
     }
 
-    @Operation(summary = "Obtener un evento por su ID")
+    @Operation(summary = "Modificar un evento por su ID")
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('GESTIONAR_EVENTOS')")
     public ResponseEntity<Evento> modificarEvento(@PathVariable("id") Long idEvento, @RequestBody EventoRequestDTO eventoDTO) {
