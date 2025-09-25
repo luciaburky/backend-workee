@@ -55,65 +55,11 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
     @Override
     @Transactional
     public PostulacionSimplificadaDTO postularComoCandidato(PostulacionCandidatoRequestDTO postulacionCandidatoRequestDTO) {
-        PostulacionOferta postulacionOferta = new PostulacionOferta();
-
-        Boolean yaPostulo = this.verificarSiCandidatoYaPostulo(postulacionCandidatoRequestDTO.getIdCandidato(), postulacionCandidatoRequestDTO.getIdOferta());
-        if(yaPostulo){
-            throw new EntityNotValidException("El candidato ya se encuentra postulado a esta oferta");
-        }
-
-        //Seteo del candidato
-        Candidato candidato = candidatoService.findById(postulacionCandidatoRequestDTO.getIdCandidato());
-        postulacionOferta.setCandidato(candidato);
-
-        //Seteo de la oferta
-        Oferta oferta = ofertaService.findById(postulacionCandidatoRequestDTO.getIdOferta());
+        PostulacionOferta postulacionOferta = creacionCosasGenericasPostulacion(postulacionCandidatoRequestDTO);
         
-        //Ver que no se encuentre ni cerrada ni finalizada
-        if(oferta.getFechaFinalizacion() != null){
-            throw new EntityNotValidException("No es posible postular, porque la oferta ya se encuentra finalizada");
-        }
-        OfertaEstadoOferta ofertaEstadoOfertaActual = oferta.getEstadosOferta().stream()
-            .filter(eo -> eo.getFechaHoraBaja() == null)
-            .findFirst()
-            .orElseThrow(() -> new EntityNotValidException("La oferta no tiene un estado actual asignado"));
-        
-        if(!ofertaEstadoOfertaActual.getEstadoOferta().getCodigo().equals(CodigoEstadoOferta.ABIERTA)){
-            throw new EntityNotValidException("No es posible postular, porque la oferta no se encuentra abierta");
-        }
-        
-        postulacionOferta.setOferta(oferta);
-
         //El candidato es el que inicia la postulacion
         postulacionOferta.setIdIniciadorPostulacion(postulacionCandidatoRequestDTO.getIdCandidato());
 
-        postulacionOferta.setFechaHoraAlta(new Date());
-
-        //Creacion de la primera etapa (PENDIENTE)
-        if(postulacionOferta.getPostulacionOfertaEtapaList() == null){
-            postulacionOferta.setPostulacionOfertaEtapaList(new ArrayList<>());
-        }
-        
-        Etapa etapa = etapaService.obtenerEtapaPorCodigo(CodigoEtapa.PENDIENTE);
-
-        PostulacionOfertaEtapa postulacionOfertaEtapa = new PostulacionOfertaEtapa();
-        postulacionOfertaEtapa.setEtapa(etapa);
-        postulacionOfertaEtapa.setFechaHoraAlta(new Date());
-        
-        postulacionOferta.getPostulacionOfertaEtapaList().add(postulacionOfertaEtapa);
-
-        //Creacion de la notificacion para la empresa
-        /*Notificacion notificacion = new Notificacion();
-        notificacion.setFechaHoraAlta(new Date());
-        notificacion.setTipoNotificacion(TipoNotificacion.SOLICITUD_POSTULACION_OFERTA);
-        String descripcion = "El candidato " + candidato.getNombreCandidato() + " " + candidato.getApellidoCandidato() + " ha solicitado participar en la oferta " + oferta.getTitulo();
-        notificacion.setDescripcionNotificacion(descripcion);
-        String titulo = "Han solicitado participar en una oferta";
-        notificacion.setTituloNotificacion(titulo);
-        notificacion.setLecturaNotificacion(false);
-
-        notificacionService.guardarNotificacion(notificacion);*/
-        
         //TODO: Faltaria que envie la solicitud de postulacion a la empresa
 
         postulacionOfertaRepository.save(postulacionOferta);
@@ -568,6 +514,76 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         PostulacionSimplificadaDTO postulacionSimplificadaDTO = crearPostulacionSimplificada(postulacion);
 
         return postulacionSimplificadaDTO;
+    }
+
+    @Override
+    @Transactional
+    public PostulacionSimplificadaDTO enviarPostulacionACandidato(PostulacionCandidatoRequestDTO postulacionCandidatoRequestDTO) {
+        Oferta oferta = ofertaService.findById(postulacionCandidatoRequestDTO.getIdOferta());
+
+        PostulacionOferta postulacionOferta = creacionCosasGenericasPostulacion(postulacionCandidatoRequestDTO);
+        //La empresa es quien inicia la postulacion
+        postulacionOferta.setIdIniciadorPostulacion(oferta.getEmpresa().getId());
+
+        
+        
+        //TODO: Faltaria que envie la solicitud de postulacion al candidato
+
+        postulacionOfertaRepository.save(postulacionOferta);
+        
+        PostulacionSimplificadaDTO postulacionSimplificada = crearPostulacionSimplificada(postulacionOferta);
+
+        return postulacionSimplificada;
+    }
+
+
+    private PostulacionOferta creacionCosasGenericasPostulacion(PostulacionCandidatoRequestDTO postulacionCandidatoRequestDTO){
+        PostulacionOferta postulacionOferta = new PostulacionOferta();
+
+        Boolean yaPostulo = this.verificarSiCandidatoYaPostulo(postulacionCandidatoRequestDTO.getIdCandidato(), postulacionCandidatoRequestDTO.getIdOferta());
+        if(yaPostulo){
+            throw new EntityNotValidException("El candidato ya se encuentra postulado a esta oferta");
+        }
+
+        //Seteo del candidato
+        Candidato candidato = candidatoService.findById(postulacionCandidatoRequestDTO.getIdCandidato());
+        postulacionOferta.setCandidato(candidato);
+
+        //Seteo de la oferta
+        Oferta oferta = ofertaService.findById(postulacionCandidatoRequestDTO.getIdOferta());
+        
+        //Ver que no se encuentre ni cerrada ni finalizada
+        if(oferta.getFechaFinalizacion() != null){
+            throw new EntityNotValidException("No es posible postular, porque la oferta ya se encuentra finalizada");
+        }
+        OfertaEstadoOferta ofertaEstadoOfertaActual = oferta.getEstadosOferta().stream()
+            .filter(eo -> eo.getFechaHoraBaja() == null)
+            .findFirst()
+            .orElseThrow(() -> new EntityNotValidException("La oferta no tiene un estado actual asignado"));
+        
+        if(!ofertaEstadoOfertaActual.getEstadoOferta().getCodigo().equals(CodigoEstadoOferta.ABIERTA)){
+            throw new EntityNotValidException("No es posible postular, porque la oferta no se encuentra abierta");
+        }
+        
+        postulacionOferta.setOferta(oferta);
+
+        postulacionOferta.setFechaHoraAlta(new Date());
+
+        //Creacion de la primera etapa (PENDIENTE)
+        if(postulacionOferta.getPostulacionOfertaEtapaList() == null){
+            postulacionOferta.setPostulacionOfertaEtapaList(new ArrayList<>());
+        }
+        
+        Etapa etapa = etapaService.obtenerEtapaPorCodigo(CodigoEtapa.PENDIENTE);
+
+        PostulacionOfertaEtapa postulacionOfertaEtapa = new PostulacionOfertaEtapa();
+        postulacionOfertaEtapa.setEtapa(etapa);
+        postulacionOfertaEtapa.setFechaHoraAlta(new Date());
+        
+        postulacionOferta.getPostulacionOfertaEtapaList().add(postulacionOfertaEtapa);
+
+        return postulacionOferta;
+
     }
     
 }

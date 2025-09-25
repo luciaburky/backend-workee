@@ -44,5 +44,7 @@ public interface PostulacionOfertaService extends BaseService<PostulacionOferta,
 
     public PostulacionSimplificadaDTO enviarRespuestaCandidato(RetroalimentacionDTO retroalimentacionDTO);
 
+    public PostulacionSimplificadaDTO enviarPostulacionACandidato(PostulacionCandidatoRequestDTO postulacionCandidatoRequestDTO);
+
 }
 

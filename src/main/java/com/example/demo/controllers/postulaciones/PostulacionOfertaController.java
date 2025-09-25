@@ -123,4 +123,12 @@ public class PostulacionOfertaController {
         return ResponseEntity.status(HttpStatus.OK).body(postulacion);
     }
 
+    @Operation(summary = "Una empresa solicita la participación de un candidato a una oferta")
+    @PostMapping("/enviarACandidato")
+    @PreAuthorize("hasAuthority('GESTIONAR_POSTULACION')")
+    public ResponseEntity<?> enviarPostulacion(@RequestBody PostulacionCandidatoRequestDTO postulacionCandidatoRequestDTO) {
+        PostulacionSimplificadaDTO postulacionOferta = postulacionOfertaService.enviarPostulacionACandidato(postulacionCandidatoRequestDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(postulacionOferta);
+    }
+
 }
