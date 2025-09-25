@@ -208,6 +208,11 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
             return false;
         }
 
+        if(ofertaEtapaActual.getEtapa().getCodigoEtapa().equals(CodigoEtapa.NO_ACEPTADO)){
+            System.out.println("El candidato ha rechazado la participación en la oferta.");
+            return false;
+        }
+
         if(ofertaEtapaActual.getEtapa().getCodigoEtapa().equals(CodigoEtapa.RECHAZADO)){
             System.out.println("El candidato ya ha sido rechazado.");
             
