@@ -17,6 +17,7 @@ import com.example.demo.dtos.postulaciones.CambioPostulacionDTO;
 import com.example.demo.dtos.postulaciones.EtapaActualPostulacionDTO;
 import com.example.demo.dtos.postulaciones.PostulacionCandidatoRequestDTO;
 import com.example.demo.dtos.postulaciones.PostulacionSimplificadaDTO;
+import com.example.demo.dtos.postulaciones.RetroalimentacionDTO;
 import com.example.demo.services.postulaciones.PostulacionOfertaService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -76,7 +77,7 @@ public class PostulacionOfertaController {
 
     @Operation(summary = "Ver el detalle de la postulacion de un candidato")
     @GetMapping("/{idPostulacion}")
-    @PreAuthorize("hasAuthority('POSTULAR_OFERTA')")
+    @PreAuthorize("hasAuthority('POSTULAR_OFERTA') or hasAuthority('GESTIONAR_POSTULACION')")
     public ResponseEntity<?> verPostulacionCandidato(@PathVariable Long idPostulacion) {
         PostulacionSimplificadaDTO postulacion = postulacionOfertaService.verDetallePostulacionDeCandidato(idPostulacion);
         return ResponseEntity.status(HttpStatus.OK).body(postulacion);
@@ -106,6 +107,12 @@ public class PostulacionOfertaController {
         return ResponseEntity.status(HttpStatus.OK).body(selecciono);
     }
 
-
+    @Operation(summary = "Enviar retroalimentación")
+    @PutMapping("/retroalimentacion")
+    @PreAuthorize("hasAuthority('GESTIONAR_POSTULACION')") 
+    public ResponseEntity<?> enviarRetroalimentacion(@RequestBody RetroalimentacionDTO retroalimentacionDTO) {
+        PostulacionSimplificadaDTO postulacion = postulacionOfertaService.enviarRetroalimentacion(retroalimentacionDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(postulacion);
+    }
 
 }

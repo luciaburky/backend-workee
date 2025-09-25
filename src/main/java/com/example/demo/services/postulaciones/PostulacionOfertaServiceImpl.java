@@ -12,6 +12,7 @@ import com.example.demo.dtos.postulaciones.CambioPostulacionDTO;
 import com.example.demo.dtos.postulaciones.EtapaActualPostulacionDTO;
 import com.example.demo.dtos.postulaciones.PostulacionCandidatoRequestDTO;
 import com.example.demo.dtos.postulaciones.PostulacionSimplificadaDTO;
+import com.example.demo.dtos.postulaciones.RetroalimentacionDTO;
 import com.example.demo.entities.candidato.Candidato;
 import com.example.demo.entities.oferta.CodigoEstadoOferta;
 import com.example.demo.entities.oferta.Oferta;
@@ -117,12 +118,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
 
         postulacionOfertaRepository.save(postulacionOferta);
         
-        PostulacionSimplificadaDTO postulacionSimplificada = new PostulacionSimplificadaDTO();
-        postulacionSimplificada.setIdCandidato(postulacionOferta.getCandidato().getId());
-        postulacionSimplificada.setIdIniciadorPostulacion(postulacionOferta.getIdIniciadorPostulacion());
-        postulacionSimplificada.setIdOferta(postulacionOferta.getOferta().getId());
-        postulacionSimplificada.setEtapas(postulacionOferta.getPostulacionOfertaEtapaList());
-        postulacionSimplificada.setFechaHoraInicioPostulacion(postulacionOferta.getFechaHoraAlta());
+        PostulacionSimplificadaDTO postulacionSimplificada = crearPostulacionSimplificada(postulacionOferta);
 
         return postulacionSimplificada;
     }
@@ -147,7 +143,6 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
             p.getPostulacionOfertaEtapaList()
         ))
         .toList();
-        //return postulacionOfertaRepository.findByCandidatoId(idCandidato);
     }
 
     @Override
@@ -191,13 +186,8 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
 
         postulacionOfertaRepository.save(postulacionOferta);
     
-        PostulacionSimplificadaDTO postulacionSimplificada = new PostulacionSimplificadaDTO();
-        postulacionSimplificada.setIdCandidato(postulacionOferta.getCandidato().getId());
-        postulacionSimplificada.setIdIniciadorPostulacion(postulacionOferta.getIdIniciadorPostulacion());
-        postulacionSimplificada.setIdOferta(postulacionOferta.getOferta().getId());
-        postulacionSimplificada.setEtapas(postulacionOferta.getPostulacionOfertaEtapaList());
-        postulacionSimplificada.setFechaHoraInicioPostulacion(postulacionOferta.getFechaHoraAlta());
-        postulacionSimplificada.setFechaHoraAbandonoOferta(postulacionOferta.getFechaHoraAbandonoOferta());
+        PostulacionSimplificadaDTO postulacionSimplificada = crearPostulacionSimplificada(postulacionOferta);
+        
 
         return postulacionSimplificada;
     }
@@ -249,6 +239,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         nuevaPostulacionOfertaEtapa.setEtapa(nuevaEtapa);
         nuevaPostulacionOfertaEtapa.setFechaHoraAlta(new Date());
 
+        //La retroalimentacion que se ingresa al momento de rechazar
         if(!cambioPostulacionDTO.getRetroalimentacion().isBlank()){
             ofertaEtapaActual.setRetroalimentacionEmpresa(cambioPostulacionDTO.getRetroalimentacion());
         }
@@ -258,13 +249,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         postulacionOfertaRepository.save(postulacion);
 
 
-        PostulacionSimplificadaDTO postulacionActualizada = new PostulacionSimplificadaDTO();
-        postulacionActualizada.setEtapas(postulacion.getPostulacionOfertaEtapaList());
-        postulacionActualizada.setFechaHoraInicioPostulacion(postulacion.getFechaHoraAlta());
-        postulacionActualizada.setIdCandidato(postulacion.getCandidato().getId());
-        postulacionActualizada.setIdIniciadorPostulacion(postulacion.getIdIniciadorPostulacion());
-        postulacionActualizada.setIdOferta(postulacion.getOferta().getId());
-        postulacionActualizada.setIdPostulacionOferta(idPostulacion);
+        PostulacionSimplificadaDTO postulacionActualizada = crearPostulacionSimplificada(postulacion);
 
         //TODO: Falta agregar lo de las notificaciones
         return postulacionActualizada;
@@ -317,15 +302,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
     public PostulacionSimplificadaDTO verDetallePostulacionDeCandidato(Long idPostulacion){
         PostulacionOferta postulacionOriginal = findById(idPostulacion);
 
-        PostulacionSimplificadaDTO postulacion = new PostulacionSimplificadaDTO();
-        postulacion.setEtapas(postulacionOriginal.getPostulacionOfertaEtapaList());
-        postulacion.setFechaHoraAbandonoOferta(postulacionOriginal.getFechaHoraAbandonoOferta());
-        postulacion.setFechaHoraFinPostulacionOferta(postulacionOriginal.getFechaHoraFinPostulacionOferta());
-        postulacion.setFechaHoraInicioPostulacion(postulacionOriginal.getFechaHoraAlta());
-        postulacion.setIdCandidato(postulacionOriginal.getCandidato().getId());
-        postulacion.setIdIniciadorPostulacion(postulacionOriginal.getIdIniciadorPostulacion());
-        postulacion.setIdOferta(postulacionOriginal.getOferta().getId());
-        postulacion.setIdPostulacionOferta(idPostulacion);
+        PostulacionSimplificadaDTO postulacion = crearPostulacionSimplificada(postulacionOriginal);
 
         return postulacion;
     }
@@ -451,6 +428,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         
         // Finalizo la etapa actual de la postulacion
         postulacionOfertaEtapaActual.setFechaHoraBaja(new Date());
+        //postulacionOfertaEtapaActual.setRetroalimentacionEmpresa("¡Felicidades! Has sido seleccionado");
         
         //Seteo de la etapa seleccionado de la postulacion
         Etapa etapaSeleccionado = etapaService.obtenerEtapaPorCodigo(CodigoEtapa.SELECCIONADO);
@@ -514,6 +492,42 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         }
 
         return true;
+    }
+
+    @Override
+    @Transactional
+    public PostulacionSimplificadaDTO enviarRetroalimentacion(RetroalimentacionDTO retroalimentacionDTO){
+        PostulacionOferta postulacion = findById(retroalimentacionDTO.getIdPostulacion());
+
+        PostulacionOfertaEtapa postulacionOfertaEtapa = postulacion.getPostulacionOfertaEtapaList()
+                                                            .stream()
+                                                            .filter(poe -> poe.getId() == retroalimentacionDTO.getIdPostulacionOfertaEtapa())
+                                                            .findFirst()
+                                                            .orElseThrow(() -> new EntityNotValidException("No se encontró la postulacionOfertaEtapa buscada"));
+
+        postulacionOfertaEtapa.setRetroalimentacionEmpresa(retroalimentacionDTO.getRetroalimentacion());
+
+        postulacionOfertaRepository.save(postulacion);
+
+        PostulacionSimplificadaDTO postulacionSimplificadaDTO = crearPostulacionSimplificada(postulacion);
+
+        return postulacionSimplificadaDTO;
+    }
+
+
+    private PostulacionSimplificadaDTO crearPostulacionSimplificada(PostulacionOferta postulacionOferta){
+        PostulacionSimplificadaDTO postulacionSimplificada = new PostulacionSimplificadaDTO();
+
+        postulacionSimplificada.setIdCandidato(postulacionOferta.getCandidato().getId());
+        postulacionSimplificada.setIdIniciadorPostulacion(postulacionOferta.getIdIniciadorPostulacion());
+        postulacionSimplificada.setIdOferta(postulacionOferta.getOferta().getId());
+        postulacionSimplificada.setEtapas(postulacionOferta.getPostulacionOfertaEtapaList());
+        postulacionSimplificada.setFechaHoraInicioPostulacion(postulacionOferta.getFechaHoraAlta());
+        postulacionSimplificada.setFechaHoraAbandonoOferta(postulacionOferta.getFechaHoraAbandonoOferta());
+        postulacionSimplificada.setFechaHoraFinPostulacionOferta(postulacionOferta.getFechaHoraFinPostulacionOferta());
+        postulacionSimplificada.setIdPostulacionOferta(postulacionOferta.getId());
+
+        return postulacionSimplificada;
     }
     
 }

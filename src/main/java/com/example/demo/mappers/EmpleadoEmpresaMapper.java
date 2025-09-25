@@ -11,7 +11,7 @@ import com.example.demo.entities.empresa.EmpleadoEmpresa;
 
 @Mapper(componentModel = "spring")
 public interface EmpleadoEmpresaMapper {
-     
+      
     //Para creacion
     @Mapping(target = "empresa", ignore = true)
     @Mapping(target = "usuario", ignore = true)

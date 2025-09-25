@@ -7,6 +7,7 @@ import com.example.demo.dtos.postulaciones.CambioPostulacionDTO;
 import com.example.demo.dtos.postulaciones.EtapaActualPostulacionDTO;
 import com.example.demo.dtos.postulaciones.PostulacionCandidatoRequestDTO;
 import com.example.demo.dtos.postulaciones.PostulacionSimplificadaDTO;
+import com.example.demo.dtos.postulaciones.RetroalimentacionDTO;
 import com.example.demo.entities.postulaciones.PostulacionOferta;
 import com.example.demo.services.BaseService;
 
@@ -38,6 +39,8 @@ public interface PostulacionOfertaService extends BaseService<PostulacionOferta,
     public Boolean seleccionarCandidato(Long idPostulacion, Boolean soloEste);
 
     public Boolean rechazarListado(List<PostulacionOferta> postulaciones, String retroalimentacion);
+
+    public PostulacionSimplificadaDTO enviarRetroalimentacion(RetroalimentacionDTO retroalimentacionDTO);
 
 }
 
