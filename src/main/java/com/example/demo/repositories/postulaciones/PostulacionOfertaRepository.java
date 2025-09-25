@@ -24,10 +24,10 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
               JOIN poe.etapa e
               WHERE po.candidato.id = :idCandidato AND po.oferta.id = :idOferta
               AND po.fechaHoraFinPostulacionOferta IS NULL AND po.fechaHoraAbandonoOferta IS NULL
-              AND poe.fechaHoraBaja IS NULL AND e.codigoEtapa NOT IN ('ABANDONADO', 'RECHAZADO', 'SELECCIONADO') 
+              AND poe.fechaHoraBaja IS NULL AND e.codigoEtapa NOT IN ('ABANDONADO', 'RECHAZADO', 'SELECCIONADO', 'NO_ACEPTADO') 
         """
     )
-    public Optional<PostulacionOferta> buscarPostulacionEnCurso(@Param("idCandidato") Long idCandidato, @Param("idOferta") Long idOferta); //TODO: Agregar el del codigo de un candidato que rechaza la oferta
+    public Optional<PostulacionOferta> buscarPostulacionEnCurso(@Param("idCandidato") Long idCandidato, @Param("idOferta") Long idOferta);
 
     public List<PostulacionOferta> findByCandidatoIdOrderByFechaHoraAltaDesc(Long idCandidato);
 
@@ -86,9 +86,9 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
         JOIN poe.etapa e
         WHERE po.oferta.id = :idOferta
         AND poe.fechaHoraBaja IS NULL
-        AND e.codigoEtapa NOT IN ('ABANDONADO', 'RECHAZADO', 'SELECCIONADO')
+        AND e.codigoEtapa NOT IN ('ABANDONADO', 'RECHAZADO', 'SELECCIONADO', 'NO_ACEPTADO')
     """)
-    List<PostulacionOferta> traerPostulacionesCandidatosEnCurso(@Param("idOferta") Long idOferta); //TODO: Agregar el estado de cuando un candidato rechaza una postulacion
+    List<PostulacionOferta> traerPostulacionesCandidatosEnCurso(@Param("idOferta") Long idOferta); 
 
 
      @Query("""

@@ -388,7 +388,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         //Indicar que la oferta ha finalizado con éxito
         Oferta oferta = ofertaService.findById(postulacionSeleccionada.getOferta().getId());
 
-        oferta.setFinalizadaConExito(true); //TODO: Revisar q onda el metodo de la juli pq hace este seteo, preguntar
+        oferta.setFinalizadaConExito(true); 
         
         
         // En caso de que solo seleccione al candidato indicado, finalizar la oferta y rechazar a los que quedan

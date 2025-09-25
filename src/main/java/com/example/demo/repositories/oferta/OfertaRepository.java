@@ -158,7 +158,7 @@ public interface OfertaRepository extends BaseRepository<Oferta, Long> {
                     "INNER JOIN etapa AS e ON poe.id_etapa = e.id " +
                     "WHERE o.id = :idOferta " + 
                     "AND poe.fecha_hora_baja IS NULL " +
-                    "AND e.codigo_etapa NOT IN ('ABANDONADO', 'SELECCIONADO', 'RECHAZADO')", //TODO: Si agregamos el de que el candidato rechaza la oferta, deberiamos agregar ese codigo aca
+                    "AND e.codigo_etapa NOT IN ('ABANDONADO', 'SELECCIONADO', 'RECHAZADO', 'NO_ACEPTADO')", 
     nativeQuery = true)
     public Integer obtenerCantidadDeCandidatosPostulados(@Param("idOferta") Long idOferta); 
 
