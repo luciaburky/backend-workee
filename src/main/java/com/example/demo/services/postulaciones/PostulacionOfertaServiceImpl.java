@@ -505,6 +505,9 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
                                                             .findFirst()
                                                             .orElseThrow(() -> new EntityNotValidException("No se encontró la postulacionOfertaEtapa buscada"));
 
+        if(!postulacionOfertaEtapa.getRetroalimentacionEmpresa().isBlank() || postulacionOfertaEtapa.getRetroalimentacionEmpresa() != null){
+            throw new EntityNotValidException("No es posible agregar retroalimentación ya que esta etapa ya posee.");
+        } 
         postulacionOfertaEtapa.setRetroalimentacionEmpresa(retroalimentacionDTO.getRetroalimentacion());
 
         postulacionOfertaRepository.save(postulacion);
