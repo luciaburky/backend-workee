@@ -115,4 +115,12 @@ public class PostulacionOfertaController {
         return ResponseEntity.status(HttpStatus.OK).body(postulacion);
     }
 
+    @Operation(summary = "Enviar respuesta de candidato")
+    @PutMapping("/respuestaCandidato")
+    @PreAuthorize("hasAuthority('POSTULAR_OFERTA')") 
+    public ResponseEntity<?> enviarRespuestaCandidato(@RequestBody RetroalimentacionDTO retroalimentacionDTO) {
+        PostulacionSimplificadaDTO postulacion = postulacionOfertaService.enviarRespuestaCandidato(retroalimentacionDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(postulacion);
+    }
+
 }

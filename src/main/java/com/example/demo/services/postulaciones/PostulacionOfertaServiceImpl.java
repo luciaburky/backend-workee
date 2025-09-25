@@ -505,7 +505,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
                                                             .findFirst()
                                                             .orElseThrow(() -> new EntityNotValidException("No se encontró la postulacionOfertaEtapa buscada"));
 
-        if(!postulacionOfertaEtapa.getRetroalimentacionEmpresa().isBlank() || postulacionOfertaEtapa.getRetroalimentacionEmpresa() != null){
+        if(postulacionOfertaEtapa.getRetroalimentacionEmpresa() != null && !postulacionOfertaEtapa.getRetroalimentacionEmpresa().isBlank()){
             throw new EntityNotValidException("No es posible agregar retroalimentación ya que esta etapa ya posee.");
         } 
         postulacionOfertaEtapa.setRetroalimentacionEmpresa(retroalimentacionDTO.getRetroalimentacion());
@@ -516,8 +516,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
 
         return postulacionSimplificadaDTO;
     }
-
-
+    
     private PostulacionSimplificadaDTO crearPostulacionSimplificada(PostulacionOferta postulacionOferta){
         PostulacionSimplificadaDTO postulacionSimplificada = new PostulacionSimplificadaDTO();
 
@@ -531,6 +530,44 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         postulacionSimplificada.setIdPostulacionOferta(postulacionOferta.getId());
 
         return postulacionSimplificada;
+    }
+
+
+    @Override
+    @Transactional
+    public PostulacionSimplificadaDTO enviarRespuestaCandidato(RetroalimentacionDTO retroalimentacionDTO){
+        PostulacionOferta postulacion = findById(retroalimentacionDTO.getIdPostulacion());
+        
+        PostulacionOfertaEtapa postulacionOfertaEtapa = postulacion.getPostulacionOfertaEtapaList()
+                                                            .stream()
+                                                            .filter(poe -> poe.getId() == retroalimentacionDTO.getIdPostulacionOfertaEtapa())
+                                                            .findFirst()
+                                                            .orElseThrow(() -> new EntityNotValidException("No se encontró la postulacionOfertaEtapa buscada"));
+
+
+        Oferta oferta = ofertaService.findById(postulacion.getOferta().getId());
+
+        OfertaEtapa ofertaEtapa = oferta.getOfertaEtapas()
+                                        .stream()
+                                        .filter(oe -> oe.getEtapa().getCodigoEtapa().equals(postulacionOfertaEtapa.getEtapa().getCodigoEtapa()))
+                                        .findFirst()
+                                        .orElseThrow(() -> new EntityNotValidException("No se encontró la postulacionOfertaEtapa buscada"));
+
+        if(!ofertaEtapa.getAdjuntaEnlace()){
+            throw new EntityNotValidException("No es posible agregar una respuesta ya que esta etapa no lo permite");
+        }
+
+        
+        if(postulacionOfertaEtapa.getRespuestaCandidato() != null && !postulacionOfertaEtapa.getRespuestaCandidato().isBlank()){
+            throw new EntityNotValidException("No es posible agregar una respuesta ya que esta etapa ya posee.");
+        } 
+        postulacionOfertaEtapa.setRespuestaCandidato(retroalimentacionDTO.getRetroalimentacion());
+
+        postulacionOfertaRepository.save(postulacion);
+
+        PostulacionSimplificadaDTO postulacionSimplificadaDTO = crearPostulacionSimplificada(postulacion);
+
+        return postulacionSimplificadaDTO;
     }
     
 }
