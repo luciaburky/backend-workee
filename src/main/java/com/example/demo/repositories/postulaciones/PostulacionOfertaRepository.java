@@ -50,11 +50,14 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
             po.id,
             po.candidato.id, po.candidato.nombreCandidato, 
             po.candidato.apellidoCandidato, po.fechaHoraAlta, 
-            e.codigoEtapa, e.nombreEtapa
+            e.codigoEtapa, e.nombreEtapa,
+            u.urlFotoUsuario
         )
         FROM PostulacionOferta po
         JOIN po.postulacionOfertaEtapaList poe
         JOIN poe.etapa e
+        JOIN po.candidato c
+        JOIN c.usuario u
         WHERE po.oferta.id = :idOferta
         AND poe.fechaHoraBaja IS NULL
         AND e.codigoEtapa NOT IN ('PENDIENTE')
@@ -66,11 +69,14 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
             po.id,
             po.candidato.id, po.candidato.nombreCandidato, 
             po.candidato.apellidoCandidato, po.fechaHoraAlta, 
-            e.codigoEtapa, e.nombreEtapa
+            e.codigoEtapa, e.nombreEtapa,
+            u.urlFotoUsuario
         )
         FROM PostulacionOferta po
         JOIN po.postulacionOfertaEtapaList poe
         JOIN poe.etapa e
+        JOIN po.candidato c
+        JOIN c.usuario u
         WHERE po.oferta.id = :idOferta
         AND poe.fechaHoraBaja IS NULL
         AND e.codigoEtapa LIKE '%PENDIENTE%'
@@ -96,11 +102,14 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
             po.id,
             po.candidato.id, po.candidato.nombreCandidato, 
             po.candidato.apellidoCandidato, po.fechaHoraAlta, 
-            e.codigoEtapa, e.nombreEtapa
+            e.codigoEtapa, e.nombreEtapa,
+            u.urlFotoUsuario
         )
         FROM PostulacionOferta po
         JOIN po.postulacionOfertaEtapaList poe
         JOIN poe.etapa e
+        JOIN po.candidato c
+        JOIN c.usuario u
         WHERE po.oferta.id = :idOferta
         AND poe.fechaHoraBaja IS NULL
         AND e.codigoEtapa LIKE '%SELECCIONADO%'
