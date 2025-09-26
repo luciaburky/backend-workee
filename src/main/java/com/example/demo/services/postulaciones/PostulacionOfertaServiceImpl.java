@@ -56,9 +56,9 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
     @Transactional
     public PostulacionSimplificadaDTO postularComoCandidato(PostulacionCandidatoRequestDTO postulacionCandidatoRequestDTO) {
         PostulacionOferta postulacionOferta = creacionCosasGenericasPostulacion(postulacionCandidatoRequestDTO);
-        
+        Candidato candidato = candidatoService.findById(postulacionCandidatoRequestDTO.getIdCandidato());
         //El candidato es el que inicia la postulacion
-        postulacionOferta.setIdIniciadorPostulacion(postulacionCandidatoRequestDTO.getIdCandidato());
+        postulacionOferta.setIdIniciadorPostulacion(candidato.getUsuario().getId());
 
         //TODO: Faltaria que envie la solicitud de postulacion a la empresa
 
@@ -528,7 +528,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
 
         PostulacionOferta postulacionOferta = creacionCosasGenericasPostulacion(postulacionCandidatoRequestDTO);
         //La empresa es quien inicia la postulacion
-        postulacionOferta.setIdIniciadorPostulacion(oferta.getEmpresa().getId());
+        postulacionOferta.setIdIniciadorPostulacion(oferta.getEmpresa().getUsuario().getId());
 
         
         
