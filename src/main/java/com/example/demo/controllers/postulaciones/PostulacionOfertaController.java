@@ -83,9 +83,9 @@ public class PostulacionOfertaController {
         return ResponseEntity.status(HttpStatus.OK).body(postulacion);
     }
 
-    @Operation(summary = "Aceptar la postulacion de un candidato")
+    @Operation(summary = "Candidato/Empresa acepta la solicitud de postulacion (es el mismo endpoint para ambos)")
     @PutMapping("/{idPostulacion}/aceptar")
-    @PreAuthorize("hasAuthority('GESTIONAR_POSTULACION')")
+    @PreAuthorize("hasAuthority('GESTIONAR_POSTULACION') or hasAuthority('POSTULAR_OFERTA')")
     public ResponseEntity<?> aceptarPostulacionDeCandidato(@PathVariable Long idPostulacion) {
         Boolean aceptado = postulacionOfertaService.aceptarSolicitudDePostulacionCandidato(idPostulacion);
         return ResponseEntity.status(HttpStatus.OK).body(aceptado);
@@ -96,6 +96,14 @@ public class PostulacionOfertaController {
     @PreAuthorize("hasAuthority('GESTIONAR_POSTULACION')") //Aclaracion: lo unico importante que tienen que mandarle en el body es la retroalimentacion, lo otro aca no se usa (es pq recicle el DTO)
     public ResponseEntity<?> rechazarPostulacionDeCandidatoPendiente(@PathVariable Long idPostulacion, @RequestBody CambioPostulacionDTO cambioPostulacionDTO) {
         Boolean rechazado = postulacionOfertaService.rechazarSolicitudDePostulacionDeCandidatoPendiente(idPostulacion, cambioPostulacionDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(rechazado);
+    }
+
+    @Operation(summary = "Rechazar la solicitud de postulacion que mandó una empresa")
+    @PutMapping("/{idPostulacion}/rechazarComoCandidato")
+    @PreAuthorize("hasAuthority('POSTULAR_OFERTA')") 
+    public ResponseEntity<?> rechazarPostulacionComoCandidato(@PathVariable Long idPostulacion) {
+        Boolean rechazado = postulacionOfertaService.rechazarSolicitudDePostulacionDeEmpresa(idPostulacion);
         return ResponseEntity.status(HttpStatus.OK).body(rechazado);
     }
 

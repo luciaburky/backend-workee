@@ -46,5 +46,9 @@ public interface PostulacionOfertaService extends BaseService<PostulacionOferta,
 
     public PostulacionSimplificadaDTO enviarPostulacionACandidato(PostulacionCandidatoRequestDTO postulacionCandidatoRequestDTO);
 
+    public EtapaActualPostulacionDTO verEtapaActualDeUnaPostulacion(Long idCandidato, Long idOferta);
+
+    public Boolean rechazarSolicitudDePostulacionDeEmpresa(Long idPostulacion);
+
 }
 

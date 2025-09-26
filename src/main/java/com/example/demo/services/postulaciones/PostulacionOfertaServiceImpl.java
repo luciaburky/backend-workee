@@ -56,9 +56,9 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
     @Transactional
     public PostulacionSimplificadaDTO postularComoCandidato(PostulacionCandidatoRequestDTO postulacionCandidatoRequestDTO) {
         PostulacionOferta postulacionOferta = creacionCosasGenericasPostulacion(postulacionCandidatoRequestDTO);
-        
+        Candidato candidato = candidatoService.findById(postulacionCandidatoRequestDTO.getIdCandidato());
         //El candidato es el que inicia la postulacion
-        postulacionOferta.setIdIniciadorPostulacion(postulacionCandidatoRequestDTO.getIdCandidato());
+        postulacionOferta.setIdIniciadorPostulacion(candidato.getUsuario().getId());
 
         //TODO: Faltaria que envie la solicitud de postulacion a la empresa
 
@@ -285,7 +285,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
                             .orElseThrow(() -> new EntityNotValidException("La postulacion no tiene un estado actual asignado"));
 
         if(!postulacionOfertaEtapaActual.getEtapa().getCodigoEtapa().equals(CodigoEtapa.PENDIENTE)){
-            throw new EntityNotValidException("No puede aceptar la postulacion del candidato porque no está 'Pendiente");
+            throw new EntityNotValidException("La postulación del candidato no está 'Pendiente");
         }
 
         Oferta oferta = postulacion.getOferta();
@@ -317,12 +317,25 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         return true;
     }
 
+
     @Override
     @Transactional
     public Boolean rechazarSolicitudDePostulacionDeCandidatoPendiente(Long idPostulacion, CambioPostulacionDTO cambioPostulacionDTO){
         if(cambioPostulacionDTO.getRetroalimentacion().isBlank() || cambioPostulacionDTO.getRetroalimentacion() == null){
             throw new EntityNotValidException("Si va a rechazar a un candidato, se debe dar retroalimentación");
         }
+        Etapa etapaRechazado = etapaService.obtenerEtapaPorCodigo(CodigoEtapa.RECHAZADO);
+
+        comunesDeRechazarSolicitudPostulacion(idPostulacion, etapaRechazado.getCodigoEtapa(), cambioPostulacionDTO.getRetroalimentacion());
+        
+        //TODO: Falta lo de la notificacion
+        return true;
+    }
+
+    @Transactional
+    private void comunesDeRechazarSolicitudPostulacion(Long idPostulacion, String codigoEtapa, String retroalimentacion){
+        Etapa etapa = etapaService.obtenerEtapaPorCodigo(codigoEtapa);
+
         PostulacionOferta postulacion = this.findById(idPostulacion);
 
 
@@ -334,26 +347,38 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
                             .orElseThrow(() -> new EntityNotValidException("La postulacion no tiene un estado actual asignado"));
 
         if(!postulacionOfertaEtapaActual.getEtapa().getCodigoEtapa().equals(CodigoEtapa.PENDIENTE)){
-            throw new EntityNotValidException("No puede aceptar la postulacion del candidato porque no está 'Pendiente");
+            throw new EntityNotValidException("La postulación del candidato no está 'Pendiente");
         }
-        
-        
+
         postulacionOfertaEtapaActual.setFechaHoraBaja(new Date());
-        postulacionOfertaEtapaActual.setRetroalimentacionEmpresa(cambioPostulacionDTO.getRetroalimentacion());
-        
-        Etapa etapaRechazado = etapaService.obtenerEtapaPorCodigo(CodigoEtapa.RECHAZADO);
+
+
+        if(retroalimentacion != null){
+            postulacionOfertaEtapaActual.setRetroalimentacionEmpresa(retroalimentacion);
+        }
 
         PostulacionOfertaEtapa postulacionOfertaEtapaNueva = new PostulacionOfertaEtapa();
-        postulacionOfertaEtapaNueva.setEtapa(etapaRechazado);
+        postulacionOfertaEtapaNueva.setEtapa(etapa);
         postulacionOfertaEtapaNueva.setFechaHoraAlta(new Date());
         
         postulacion.getPostulacionOfertaEtapaList().add(postulacionOfertaEtapaNueva);
-
+        postulacion.setFechaHoraFinPostulacionOferta(new Date());
+        
         postulacionOfertaRepository.save(postulacion);
 
-        //TODO: Falta lo de la notificacion
+    }
+
+
+    @Override
+    @Transactional
+    public Boolean rechazarSolicitudDePostulacionDeEmpresa(Long idPostulacion){
+        Etapa etapaRechazadoPorCandidato = etapaService.obtenerEtapaPorCodigo(CodigoEtapa.NO_ACEPTADO);
+
+        comunesDeRechazarSolicitudPostulacion(idPostulacion, etapaRechazadoPorCandidato.getCodigoEtapa(), null);
+        
         return true;
     }
+
 
 
     @Override
@@ -528,7 +553,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
 
         PostulacionOferta postulacionOferta = creacionCosasGenericasPostulacion(postulacionCandidatoRequestDTO);
         //La empresa es quien inicia la postulacion
-        postulacionOferta.setIdIniciadorPostulacion(oferta.getEmpresa().getId());
+        postulacionOferta.setIdIniciadorPostulacion(oferta.getEmpresa().getUsuario().getId());
 
         
         
@@ -541,7 +566,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         return postulacionSimplificada;
     }
 
-
+    @Transactional
     private PostulacionOferta creacionCosasGenericasPostulacion(PostulacionCandidatoRequestDTO postulacionCandidatoRequestDTO){
         PostulacionOferta postulacionOferta = new PostulacionOferta();
 
@@ -589,6 +614,21 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
 
         return postulacionOferta;
 
+    }
+
+    @Override
+    public EtapaActualPostulacionDTO verEtapaActualDeUnaPostulacion(Long idCandidato, Long idOferta){
+        Optional<Etapa> etapaOptional = postulacionOfertaRepository.traerEtapaActualDePostulacionCandidato(idOferta, idCandidato);
+        if(!etapaOptional.isPresent()){
+            throw new EntityNotFoundException("No se encontró una etapa actual para el candidato");
+        }
+        Etapa etapa = etapaOptional.get();
+        
+        EtapaActualPostulacionDTO etapaActualPostulacionDTO = new EtapaActualPostulacionDTO();
+        etapaActualPostulacionDTO.setCodigoEtapa(etapa.getCodigoEtapa());
+        etapaActualPostulacionDTO.setNombreEtapa(etapa.getNombreEtapa());
+        
+        return etapaActualPostulacionDTO;
     }
     
 }

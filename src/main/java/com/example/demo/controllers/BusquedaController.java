@@ -89,6 +89,7 @@ public class BusquedaController {
 
     @Operation(summary = "Busca ofertas según el nombre ingresado")
     @GetMapping("/ofertasPorNombre")
+    @PreAuthorize("hasAuthority('BUSCAR_OFERTAS')")
     public ResponseEntity<?> buscarOfertasPorNombre(@RequestParam String nombreOferta){
         List<Oferta> ofertas = ofertaService.buscarOfertasPorNombre(nombreOferta);
         return ResponseEntity.status(HttpStatus.OK).body(ofertas);
@@ -96,6 +97,7 @@ public class BusquedaController {
 
     @Operation(summary = "Trae ofertas según los filtros aplicados")
     @PostMapping("/ofertasFiltradas")
+    @PreAuthorize("hasAuthority('BUSCAR_OFERTAS')")
     public ResponseEntity<?> filtrarOferta(@RequestBody FiltrosOfertaRequestDTO filtrosOfertaRequestDTO){
         List<Oferta> ofertas = ofertaService.buscarOfertasSegunFiltros(filtrosOfertaRequestDTO);
 

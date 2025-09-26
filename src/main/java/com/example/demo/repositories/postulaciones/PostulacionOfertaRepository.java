@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.example.demo.dtos.ofertas.CandidatoPostuladoDTO;
 import com.example.demo.dtos.postulaciones.EtapaActualPostulacionDTO;
+import com.example.demo.entities.params.Etapa;
 import com.example.demo.entities.postulaciones.PostulacionOferta;
 import com.example.demo.repositories.BaseRepository;
 
@@ -50,11 +51,14 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
             po.id,
             po.candidato.id, po.candidato.nombreCandidato, 
             po.candidato.apellidoCandidato, po.fechaHoraAlta, 
-            e.codigoEtapa, e.nombreEtapa
+            e.codigoEtapa, e.nombreEtapa,
+            u.urlFotoUsuario
         )
         FROM PostulacionOferta po
         JOIN po.postulacionOfertaEtapaList poe
         JOIN poe.etapa e
+        JOIN po.candidato c
+        JOIN c.usuario u
         WHERE po.oferta.id = :idOferta
         AND poe.fechaHoraBaja IS NULL
         AND e.codigoEtapa NOT IN ('PENDIENTE')
@@ -66,11 +70,14 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
             po.id,
             po.candidato.id, po.candidato.nombreCandidato, 
             po.candidato.apellidoCandidato, po.fechaHoraAlta, 
-            e.codigoEtapa, e.nombreEtapa
+            e.codigoEtapa, e.nombreEtapa,
+            u.urlFotoUsuario
         )
         FROM PostulacionOferta po
         JOIN po.postulacionOfertaEtapaList poe
         JOIN poe.etapa e
+        JOIN po.candidato c
+        JOIN c.usuario u
         WHERE po.oferta.id = :idOferta
         AND poe.fechaHoraBaja IS NULL
         AND e.codigoEtapa LIKE '%PENDIENTE%'
@@ -96,14 +103,29 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
             po.id,
             po.candidato.id, po.candidato.nombreCandidato, 
             po.candidato.apellidoCandidato, po.fechaHoraAlta, 
-            e.codigoEtapa, e.nombreEtapa
+            e.codigoEtapa, e.nombreEtapa,
+            u.urlFotoUsuario
         )
         FROM PostulacionOferta po
         JOIN po.postulacionOfertaEtapaList poe
         JOIN poe.etapa e
+        JOIN po.candidato c
+        JOIN c.usuario u
         WHERE po.oferta.id = :idOferta
         AND poe.fechaHoraBaja IS NULL
         AND e.codigoEtapa LIKE '%SELECCIONADO%'
     """)
     List<CandidatoPostuladoDTO> traerCandidatosSeleccionados(@Param("idOferta") Long idOferta); //Trae todos los candidatos seleccionados. Solo esos
+
+
+    @Query(
+        """
+           SELECT e FROM PostulacionOferta p
+           JOIN p.postulacionOfertaEtapaList poe
+           JOIN poe.etapa e
+           WHERE p.oferta.id = :idOferta AND p.candidato.id = :idCandidato
+           AND poe.fechaHoraBaja IS NULL
+        """
+    )
+    Optional<Etapa> traerEtapaActualDePostulacionCandidato(@Param("idOferta") Long idOferta, @Param("idCandidato") Long idCandidato);
 }
