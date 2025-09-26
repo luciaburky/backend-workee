@@ -1,5 +1,6 @@
 package com.example.demo.repositories.seguridad;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.example.demo.dtos.metricas.UsuariosPorRolDTO;
 import com.example.demo.dtos.seguridad.UsuarioResponseDTO;
 import com.example.demo.entities.seguridad.UsuarioRol;
 import com.example.demo.repositories.BaseRepository;
@@ -71,5 +73,25 @@ public interface UsuarioRolRepository extends BaseRepository<UsuarioRol, Long> {
         nativeQuery = true
     )
     public Optional<UsuarioRol> obtenerUsuarioRolMasViejo(@Param("idUsuario") Long idUsuario);
+
+    @Query(
+        """
+            SELECT new com.example.demo.dtos.metricas.UsuariosPorRolDTO(
+                r.nombreRol, r.codigoRol, COUNT(DISTINCT u), 0.0 
+            )
+            FROM UsuarioRol ur
+            JOIN ur.usuario u
+            JOIN ur.rol r
+            JOIN u.usuarioEstadoList ue
+            JOIN ue.estadoUsuario e
+            WHERE ur.fechaHoraBaja IS NULL
+            AND u.fechaHoraBaja IS NULL
+            AND ue.fechaHoraBaja IS NULL
+            AND e.codigoEstadoUsuario NOT IN ('RECHAZADO', 'PENDIENTE')
+            AND u.fechaHoraAlta BETWEEN :fechaDesde AND :fechaHasta
+            GROUP BY r.codigoRol, r.nombreRol
+        """
+    )
+    public List<UsuariosPorRolDTO> obtenerDistribucionUsuariosPorRol(@Param("fechaDesde") LocalDateTime fechaDesde, @Param("fechaHasta") LocalDateTime fechaHasta);
 }
 

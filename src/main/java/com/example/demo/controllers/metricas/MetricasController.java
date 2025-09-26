@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dtos.metricas.DistribucionUsuariosPorRolResponseDTO;
 import com.example.demo.dtos.metricas.FiltroFechasDTO;
 import com.example.demo.services.metricas.MetricasService;
 
@@ -40,6 +41,14 @@ public class MetricasController {
     public ResponseEntity<?> tasaExitoOfertas(@RequestBody FiltroFechasDTO filtroFechasDTO) {
         Double tasa = metricasService.tasaExitoOfertas(filtroFechasDTO.getFechaDesde(), filtroFechasDTO.getFechaHasta());
         return ResponseEntity.ok().body(Map.of("tasaExitoOfertas", tasa));
+    }
+
+    @Operation(summary = "Ver distribución de usuarios por rol")
+    @PutMapping("/admin/distribucionPorROL")
+    @PreAuthorize("hasAuthority('METRICAS_SISTEMA')")
+    public ResponseEntity<?> distribucionUsuariosPorRol(@RequestBody FiltroFechasDTO filtroFechasDTO) {
+        DistribucionUsuariosPorRolResponseDTO distribucionUsuariosPorRolResponseDTO = metricasService.distribucionUsuariosPorRol(filtroFechasDTO.getFechaDesde(), filtroFechasDTO.getFechaHasta());
+        return ResponseEntity.ok().body(distribucionUsuariosPorRolResponseDTO);
     }
 
 

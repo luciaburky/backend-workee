@@ -1,21 +1,28 @@
 package com.example.demo.services.metricas;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.dtos.metricas.DistribucionUsuariosPorRolResponseDTO;
+import com.example.demo.dtos.metricas.UsuariosPorRolDTO;
 import com.example.demo.repositories.oferta.OfertaRepository;
 import com.example.demo.repositories.seguridad.UsuarioRepository;
+import com.example.demo.repositories.seguridad.UsuarioRolRepository;
 
 @Service
 public class MetricasServiceImpl implements MetricasService{
     private final UsuarioRepository usuarioRepository;
     private final OfertaRepository ofertaRepository;
+    private final UsuarioRolRepository usuarioRolRepository;
 
-    public MetricasServiceImpl(UsuarioRepository usuarioRepository, OfertaRepository ofertaRepository){
+    public MetricasServiceImpl(UsuarioRepository usuarioRepository, OfertaRepository ofertaRepository, 
+    UsuarioRolRepository usuarioRolRepository){
         this.usuarioRepository = usuarioRepository;
         this.ofertaRepository = ofertaRepository;
+        this.usuarioRolRepository = usuarioRolRepository;
     }
     //ADMINITRADOR DEL SISTEMA
     @Override
@@ -36,6 +43,26 @@ public class MetricasServiceImpl implements MetricasService{
         Double tasaExito = (cantidadTotalFinalizadasConExito * 100.0) / cantidadTotalFinalizadas;
 
         return tasaExito;
+    }
+
+    @Override
+    public DistribucionUsuariosPorRolResponseDTO distribucionUsuariosPorRol(LocalDateTime fechaDesde, LocalDateTime fechaHasta){
+        Pair<LocalDateTime, LocalDateTime> fechas = manejoFechasParaFiltros(fechaDesde, fechaHasta);
+
+        List<UsuariosPorRolDTO> usuariosPorRol = usuarioRolRepository.obtenerDistribucionUsuariosPorRol(fechas.getLeft(), fechas.getRight());
+        
+        Long total = usuariosPorRol.stream().mapToLong(usuario -> usuario.getCantidadUsuarios()).sum();
+
+        for(UsuariosPorRolDTO usuario: usuariosPorRol){
+            Double porcentaje = (usuario.getCantidadUsuarios() * 100.0) / total;
+            usuario.setPorcentajeUsuarios(porcentaje);
+        }
+        DistribucionUsuariosPorRolResponseDTO distribucion = new DistribucionUsuariosPorRolResponseDTO();
+        distribucion.setCantidadTotalUsuarios(total);
+        distribucion.setDistribucion(usuariosPorRol);
+
+        return distribucion;
+
     }
 
     //EMPRESA
