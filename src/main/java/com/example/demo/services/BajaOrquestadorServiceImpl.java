@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.example.demo.dtos.ofertas.CandidatoPostuladoDTO;
 import com.example.demo.entities.candidato.Candidato;
 import com.example.demo.entities.empresa.EmpleadoEmpresa;
 import com.example.demo.entities.empresa.Empresa;
@@ -106,8 +107,18 @@ public class BajaOrquestadorServiceImpl implements BajaOrquestadorService{
         
         //Rechazar a todos los candidatos restantes
         List<PostulacionOferta> postulaciones = postulacionOfertaService.buscarPostulacionesCandidatosEnCurso(idOferta);
+        
         String retroalimentacion = "La empresa ha decidido finalizar la oferta. Lamentablemente no has sido seleccionado.";
         postulacionOfertaService.rechazarListado(postulaciones, retroalimentacion);
+        
+        //Si no hay ningún postulado marca el finalizada con exito como false
+        List<CandidatoPostuladoDTO> postulacionesSeleccionadas = postulacionOfertaService.traerCandidatosSeleccionados(idOferta);
+        
+        if(!postulacionesSeleccionadas.isEmpty()){
+            ofertaService.marcarResultadoFinal(idOferta, true);
+        }else {
+            ofertaService.marcarResultadoFinal(idOferta, false);
+        }
 
         return oferta;
     }
