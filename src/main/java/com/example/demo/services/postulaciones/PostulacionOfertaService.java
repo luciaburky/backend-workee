@@ -30,7 +30,7 @@ public interface PostulacionOfertaService extends BaseService<PostulacionOferta,
 
     public Boolean aceptarSolicitudDePostulacionCandidato(Long idPostulacion);
 
-    public Boolean rechazarSolicitudDePostulacionDeCandidatoPendiente(Long idPostulacion, CambioPostulacionDTO cambioPostulacionDTO);
+    public Boolean rechazarSolicitudDePostulacionDeCandidatoPendiente(Long idPostulacion);
 
     public List<PostulacionOferta> buscarPostulacionesCandidatosEnCurso(Long idOferta);
 

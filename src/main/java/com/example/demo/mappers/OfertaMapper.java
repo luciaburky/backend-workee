@@ -7,7 +7,7 @@ import com.example.demo.entities.oferta.Oferta;
 
 @Mapper(componentModel = "spring")
 public interface OfertaMapper {
-    
+     
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "titulo", source = "titulo")
     @Mapping(target = "descripcion", source = "descripcion")

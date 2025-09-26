@@ -320,13 +320,14 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
 
     @Override
     @Transactional
-    public Boolean rechazarSolicitudDePostulacionDeCandidatoPendiente(Long idPostulacion, CambioPostulacionDTO cambioPostulacionDTO){
-        if(cambioPostulacionDTO.getRetroalimentacion().isBlank() || cambioPostulacionDTO.getRetroalimentacion() == null){
+    public Boolean rechazarSolicitudDePostulacionDeCandidatoPendiente(Long idPostulacion){
+        /*if(cambioPostulacionDTO.getRetroalimentacion().isBlank() || cambioPostulacionDTO.getRetroalimentacion() == null){
             throw new EntityNotValidException("Si va a rechazar a un candidato, se debe dar retroalimentación");
-        }
+        }*/
         Etapa etapaRechazado = etapaService.obtenerEtapaPorCodigo(CodigoEtapa.RECHAZADO);
 
-        comunesDeRechazarSolicitudPostulacion(idPostulacion, etapaRechazado.getCodigoEtapa(), cambioPostulacionDTO.getRetroalimentacion());
+        String retroalimentacion = "Lamentablemente la empresa decidió no aceptar tu perfil para esta Oferta";
+        comunesDeRechazarSolicitudPostulacion(idPostulacion, etapaRechazado.getCodigoEtapa(), retroalimentacion);
         
         //TODO: Falta lo de la notificacion
         return true;
