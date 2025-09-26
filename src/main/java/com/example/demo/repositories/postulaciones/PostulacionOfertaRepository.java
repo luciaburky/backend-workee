@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.example.demo.dtos.ofertas.CandidatoPostuladoDTO;
 import com.example.demo.dtos.postulaciones.EtapaActualPostulacionDTO;
+import com.example.demo.entities.params.Etapa;
 import com.example.demo.entities.postulaciones.PostulacionOferta;
 import com.example.demo.repositories.BaseRepository;
 
@@ -115,4 +116,16 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
         AND e.codigoEtapa LIKE '%SELECCIONADO%'
     """)
     List<CandidatoPostuladoDTO> traerCandidatosSeleccionados(@Param("idOferta") Long idOferta); //Trae todos los candidatos seleccionados. Solo esos
+
+
+    @Query(
+        """
+           SELECT e FROM PostulacionOferta p
+           JOIN p.postulacionOfertaEtapaList poe
+           JOIN poe.etapa e
+           WHERE p.oferta.id = :idOferta AND p.candidato.id = :idCandidato
+           AND poe.fechaHoraBaja IS NULL
+        """
+    )
+    Optional<Etapa> traerEtapaActualDePostulacionCandidato(@Param("idOferta") Long idOferta, @Param("idCandidato") Long idCandidato);
 }

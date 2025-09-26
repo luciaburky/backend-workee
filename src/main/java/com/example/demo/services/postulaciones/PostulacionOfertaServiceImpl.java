@@ -541,7 +541,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         return postulacionSimplificada;
     }
 
-
+    @Transactional
     private PostulacionOferta creacionCosasGenericasPostulacion(PostulacionCandidatoRequestDTO postulacionCandidatoRequestDTO){
         PostulacionOferta postulacionOferta = new PostulacionOferta();
 
@@ -589,6 +589,21 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
 
         return postulacionOferta;
 
+    }
+
+    @Override
+    public EtapaActualPostulacionDTO verEtapaActualDeUnaPostulacion(Long idCandidato, Long idOferta){
+        Optional<Etapa> etapaOptional = postulacionOfertaRepository.traerEtapaActualDePostulacionCandidato(idOferta, idCandidato);
+        if(!etapaOptional.isPresent()){
+            throw new EntityNotFoundException("No se encontró una etapa actual para el candidato");
+        }
+        Etapa etapa = etapaOptional.get();
+        
+        EtapaActualPostulacionDTO etapaActualPostulacionDTO = new EtapaActualPostulacionDTO();
+        etapaActualPostulacionDTO.setCodigoEtapa(etapa.getCodigoEtapa());
+        etapaActualPostulacionDTO.setNombreEtapa(etapa.getNombreEtapa());
+        
+        return etapaActualPostulacionDTO;
     }
     
 }
