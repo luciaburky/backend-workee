@@ -174,5 +174,22 @@ public interface OfertaRepository extends BaseRepository<Oferta, Long> {
       """
     )
     public List<Etapa> traerEtapasDeUnaOferta(@Param("idOferta") Long idOferta);
+
+    @Query("""
+          SELECT COUNT(o)
+          FROM Oferta o
+          WHERE o.fechaFinalizacion BETWEEN :desde AND :hasta
+        """
+    )
+    public Long contarOfertasFinalizadas(@Param("desde") LocalDateTime desde, @Param("hasta") LocalDateTime hasta );
+
+    @Query("""
+          SELECT COUNT(o)
+          FROM Oferta o
+          WHERE o.fechaFinalizacion BETWEEN :desde AND :hasta
+          AND o.finalizadaConExito = true
+        """
+    )
+    public Long contarOfertasFinalizadasConExito(@Param("desde") LocalDateTime desde, @Param("hasta") LocalDateTime hasta );
 }
 

@@ -5,8 +5,12 @@ import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.demo.dtos.metricas.FiltroFechasDTO;
 import com.example.demo.services.metricas.MetricasService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,11 +27,19 @@ public class MetricasController {
     }
 
     @Operation(summary = "Ver cantidad histórica de usuarios")
-    @GetMapping()
+    @GetMapping("/admin/cantidadHistoricaUsuarios")
     @PreAuthorize("hasAuthority('METRICAS_SISTEMA')")
     public ResponseEntity<?> cantidadHistoricaUsuarios() {
         Integer cantidad = metricasService.cantidadTotalHistoricaUsuarios();
         return ResponseEntity.ok().body(Map.of("cantidadHistoricaUsuarios", cantidad));
+    }
+
+    @Operation(summary = "Ver tasa de éxito de ofertas")
+    @PutMapping("/admin/tasaExitoOfertas")
+    @PreAuthorize("hasAuthority('METRICAS_SISTEMA')")
+    public ResponseEntity<?> tasaExitoOfertas(@RequestBody FiltroFechasDTO filtroFechasDTO) {
+        Double tasa = metricasService.tasaExitoOfertas(filtroFechasDTO.getFechaDesde(), filtroFechasDTO.getFechaHasta());
+        return ResponseEntity.ok().body(Map.of("tasaExitoOfertas", tasa));
     }
 
 
