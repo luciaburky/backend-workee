@@ -2,11 +2,13 @@ package com.example.demo.services.metricas;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.metricas.DistribucionUsuariosPorRolResponseDTO;
+import com.example.demo.dtos.metricas.UsuariosPorPaisDTO;
 import com.example.demo.dtos.metricas.UsuariosPorRolDTO;
 import com.example.demo.repositories.oferta.OfertaRepository;
 import com.example.demo.repositories.seguridad.UsuarioRepository;
@@ -64,6 +66,19 @@ public class MetricasServiceImpl implements MetricasService{
         return distribucion;
 
     }
+    @Override
+    public List<UsuariosPorPaisDTO> cantidadUsuariosPorPaisTop5(LocalDateTime fechaDesde, LocalDateTime fechaHasta){
+        Pair<LocalDateTime, LocalDateTime> fechas = manejoFechasParaFiltros(fechaDesde, fechaHasta);
+        
+        List<Object[]> listado = usuarioRepository.contarUsuariosPorPaisTop5(fechas.getLeft(), fechas.getRight());
+        List<UsuariosPorPaisDTO> usuariosPorPais = listado.stream()
+                                                        .map(obj -> new UsuariosPorPaisDTO(
+                                                                (String) obj[0],              
+                                                                ((Number) obj[1]).longValue() 
+                                                        ))
+                                                        .collect(Collectors.toList());
+        return usuariosPorPais;
+    }
 
     //EMPRESA
 
@@ -86,7 +101,7 @@ public class MetricasServiceImpl implements MetricasService{
             if (fechaDesde.isAfter(fechaHasta)) {
                 throw new IllegalArgumentException("La fecha desde no puede ser posterior a fecha hasta");
             }
-            if (fechaDesde.isAfter(fechaActual)) {
+            if (fechaDesde.toLocalDate().isAfter(fechaActual.toLocalDate())) {
                 throw new IllegalArgumentException("La fecha desde no puede ser posterior a la fecha actual");
             }
         }

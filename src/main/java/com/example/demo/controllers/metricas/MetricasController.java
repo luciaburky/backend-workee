@@ -1,5 +1,6 @@
 package com.example.demo.controllers.metricas;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dtos.metricas.DistribucionUsuariosPorRolResponseDTO;
 import com.example.demo.dtos.metricas.FiltroFechasDTO;
+import com.example.demo.dtos.metricas.UsuariosPorPaisDTO;
 import com.example.demo.services.metricas.MetricasService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -49,6 +51,13 @@ public class MetricasController {
     public ResponseEntity<?> distribucionUsuariosPorRol(@RequestBody FiltroFechasDTO filtroFechasDTO) {
         DistribucionUsuariosPorRolResponseDTO distribucionUsuariosPorRolResponseDTO = metricasService.distribucionUsuariosPorRol(filtroFechasDTO.getFechaDesde(), filtroFechasDTO.getFechaHasta());
         return ResponseEntity.ok().body(distribucionUsuariosPorRolResponseDTO);
+    }
+    @Operation(summary = "Ver distribución de usuarios por pais")
+    @PutMapping("/admin/usuariosPorPais")
+    @PreAuthorize("hasAuthority('METRICAS_SISTEMA')")
+    public ResponseEntity<?> usuariosPorPais(@RequestBody FiltroFechasDTO filtroFechasDTO) {
+        List<UsuariosPorPaisDTO> usuarios = metricasService.cantidadUsuariosPorPaisTop5(filtroFechasDTO.getFechaDesde(), filtroFechasDTO.getFechaHasta());
+        return ResponseEntity.ok().body(usuarios);
     }
 
 

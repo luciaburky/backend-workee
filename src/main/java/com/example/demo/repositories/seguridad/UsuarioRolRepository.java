@@ -93,5 +93,8 @@ public interface UsuarioRolRepository extends BaseRepository<UsuarioRol, Long> {
         """
     )
     public List<UsuariosPorRolDTO> obtenerDistribucionUsuariosPorRol(@Param("fechaDesde") LocalDateTime fechaDesde, @Param("fechaHasta") LocalDateTime fechaHasta);
+
+
+    
 }
 
