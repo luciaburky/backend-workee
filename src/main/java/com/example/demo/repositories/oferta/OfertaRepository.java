@@ -3,10 +3,12 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.example.demo.dtos.metricas.admin.EmpresasConMasOfertasDTO;
 import com.example.demo.dtos.postulaciones.OfertasEtapasDTO;
 import com.example.demo.entities.oferta.Oferta;
 import com.example.demo.entities.params.Etapa;
@@ -190,6 +192,18 @@ public interface OfertaRepository extends BaseRepository<Oferta, Long> {
           AND o.finalizadaConExito = true
         """
     )
-    public Long contarOfertasFinalizadasConExito(@Param("desde") LocalDateTime desde, @Param("hasta") LocalDateTime hasta );
+    public Long contarOfertasFinalizadasConExito(@Param("desde") LocalDateTime desde, @Param("hasta") LocalDateTime hasta);
+
+
+    @Query("""
+          SELECT new com.example.demo.dtos.metricas.admin.EmpresasConMasOfertasDTO(o.empresa.nombreEmpresa, COUNT(o))
+          FROM Oferta o
+          WHERE o.fechaHoraAlta BETWEEN :desde AND :hasta
+          GROUP BY o.empresa.nombreEmpresa
+          ORDER BY COUNT(o) DESC
+        """
+    )
+    public List<EmpresasConMasOfertasDTO> topEmpresasConMasOfertas(@Param("desde") LocalDateTime desde, @Param("hasta") LocalDateTime hasta, Pageable pageable);
 }
+
 

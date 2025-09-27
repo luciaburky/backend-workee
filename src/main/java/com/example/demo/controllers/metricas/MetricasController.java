@@ -11,9 +11,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.dtos.metricas.DistribucionUsuariosPorRolResponseDTO;
-import com.example.demo.dtos.metricas.FiltroFechasDTO;
-import com.example.demo.dtos.metricas.UsuariosPorPaisDTO;
+import com.example.demo.dtos.metricas.admin.DistribucionUsuariosPorRolResponseDTO;
+import com.example.demo.dtos.metricas.admin.EmpresasConMasOfertasDTO;
+import com.example.demo.dtos.metricas.admin.FiltroFechasDTO;
+import com.example.demo.dtos.metricas.admin.UsuariosPorPaisDTO;
 import com.example.demo.services.metricas.MetricasService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,7 +29,7 @@ public class MetricasController {
     public MetricasController(MetricasService metricasService){
         this.metricasService = metricasService;
     }
-
+    //ADMINISTRADOR DEL SISTEMA
     @Operation(summary = "Ver cantidad histórica de usuarios")
     @GetMapping("/admin/cantidadHistoricaUsuarios")
     @PreAuthorize("hasAuthority('METRICAS_SISTEMA')")
@@ -60,5 +61,16 @@ public class MetricasController {
         return ResponseEntity.ok().body(usuarios);
     }
 
+    @Operation(summary = "Ver top 5 empresas con más ofertas creadas")
+    @PutMapping("/admin/empresasConMasOfertas")
+    @PreAuthorize("hasAuthority('METRICAS_SISTEMA')")
+    public ResponseEntity<?> empresasConMasOfertas(@RequestBody FiltroFechasDTO filtroFechasDTO) {
+        List<EmpresasConMasOfertasDTO> empresas = metricasService.topEmpresasConMasOfertas(filtroFechasDTO.getFechaDesde(), filtroFechasDTO.getFechaHasta());
+        return ResponseEntity.ok().body(empresas);
+    }
+
+    //EMPRESAS
+
+    //CANDIDATOS
 
 }

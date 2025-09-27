@@ -1,4 +1,4 @@
-package com.example.demo.dtos.metricas;
+package com.example.demo.dtos.metricas.admin;
 
 import java.time.LocalDateTime;
 

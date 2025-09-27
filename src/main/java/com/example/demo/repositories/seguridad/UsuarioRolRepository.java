@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.example.demo.dtos.metricas.UsuariosPorRolDTO;
+import com.example.demo.dtos.metricas.admin.UsuariosPorRolDTO;
 import com.example.demo.dtos.seguridad.UsuarioResponseDTO;
 import com.example.demo.entities.seguridad.UsuarioRol;
 import com.example.demo.repositories.BaseRepository;
@@ -76,7 +76,7 @@ public interface UsuarioRolRepository extends BaseRepository<UsuarioRol, Long> {
 
     @Query(
         """
-            SELECT new com.example.demo.dtos.metricas.UsuariosPorRolDTO(
+            SELECT new com.example.demo.dtos.metricas.admin.UsuariosPorRolDTO(
                 r.nombreRol, r.codigoRol, COUNT(DISTINCT u), 0.0 
             )
             FROM UsuarioRol ur

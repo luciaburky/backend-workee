@@ -1,15 +1,18 @@
 package com.example.demo.services.metricas;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.dtos.metricas.DistribucionUsuariosPorRolResponseDTO;
-import com.example.demo.dtos.metricas.UsuariosPorPaisDTO;
-import com.example.demo.dtos.metricas.UsuariosPorRolDTO;
+import com.example.demo.dtos.metricas.admin.DistribucionUsuariosPorRolResponseDTO;
+import com.example.demo.dtos.metricas.admin.EmpresasConMasOfertasDTO;
+import com.example.demo.dtos.metricas.admin.UsuariosPorPaisDTO;
+import com.example.demo.dtos.metricas.admin.UsuariosPorRolDTO;
 import com.example.demo.repositories.oferta.OfertaRepository;
 import com.example.demo.repositories.seguridad.UsuarioRepository;
 import com.example.demo.repositories.seguridad.UsuarioRolRepository;
@@ -66,6 +69,7 @@ public class MetricasServiceImpl implements MetricasService{
         return distribucion;
 
     }
+
     @Override
     public List<UsuariosPorPaisDTO> cantidadUsuariosPorPaisTop5(LocalDateTime fechaDesde, LocalDateTime fechaHasta){
         Pair<LocalDateTime, LocalDateTime> fechas = manejoFechasParaFiltros(fechaDesde, fechaHasta);
@@ -78,6 +82,16 @@ public class MetricasServiceImpl implements MetricasService{
                                                         ))
                                                         .collect(Collectors.toList());
         return usuariosPorPais;
+    }
+
+    @Override
+    public List<EmpresasConMasOfertasDTO> topEmpresasConMasOfertas(LocalDateTime fechaDesde, LocalDateTime fechaHasta){
+        Pair<LocalDateTime, LocalDateTime> fechas = manejoFechasParaFiltros(fechaDesde, fechaHasta);
+
+        List<EmpresasConMasOfertasDTO> empresas = ofertaRepository.topEmpresasConMasOfertas(fechas.getLeft(), fechas.getRight(), PageRequest.of(0, 5)); // primera pag, 5 elementos
+        empresas.sort(Comparator.comparingLong(EmpresasConMasOfertasDTO::getCantidadOfertas));
+
+        return empresas;
     }
 
     //EMPRESA
