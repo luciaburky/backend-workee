@@ -86,5 +86,16 @@ public interface UsuarioRepository extends BaseRepository<Usuario, Long>{
         """, nativeQuery = true)
     List<Object[]> contarUsuariosPorPaisTop5(@Param("fechaDesde") LocalDateTime fechaDesde, @Param("fechaHasta") LocalDateTime fechaHasta); //TODO: REVISAR
     
+
+    @Query(value = """
+            SELECT DATE(u.fecha_hora_alta) AS fecha, COUNT(*) AS cantidad
+            FROM usuario u
+            WHERE u.fecha_hora_alta BETWEEN :desde AND :hasta
+            GROUP BY DATE(u.fecha_hora_alta)
+            ORDER BY fecha
+            """,
+            nativeQuery = true)
+    List<Object[]> evolucionUsuarios(@Param("desde") LocalDateTime desde,
+                                    @Param("hasta") LocalDateTime hasta);
 }
 

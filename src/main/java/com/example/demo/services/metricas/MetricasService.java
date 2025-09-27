@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.example.demo.dtos.metricas.admin.DistribucionUsuariosPorRolResponseDTO;
 import com.example.demo.dtos.metricas.admin.EmpresasConMasOfertasDTO;
+import com.example.demo.dtos.metricas.admin.EvolucionUsuariosDTO;
 import com.example.demo.dtos.metricas.admin.UsuariosPorPaisDTO;
 
 public interface MetricasService {
@@ -17,4 +18,6 @@ public interface MetricasService {
     public List<UsuariosPorPaisDTO> cantidadUsuariosPorPaisTop5(LocalDateTime fechaDesde, LocalDateTime fechaHasta);
 
     public List<EmpresasConMasOfertasDTO> topEmpresasConMasOfertas(LocalDateTime fechaDesde, LocalDateTime fechaHasta);
+
+    public List<EvolucionUsuariosDTO> evolucionUsuariosRegistrados(LocalDateTime fechaDesde, LocalDateTime fechaHasta);
 }
