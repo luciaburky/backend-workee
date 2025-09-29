@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -78,8 +79,16 @@ public class MetricasController {
         return ResponseEntity.ok().body(ev);
     }
 
-    //EMPRESAS
-
+    
     //CANDIDATOS
+    @Operation(summary = "Cantidad total de postulaciones en curso")
+    @PutMapping("/candidato/{idCandidato}")
+    @PreAuthorize("hasAuthority('METRICAS_CANDIDATO')")
+    public ResponseEntity<?> cantidadPostulacionesEnCursp(@PathVariable Long idCandidato) {
+        Long cantidad = metricasService.contarPostulacionesEnCurso(idCandidato);
+        return ResponseEntity.ok().body(Map.of("postulacionesEnCurso", cantidad));
+    }
 
+
+    //EMPRESAS
 }

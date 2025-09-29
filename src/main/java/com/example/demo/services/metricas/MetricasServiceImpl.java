@@ -15,6 +15,7 @@ import com.example.demo.dtos.metricas.admin.EvolucionUsuariosDTO;
 import com.example.demo.dtos.metricas.admin.UsuariosPorPaisDTO;
 import com.example.demo.dtos.metricas.admin.UsuariosPorRolDTO;
 import com.example.demo.repositories.oferta.OfertaRepository;
+import com.example.demo.repositories.postulaciones.PostulacionOfertaRepository;
 import com.example.demo.repositories.seguridad.UsuarioRepository;
 import com.example.demo.repositories.seguridad.UsuarioRolRepository;
 
@@ -23,12 +24,14 @@ public class MetricasServiceImpl implements MetricasService{
     private final UsuarioRepository usuarioRepository;
     private final OfertaRepository ofertaRepository;
     private final UsuarioRolRepository usuarioRolRepository;
+    private final PostulacionOfertaRepository postulacionOfertaRepository;
 
     public MetricasServiceImpl(UsuarioRepository usuarioRepository, OfertaRepository ofertaRepository, 
-    UsuarioRolRepository usuarioRolRepository){
+    UsuarioRolRepository usuarioRolRepository, PostulacionOfertaRepository postulacionOfertaRepository){
         this.usuarioRepository = usuarioRepository;
         this.ofertaRepository = ofertaRepository;
         this.usuarioRolRepository = usuarioRolRepository;
+        this.postulacionOfertaRepository = postulacionOfertaRepository;
     }
     //ADMINITRADOR DEL SISTEMA
     @Override
@@ -108,9 +111,18 @@ public class MetricasServiceImpl implements MetricasService{
                ))
                .collect(Collectors.toList());
     }
-    //EMPRESA
-
+    
+    
     //CANDIDATO
+    @Override
+    public Long contarPostulacionesEnCurso(Long idCandidato){
+        
+        return postulacionOfertaRepository.traerCantidadPostulacionEnCurso(idCandidato); 
+    }
+
+    
+
+    //EMPRESA
 
     //PARA FILTROS DE FECHAS
     private Pair<LocalDateTime, LocalDateTime> manejoFechasParaFiltros(LocalDateTime fechaDesde, LocalDateTime fechaHasta){

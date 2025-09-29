@@ -9,6 +9,7 @@ import com.example.demo.dtos.metricas.admin.EvolucionUsuariosDTO;
 import com.example.demo.dtos.metricas.admin.UsuariosPorPaisDTO;
 
 public interface MetricasService {
+    //ADMIN DEL SISTEMA
     public Integer cantidadTotalHistoricaUsuarios(); //En la HU decía que a este no se le aplican los filtros de fechas
 
     public Double tasaExitoOfertas(LocalDateTime fechaDesde, LocalDateTime fechaHasta);
@@ -20,4 +21,8 @@ public interface MetricasService {
     public List<EmpresasConMasOfertasDTO> topEmpresasConMasOfertas(LocalDateTime fechaDesde, LocalDateTime fechaHasta);
 
     public List<EvolucionUsuariosDTO> evolucionUsuariosRegistrados(LocalDateTime fechaDesde, LocalDateTime fechaHasta);
+
+    //CANDIDATO
+    public Long contarPostulacionesEnCurso(Long idCandidato);
+
 }

@@ -128,4 +128,17 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
         """
     )
     Optional<Etapa> traerEtapaActualDePostulacionCandidato(@Param("idOferta") Long idOferta, @Param("idCandidato") Long idCandidato);
+
+    @Query(
+        """
+              SELECT COUNT(po) FROM PostulacionOferta po
+              JOIN po.postulacionOfertaEtapaList poe
+              JOIN poe.etapa e
+              WHERE po.candidato.id = :idCandidato 
+              AND po.fechaHoraFinPostulacionOferta IS NULL AND po.fechaHoraAbandonoOferta IS NULL
+              AND poe.fechaHoraBaja IS NULL AND e.codigoEtapa NOT IN ('ABANDONADO', 'RECHAZADO', 'SELECCIONADO', 'NO_ACEPTADO') 
+        """
+    )
+    public Long traerCantidadPostulacionEnCurso(@Param("idCandidato") Long idCandidato);
+
 }
