@@ -14,6 +14,7 @@ import com.example.demo.dtos.metricas.admin.EmpresasConMasOfertasDTO;
 import com.example.demo.dtos.metricas.admin.EvolucionUsuariosDTO;
 import com.example.demo.dtos.metricas.admin.UsuariosPorPaisDTO;
 import com.example.demo.dtos.metricas.admin.UsuariosPorRolDTO;
+import com.example.demo.dtos.metricas.candidato.RubrosDeInteresDTO;
 import com.example.demo.repositories.oferta.OfertaRepository;
 import com.example.demo.repositories.postulaciones.PostulacionOfertaRepository;
 import com.example.demo.repositories.seguridad.UsuarioRepository;
@@ -122,6 +123,13 @@ public class MetricasServiceImpl implements MetricasService{
     @Override
     public Long contarPostulacionesRechazadas(Long idCandidato){
         return postulacionOfertaRepository.traerCantidadPostulacionesRechazadas(idCandidato); 
+    }
+
+    @Override
+    public List<RubrosDeInteresDTO> verRubrosDeInteres(Long idCandidato, LocalDateTime fechaDesde, LocalDateTime fechaHasta){
+        Pair<LocalDateTime, LocalDateTime> fechas = manejoFechasParaFiltros(fechaDesde, fechaHasta);
+        
+        return postulacionOfertaRepository.traerRubrosDeInteres(idCandidato, fechas.getLeft(), fechas.getRight());
     }
 
     

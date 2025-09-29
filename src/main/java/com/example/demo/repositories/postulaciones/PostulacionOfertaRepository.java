@@ -1,5 +1,6 @@
 package com.example.demo.repositories.postulaciones;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.example.demo.dtos.metricas.candidato.RubrosDeInteresDTO;
 import com.example.demo.dtos.ofertas.CandidatoPostuladoDTO;
 import com.example.demo.dtos.postulaciones.EtapaActualPostulacionDTO;
 import com.example.demo.entities.params.Etapa;
@@ -154,4 +156,19 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
     )
     public Long traerCantidadPostulacionesRechazadas(@Param("idCandidato") Long idCandidato);
 
+
+    @Query(
+        """
+              SELECT new com.example.demo.dtos.metricas.candidato.RubrosDeInteresDTO(r.nombreRubro, COUNT(po))
+              FROM PostulacionOferta po
+              JOIN po.oferta o
+              JOIN o.empresa e
+              JOIN e.rubro r
+              WHERE po.candidato.id = :idCandidato
+              AND po.fechaHoraAlta BETWEEN :desde AND :hasta
+              GROUP BY r.nombreRubro
+              ORDER BY COUNT(po) DESC
+        """
+    )
+    public List<RubrosDeInteresDTO> traerRubrosDeInteres(@Param("idCandidato") Long idCandidato, @Param("desde") LocalDateTime desde, @Param("hasta") LocalDateTime hasta);
 }

@@ -17,6 +17,7 @@ import com.example.demo.dtos.metricas.admin.EmpresasConMasOfertasDTO;
 import com.example.demo.dtos.metricas.admin.EvolucionUsuariosDTO;
 import com.example.demo.dtos.metricas.admin.FiltroFechasDTO;
 import com.example.demo.dtos.metricas.admin.UsuariosPorPaisDTO;
+import com.example.demo.dtos.metricas.candidato.RubrosDeInteresDTO;
 import com.example.demo.services.metricas.MetricasService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -95,6 +96,14 @@ public class MetricasController {
     public ResponseEntity<?> cantidadPostulacionesRechazadas(@PathVariable Long idCandidato) {
         Long cantidad = metricasService.contarPostulacionesRechazadas(idCandidato);
         return ResponseEntity.ok().body(Map.of("postulacionesRechazadas", cantidad));
+    }
+
+    @Operation(summary = "Ver rubros de interes del candidato")
+    @PutMapping("/candidato/rubrosDeInteres/{idCandidato}")
+    @PreAuthorize("hasAuthority('METRICAS_CANDIDATO')")
+    public ResponseEntity<?> verRubrosDeInteres(@PathVariable Long idCandidato, @RequestBody FiltroFechasDTO filtroFechasDTO) {
+        List<RubrosDeInteresDTO> rubros = metricasService.verRubrosDeInteres(idCandidato, filtroFechasDTO.getFechaDesde(), filtroFechasDTO.getFechaHasta());
+        return ResponseEntity.ok().body(rubros);
     }
 
 
