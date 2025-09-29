@@ -82,11 +82,19 @@ public class MetricasController {
     
     //CANDIDATOS
     @Operation(summary = "Cantidad total de postulaciones en curso")
-    @PutMapping("/candidato/{idCandidato}")
+    @PutMapping("/candidato/enCurso/{idCandidato}")
     @PreAuthorize("hasAuthority('METRICAS_CANDIDATO')")
-    public ResponseEntity<?> cantidadPostulacionesEnCursp(@PathVariable Long idCandidato) {
+    public ResponseEntity<?> cantidadPostulacionesEnCurso(@PathVariable Long idCandidato) {
         Long cantidad = metricasService.contarPostulacionesEnCurso(idCandidato);
         return ResponseEntity.ok().body(Map.of("postulacionesEnCurso", cantidad));
+    }
+
+    @Operation(summary = "Cantidad total de postulaciones rechazadas")
+    @PutMapping("/candidato/rechazadas/{idCandidato}")
+    @PreAuthorize("hasAuthority('METRICAS_CANDIDATO')")
+    public ResponseEntity<?> cantidadPostulacionesRechazadas(@PathVariable Long idCandidato) {
+        Long cantidad = metricasService.contarPostulacionesRechazadas(idCandidato);
+        return ResponseEntity.ok().body(Map.of("postulacionesRechazadas", cantidad));
     }
 
 

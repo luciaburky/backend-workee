@@ -139,6 +139,19 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
               AND poe.fechaHoraBaja IS NULL AND e.codigoEtapa NOT IN ('ABANDONADO', 'RECHAZADO', 'SELECCIONADO', 'NO_ACEPTADO') 
         """
     )
-    public Long traerCantidadPostulacionEnCurso(@Param("idCandidato") Long idCandidato);
+    public Long traerCantidadPostulacionesEnCurso(@Param("idCandidato") Long idCandidato);
+
+
+    @Query(
+        """
+              SELECT COUNT(po) FROM PostulacionOferta po
+              JOIN po.postulacionOfertaEtapaList poe
+              JOIN poe.etapa e
+              WHERE po.candidato.id = :idCandidato
+              AND po.fechaHoraFinPostulacionOferta IS NOT NULL
+              AND poe.fechaHoraBaja IS NULL AND e.codigoEtapa LIKE 'RECHAZADO'
+        """
+    )
+    public Long traerCantidadPostulacionesRechazadas(@Param("idCandidato") Long idCandidato);
 
 }

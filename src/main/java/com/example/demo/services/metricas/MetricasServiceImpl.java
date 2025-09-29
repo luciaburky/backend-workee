@@ -116,8 +116,12 @@ public class MetricasServiceImpl implements MetricasService{
     //CANDIDATO
     @Override
     public Long contarPostulacionesEnCurso(Long idCandidato){
-        
-        return postulacionOfertaRepository.traerCantidadPostulacionEnCurso(idCandidato); 
+        return postulacionOfertaRepository.traerCantidadPostulacionesEnCurso(idCandidato); 
+    }
+
+    @Override
+    public Long contarPostulacionesRechazadas(Long idCandidato){
+        return postulacionOfertaRepository.traerCantidadPostulacionesRechazadas(idCandidato); 
     }
 
     

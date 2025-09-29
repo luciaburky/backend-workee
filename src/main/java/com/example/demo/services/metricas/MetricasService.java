@@ -25,4 +25,6 @@ public interface MetricasService {
     //CANDIDATO
     public Long contarPostulacionesEnCurso(Long idCandidato);
 
+    public Long contarPostulacionesRechazadas(Long idCandidato);
+
 }
