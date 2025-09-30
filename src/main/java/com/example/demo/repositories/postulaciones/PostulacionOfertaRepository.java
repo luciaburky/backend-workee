@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.example.demo.dtos.metricas.candidato.PostulacionesPorPaisDTO;
 import com.example.demo.dtos.metricas.candidato.RubrosDeInteresDTO;
 import com.example.demo.dtos.ofertas.CandidatoPostuladoDTO;
 import com.example.demo.dtos.postulaciones.EtapaActualPostulacionDTO;
@@ -171,4 +172,21 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
         """
     )
     public List<RubrosDeInteresDTO> traerRubrosDeInteres(@Param("idCandidato") Long idCandidato, @Param("desde") LocalDateTime desde, @Param("hasta") LocalDateTime hasta);
+
+    @Query(
+        """
+              SELECT new com.example.demo.dtos.metricas.candidato.PostulacionesPorPaisDTO(pa.nombrePais, COUNT(po), 0.0)
+              FROM PostulacionOferta po
+              JOIN po.oferta o
+              JOIN o.empresa e
+              JOIN e.provincia pr
+              JOIN pr.pais pa
+              WHERE po.candidato.id = :idCandidato
+              AND po.fechaHoraAlta BETWEEN :desde AND :hasta
+              GROUP BY pa.nombrePais
+              ORDER BY COUNT(po) DESC
+        """
+    )
+    public List<PostulacionesPorPaisDTO> postulacionesPorPais(@Param("idCandidato") Long idCandidato, @Param("desde") LocalDateTime desde, @Param("hasta") LocalDateTime hasta);
+
 }

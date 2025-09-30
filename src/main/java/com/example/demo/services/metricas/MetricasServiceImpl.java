@@ -14,6 +14,8 @@ import com.example.demo.dtos.metricas.admin.EmpresasConMasOfertasDTO;
 import com.example.demo.dtos.metricas.admin.EvolucionUsuariosDTO;
 import com.example.demo.dtos.metricas.admin.UsuariosPorPaisDTO;
 import com.example.demo.dtos.metricas.admin.UsuariosPorRolDTO;
+import com.example.demo.dtos.metricas.candidato.DistribucionPostulacionesPorPaisDTO;
+import com.example.demo.dtos.metricas.candidato.PostulacionesPorPaisDTO;
 import com.example.demo.dtos.metricas.candidato.RubrosDeInteresDTO;
 import com.example.demo.repositories.oferta.OfertaRepository;
 import com.example.demo.repositories.postulaciones.PostulacionOfertaRepository;
@@ -132,7 +134,24 @@ public class MetricasServiceImpl implements MetricasService{
         return postulacionOfertaRepository.traerRubrosDeInteres(idCandidato, fechas.getLeft(), fechas.getRight());
     }
 
-    
+    @Override
+    public DistribucionPostulacionesPorPaisDTO verPaisesMasPostulados(Long idCandidato, LocalDateTime fechaDesde, LocalDateTime fechaHasta){
+        Pair<LocalDateTime, LocalDateTime> fechas = manejoFechasParaFiltros(fechaDesde, fechaHasta);
+
+        List<PostulacionesPorPaisDTO> postulaciones = postulacionOfertaRepository.postulacionesPorPais(idCandidato, fechas.getLeft(), fechas.getRight());
+
+        Long total = postulaciones.stream().mapToLong(usuario -> usuario.getCantidadPostulaciones()).sum();
+
+        for(PostulacionesPorPaisDTO postulacion: postulaciones){
+            Double porcentaje = (postulacion.getCantidadPostulaciones() * 100.0) / total;
+            postulacion.setPorcentajePostulaciones(porcentaje);
+        }
+        DistribucionPostulacionesPorPaisDTO distribucion = new DistribucionPostulacionesPorPaisDTO();
+        distribucion.setTotalPostulaciones(total);
+        distribucion.setPostulaciones(postulaciones);
+
+        return distribucion;
+    }
 
     //EMPRESA
 

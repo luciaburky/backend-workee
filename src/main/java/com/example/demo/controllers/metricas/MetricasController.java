@@ -17,6 +17,7 @@ import com.example.demo.dtos.metricas.admin.EmpresasConMasOfertasDTO;
 import com.example.demo.dtos.metricas.admin.EvolucionUsuariosDTO;
 import com.example.demo.dtos.metricas.admin.FiltroFechasDTO;
 import com.example.demo.dtos.metricas.admin.UsuariosPorPaisDTO;
+import com.example.demo.dtos.metricas.candidato.DistribucionPostulacionesPorPaisDTO;
 import com.example.demo.dtos.metricas.candidato.RubrosDeInteresDTO;
 import com.example.demo.services.metricas.MetricasService;
 
@@ -106,6 +107,13 @@ public class MetricasController {
         return ResponseEntity.ok().body(rubros);
     }
 
-
+    @Operation(summary = "Ver paises más postulados del candidato")
+    @PutMapping("/candidato/paisesMasPostulados/{idCandidato}")
+    @PreAuthorize("hasAuthority('METRICAS_CANDIDATO')")
+    public ResponseEntity<?> verPaisesMasPostulados(@PathVariable Long idCandidato, @RequestBody FiltroFechasDTO filtroFechasDTO) {
+        DistribucionPostulacionesPorPaisDTO distribucion = metricasService.verPaisesMasPostulados(idCandidato, filtroFechasDTO.getFechaDesde(), filtroFechasDTO.getFechaHasta());
+        return ResponseEntity.ok().body(distribucion);
+    }
+    
     //EMPRESAS
 }
