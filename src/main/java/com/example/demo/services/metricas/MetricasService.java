@@ -28,7 +28,7 @@ public interface MetricasService {
     //CANDIDATO
     public Long contarPostulacionesEnCurso(Long idCandidato);
 
-    public Long contarPostulacionesRechazadas(Long idCandidato);
+    public Long contarPostulacionesRechazadas(Long idCandidato, LocalDateTime fechaDesde, LocalDateTime fechaHasta);
 
     public List<RubrosDeInteresDTO> verRubrosDeInteres(Long idCandidato, LocalDateTime fechaDesde, LocalDateTime fechaHasta);
 

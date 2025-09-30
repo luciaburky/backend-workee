@@ -152,10 +152,11 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
               JOIN poe.etapa e
               WHERE po.candidato.id = :idCandidato
               AND po.fechaHoraFinPostulacionOferta IS NOT NULL
+              AND po.fechaHoraFinPostulacionOferta BETWEEN :desde AND :hasta
               AND poe.fechaHoraBaja IS NULL AND e.codigoEtapa LIKE 'RECHAZADO'
         """
     )
-    public Long traerCantidadPostulacionesRechazadas(@Param("idCandidato") Long idCandidato);
+    public Long traerCantidadPostulacionesRechazadas(@Param("idCandidato") Long idCandidato, @Param("desde") LocalDateTime desde, @Param("hasta") LocalDateTime hasta);
 
 
     @Query(

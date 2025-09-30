@@ -124,8 +124,10 @@ public class MetricasServiceImpl implements MetricasService{
     }
 
     @Override
-    public Long contarPostulacionesRechazadas(Long idCandidato){
-        return postulacionOfertaRepository.traerCantidadPostulacionesRechazadas(idCandidato); 
+    public Long contarPostulacionesRechazadas(Long idCandidato, LocalDateTime fechaDesde, LocalDateTime fechaHasta){
+        Pair<LocalDateTime, LocalDateTime> fechas = manejoFechasParaFiltros(fechaDesde, fechaHasta);
+
+        return postulacionOfertaRepository.traerCantidadPostulacionesRechazadas(idCandidato, fechas.getLeft(), fechas.getRight()); 
     }
 
     @Override
@@ -168,7 +170,7 @@ public class MetricasServiceImpl implements MetricasService{
         return ofertaRepository.topHabilidades(fechas.getLeft(), fechas.getRight(),"HABILIDAD_TECNICA", PageRequest.of(0, 3));
     }
 
-    
+
     //EMPRESA
 
     //PARA FILTROS DE FECHAS
