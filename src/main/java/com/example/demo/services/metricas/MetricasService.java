@@ -9,6 +9,7 @@ import com.example.demo.dtos.metricas.admin.EvolucionUsuariosDTO;
 import com.example.demo.dtos.metricas.admin.UsuariosPorPaisDTO;
 import com.example.demo.dtos.metricas.candidato.DistribucionPostulacionesPorPaisDTO;
 import com.example.demo.dtos.metricas.candidato.RubrosDeInteresDTO;
+import com.example.demo.dtos.metricas.candidato.TopHabilidadDTO;
 
 public interface MetricasService {
     //ADMIN DEL SISTEMA
@@ -32,4 +33,8 @@ public interface MetricasService {
     public List<RubrosDeInteresDTO> verRubrosDeInteres(Long idCandidato, LocalDateTime fechaDesde, LocalDateTime fechaHasta);
 
     public DistribucionPostulacionesPorPaisDTO verPaisesMasPostulados(Long idCandidato, LocalDateTime fechaDesde, LocalDateTime fechaHasta);
+
+    public List<TopHabilidadDTO> topHabilidadesBlandas(LocalDateTime fechaDesde, LocalDateTime fechaHasta);
+
+    public List<TopHabilidadDTO> topHabilidadesTecnicas(LocalDateTime fechaDesde, LocalDateTime fechaHasta);
 }

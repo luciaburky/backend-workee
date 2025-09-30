@@ -19,6 +19,7 @@ import com.example.demo.dtos.metricas.admin.FiltroFechasDTO;
 import com.example.demo.dtos.metricas.admin.UsuariosPorPaisDTO;
 import com.example.demo.dtos.metricas.candidato.DistribucionPostulacionesPorPaisDTO;
 import com.example.demo.dtos.metricas.candidato.RubrosDeInteresDTO;
+import com.example.demo.dtos.metricas.candidato.TopHabilidadDTO;
 import com.example.demo.services.metricas.MetricasService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -114,6 +115,22 @@ public class MetricasController {
         DistribucionPostulacionesPorPaisDTO distribucion = metricasService.verPaisesMasPostulados(idCandidato, filtroFechasDTO.getFechaDesde(), filtroFechasDTO.getFechaHasta());
         return ResponseEntity.ok().body(distribucion);
     }
-    
+
+    @Operation(summary = "Ver top 3 habilidades blandas")
+    @PutMapping("/candidato/habilidadesBlandas")
+    @PreAuthorize("hasAuthority('METRICAS_CANDIDATO')")
+    public ResponseEntity<?> verTopHabilidadesBlandas(@RequestBody FiltroFechasDTO filtroFechasDTO) {
+        List<TopHabilidadDTO> habilidades = metricasService.topHabilidadesBlandas(filtroFechasDTO.getFechaDesde(),filtroFechasDTO.getFechaHasta());
+        return ResponseEntity.ok().body(habilidades);
+    }
+
+    @Operation(summary = "Ver top 3 habilidades tecnicas")
+    @PutMapping("/candidato/habilidadesTecnicas")
+    @PreAuthorize("hasAuthority('METRICAS_CANDIDATO')")
+    public ResponseEntity<?> verTopHabilidadesTecnicas(@RequestBody FiltroFechasDTO filtroFechasDTO) {
+        List<TopHabilidadDTO> habilidades = metricasService.topHabilidadesTecnicas(filtroFechasDTO.getFechaDesde(),filtroFechasDTO.getFechaHasta());
+        return ResponseEntity.ok().body(habilidades);
+    }
+
     //EMPRESAS
 }

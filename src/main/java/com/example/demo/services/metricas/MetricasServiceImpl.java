@@ -17,6 +17,7 @@ import com.example.demo.dtos.metricas.admin.UsuariosPorRolDTO;
 import com.example.demo.dtos.metricas.candidato.DistribucionPostulacionesPorPaisDTO;
 import com.example.demo.dtos.metricas.candidato.PostulacionesPorPaisDTO;
 import com.example.demo.dtos.metricas.candidato.RubrosDeInteresDTO;
+import com.example.demo.dtos.metricas.candidato.TopHabilidadDTO;
 import com.example.demo.repositories.oferta.OfertaRepository;
 import com.example.demo.repositories.postulaciones.PostulacionOfertaRepository;
 import com.example.demo.repositories.seguridad.UsuarioRepository;
@@ -153,6 +154,21 @@ public class MetricasServiceImpl implements MetricasService{
         return distribucion;
     }
 
+    @Override
+    public List<TopHabilidadDTO> topHabilidadesBlandas(LocalDateTime fechaDesde, LocalDateTime fechaHasta){
+        Pair<LocalDateTime, LocalDateTime> fechas = manejoFechasParaFiltros(fechaDesde, fechaHasta);
+        
+        return ofertaRepository.topHabilidades(fechas.getLeft(), fechas.getRight(),"HABILIDAD_BLANDA", PageRequest.of(0, 3));
+    }
+
+    @Override
+    public List<TopHabilidadDTO> topHabilidadesTecnicas(LocalDateTime fechaDesde, LocalDateTime fechaHasta){
+        Pair<LocalDateTime, LocalDateTime> fechas = manejoFechasParaFiltros(fechaDesde, fechaHasta);
+        
+        return ofertaRepository.topHabilidades(fechas.getLeft(), fechas.getRight(),"HABILIDAD_TECNICA", PageRequest.of(0, 3));
+    }
+
+    
     //EMPRESA
 
     //PARA FILTROS DE FECHAS

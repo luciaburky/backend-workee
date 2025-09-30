@@ -1,5 +1,6 @@
 package com.example.demo.services.params;
 
+import java.text.Normalizer;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -46,8 +47,32 @@ public class TipoHabilidadServiceImpl extends BaseServiceImpl<TipoHabilidad, Lon
         nuevoTipoHabilidad.setNombreTipoHabilidad(tipoHabilidadDTO.getNombreTipoHabilidad());
         nuevoTipoHabilidad.setFechaHoraAlta(new Date());
 
+        //Generar código para identificarla
+        String codigoTipoHabilidad = generarCodigoUnico(tipoHabilidadDTO.getNombreTipoHabilidad());
+        nuevoTipoHabilidad.setCodigoTipoHabilidad(codigoTipoHabilidad);
+
+
         return tipoHabilidadRepository.save(nuevoTipoHabilidad);
     }
+
+    private String generarCodigoUnico(String nombreTipoHabilidad){
+        String base = normalizar(nombreTipoHabilidad);
+        String codigoTipoHabilidad = base;
+        int contador = 1;
+
+        while(tipoHabilidadRepository.existsByCodigoTipoHabilidad(codigoTipoHabilidad)){
+            codigoTipoHabilidad = base + "_" + contador;
+            contador++;
+        }
+        return codigoTipoHabilidad;
+    }
+
+    private String normalizar(String texto){
+        String sinAcentos = Normalizer.normalize(texto, Normalizer.Form.NFD)
+            .replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+        return sinAcentos.trim().toUpperCase().replaceAll("[^A-Z0-9]", "_");
+    }
+
 
     @Override
     @Transactional

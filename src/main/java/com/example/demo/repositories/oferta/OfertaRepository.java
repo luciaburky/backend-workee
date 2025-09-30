@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.example.demo.dtos.metricas.admin.EmpresasConMasOfertasDTO;
+import com.example.demo.dtos.metricas.candidato.TopHabilidadDTO;
 import com.example.demo.dtos.postulaciones.OfertasEtapasDTO;
 import com.example.demo.entities.oferta.Oferta;
 import com.example.demo.entities.params.Etapa;
@@ -204,6 +205,26 @@ public interface OfertaRepository extends BaseRepository<Oferta, Long> {
         """
     )
     public List<EmpresasConMasOfertasDTO> topEmpresasConMasOfertas(@Param("desde") LocalDateTime desde, @Param("hasta") LocalDateTime hasta, Pageable pageable);
+
+
+    @Query("""
+            SELECT new com.example.demo.dtos.metricas.candidato.TopHabilidadDTO(
+                h.nombreHabilidad,
+                COUNT(h)
+            )
+            FROM Oferta o
+            JOIN o.habilidades oh
+            JOIN oh.habilidad h
+            JOIN h.tipoHabilidad th
+            WHERE th.codigoTipoHabilidad = :habilidad
+            AND o.fechaHoraAlta BETWEEN :desde AND :hasta
+            GROUP BY h.nombreHabilidad
+            ORDER BY COUNT(h) DESC
+    """)
+    List<TopHabilidadDTO> topHabilidades(@Param("desde") LocalDateTime desde, @Param("hasta") LocalDateTime hasta, @Param("habilidad") String habilidad, Pageable pageable);
+
+
 }
+
 
 

@@ -20,4 +20,7 @@ public interface TipoHabilidadRepository extends BaseRepository<TipoHabilidad, L
      List<TipoHabilidad> buscarTipoHabilidadesActivos(); 
     
     Optional<TipoHabilidad> findByNombreTipoHabilidadIgnoreCase(String nombreTipoHabilidad); 
+
+    boolean existsByCodigoTipoHabilidad(String codigoTipoHabilidad);
+    
 } 
