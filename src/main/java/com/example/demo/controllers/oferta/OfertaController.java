@@ -162,7 +162,10 @@ public class OfertaController {
     @PreAuthorize("hasAnyAuthority('GESTION_OFERTAS', 'GESTIONAR_POSTULACION', 'POSTULAR_OFERTA', 'BUSCAR_OFERTAS')")
     public ResponseEntity<?> getEtapaActualCandidato(@PathVariable Long idOferta, @PathVariable Long idCandidato) {
         EtapaActualPostulacionDTO etapaActualPostulacionDTO = postulacionOfertaService.verEtapaActualDeUnaPostulacion(idCandidato, idOferta);
-        return ResponseEntity.ok().body(etapaActualPostulacionDTO);
+        if(etapaActualPostulacionDTO == null){
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.ok().body(etapaActualPostulacionDTO.getNombreEtapa());
     }
 
 }
