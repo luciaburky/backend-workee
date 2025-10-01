@@ -236,7 +236,7 @@ public interface OfertaRepository extends BaseRepository<Oferta, Long> {
       JOIN eo.estadoOferta e
       JOIN o.empresa em
       WHERE e.codigo = 'ABIERTA' AND eo.fechaHoraBaja IS NULL AND o.fechaFinalizacion IS NULL
-      AND e,m.id = :empresaId
+      AND em.id = :empresaId
       """)
     public Long verCantidadOfertasAbiertas(@Param("empresaId") Long empresaId);
 }
