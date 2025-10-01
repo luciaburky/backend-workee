@@ -154,9 +154,11 @@ public interface OfertaRepository extends BaseRepository<Oferta, Long> {
       SELECT DISTINCT o FROM Oferta o
       JOIN o.estadosOferta eo
       JOIN eo.estadoOferta e
-      WHERE e.codigo = 'ABIERTA' AND eo.fechaHoraBaja IS NULL
+      JOIN o.empresa em
+      WHERE e.codigo = 'ABIERTA' AND eo.fechaHoraBaja IS NULL AND o.fechaFinalizacion IS NULL
+      AND em.id = :empresaId
       """)
-  List<Oferta> buscarOfertasAbiertas(Long empresaId);
+  List<Oferta> buscarOfertasAbiertas(@Param("empresaId") Long empresaId);
 
   @Query(value = "SELECT COUNT(DISTINCT po.id) " +
                     "FROM oferta o " +
@@ -228,6 +230,15 @@ public interface OfertaRepository extends BaseRepository<Oferta, Long> {
     List<TopHabilidadDTO> topHabilidades(@Param("desde") LocalDateTime desde, @Param("hasta") LocalDateTime hasta, @Param("habilidad") String habilidad, Pageable pageable);
 
 
+    @Query("""
+      SELECT COUNT(DISTINCT o) FROM Oferta o
+      JOIN o.estadosOferta eo
+      JOIN eo.estadoOferta e
+      JOIN o.empresa em
+      WHERE e.codigo = 'ABIERTA' AND eo.fechaHoraBaja IS NULL AND o.fechaFinalizacion IS NULL
+      AND e,m.id = :empresaId
+      """)
+    public Long verCantidadOfertasAbiertas(@Param("empresaId") Long empresaId);
 }
 
 
