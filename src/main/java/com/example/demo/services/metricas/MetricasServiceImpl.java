@@ -172,6 +172,10 @@ public class MetricasServiceImpl implements MetricasService{
 
 
     //EMPRESA
+    @Override
+    public Long obtenerCantidadOfertasAbiertas(Long idEmpresa){
+        return ofertaRepository.contarOfertasAbiertas(idEmpresa);
+    }
 
     //PARA FILTROS DE FECHAS
     private Pair<LocalDateTime, LocalDateTime> manejoFechasParaFiltros(LocalDateTime fechaDesde, LocalDateTime fechaHasta){

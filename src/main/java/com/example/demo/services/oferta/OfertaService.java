@@ -32,4 +32,5 @@ public interface OfertaService extends BaseService<Oferta, Long>{
     public Integer obtenerCantidadDePostulados(Long idOferta);
 
     public List<Etapa> obtenerEtapasDeOferta(Long idOferta);
+
 }

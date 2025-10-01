@@ -238,7 +238,7 @@ public interface OfertaRepository extends BaseRepository<Oferta, Long> {
       WHERE e.codigo = 'ABIERTA' AND eo.fechaHoraBaja IS NULL AND o.fechaFinalizacion IS NULL
       AND em.id = :empresaId
       """)
-    public Long verCantidadOfertasAbiertas(@Param("empresaId") Long empresaId);
+    public Long contarOfertasAbiertas(@Param("empresaId") Long empresaId);
 }
 
 

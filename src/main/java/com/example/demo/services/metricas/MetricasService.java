@@ -37,4 +37,7 @@ public interface MetricasService {
     public List<TopHabilidadDTO> topHabilidadesBlandas(LocalDateTime fechaDesde, LocalDateTime fechaHasta);
 
     public List<TopHabilidadDTO> topHabilidadesTecnicas(LocalDateTime fechaDesde, LocalDateTime fechaHasta);
+
+    //EMPRESA
+    public Long obtenerCantidadOfertasAbiertas(Long idEmpresa);
 }
