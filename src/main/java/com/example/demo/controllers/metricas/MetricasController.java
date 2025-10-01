@@ -20,6 +20,7 @@ import com.example.demo.dtos.metricas.admin.UsuariosPorPaisDTO;
 import com.example.demo.dtos.metricas.candidato.DistribucionPostulacionesPorPaisDTO;
 import com.example.demo.dtos.metricas.candidato.RubrosDeInteresDTO;
 import com.example.demo.dtos.metricas.candidato.TopHabilidadDTO;
+import com.example.demo.dtos.metricas.empresa.DistribucionGenerosDTO;
 import com.example.demo.services.metricas.MetricasService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,7 +36,7 @@ public class MetricasController {
         this.metricasService = metricasService;
     }
     //ADMINISTRADOR DEL SISTEMA
-    @Operation(summary = "Ver cantidad histórica de usuarios")
+    @Operation(summary = "SISTEMA: Ver cantidad histórica de usuarios")
     @GetMapping("/admin/cantidadHistoricaUsuarios")
     @PreAuthorize("hasAuthority('METRICAS_SISTEMA')")
     public ResponseEntity<?> cantidadHistoricaUsuarios() {
@@ -43,7 +44,7 @@ public class MetricasController {
         return ResponseEntity.ok().body(Map.of("cantidadHistoricaUsuarios", cantidad));
     }
 
-    @Operation(summary = "Ver tasa de éxito de ofertas")
+    @Operation(summary = "SISTEMA: Ver tasa de éxito de ofertas")
     @PutMapping("/admin/tasaExitoOfertas")
     @PreAuthorize("hasAuthority('METRICAS_SISTEMA')")
     public ResponseEntity<?> tasaExitoOfertas(@RequestBody FiltroFechasDTO filtroFechasDTO) {
@@ -51,14 +52,14 @@ public class MetricasController {
         return ResponseEntity.ok().body(Map.of("tasaExitoOfertas", tasa));
     }
 
-    @Operation(summary = "Ver distribución de usuarios por rol")
+    @Operation(summary = "SISTEMA: Ver distribución de usuarios por rol")
     @PutMapping("/admin/distribucionPorROL")
     @PreAuthorize("hasAuthority('METRICAS_SISTEMA')")
     public ResponseEntity<?> distribucionUsuariosPorRol(@RequestBody FiltroFechasDTO filtroFechasDTO) {
         DistribucionUsuariosPorRolResponseDTO distribucionUsuariosPorRolResponseDTO = metricasService.distribucionUsuariosPorRol(filtroFechasDTO.getFechaDesde(), filtroFechasDTO.getFechaHasta());
         return ResponseEntity.ok().body(distribucionUsuariosPorRolResponseDTO);
     }
-    @Operation(summary = "Ver distribución de usuarios por pais")
+    @Operation(summary = "SISTEMA:Ver distribución de usuarios por pais")
     @PutMapping("/admin/usuariosPorPais")
     @PreAuthorize("hasAuthority('METRICAS_SISTEMA')")
     public ResponseEntity<?> usuariosPorPais(@RequestBody FiltroFechasDTO filtroFechasDTO) {
@@ -66,7 +67,7 @@ public class MetricasController {
         return ResponseEntity.ok().body(usuarios);
     }
 
-    @Operation(summary = "Ver top 5 empresas con más ofertas creadas")
+    @Operation(summary = "SISTEMA: Ver top 5 empresas con más ofertas creadas")
     @PutMapping("/admin/empresasConMasOfertas")
     @PreAuthorize("hasAuthority('METRICAS_SISTEMA')")
     public ResponseEntity<?> empresasConMasOfertas(@RequestBody FiltroFechasDTO filtroFechasDTO) {
@@ -74,7 +75,7 @@ public class MetricasController {
         return ResponseEntity.ok().body(empresas);
     }
 
-    @Operation(summary = "Ver usuarios registrados a través del tiempo")
+    @Operation(summary = "SISTEMA: Ver usuarios registrados a través del tiempo")
     @PutMapping("/admin/usuariosRegistrados")
     @PreAuthorize("hasAuthority('METRICAS_SISTEMA')")
     public ResponseEntity<?> usuariosRegistrados(@RequestBody FiltroFechasDTO filtroFechasDTO) {
@@ -84,7 +85,7 @@ public class MetricasController {
 
     
     //CANDIDATOS
-    @Operation(summary = "Cantidad total de postulaciones en curso")
+    @Operation(summary = "CANDIDATO: Cantidad total de postulaciones en curso")
     @GetMapping("/candidato/enCurso/{idCandidato}")
     @PreAuthorize("hasAuthority('METRICAS_CANDIDATO')")
     public ResponseEntity<?> cantidadPostulacionesEnCurso(@PathVariable Long idCandidato) {
@@ -92,7 +93,7 @@ public class MetricasController {
         return ResponseEntity.ok().body(Map.of("postulacionesEnCurso", cantidad));
     }
 
-    @Operation(summary = "Cantidad total de postulaciones rechazadas")
+    @Operation(summary = "CANDIDATO: Cantidad total de postulaciones rechazadas")
     @PutMapping("/candidato/rechazadas/{idCandidato}")
     @PreAuthorize("hasAuthority('METRICAS_CANDIDATO')")
     public ResponseEntity<?> cantidadPostulacionesRechazadas(@PathVariable Long idCandidato, @RequestBody FiltroFechasDTO filtroFechasDTO) {
@@ -100,7 +101,7 @@ public class MetricasController {
         return ResponseEntity.ok().body(Map.of("postulacionesRechazadas", cantidad));
     }
 
-    @Operation(summary = "Ver rubros de interes del candidato")
+    @Operation(summary = "CANDIDATO: Ver rubros de interes del candidato")
     @PutMapping("/candidato/rubrosDeInteres/{idCandidato}")
     @PreAuthorize("hasAuthority('METRICAS_CANDIDATO')")
     public ResponseEntity<?> verRubrosDeInteres(@PathVariable Long idCandidato, @RequestBody FiltroFechasDTO filtroFechasDTO) {
@@ -108,7 +109,7 @@ public class MetricasController {
         return ResponseEntity.ok().body(rubros);
     }
 
-    @Operation(summary = "Ver paises más postulados del candidato")
+    @Operation(summary = "CANDIDATO: Ver paises más postulados del candidato")
     @PutMapping("/candidato/paisesMasPostulados/{idCandidato}")
     @PreAuthorize("hasAuthority('METRICAS_CANDIDATO')")
     public ResponseEntity<?> verPaisesMasPostulados(@PathVariable Long idCandidato, @RequestBody FiltroFechasDTO filtroFechasDTO) {
@@ -116,7 +117,7 @@ public class MetricasController {
         return ResponseEntity.ok().body(distribucion);
     }
 
-    @Operation(summary = "Ver top 3 habilidades blandas")
+    @Operation(summary = "CANDIDATO: Ver top 3 habilidades blandas")
     @PutMapping("/candidato/habilidadesBlandas")
     @PreAuthorize("hasAuthority('METRICAS_CANDIDATO')")
     public ResponseEntity<?> verTopHabilidadesBlandas(@RequestBody FiltroFechasDTO filtroFechasDTO) {
@@ -124,7 +125,7 @@ public class MetricasController {
         return ResponseEntity.ok().body(habilidades);
     }
 
-    @Operation(summary = "Ver top 3 habilidades tecnicas")
+    @Operation(summary = "CANDIDATO: Ver top 3 habilidades tecnicas")
     @PutMapping("/candidato/habilidadesTecnicas")
     @PreAuthorize("hasAuthority('METRICAS_CANDIDATO')")
     public ResponseEntity<?> verTopHabilidadesTecnicas(@RequestBody FiltroFechasDTO filtroFechasDTO) {
@@ -133,12 +134,21 @@ public class MetricasController {
     }
 
     //EMPRESAS
-    @Operation(summary = "Ver cantidad de ofertas abiertas")
+    @Operation(summary = "EMPRESA: Ver cantidad de ofertas abiertas")
     @GetMapping("/empresa/ofertasAbiertas/{idEmpresa}")
     @PreAuthorize("hasAuthority('METRICAS_EMPRESA')")
     public ResponseEntity<?> verCantidadOfertasAbiertas(@PathVariable Long idEmpresa) {
         Long cantidad = metricasService.obtenerCantidadOfertasAbiertas(idEmpresa);
         return ResponseEntity.ok().body(Map.of("cantidadOfertasAbiertas", cantidad));
+    }
+
+    //EMPRESAS
+    @Operation(summary = "EMPRESA: Ver proporción de géneros postulados")
+    @PutMapping("/empresa/generosEnOfertas/{idEmpresa}")
+    @PreAuthorize("hasAuthority('METRICAS_EMPRESA')")
+    public ResponseEntity<?> verDistribucionGeneros(@PathVariable Long idEmpresa, @RequestBody FiltroFechasDTO filtroFechasDTO) {
+        DistribucionGenerosDTO distribucion = metricasService.distribucionGenerosEnOfertas(idEmpresa, filtroFechasDTO.getFechaDesde(), filtroFechasDTO.getFechaHasta());
+        return ResponseEntity.ok().body(distribucion);
     }
 
 }

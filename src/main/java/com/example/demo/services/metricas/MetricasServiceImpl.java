@@ -18,6 +18,8 @@ import com.example.demo.dtos.metricas.candidato.DistribucionPostulacionesPorPais
 import com.example.demo.dtos.metricas.candidato.PostulacionesPorPaisDTO;
 import com.example.demo.dtos.metricas.candidato.RubrosDeInteresDTO;
 import com.example.demo.dtos.metricas.candidato.TopHabilidadDTO;
+import com.example.demo.dtos.metricas.empresa.DistribucionGenerosDTO;
+import com.example.demo.dtos.metricas.empresa.GenerosPostuladosDTO;
 import com.example.demo.repositories.oferta.OfertaRepository;
 import com.example.demo.repositories.postulaciones.PostulacionOfertaRepository;
 import com.example.demo.repositories.seguridad.UsuarioRepository;
@@ -177,6 +179,24 @@ public class MetricasServiceImpl implements MetricasService{
         return ofertaRepository.contarOfertasAbiertas(idEmpresa);
     }
 
+    @Override
+    public DistribucionGenerosDTO distribucionGenerosEnOfertas(Long idEmpresa, LocalDateTime fechaDesde, LocalDateTime fechaHasta){
+        Pair<LocalDateTime, LocalDateTime> fechas = manejoFechasParaFiltros(fechaDesde, fechaHasta);
+
+        List<GenerosPostuladosDTO> generos = postulacionOfertaRepository.distribucionGenerosPorEmpresa(idEmpresa, fechas.getLeft(), fechas.getRight());
+
+        Long total = generos.stream().mapToLong(genero -> genero.getCantidadCandidatosPostulados()).sum();
+        for(GenerosPostuladosDTO postulacion: generos){
+            Double porcentaje = (postulacion.getCantidadCandidatosPostulados() * 100.0) / total;
+            postulacion.setPorcentajePostulaciones(porcentaje);
+        }
+        DistribucionGenerosDTO distribucion = new DistribucionGenerosDTO();
+        distribucion.setPostulaciones(generos);
+        distribucion.setTotalPostulaciones(total);
+
+        return distribucion;
+    }
+    
     //PARA FILTROS DE FECHAS
     private Pair<LocalDateTime, LocalDateTime> manejoFechasParaFiltros(LocalDateTime fechaDesde, LocalDateTime fechaHasta){
         LocalDateTime fechaActual = LocalDateTime.now();
@@ -201,4 +221,5 @@ public class MetricasServiceImpl implements MetricasService{
 
         return Pair.of(fechaDesde, fechaHasta);
     }
+
 }

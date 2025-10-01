@@ -10,6 +10,7 @@ import com.example.demo.dtos.metricas.admin.UsuariosPorPaisDTO;
 import com.example.demo.dtos.metricas.candidato.DistribucionPostulacionesPorPaisDTO;
 import com.example.demo.dtos.metricas.candidato.RubrosDeInteresDTO;
 import com.example.demo.dtos.metricas.candidato.TopHabilidadDTO;
+import com.example.demo.dtos.metricas.empresa.DistribucionGenerosDTO;
 
 public interface MetricasService {
     //ADMIN DEL SISTEMA
@@ -40,4 +41,6 @@ public interface MetricasService {
 
     //EMPRESA
     public Long obtenerCantidadOfertasAbiertas(Long idEmpresa);
+
+    public DistribucionGenerosDTO distribucionGenerosEnOfertas(Long idEmpresa, LocalDateTime fechaDesde, LocalDateTime fechaHasta);
 }
