@@ -15,7 +15,11 @@ import com.example.demo.entities.oferta.Oferta;
 import com.example.demo.entities.params.Etapa;
 import com.example.demo.repositories.BaseRepository;
 
-@Repository
+@Repository //marca la clase como un componente de acceso a datos
+/*Hereda todos los métodos genéricos de BaseRepository, como save(), findById(),
+ findAll(), delete(), etc.
+ BaseRepository es un repositorio base que tiene métodos comunes
+ a todas las entidades de la aplicación*/
 public interface OfertaRepository extends BaseRepository<Oferta, Long> {  
 
   @Query("""
