@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
 
-import org.apache.catalina.connector.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,12 +22,9 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.GetMapping;
 
-
-
-
 @RestController
 @RequestMapping("/eventos")
-@Tag(name = "Evento", description = "Controlador para operaciones CRUD de Evento")
+@Tag(name = "Evento", description = "Controlador para operaciones de Evento")
 
 public class EventoController {
     

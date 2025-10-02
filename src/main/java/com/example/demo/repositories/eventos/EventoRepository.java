@@ -1,5 +1,6 @@
 package com.example.demo.repositories.eventos;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
@@ -17,4 +18,8 @@ public interface EventoRepository extends BaseRepository<Evento, Long>{
         WHERE ee.empresa.id = :idEmpresa
     """)
     List<Evento> findEventosByEmpresaId(@Param("idEmpresa") Long idEmpresa);
+
+    @Query("SELECT e FROM Evento e WHERE e.fechaHoraInicioEvento BETWEEN :desde AND :hasta")
+    List<Evento> findEventosEntreFechas(@Param("desde") Date desde, @Param("hasta") Date hasta);
+
 }

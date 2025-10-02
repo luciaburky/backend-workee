@@ -145,5 +145,22 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements 
         return listaEventos;
     }
 
-    
+    @Override
+    @Transactional
+    public List<Evento> obtenerEventosEntreFechas(Date desde, Date hasta) {
+        if(desde == null || hasta == null) {
+            throw new IllegalArgumentException("Las fechas no pueden ser nulas");
+        }
+        if(desde.after(hasta)) {
+            throw new IllegalArgumentException("La fecha 'desde' no puede ser posterior a la fecha 'hasta'");
+        }
+
+        List<Evento> listaEventos = eventoRepository.findEventosEntreFechas(desde, hasta);
+
+        if (listaEventos.isEmpty()) {
+            throw new EntityNotFoundException("No se encontraron Eventos entre las fechas proporcionadas");
+        }
+
+        return listaEventos;
+    }
 }

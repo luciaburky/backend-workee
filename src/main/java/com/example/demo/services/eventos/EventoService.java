@@ -1,5 +1,6 @@
 package com.example.demo.services.eventos;
 
+import java.util.Date;
 import java.util.List;
 
 import com.example.demo.dtos.eventos.EventoRequestDTO;
@@ -17,4 +18,6 @@ public interface EventoService extends BaseService<Evento, Long>{
     List<Evento> obtenerEventosPorUsuario(Long idUsuario);
 
     List<Evento> obtenerEventosPorEmpresa(Long idEmpresa);
+
+    List<Evento> obtenerEventosEntreFechas(Date desde, Date hasta);
 }
