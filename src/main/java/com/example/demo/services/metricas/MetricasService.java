@@ -47,4 +47,6 @@ public interface MetricasService {
     public Double tasaAbandonoOfertas(Long idEmpresa, LocalDateTime fechaDesde, LocalDateTime fechaHasta);
 
     public Double tiempoPromedioContratacion(Long idEmpresa, LocalDateTime fechaDesde, LocalDateTime fechaHasta);
+
+    public DistribucionPostulacionesPorPaisDTO localizacionCandidatos(Long idEmpresa, LocalDateTime fechaDesde, LocalDateTime fechaHasta);
 }

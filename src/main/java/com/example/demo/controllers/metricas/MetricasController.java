@@ -166,4 +166,12 @@ public class MetricasController {
         Double tiempo = metricasService.tiempoPromedioContratacion(idEmpresa, filtroFechasDTO.getFechaDesde(), filtroFechasDTO.getFechaHasta());
         return ResponseEntity.ok().body(Map.of("tiempoPromedioContratacion", tiempo));
     }
+
+    @Operation(summary = "EMPRESA: Ver localización de candidatos postulados")
+    @PutMapping("/empresa/localizacionCandidatos/{idEmpresa}")
+    @PreAuthorize("hasAuthority('METRICAS_EMPRESA')") //NOTA: recicle el DTO, pero no se le pasa el % porque este solo pedia la cant
+    public ResponseEntity<?> localizacionCandidatos(@PathVariable Long idEmpresa, @RequestBody FiltroFechasDTO filtroFechasDTO) {
+        DistribucionPostulacionesPorPaisDTO distribucion = metricasService.localizacionCandidatos(idEmpresa, filtroFechasDTO.getFechaDesde(), filtroFechasDTO.getFechaHasta());
+        return ResponseEntity.ok().body(distribucion);
+    }
 }

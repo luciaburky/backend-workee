@@ -227,4 +227,21 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
     """)
     Double tiempoPromedioContratacion(@Param("empresaId") Long empresaId, @Param("fechaDesde") LocalDateTime fechaDesde, @Param("fechaHasta") LocalDateTime fechaHasta);
     
+    @Query(
+        """
+              SELECT new com.example.demo.dtos.metricas.candidato.PostulacionesPorPaisDTO(pa.nombrePais, COUNT(DISTINCT c), 0.0)
+              FROM PostulacionOferta po
+              JOIN po.candidato c
+              JOIN po.oferta o
+              JOIN o.empresa e
+              JOIN c.provincia pr
+              JOIN pr.pais pa
+              WHERE e.id = :idEmpresa
+              AND po.fechaHoraAlta BETWEEN :desde AND :hasta
+              GROUP BY pa.nombrePais
+              ORDER BY COUNT(po) DESC
+        """
+    )
+    public List<PostulacionesPorPaisDTO> localizacionCandidatos(@Param("idEmpresa") Long idEmpresa, @Param("desde") LocalDateTime desde, @Param("hasta") LocalDateTime hasta);
+
 }

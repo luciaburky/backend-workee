@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PostulacionesPorPaisDTO {
     private String nombrePais;
-    private Long cantidadPostulaciones;
+    private Long cantidad;
     private Double porcentajePostulaciones;
 }

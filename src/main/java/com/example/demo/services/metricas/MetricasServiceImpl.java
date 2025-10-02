@@ -147,10 +147,10 @@ public class MetricasServiceImpl implements MetricasService{
 
         List<PostulacionesPorPaisDTO> postulaciones = postulacionOfertaRepository.postulacionesPorPais(idCandidato, fechas.getLeft(), fechas.getRight());
 
-        Long total = postulaciones.stream().mapToLong(usuario -> usuario.getCantidadPostulaciones()).sum();
+        Long total = postulaciones.stream().mapToLong(usuario -> usuario.getCantidad()).sum();
 
         for(PostulacionesPorPaisDTO postulacion: postulaciones){
-            Double porcentaje = (postulacion.getCantidadPostulaciones() * 100.0) / total;
+            Double porcentaje = (postulacion.getCantidad() * 100.0) / total;
             postulacion.setPorcentajePostulaciones(porcentaje);
         }
         DistribucionPostulacionesPorPaisDTO distribucion = new DistribucionPostulacionesPorPaisDTO();
@@ -229,6 +229,27 @@ public class MetricasServiceImpl implements MetricasService{
             fechas.getRight()
         );
         return promedio != null ? promedio : 0.0;
+    }
+
+    @Override //Recicle el DTO pero no le pongo el %
+    public DistribucionPostulacionesPorPaisDTO localizacionCandidatos(Long idEmpresa, LocalDateTime fechaDesde, LocalDateTime fechaHasta){
+        Pair<LocalDateTime, LocalDateTime> fechas = manejoFechasParaFiltros(fechaDesde, fechaHasta);
+
+        List<PostulacionesPorPaisDTO> postulaciones = postulacionOfertaRepository.localizacionCandidatos(idEmpresa, fechas.getLeft(), fechas.getRight());
+        
+        Long total = postulaciones.stream().mapToLong(usuario -> usuario.getCantidad()).sum();
+        
+        postulaciones = postulaciones.stream()
+        .sorted((a,b) -> Long.compare(b.getCantidad(), a.getCantidad())) // orden desc para tomar los 5 mas grandes
+        .limit(5)
+        .sorted((a,b) -> Long.compare(a.getCantidad(), b.getCantidad())) // reordeno asc como pide la hu
+        .toList();
+        
+        DistribucionPostulacionesPorPaisDTO distribucion = new DistribucionPostulacionesPorPaisDTO();
+        distribucion.setTotalPostulaciones(total);
+        distribucion.setPostulaciones(postulaciones);
+
+        return distribucion;
     }
 
     //PARA FILTROS DE FECHAS
