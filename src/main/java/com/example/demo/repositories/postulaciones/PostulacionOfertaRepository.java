@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.example.demo.dtos.ofertas.CandidatoPostuladoDTO;
 import com.example.demo.dtos.postulaciones.EtapaActualPostulacionDTO;
+import com.example.demo.entities.params.Etapa;
 import com.example.demo.entities.postulaciones.PostulacionOferta;
 import com.example.demo.repositories.BaseRepository;
 
@@ -24,10 +25,10 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
               JOIN poe.etapa e
               WHERE po.candidato.id = :idCandidato AND po.oferta.id = :idOferta
               AND po.fechaHoraFinPostulacionOferta IS NULL AND po.fechaHoraAbandonoOferta IS NULL
-              AND poe.fechaHoraBaja IS NULL AND e.codigoEtapa NOT IN ('ABANDONADO', 'RECHAZADO', 'SELECCIONADO') 
+              AND poe.fechaHoraBaja IS NULL AND e.codigoEtapa NOT IN ('ABANDONADO', 'RECHAZADO', 'SELECCIONADO', 'NO_ACEPTADO') 
         """
     )
-    public Optional<PostulacionOferta> buscarPostulacionEnCurso(@Param("idCandidato") Long idCandidato, @Param("idOferta") Long idOferta); //TODO: Agregar el del codigo de un candidato que rechaza la oferta
+    public Optional<PostulacionOferta> buscarPostulacionEnCurso(@Param("idCandidato") Long idCandidato, @Param("idOferta") Long idOferta);
 
     public List<PostulacionOferta> findByCandidatoIdOrderByFechaHoraAltaDesc(Long idCandidato);
 
@@ -50,11 +51,14 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
             po.id,
             po.candidato.id, po.candidato.nombreCandidato, 
             po.candidato.apellidoCandidato, po.fechaHoraAlta, 
-            e.codigoEtapa, e.nombreEtapa
+            e.codigoEtapa, e.nombreEtapa,
+            u.urlFotoUsuario
         )
         FROM PostulacionOferta po
         JOIN po.postulacionOfertaEtapaList poe
         JOIN poe.etapa e
+        JOIN po.candidato c
+        JOIN c.usuario u
         WHERE po.oferta.id = :idOferta
         AND poe.fechaHoraBaja IS NULL
         AND e.codigoEtapa NOT IN ('PENDIENTE')
@@ -66,11 +70,14 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
             po.id,
             po.candidato.id, po.candidato.nombreCandidato, 
             po.candidato.apellidoCandidato, po.fechaHoraAlta, 
-            e.codigoEtapa, e.nombreEtapa
+            e.codigoEtapa, e.nombreEtapa,
+            u.urlFotoUsuario
         )
         FROM PostulacionOferta po
         JOIN po.postulacionOfertaEtapaList poe
         JOIN poe.etapa e
+        JOIN po.candidato c
+        JOIN c.usuario u
         WHERE po.oferta.id = :idOferta
         AND poe.fechaHoraBaja IS NULL
         AND e.codigoEtapa LIKE '%PENDIENTE%'
@@ -86,9 +93,9 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
         JOIN poe.etapa e
         WHERE po.oferta.id = :idOferta
         AND poe.fechaHoraBaja IS NULL
-        AND e.codigoEtapa NOT IN ('ABANDONADO', 'RECHAZADO', 'SELECCIONADO')
+        AND e.codigoEtapa NOT IN ('ABANDONADO', 'RECHAZADO', 'SELECCIONADO', 'NO_ACEPTADO')
     """)
-    List<PostulacionOferta> traerPostulacionesCandidatosEnCurso(@Param("idOferta") Long idOferta); //TODO: Agregar el estado de cuando un candidato rechaza una postulacion
+    List<PostulacionOferta> traerPostulacionesCandidatosEnCurso(@Param("idOferta") Long idOferta); 
 
 
      @Query("""
@@ -96,14 +103,29 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
             po.id,
             po.candidato.id, po.candidato.nombreCandidato, 
             po.candidato.apellidoCandidato, po.fechaHoraAlta, 
-            e.codigoEtapa, e.nombreEtapa
+            e.codigoEtapa, e.nombreEtapa,
+            u.urlFotoUsuario
         )
         FROM PostulacionOferta po
         JOIN po.postulacionOfertaEtapaList poe
         JOIN poe.etapa e
+        JOIN po.candidato c
+        JOIN c.usuario u
         WHERE po.oferta.id = :idOferta
         AND poe.fechaHoraBaja IS NULL
         AND e.codigoEtapa LIKE '%SELECCIONADO%'
     """)
     List<CandidatoPostuladoDTO> traerCandidatosSeleccionados(@Param("idOferta") Long idOferta); //Trae todos los candidatos seleccionados. Solo esos
+
+
+    @Query(
+        """
+           SELECT e FROM PostulacionOferta p
+           JOIN p.postulacionOfertaEtapaList poe
+           JOIN poe.etapa e
+           WHERE p.oferta.id = :idOferta AND p.candidato.id = :idCandidato
+           AND poe.fechaHoraBaja IS NULL
+        """
+    )
+    Optional<Etapa> traerEtapaActualDePostulacionCandidato(@Param("idOferta") Long idOferta, @Param("idCandidato") Long idCandidato);
 }

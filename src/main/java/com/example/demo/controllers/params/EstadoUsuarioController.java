@@ -61,7 +61,7 @@ public class EstadoUsuarioController {
 
     @Operation(summary = "Obtiene todos los EstadoUsuario ACTIVOS")
     @GetMapping("/activos")
-    @PreAuthorize("hasAuthority('GESTIONAR_ESTADO_USUARIO')") //TODO: Ver si esto se usa o no para ver si se borra o que se hace
+    @PreAuthorize("hasAuthority('GESTIONAR_ESTADO_USUARIO')") 
     public ResponseEntity<?> obtenerEstadosUsuarioActivos(){
         List<EstadoUsuario> estadosUsuarioActivos = estadoUsuarioService.obtenerEstadosUsuarioActivos();
         return ResponseEntity.status(HttpStatus.OK).body(estadosUsuarioActivos);

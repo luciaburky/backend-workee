@@ -17,6 +17,7 @@ import com.example.demo.dtos.postulaciones.CambioPostulacionDTO;
 import com.example.demo.dtos.postulaciones.EtapaActualPostulacionDTO;
 import com.example.demo.dtos.postulaciones.PostulacionCandidatoRequestDTO;
 import com.example.demo.dtos.postulaciones.PostulacionSimplificadaDTO;
+import com.example.demo.dtos.postulaciones.RetroalimentacionDTO;
 import com.example.demo.services.postulaciones.PostulacionOfertaService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -76,15 +77,15 @@ public class PostulacionOfertaController {
 
     @Operation(summary = "Ver el detalle de la postulacion de un candidato")
     @GetMapping("/{idPostulacion}")
-    @PreAuthorize("hasAuthority('POSTULAR_OFERTA')")
+    @PreAuthorize("hasAuthority('POSTULAR_OFERTA') or hasAuthority('GESTIONAR_POSTULACION')")
     public ResponseEntity<?> verPostulacionCandidato(@PathVariable Long idPostulacion) {
         PostulacionSimplificadaDTO postulacion = postulacionOfertaService.verDetallePostulacionDeCandidato(idPostulacion);
         return ResponseEntity.status(HttpStatus.OK).body(postulacion);
     }
 
-    @Operation(summary = "Aceptar la postulacion de un candidato")
+    @Operation(summary = "Candidato/Empresa acepta la solicitud de postulacion (es el mismo endpoint para ambos)")
     @PutMapping("/{idPostulacion}/aceptar")
-    @PreAuthorize("hasAuthority('GESTIONAR_POSTULACION')")
+    @PreAuthorize("hasAuthority('GESTIONAR_POSTULACION') or hasAuthority('POSTULAR_OFERTA')")
     public ResponseEntity<?> aceptarPostulacionDeCandidato(@PathVariable Long idPostulacion) {
         Boolean aceptado = postulacionOfertaService.aceptarSolicitudDePostulacionCandidato(idPostulacion);
         return ResponseEntity.status(HttpStatus.OK).body(aceptado);
@@ -92,9 +93,17 @@ public class PostulacionOfertaController {
 
     @Operation(summary = "Rechazar la postulacion de un candidato que estaba PENDIENTE")
     @PutMapping("/{idPostulacion}/rechazar")
-    @PreAuthorize("hasAuthority('GESTIONAR_POSTULACION')") //Aclaracion: lo unico importante que tienen que mandarle en el body es la retroalimentacion, lo otro aca no se usa (es pq recicle el DTO)
-    public ResponseEntity<?> rechazarPostulacionDeCandidatoPendiente(@PathVariable Long idPostulacion, @RequestBody CambioPostulacionDTO cambioPostulacionDTO) {
-        Boolean rechazado = postulacionOfertaService.rechazarSolicitudDePostulacionDeCandidatoPendiente(idPostulacion, cambioPostulacionDTO);
+    @PreAuthorize("hasAuthority('GESTIONAR_POSTULACION')") 
+    public ResponseEntity<?> rechazarPostulacionDeCandidatoPendiente(@PathVariable Long idPostulacion) {
+        Boolean rechazado = postulacionOfertaService.rechazarSolicitudDePostulacionDeCandidatoPendiente(idPostulacion);
+        return ResponseEntity.status(HttpStatus.OK).body(rechazado);
+    }
+
+    @Operation(summary = "Rechazar la solicitud de postulacion que mandó una empresa")
+    @PutMapping("/{idPostulacion}/rechazarComoCandidato")
+    @PreAuthorize("hasAuthority('POSTULAR_OFERTA')") 
+    public ResponseEntity<?> rechazarPostulacionComoCandidato(@PathVariable Long idPostulacion) {
+        Boolean rechazado = postulacionOfertaService.rechazarSolicitudDePostulacionDeEmpresa(idPostulacion);
         return ResponseEntity.status(HttpStatus.OK).body(rechazado);
     }
 
@@ -106,6 +115,28 @@ public class PostulacionOfertaController {
         return ResponseEntity.status(HttpStatus.OK).body(selecciono);
     }
 
+    @Operation(summary = "Enviar retroalimentación")
+    @PutMapping("/retroalimentacion")
+    @PreAuthorize("hasAuthority('GESTIONAR_POSTULACION')") 
+    public ResponseEntity<?> enviarRetroalimentacion(@RequestBody RetroalimentacionDTO retroalimentacionDTO) {
+        PostulacionSimplificadaDTO postulacion = postulacionOfertaService.enviarRetroalimentacion(retroalimentacionDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(postulacion);
+    }
 
+    @Operation(summary = "Enviar respuesta de candidato")
+    @PutMapping("/respuestaCandidato")
+    @PreAuthorize("hasAuthority('POSTULAR_OFERTA')") 
+    public ResponseEntity<?> enviarRespuestaCandidato(@RequestBody RetroalimentacionDTO retroalimentacionDTO) {
+        PostulacionSimplificadaDTO postulacion = postulacionOfertaService.enviarRespuestaCandidato(retroalimentacionDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(postulacion);
+    }
+
+    @Operation(summary = "Una empresa solicita la participación de un candidato a una oferta")
+    @PostMapping("/enviarACandidato")
+    @PreAuthorize("hasAuthority('GESTIONAR_POSTULACION')")
+    public ResponseEntity<?> enviarPostulacion(@RequestBody PostulacionCandidatoRequestDTO postulacionCandidatoRequestDTO) {
+        PostulacionSimplificadaDTO postulacionOferta = postulacionOfertaService.enviarPostulacionACandidato(postulacionCandidatoRequestDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(postulacionOferta);
+    }
 
 }
