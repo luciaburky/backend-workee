@@ -215,9 +215,7 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
     List<Object[]> abandonoVsTotal(@Param("empresaId") Long empresaId,@Param("fechaDesde") LocalDateTime fechaDesde, @Param("fechaHasta") LocalDateTime fechaHasta);
 
     @Query("""
-        SELECT COALESCE(AVG(
-        TIMESTAMPDIFF(SECOND, p.fechaHoraAlta, p.fechaHoraFinPostulacionOferta) / 86400.0
-    ), 0)
+        SELECT COALESCE(AVG(TIMESTAMPDIFF(SECOND, p.fechaHoraAlta, p.fechaHoraFinPostulacionOferta) / 86400.0), 0)
         FROM PostulacionOferta p
         JOIN p.postulacionOfertaEtapaList poe
         JOIN p.oferta o
