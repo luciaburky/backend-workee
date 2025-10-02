@@ -1,6 +1,8 @@
 package com.example.demo.services.metricas;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -217,9 +219,23 @@ public class MetricasServiceImpl implements MetricasService{
         return (abandonadas.doubleValue() / total.doubleValue()) * 100.0;
     }
 
+    @Override
+    public Double tiempoPromedioContratacion(Long idEmpresa, LocalDateTime fechaDesde, LocalDateTime fechaHasta){
+        Pair<LocalDateTime, LocalDateTime> fechas = manejoFechasParaFiltros(fechaDesde, fechaHasta);
+
+        Double promedio = postulacionOfertaRepository.tiempoPromedioContratacion(
+            idEmpresa, 
+            fechas.getLeft(), 
+            fechas.getRight()
+        );
+        return promedio != null ? promedio : 0.0;
+    }
+
     //PARA FILTROS DE FECHAS
     private Pair<LocalDateTime, LocalDateTime> manejoFechasParaFiltros(LocalDateTime fechaDesde, LocalDateTime fechaHasta){
-        LocalDateTime fechaActual = LocalDateTime.now();
+        
+        LocalDateTime fechaActual = ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime();
+
         //Si no se ingresa nada ==> toma el ultimo mes
         if(fechaDesde == null && fechaHasta == null){
             fechaHasta = fechaActual;
@@ -231,11 +247,8 @@ public class MetricasServiceImpl implements MetricasService{
         }
         if(fechaDesde != null && fechaHasta != null){
             // Validaciones
-            if (fechaDesde.isAfter(fechaHasta)) {
+            if (fechaDesde.toLocalDate().isAfter(fechaHasta.toLocalDate())) {
                 throw new IllegalArgumentException("La fecha desde no puede ser posterior a fecha hasta");
-            }
-            if (fechaDesde.toLocalDate().isAfter(fechaActual.toLocalDate())) {
-                throw new IllegalArgumentException("La fecha desde no puede ser posterior a la fecha actual");
             }
         }
 

@@ -159,5 +159,11 @@ public class MetricasController {
         return ResponseEntity.ok().body(Map.of("tasaAbandono", tasa));
     }
 
-
+    @Operation(summary = "EMPRESA: Ver tiempo promedio de contratación (en días)")
+    @PutMapping("/empresa/tiempoContratacion/{idEmpresa}")
+    @PreAuthorize("hasAuthority('METRICAS_EMPRESA')")
+    public ResponseEntity<?> verTiempoPromedioContratacion(@PathVariable Long idEmpresa, @RequestBody FiltroFechasDTO filtroFechasDTO) {
+        Double tiempo = metricasService.tiempoPromedioContratacion(idEmpresa, filtroFechasDTO.getFechaDesde(), filtroFechasDTO.getFechaHasta());
+        return ResponseEntity.ok().body(Map.of("tiempoPromedioContratacion", tiempo));
+    }
 }

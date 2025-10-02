@@ -45,4 +45,6 @@ public interface MetricasService {
     public DistribucionGenerosDTO distribucionGenerosEnOfertas(Long idEmpresa, LocalDateTime fechaDesde, LocalDateTime fechaHasta);
 
     public Double tasaAbandonoOfertas(Long idEmpresa, LocalDateTime fechaDesde, LocalDateTime fechaHasta);
+
+    public Double tiempoPromedioContratacion(Long idEmpresa, LocalDateTime fechaDesde, LocalDateTime fechaHasta);
 }

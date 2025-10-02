@@ -213,4 +213,20 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
             AND p.fechaHoraAlta BETWEEN :fechaDesde AND :fechaHasta
         """)
     List<Object[]> abandonoVsTotal(@Param("empresaId") Long empresaId,@Param("fechaDesde") LocalDateTime fechaDesde, @Param("fechaHasta") LocalDateTime fechaHasta);
+
+    @Query("""
+        SELECT COALESCE(AVG(
+        TIMESTAMPDIFF(SECOND, p.fechaHoraAlta, p.fechaHoraFinPostulacionOferta) / 86400.0
+    ), 0)
+        FROM PostulacionOferta p
+        JOIN p.postulacionOfertaEtapaList poe
+        JOIN p.oferta o
+        JOIN poe.etapa e
+        WHERE o.empresa.id = :empresaId
+        AND p.fechaHoraFinPostulacionOferta IS NOT NULL
+        AND p.fechaHoraFinPostulacionOferta BETWEEN :fechaDesde AND :fechaHasta
+        AND poe.fechaHoraBaja IS NULL AND e.codigoEtapa LIKE 'SELECCIONADO'
+    """)
+    Double tiempoPromedioContratacion(@Param("empresaId") Long empresaId, @Param("fechaDesde") LocalDateTime fechaDesde, @Param("fechaHasta") LocalDateTime fechaHasta);
+    
 }
