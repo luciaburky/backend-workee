@@ -202,4 +202,15 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
         GROUP BY g.nombreGenero
     """)
     List<GenerosPostuladosDTO> distribucionGenerosPorEmpresa(@Param("empresaId") Long empresaId, @Param("desde") LocalDateTime desde, @Param("hasta") LocalDateTime hasta);
+
+    @Query("""
+            SELECT 
+                COALESCE(SUM(CASE WHEN p.fechaHoraAbandonoOferta IS NOT NULL THEN 1 ELSE 0 END), 0),
+                COUNT(p)
+            FROM PostulacionOferta p
+            JOIN p.oferta o
+            WHERE o.empresa.id = :empresaId
+            AND p.fechaHoraAlta BETWEEN :fechaDesde AND :fechaHasta
+        """)
+    List<Object[]> abandonoVsTotal(@Param("empresaId") Long empresaId,@Param("fechaDesde") LocalDateTime fechaDesde, @Param("fechaHasta") LocalDateTime fechaHasta);
 }

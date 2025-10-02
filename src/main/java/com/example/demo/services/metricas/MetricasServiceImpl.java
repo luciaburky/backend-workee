@@ -197,6 +197,26 @@ public class MetricasServiceImpl implements MetricasService{
         return distribucion;
     }
     
+    @Override
+    public Double tasaAbandonoOfertas(Long idEmpresa, LocalDateTime fechaDesde, LocalDateTime fechaHasta){
+        Pair<LocalDateTime, LocalDateTime> fechas = manejoFechasParaFiltros(fechaDesde, fechaHasta);
+
+        List<Object[]> resultados = postulacionOfertaRepository.abandonoVsTotal(idEmpresa, fechas.getLeft(), fechas.getRight());
+        if (resultados.isEmpty()) {
+            return 0.0; 
+        }
+
+        Object[] resultado = resultados.get(0); 
+
+        Long abandonadas = ((Number) resultado[0]).longValue();
+        Long total = ((Number) resultado[1]).longValue();
+
+        if (total == 0) {
+            return 0.0; 
+        }
+        return (abandonadas.doubleValue() / total.doubleValue()) * 100.0;
+    }
+
     //PARA FILTROS DE FECHAS
     private Pair<LocalDateTime, LocalDateTime> manejoFechasParaFiltros(LocalDateTime fechaDesde, LocalDateTime fechaHasta){
         LocalDateTime fechaActual = LocalDateTime.now();

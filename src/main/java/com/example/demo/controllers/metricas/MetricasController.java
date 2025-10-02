@@ -151,4 +151,13 @@ public class MetricasController {
         return ResponseEntity.ok().body(distribucion);
     }
 
+    @Operation(summary = "EMPRESA: Ver tasa de abandono")
+    @PutMapping("/empresa/abandonos/{idEmpresa}")
+    @PreAuthorize("hasAuthority('METRICAS_EMPRESA')")
+    public ResponseEntity<?> verTasaAbandono(@PathVariable Long idEmpresa, @RequestBody FiltroFechasDTO filtroFechasDTO) {
+        Double tasa = metricasService.tasaAbandonoOfertas(idEmpresa, filtroFechasDTO.getFechaDesde(), filtroFechasDTO.getFechaHasta());
+        return ResponseEntity.ok().body(Map.of("tasaAbandono", tasa));
+    }
+
+
 }
