@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("/notificaciones")
@@ -23,7 +24,7 @@ public class NotificacionController {
 
     private final NotificacionService notificacionService;
 
-    private NotificacionController(NotificacionService notificacionService) {
+    public NotificacionController(NotificacionService notificacionService) {
         this.notificacionService = notificacionService;
     }
 
@@ -35,9 +36,9 @@ public class NotificacionController {
     }
     
     @Operation(summary = "Marcar notificación como leída")
-    @GetMapping("/{id}/leer")
+    @PutMapping("/{id}/leer")
     @PreAuthorize("hasAuthority('VER_NOTIFICACIONES')")
-    public ResponseEntity<Notificacion> marcarNotificacionComoLeida(@PathVariable Long id) {
+    public ResponseEntity<Void> marcarNotificacionComoLeida(@PathVariable Long id) {
         notificacionService.marcarComoLeida(id);
         return ResponseEntity.noContent().build();
     }

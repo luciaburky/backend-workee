@@ -166,7 +166,7 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements 
 
         Evento evento = findById(id);
     
-        if(evento.getFechaHoraInicioEvento() != eventoRequestDTO.getFechaHoraInicioEvento() || (evento.getFechaHoraFinEvento() !=  eventoRequestDTO.getFechaHoraFinEvento())){
+        if(!evento.getFechaHoraInicioEvento().equals(eventoRequestDTO.getFechaHoraInicioEvento())){
             evento.setFechaHoraInicioEvento(eventoRequestDTO.getFechaHoraInicioEvento());
             evento.setFechaHoraFinEvento(eventoRequestDTO.getFechaHoraFinEvento()); // opcional
             
@@ -194,7 +194,7 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements 
 
             //TODO: Reprogramar recordatorios
         }  
-        if (evento.getDescripcionEvento() != eventoRequestDTO.getDescripcionEvento()) {
+        if (!evento.getDescripcionEvento().equals(eventoRequestDTO.getDescripcionEvento())) {
             evento.setDescripcionEvento(eventoRequestDTO.getDescripcionEvento());;
         }
 
