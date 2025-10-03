@@ -2,7 +2,9 @@ package com.example.demo.services.postulaciones;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -14,6 +16,7 @@ import com.example.demo.dtos.postulaciones.PostulacionCandidatoRequestDTO;
 import com.example.demo.dtos.postulaciones.PostulacionSimplificadaDTO;
 import com.example.demo.dtos.postulaciones.RetroalimentacionDTO;
 import com.example.demo.entities.candidato.Candidato;
+import com.example.demo.entities.eventos.TipoNotificacion;
 import com.example.demo.entities.oferta.CodigoEstadoOferta;
 import com.example.demo.entities.oferta.Oferta;
 import com.example.demo.entities.oferta.OfertaEstadoOferta;
@@ -59,8 +62,6 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         Candidato candidato = candidatoService.findById(postulacionCandidatoRequestDTO.getIdCandidato());
         //El candidato es el que inicia la postulacion
         postulacionOferta.setIdIniciadorPostulacion(candidato.getUsuario().getId());
-
-        //TODO: Faltaria que envie la solicitud de postulacion a la empresa
 
         postulacionOfertaRepository.save(postulacionOferta);
         
@@ -143,6 +144,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         return postulacionOfertaRepository.findEtapasActualesByCandidato(idCandidato);
     }
 
+    //Transicion a cualquier Etapa menos Seleccionado
     @Override
     @Transactional
     public PostulacionSimplificadaDTO actualizarPostulacionDeCandidato(Long idPostulacion, CambioPostulacionDTO cambioPostulacionDTO){
@@ -197,9 +199,30 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
 
         PostulacionSimplificadaDTO postulacionActualizada = crearPostulacionSimplificada(postulacion);
 
-        //TODO: Falta agregar lo de las notificaciones
-        return postulacionActualizada;
+        //TODO: Construccion de Notificaciones
+        Map<String, Object> datosNotificacion = new HashMap<>();
+        datosNotificacion.put("oferta", postulacion.getOferta().getTitulo());
+        datosNotificacion.put("empresa", postulacion.getOferta().getEmpresa().getNombreEmpresa());
 
+        if (nuevaEtapa.getCodigoEtapa().equals(CodigoEtapa.RECHAZADO)) {
+            notificacionService.crearNotificacion(
+                TipoNotificacion.CANDIDATO_RECHAZADO,
+                datosNotificacion, 
+                postulacion.getCandidato().getUsuario(),     
+                null,
+                new Date()
+            );
+        } else {
+            datosNotificacion.put("etapa", nuevaEtapa.getNombreEtapa());
+            notificacionService.crearNotificacion(
+                TipoNotificacion.CAMBIO_ETAPA_POSTULACION,
+                datosNotificacion, 
+                postulacion.getCandidato().getUsuario(),     
+                null,
+                new Date()
+            );   
+        }
+        return postulacionActualizada;
     }
 
     private Boolean transicionEsPermitida(Long idOferta, PostulacionOfertaEtapa ofertaEtapaActual, String codigoEtapaNueva){
@@ -313,11 +336,24 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
 
         postulacionOfertaRepository.save(postulacion);
 
-        //TODO: Falta lo de la notificacion
+        //Generar Notificación al candidato
+        Map<String, Object> datosNotificacion = new HashMap<>();
+        datosNotificacion.put("fecha", postulacion.getFechaHoraAlta());
+        datosNotificacion.put("oferta", oferta.getTitulo());
+        datosNotificacion.put("empresa", oferta.getEmpresa().getNombreEmpresa());
+
+        notificacionService.crearNotificacion(
+            TipoNotificacion.SOLICITUD_POSTULACION_OFERTA_ACEPTADA,
+            datosNotificacion, 
+            postulacion.getCandidato().getUsuario(),     
+            null,
+            new Date()
+        );
+
         return true;
     }
 
-
+    //Empresa rechaza la solicitud de postulacion del candidato
     @Override
     @Transactional
     public Boolean rechazarSolicitudDePostulacionDeCandidatoPendiente(Long idPostulacion){
@@ -330,6 +366,18 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         comunesDeRechazarSolicitudPostulacion(idPostulacion, etapaRechazado.getCodigoEtapa(), retroalimentacion);
         
         //TODO: Falta lo de la notificacion
+        Map<String, Object> datosNotificacion = new HashMap<>();
+        PostulacionOferta postulacion = this.findById(idPostulacion);
+        datosNotificacion.put("oferta", postulacion.getOferta().getTitulo());
+        datosNotificacion.put("empresa", postulacion.getOferta().getEmpresa().getNombreEmpresa());
+
+        notificacionService.crearNotificacion(
+            TipoNotificacion.CANDIDATO_RECHAZADO,
+            datosNotificacion, 
+            postulacion.getCandidato().getUsuario(),     
+            null,
+            new Date()
+        );
         return true;
     }
 
@@ -438,7 +486,17 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         postulacionOfertaRepository.save(postulacionSeleccionada); 
         ofertaService.save(oferta);
         
-        //TODO: Falta lo de la notificacion
+        //Notificación al candidato seleccionado
+        Map<String, Object> datosNotificacion = new HashMap<>();
+        datosNotificacion.put("oferta", postulacionSeleccionada.getOferta().getTitulo());
+        datosNotificacion.put("empresa", postulacionSeleccionada.getOferta().getEmpresa().getNombreEmpresa());  
+        notificacionService.crearNotificacion(
+            TipoNotificacion.CANDIDATO_SELECCIONADO,
+            datosNotificacion, 
+            postulacionSeleccionada.getCandidato().getUsuario(),     
+            null,
+            new Date()
+        );
         
         return true;
     }
@@ -465,9 +523,19 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
             postulacion.getPostulacionOfertaEtapaList().add(postulacionOfertaEtapaNueva);
 
             postulacionOfertaRepository.save(postulacion);
-            //TODO: Falta lo de la notificacion
+            
+            //Envío de notificación a cada candidato rechazado
+            Map<String, Object> datosNotificacion = new HashMap<>();
+            datosNotificacion.put("oferta", postulacion.getOferta().getTitulo());
+            datosNotificacion.put("empresa", postulacion.getOferta().getEmpresa().getNombreEmpresa());
+            notificacionService.crearNotificacion(
+                TipoNotificacion.CANDIDATO_RECHAZADO,
+                datosNotificacion, 
+                postulacion.getCandidato().getUsuario(),     
+                null,
+                new Date()
+            );
         }
-
         return true;
     }
 
@@ -556,14 +624,21 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         //La empresa es quien inicia la postulacion
         postulacionOferta.setIdIniciadorPostulacion(oferta.getEmpresa().getUsuario().getId());
 
-        
-        
-        //TODO: Faltaria que envie la solicitud de postulacion al candidato
-
         postulacionOfertaRepository.save(postulacionOferta);
         
         PostulacionSimplificadaDTO postulacionSimplificada = crearPostulacionSimplificada(postulacionOferta);
 
+        //Generar Notificación al candidato
+        Map<String, Object> datosNotificacion = new HashMap<>();
+        datosNotificacion.put("oferta", oferta.getTitulo());
+        datosNotificacion.put("empresa", oferta.getEmpresa().getNombreEmpresa());
+        notificacionService.crearNotificacion(
+            TipoNotificacion.INVITACION_OFERTA,
+            datosNotificacion, 
+            postulacionOferta.getCandidato().getUsuario(),     
+            null,
+            new Date()
+        );
         return postulacionSimplificada;
     }
 

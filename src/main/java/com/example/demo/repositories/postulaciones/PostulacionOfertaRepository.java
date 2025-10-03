@@ -128,4 +128,12 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
         """
     )
     Optional<Etapa> traerEtapaActualDePostulacionCandidato(@Param("idOferta") Long idOferta, @Param("idCandidato") Long idCandidato);
+    
+    @Query("""
+    SELECT po
+    FROM PostulacionOferta po
+    JOIN po.postulacionOfertaEtapaList poe
+    WHERE poe.id = :idEtapa
+    """)
+    Optional<PostulacionOferta> findByEtapaId(@Param("idEtapa") Long idEtapa);
 }

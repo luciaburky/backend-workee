@@ -54,4 +54,8 @@ public class Notificacion extends Base{
     @ManyToOne()
     @JoinColumn(name = "id_evento")
     private Evento evento;
+
+    @NotNull
+    @Column(name = "enviada")
+    private Boolean enviada = false;
 }
