@@ -12,11 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.dtos.metricas.admin.DistribucionUsuariosPorRolResponseDTO;
-import com.example.demo.dtos.metricas.admin.EmpresasConMasOfertasDTO;
-import com.example.demo.dtos.metricas.admin.EvolucionUsuariosDTO;
+import com.example.demo.dtos.metricas.admin.EstadisticasAdminDTO;
 import com.example.demo.dtos.metricas.admin.FiltroFechasDTO;
-import com.example.demo.dtos.metricas.admin.UsuariosPorPaisDTO;
 import com.example.demo.dtos.metricas.candidato.DistribucionPostulacionesPorPaisDTO;
 import com.example.demo.dtos.metricas.candidato.RubrosDeInteresDTO;
 import com.example.demo.dtos.metricas.candidato.TopHabilidadDTO;
@@ -36,7 +33,15 @@ public class MetricasController {
         this.metricasService = metricasService;
     }
     //ADMINISTRADOR DEL SISTEMA
-    @Operation(summary = "SISTEMA: Ver cantidad histórica de usuarios")
+    @Operation(summary = "Ver métricas del admin del sistema")
+    @PutMapping("/admin")
+    @PreAuthorize("hasAuthority('METRICAS_SISTEMA')")
+    public ResponseEntity<?> tasaExitoOfertas(@RequestBody FiltroFechasDTO filtroFechasDTO) {
+        //Double tasa = metricasService.tasaExitoOfertas(filtroFechasDTO.getFechaDesde(), filtroFechasDTO.getFechaHasta());
+        EstadisticasAdminDTO estadisticas = metricasService.verEstadisticasAdminSistema(filtroFechasDTO.getFechaDesde(), filtroFechasDTO.getFechaHasta());
+        return ResponseEntity.ok().body(estadisticas);
+    }
+    /*@Operation(summary = "SISTEMA: Ver cantidad histórica de usuarios")
     @GetMapping("/admin/cantidadHistoricaUsuarios")
     @PreAuthorize("hasAuthority('METRICAS_SISTEMA')")
     public ResponseEntity<?> cantidadHistoricaUsuarios() {
@@ -81,7 +86,7 @@ public class MetricasController {
     public ResponseEntity<?> usuariosRegistrados(@RequestBody FiltroFechasDTO filtroFechasDTO) {
         List<EvolucionUsuariosDTO> ev = metricasService.evolucionUsuariosRegistrados(filtroFechasDTO.getFechaDesde(), filtroFechasDTO.getFechaHasta());
         return ResponseEntity.ok().body(ev);
-    }
+    }*/
 
     
     //CANDIDATOS

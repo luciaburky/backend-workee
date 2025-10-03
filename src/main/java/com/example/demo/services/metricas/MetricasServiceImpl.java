@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dtos.metricas.admin.DistribucionUsuariosPorRolResponseDTO;
 import com.example.demo.dtos.metricas.admin.EmpresasConMasOfertasDTO;
+import com.example.demo.dtos.metricas.admin.EstadisticasAdminDTO;
 import com.example.demo.dtos.metricas.admin.EvolucionUsuariosDTO;
 import com.example.demo.dtos.metricas.admin.UsuariosPorPaisDTO;
 import com.example.demo.dtos.metricas.admin.UsuariosPorRolDTO;
@@ -43,12 +44,42 @@ public class MetricasServiceImpl implements MetricasService{
     }
     //ADMINITRADOR DEL SISTEMA
     @Override
-    public Integer cantidadTotalHistoricaUsuarios(){
+    public EstadisticasAdminDTO verEstadisticasAdminSistema(LocalDateTime fechaDesde, LocalDateTime fechaHasta){
+        EstadisticasAdminDTO estadisticas = new EstadisticasAdminDTO();
+        
+        //Cantidad historica usuarios
+        Integer cantidadUsuarios = this.cantidadTotalHistoricaUsuarios();
+        estadisticas.setCantidadHistoricaUsuarios(cantidadUsuarios);
+
+        //Tasa de exito de ofertas
+        Double tasaExito = this.tasaExitoOfertas(fechaDesde, fechaHasta);
+        estadisticas.setTasaExitoOfertas(tasaExito);
+
+        //Distribucion de usuarios por rol
+        DistribucionUsuariosPorRolResponseDTO distribucionUsuarios = this.distribucionUsuariosPorRol(fechaDesde, fechaHasta);
+        estadisticas.setDistribucionUsuariosPorRol(distribucionUsuarios);
+
+        //Cantidad de usuarios por pais (top 5)
+        List<UsuariosPorPaisDTO> cantidadUsuariosPorPais = this.cantidadUsuariosPorPaisTop5(fechaDesde, fechaHasta);
+        estadisticas.setCantidadUsuariosPorPais(cantidadUsuariosPorPais);
+
+        //Empresas con más ofertas
+        List<EmpresasConMasOfertasDTO> topEmpresasConMasOfertas = this.topEmpresasConMasOfertas(fechaDesde, fechaHasta);
+        estadisticas.setEmpresasConMasOfertas(topEmpresasConMasOfertas);
+
+        //Evolucion de registro de usuarios
+        List<EvolucionUsuariosDTO> evolucionUsuariosRegistrados = this.evolucionUsuariosRegistrados(fechaDesde, fechaHasta);
+        estadisticas.setEvolucionUsuariosRegistrados(evolucionUsuariosRegistrados);
+        
+        return estadisticas;
+    }
+
+
+    private Integer cantidadTotalHistoricaUsuarios(){
         return usuarioRepository.cantidadHistoricaUsuariosActivos();
     }
 
-    @Override
-    public Double tasaExitoOfertas(LocalDateTime fechaDesde, LocalDateTime fechaHasta){
+    private Double tasaExitoOfertas(LocalDateTime fechaDesde, LocalDateTime fechaHasta){
         Pair<LocalDateTime, LocalDateTime> fechas = manejoFechasParaFiltros(fechaDesde, fechaHasta);
 
         Long cantidadTotalFinalizadas = ofertaRepository.contarOfertasFinalizadas(fechas.getLeft(), fechas.getRight());
@@ -62,8 +93,7 @@ public class MetricasServiceImpl implements MetricasService{
         return tasaExito;
     }
 
-    @Override
-    public DistribucionUsuariosPorRolResponseDTO distribucionUsuariosPorRol(LocalDateTime fechaDesde, LocalDateTime fechaHasta){
+    private DistribucionUsuariosPorRolResponseDTO distribucionUsuariosPorRol(LocalDateTime fechaDesde, LocalDateTime fechaHasta){
         Pair<LocalDateTime, LocalDateTime> fechas = manejoFechasParaFiltros(fechaDesde, fechaHasta);
 
         List<UsuariosPorRolDTO> usuariosPorRol = usuarioRolRepository.obtenerDistribucionUsuariosPorRol(fechas.getLeft(), fechas.getRight());
@@ -82,8 +112,7 @@ public class MetricasServiceImpl implements MetricasService{
 
     }
 
-    @Override
-    public List<UsuariosPorPaisDTO> cantidadUsuariosPorPaisTop5(LocalDateTime fechaDesde, LocalDateTime fechaHasta){
+    private List<UsuariosPorPaisDTO> cantidadUsuariosPorPaisTop5(LocalDateTime fechaDesde, LocalDateTime fechaHasta){
         Pair<LocalDateTime, LocalDateTime> fechas = manejoFechasParaFiltros(fechaDesde, fechaHasta);
         
         List<Object[]> listado = usuarioRepository.contarUsuariosPorPaisTop5(fechas.getLeft(), fechas.getRight());
@@ -96,8 +125,7 @@ public class MetricasServiceImpl implements MetricasService{
         return usuariosPorPais;
     }
 
-    @Override
-    public List<EmpresasConMasOfertasDTO> topEmpresasConMasOfertas(LocalDateTime fechaDesde, LocalDateTime fechaHasta){
+    private List<EmpresasConMasOfertasDTO> topEmpresasConMasOfertas(LocalDateTime fechaDesde, LocalDateTime fechaHasta){
         Pair<LocalDateTime, LocalDateTime> fechas = manejoFechasParaFiltros(fechaDesde, fechaHasta);
 
         List<EmpresasConMasOfertasDTO> empresas = ofertaRepository.topEmpresasConMasOfertas(fechas.getLeft(), fechas.getRight(), PageRequest.of(0, 5)); // primera pag, 5 elementos
@@ -106,8 +134,7 @@ public class MetricasServiceImpl implements MetricasService{
         return empresas;
     }
 
-    @Override
-    public List<EvolucionUsuariosDTO> evolucionUsuariosRegistrados(LocalDateTime fechaDesde, LocalDateTime fechaHasta){
+    private List<EvolucionUsuariosDTO> evolucionUsuariosRegistrados(LocalDateTime fechaDesde, LocalDateTime fechaHasta){
         Pair<LocalDateTime, LocalDateTime> fechas = manejoFechasParaFiltros(fechaDesde, fechaHasta);
 
         List<Object[]> elementos = usuarioRepository.evolucionUsuarios(fechas.getLeft(), fechas.getRight());
