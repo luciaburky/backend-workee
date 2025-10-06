@@ -37,57 +37,9 @@ public class MetricasController {
     @PutMapping("/admin")
     @PreAuthorize("hasAuthority('METRICAS_SISTEMA')")
     public ResponseEntity<?> tasaExitoOfertas(@RequestBody FiltroFechasDTO filtroFechasDTO) {
-        //Double tasa = metricasService.tasaExitoOfertas(filtroFechasDTO.getFechaDesde(), filtroFechasDTO.getFechaHasta());
         EstadisticasAdminDTO estadisticas = metricasService.verEstadisticasAdminSistema(filtroFechasDTO.getFechaDesde(), filtroFechasDTO.getFechaHasta());
         return ResponseEntity.ok().body(estadisticas);
     }
-    /*@Operation(summary = "SISTEMA: Ver cantidad histórica de usuarios")
-    @GetMapping("/admin/cantidadHistoricaUsuarios")
-    @PreAuthorize("hasAuthority('METRICAS_SISTEMA')")
-    public ResponseEntity<?> cantidadHistoricaUsuarios() {
-        Integer cantidad = metricasService.cantidadTotalHistoricaUsuarios();
-        return ResponseEntity.ok().body(Map.of("cantidadHistoricaUsuarios", cantidad));
-    }
-
-    @Operation(summary = "SISTEMA: Ver tasa de éxito de ofertas")
-    @PutMapping("/admin/tasaExitoOfertas")
-    @PreAuthorize("hasAuthority('METRICAS_SISTEMA')")
-    public ResponseEntity<?> tasaExitoOfertas(@RequestBody FiltroFechasDTO filtroFechasDTO) {
-        Double tasa = metricasService.tasaExitoOfertas(filtroFechasDTO.getFechaDesde(), filtroFechasDTO.getFechaHasta());
-        return ResponseEntity.ok().body(Map.of("tasaExitoOfertas", tasa));
-    }
-
-    @Operation(summary = "SISTEMA: Ver distribución de usuarios por rol")
-    @PutMapping("/admin/distribucionPorROL")
-    @PreAuthorize("hasAuthority('METRICAS_SISTEMA')")
-    public ResponseEntity<?> distribucionUsuariosPorRol(@RequestBody FiltroFechasDTO filtroFechasDTO) {
-        DistribucionUsuariosPorRolResponseDTO distribucionUsuariosPorRolResponseDTO = metricasService.distribucionUsuariosPorRol(filtroFechasDTO.getFechaDesde(), filtroFechasDTO.getFechaHasta());
-        return ResponseEntity.ok().body(distribucionUsuariosPorRolResponseDTO);
-    }
-    @Operation(summary = "SISTEMA:Ver distribución de usuarios por pais")
-    @PutMapping("/admin/usuariosPorPais")
-    @PreAuthorize("hasAuthority('METRICAS_SISTEMA')")
-    public ResponseEntity<?> usuariosPorPais(@RequestBody FiltroFechasDTO filtroFechasDTO) {
-        List<UsuariosPorPaisDTO> usuarios = metricasService.cantidadUsuariosPorPaisTop5(filtroFechasDTO.getFechaDesde(), filtroFechasDTO.getFechaHasta());
-        return ResponseEntity.ok().body(usuarios);
-    }
-
-    @Operation(summary = "SISTEMA: Ver top 5 empresas con más ofertas creadas")
-    @PutMapping("/admin/empresasConMasOfertas")
-    @PreAuthorize("hasAuthority('METRICAS_SISTEMA')")
-    public ResponseEntity<?> empresasConMasOfertas(@RequestBody FiltroFechasDTO filtroFechasDTO) {
-        List<EmpresasConMasOfertasDTO> empresas = metricasService.topEmpresasConMasOfertas(filtroFechasDTO.getFechaDesde(), filtroFechasDTO.getFechaHasta());
-        return ResponseEntity.ok().body(empresas);
-    }
-
-    @Operation(summary = "SISTEMA: Ver usuarios registrados a través del tiempo")
-    @PutMapping("/admin/usuariosRegistrados")
-    @PreAuthorize("hasAuthority('METRICAS_SISTEMA')")
-    public ResponseEntity<?> usuariosRegistrados(@RequestBody FiltroFechasDTO filtroFechasDTO) {
-        List<EvolucionUsuariosDTO> ev = metricasService.evolucionUsuariosRegistrados(filtroFechasDTO.getFechaDesde(), filtroFechasDTO.getFechaHasta());
-        return ResponseEntity.ok().body(ev);
-    }*/
-
     
     //CANDIDATOS
     @Operation(summary = "CANDIDATO: Cantidad total de postulaciones en curso")
