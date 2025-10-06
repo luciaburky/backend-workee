@@ -1,6 +1,5 @@
 package com.example.demo.controllers.metricas;
 
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
@@ -15,8 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.dtos.metricas.admin.EstadisticasAdminDTO;
 import com.example.demo.dtos.metricas.admin.FiltroFechasDTO;
 import com.example.demo.dtos.metricas.candidato.DistribucionPostulacionesPorPaisDTO;
-import com.example.demo.dtos.metricas.candidato.RubrosDeInteresDTO;
-import com.example.demo.dtos.metricas.candidato.TopHabilidadDTO;
+import com.example.demo.dtos.metricas.candidato.EstadisticasCandidatoDTO;
 import com.example.demo.dtos.metricas.empresa.DistribucionGenerosDTO;
 import com.example.demo.services.metricas.MetricasService;
 
@@ -36,58 +34,18 @@ public class MetricasController {
     @Operation(summary = "Ver métricas del admin del sistema")
     @PutMapping("/admin")
     @PreAuthorize("hasAuthority('METRICAS_SISTEMA')")
-    public ResponseEntity<?> tasaExitoOfertas(@RequestBody FiltroFechasDTO filtroFechasDTO) {
+    public ResponseEntity<?> metricasAdminSist(@RequestBody FiltroFechasDTO filtroFechasDTO) {
         EstadisticasAdminDTO estadisticas = metricasService.verEstadisticasAdminSistema(filtroFechasDTO.getFechaDesde(), filtroFechasDTO.getFechaHasta());
         return ResponseEntity.ok().body(estadisticas);
     }
     
     //CANDIDATOS
-    @Operation(summary = "CANDIDATO: Cantidad total de postulaciones en curso")
-    @GetMapping("/candidato/enCurso/{idCandidato}")
+    @Operation(summary = "Ver métricas de un candidato")
+    @PutMapping("/candidato/{idCandidato}")
     @PreAuthorize("hasAuthority('METRICAS_CANDIDATO')")
-    public ResponseEntity<?> cantidadPostulacionesEnCurso(@PathVariable Long idCandidato) {
-        Long cantidad = metricasService.contarPostulacionesEnCurso(idCandidato);
-        return ResponseEntity.ok().body(Map.of("postulacionesEnCurso", cantidad));
-    }
-
-    @Operation(summary = "CANDIDATO: Cantidad total de postulaciones rechazadas")
-    @PutMapping("/candidato/rechazadas/{idCandidato}")
-    @PreAuthorize("hasAuthority('METRICAS_CANDIDATO')")
-    public ResponseEntity<?> cantidadPostulacionesRechazadas(@PathVariable Long idCandidato, @RequestBody FiltroFechasDTO filtroFechasDTO) {
-        Long cantidad = metricasService.contarPostulacionesRechazadas(idCandidato, filtroFechasDTO.getFechaDesde(), filtroFechasDTO.getFechaHasta());
-        return ResponseEntity.ok().body(Map.of("postulacionesRechazadas", cantidad));
-    }
-
-    @Operation(summary = "CANDIDATO: Ver rubros de interes del candidato")
-    @PutMapping("/candidato/rubrosDeInteres/{idCandidato}")
-    @PreAuthorize("hasAuthority('METRICAS_CANDIDATO')")
-    public ResponseEntity<?> verRubrosDeInteres(@PathVariable Long idCandidato, @RequestBody FiltroFechasDTO filtroFechasDTO) {
-        List<RubrosDeInteresDTO> rubros = metricasService.verRubrosDeInteres(idCandidato, filtroFechasDTO.getFechaDesde(), filtroFechasDTO.getFechaHasta());
-        return ResponseEntity.ok().body(rubros);
-    }
-
-    @Operation(summary = "CANDIDATO: Ver paises más postulados del candidato")
-    @PutMapping("/candidato/paisesMasPostulados/{idCandidato}")
-    @PreAuthorize("hasAuthority('METRICAS_CANDIDATO')")
-    public ResponseEntity<?> verPaisesMasPostulados(@PathVariable Long idCandidato, @RequestBody FiltroFechasDTO filtroFechasDTO) {
-        DistribucionPostulacionesPorPaisDTO distribucion = metricasService.verPaisesMasPostulados(idCandidato, filtroFechasDTO.getFechaDesde(), filtroFechasDTO.getFechaHasta());
-        return ResponseEntity.ok().body(distribucion);
-    }
-
-    @Operation(summary = "CANDIDATO: Ver top 3 habilidades blandas")
-    @PutMapping("/candidato/habilidadesBlandas")
-    @PreAuthorize("hasAuthority('METRICAS_CANDIDATO')")
-    public ResponseEntity<?> verTopHabilidadesBlandas(@RequestBody FiltroFechasDTO filtroFechasDTO) {
-        List<TopHabilidadDTO> habilidades = metricasService.topHabilidadesBlandas(filtroFechasDTO.getFechaDesde(),filtroFechasDTO.getFechaHasta());
-        return ResponseEntity.ok().body(habilidades);
-    }
-
-    @Operation(summary = "CANDIDATO: Ver top 3 habilidades tecnicas")
-    @PutMapping("/candidato/habilidadesTecnicas")
-    @PreAuthorize("hasAuthority('METRICAS_CANDIDATO')")
-    public ResponseEntity<?> verTopHabilidadesTecnicas(@RequestBody FiltroFechasDTO filtroFechasDTO) {
-        List<TopHabilidadDTO> habilidades = metricasService.topHabilidadesTecnicas(filtroFechasDTO.getFechaDesde(),filtroFechasDTO.getFechaHasta());
-        return ResponseEntity.ok().body(habilidades);
+    public ResponseEntity<?> metricasCandidato(@PathVariable Long idCandidato, @RequestBody FiltroFechasDTO filtroFechasDTO) {
+        EstadisticasCandidatoDTO estadisticas = metricasService.verEstadisticasCandidato(idCandidato, filtroFechasDTO.getFechaDesde(), filtroFechasDTO.getFechaHasta());
+        return ResponseEntity.ok().body(estadisticas);
     }
 
     //EMPRESAS

@@ -18,6 +18,7 @@ import com.example.demo.dtos.metricas.admin.EvolucionUsuariosDTO;
 import com.example.demo.dtos.metricas.admin.UsuariosPorPaisDTO;
 import com.example.demo.dtos.metricas.admin.UsuariosPorRolDTO;
 import com.example.demo.dtos.metricas.candidato.DistribucionPostulacionesPorPaisDTO;
+import com.example.demo.dtos.metricas.candidato.EstadisticasCandidatoDTO;
 import com.example.demo.dtos.metricas.candidato.PostulacionesPorPaisDTO;
 import com.example.demo.dtos.metricas.candidato.RubrosDeInteresDTO;
 import com.example.demo.dtos.metricas.candidato.TopHabilidadDTO;
@@ -150,26 +151,47 @@ public class MetricasServiceImpl implements MetricasService{
     
     //CANDIDATO
     @Override
-    public Long contarPostulacionesEnCurso(Long idCandidato){
+    public EstadisticasCandidatoDTO verEstadisticasCandidato(Long idCandidato, LocalDateTime fechaDesde, LocalDateTime fechaHasta){
+        EstadisticasCandidatoDTO estadisticas = new EstadisticasCandidatoDTO();
+
+        Long postulacionesEnCurso = this.contarPostulacionesEnCurso(idCandidato);
+        estadisticas.setCantidadPostulacionesEnCurso(postulacionesEnCurso);
+
+        Long postulacionesRechazadas = this.contarPostulacionesRechazadas(idCandidato, fechaDesde, fechaHasta);
+        estadisticas.setCantidadPostulacionesRechazadas(postulacionesRechazadas);
+
+        List<RubrosDeInteresDTO> rubrosDeInteres = this.verRubrosDeInteres(idCandidato, fechaDesde, fechaHasta);
+        estadisticas.setRubrosDeInteres(rubrosDeInteres);
+
+        DistribucionPostulacionesPorPaisDTO paisesMasPostulados = this.verPaisesMasPostulados(idCandidato, fechaDesde, fechaHasta);
+        estadisticas.setPaisesMasPostulados(paisesMasPostulados);
+
+        List<TopHabilidadDTO> topHabilidadesBlandas = this.topHabilidadesBlandas(fechaDesde, fechaHasta);
+        estadisticas.setTopHabilidadesBlandas(topHabilidadesBlandas);
+
+        List<TopHabilidadDTO> topHabilidadesTecnicas = this.topHabilidadesTecnicas(fechaDesde, fechaHasta);
+        estadisticas.setTopHabilidadesTecnicas(topHabilidadesTecnicas);
+
+        return estadisticas;
+    }
+
+    private Long contarPostulacionesEnCurso(Long idCandidato){
         return postulacionOfertaRepository.traerCantidadPostulacionesEnCurso(idCandidato); 
     }
 
-    @Override
-    public Long contarPostulacionesRechazadas(Long idCandidato, LocalDateTime fechaDesde, LocalDateTime fechaHasta){
+    private Long contarPostulacionesRechazadas(Long idCandidato, LocalDateTime fechaDesde, LocalDateTime fechaHasta){
         Pair<LocalDateTime, LocalDateTime> fechas = manejoFechasParaFiltros(fechaDesde, fechaHasta);
 
         return postulacionOfertaRepository.traerCantidadPostulacionesRechazadas(idCandidato, fechas.getLeft(), fechas.getRight()); 
     }
 
-    @Override
-    public List<RubrosDeInteresDTO> verRubrosDeInteres(Long idCandidato, LocalDateTime fechaDesde, LocalDateTime fechaHasta){
+    private List<RubrosDeInteresDTO> verRubrosDeInteres(Long idCandidato, LocalDateTime fechaDesde, LocalDateTime fechaHasta){
         Pair<LocalDateTime, LocalDateTime> fechas = manejoFechasParaFiltros(fechaDesde, fechaHasta);
         
         return postulacionOfertaRepository.traerRubrosDeInteres(idCandidato, fechas.getLeft(), fechas.getRight());
     }
 
-    @Override
-    public DistribucionPostulacionesPorPaisDTO verPaisesMasPostulados(Long idCandidato, LocalDateTime fechaDesde, LocalDateTime fechaHasta){
+    private DistribucionPostulacionesPorPaisDTO verPaisesMasPostulados(Long idCandidato, LocalDateTime fechaDesde, LocalDateTime fechaHasta){
         Pair<LocalDateTime, LocalDateTime> fechas = manejoFechasParaFiltros(fechaDesde, fechaHasta);
 
         List<PostulacionesPorPaisDTO> postulaciones = postulacionOfertaRepository.postulacionesPorPais(idCandidato, fechas.getLeft(), fechas.getRight());
@@ -187,15 +209,13 @@ public class MetricasServiceImpl implements MetricasService{
         return distribucion;
     }
 
-    @Override
-    public List<TopHabilidadDTO> topHabilidadesBlandas(LocalDateTime fechaDesde, LocalDateTime fechaHasta){
+    private List<TopHabilidadDTO> topHabilidadesBlandas(LocalDateTime fechaDesde, LocalDateTime fechaHasta){
         Pair<LocalDateTime, LocalDateTime> fechas = manejoFechasParaFiltros(fechaDesde, fechaHasta);
         
         return ofertaRepository.topHabilidades(fechas.getLeft(), fechas.getRight(),"HABILIDAD_BLANDA", PageRequest.of(0, 3));
     }
 
-    @Override
-    public List<TopHabilidadDTO> topHabilidadesTecnicas(LocalDateTime fechaDesde, LocalDateTime fechaHasta){
+    private List<TopHabilidadDTO> topHabilidadesTecnicas(LocalDateTime fechaDesde, LocalDateTime fechaHasta){
         Pair<LocalDateTime, LocalDateTime> fechas = manejoFechasParaFiltros(fechaDesde, fechaHasta);
         
         return ofertaRepository.topHabilidades(fechas.getLeft(), fechas.getRight(),"HABILIDAD_TECNICA", PageRequest.of(0, 3));
