@@ -23,6 +23,7 @@ import com.example.demo.dtos.metricas.candidato.PostulacionesPorPaisDTO;
 import com.example.demo.dtos.metricas.candidato.RubrosDeInteresDTO;
 import com.example.demo.dtos.metricas.candidato.TopHabilidadDTO;
 import com.example.demo.dtos.metricas.empresa.DistribucionGenerosDTO;
+import com.example.demo.dtos.metricas.empresa.EstadisticasEmpresaDTO;
 import com.example.demo.dtos.metricas.empresa.GenerosPostuladosDTO;
 import com.example.demo.repositories.oferta.OfertaRepository;
 import com.example.demo.repositories.postulaciones.PostulacionOfertaRepository;
@@ -224,12 +225,32 @@ public class MetricasServiceImpl implements MetricasService{
 
     //EMPRESA
     @Override
-    public Long obtenerCantidadOfertasAbiertas(Long idEmpresa){
+    public EstadisticasEmpresaDTO verEstadisticasEmpresa(Long idEmpresa, LocalDateTime fechaDesde, LocalDateTime fechaHasta){
+        EstadisticasEmpresaDTO estadisticas = new EstadisticasEmpresaDTO();
+
+        Long cantidadOfertasAbiertas = this.obtenerCantidadOfertasAbiertas(idEmpresa);
+        estadisticas.setCantidadOfertasAbiertas(cantidadOfertasAbiertas);
+
+        DistribucionGenerosDTO distribucionGeneros = this.distribucionGenerosEnOfertas(idEmpresa, fechaDesde, fechaHasta);
+        estadisticas.setDistribucionGeneros(distribucionGeneros);
+
+        Double tasaAbandono = this.tasaAbandonoOfertas(idEmpresa, fechaDesde, fechaHasta);
+        estadisticas.setTasaAbandono(tasaAbandono);
+
+        Double tiempoPromedioContratacion = this.tiempoPromedioContratacion(idEmpresa, fechaDesde, fechaHasta);
+        estadisticas.setTiempoPromedioContratacion(tiempoPromedioContratacion);
+
+        DistribucionPostulacionesPorPaisDTO distribucionPostulacionesPorPais = this.localizacionCandidatos(idEmpresa, fechaDesde, fechaHasta);
+        estadisticas.setDistribucionPostulacionesPorPais(distribucionPostulacionesPorPais);
+
+        return estadisticas;
+    }
+    
+    private Long obtenerCantidadOfertasAbiertas(Long idEmpresa){
         return ofertaRepository.contarOfertasAbiertas(idEmpresa);
     }
 
-    @Override
-    public DistribucionGenerosDTO distribucionGenerosEnOfertas(Long idEmpresa, LocalDateTime fechaDesde, LocalDateTime fechaHasta){
+    private DistribucionGenerosDTO distribucionGenerosEnOfertas(Long idEmpresa, LocalDateTime fechaDesde, LocalDateTime fechaHasta){
         Pair<LocalDateTime, LocalDateTime> fechas = manejoFechasParaFiltros(fechaDesde, fechaHasta);
 
         List<GenerosPostuladosDTO> generos = postulacionOfertaRepository.distribucionGenerosPorEmpresa(idEmpresa, fechas.getLeft(), fechas.getRight());
@@ -246,8 +267,7 @@ public class MetricasServiceImpl implements MetricasService{
         return distribucion;
     }
     
-    @Override
-    public Double tasaAbandonoOfertas(Long idEmpresa, LocalDateTime fechaDesde, LocalDateTime fechaHasta){
+    private Double tasaAbandonoOfertas(Long idEmpresa, LocalDateTime fechaDesde, LocalDateTime fechaHasta){
         Pair<LocalDateTime, LocalDateTime> fechas = manejoFechasParaFiltros(fechaDesde, fechaHasta);
 
         List<Object[]> resultados = postulacionOfertaRepository.abandonoVsTotal(idEmpresa, fechas.getLeft(), fechas.getRight());
@@ -266,8 +286,7 @@ public class MetricasServiceImpl implements MetricasService{
         return (abandonadas.doubleValue() / total.doubleValue()) * 100.0;
     }
 
-    @Override
-    public Double tiempoPromedioContratacion(Long idEmpresa, LocalDateTime fechaDesde, LocalDateTime fechaHasta){
+    private Double tiempoPromedioContratacion(Long idEmpresa, LocalDateTime fechaDesde, LocalDateTime fechaHasta){
         Pair<LocalDateTime, LocalDateTime> fechas = manejoFechasParaFiltros(fechaDesde, fechaHasta);
 
         Double promedio = postulacionOfertaRepository.tiempoPromedioContratacion(
@@ -278,8 +297,8 @@ public class MetricasServiceImpl implements MetricasService{
         return promedio != null ? promedio : 0.0;
     }
 
-    @Override //Recicle el DTO pero no le pongo el %
-    public DistribucionPostulacionesPorPaisDTO localizacionCandidatos(Long idEmpresa, LocalDateTime fechaDesde, LocalDateTime fechaHasta){
+    //Recicle el DTO pero no le pongo el %
+    private DistribucionPostulacionesPorPaisDTO localizacionCandidatos(Long idEmpresa, LocalDateTime fechaDesde, LocalDateTime fechaHasta){
         Pair<LocalDateTime, LocalDateTime> fechas = manejoFechasParaFiltros(fechaDesde, fechaHasta);
 
         List<PostulacionesPorPaisDTO> postulaciones = postulacionOfertaRepository.localizacionCandidatos(idEmpresa, fechas.getLeft(), fechas.getRight());
