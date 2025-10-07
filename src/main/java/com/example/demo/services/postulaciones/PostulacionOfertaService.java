@@ -9,6 +9,7 @@ import com.example.demo.dtos.postulaciones.PostulacionCandidatoRequestDTO;
 import com.example.demo.dtos.postulaciones.PostulacionSimplificadaDTO;
 import com.example.demo.dtos.postulaciones.RetroalimentacionDTO;
 import com.example.demo.entities.postulaciones.PostulacionOferta;
+import com.example.demo.entities.postulaciones.PostulacionOfertaEtapa;
 import com.example.demo.services.BaseService;
 
 public interface PostulacionOfertaService extends BaseService<PostulacionOferta, Long>{
@@ -49,6 +50,8 @@ public interface PostulacionOfertaService extends BaseService<PostulacionOferta,
     public EtapaActualPostulacionDTO verEtapaActualDeUnaPostulacion(Long idCandidato, Long idOferta);
 
     public Boolean rechazarSolicitudDePostulacionDeEmpresa(Long idPostulacion);
+
+    List<PostulacionOfertaEtapa> obtenerEtapasDePostulacion(Long idPostulacion);
 
 }
 

@@ -1,5 +1,7 @@
 package com.example.demo;
 
+import java.util.TimeZone;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -8,6 +10,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import jakarta.annotation.PostConstruct;
 
 @SpringBootApplication
 public class DemoApplication {
@@ -18,6 +21,12 @@ public class DemoApplication {
             System.setProperty(entry.getKey(), entry.getValue());
         });
 		SpringApplication.run(DemoApplication.class, args);
+	}
+	
+	@PostConstruct
+	public void init() {
+		TimeZone.setDefault(TimeZone.getTimeZone("America/Argentina/Buenos_Aires"));
+		System.out.println("✅ Zona horaria configurada: " + TimeZone.getDefault().getID());
 	}
 
 	@Configuration

@@ -1,5 +1,6 @@
 package com.example.demo.services.postulaciones;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -210,7 +211,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
                 datosNotificacion, 
                 postulacion.getCandidato().getUsuario(),     
                 null,
-                new Date()
+                LocalDateTime.now()
             );
         } else {
             datosNotificacion.put("etapa", nuevaEtapa.getNombreEtapa());
@@ -219,7 +220,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
                 datosNotificacion, 
                 postulacion.getCandidato().getUsuario(),     
                 null,
-                new Date()
+                LocalDateTime.now()
             );   
         }
         return postulacionActualizada;
@@ -347,7 +348,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
             datosNotificacion, 
             postulacion.getCandidato().getUsuario(),     
             null,
-            new Date()
+            LocalDateTime.now()
         );
 
         return true;
@@ -376,7 +377,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
             datosNotificacion, 
             postulacion.getCandidato().getUsuario(),     
             null,
-            new Date()
+            LocalDateTime.now()
         );
         return true;
     }
@@ -495,7 +496,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
             datosNotificacion, 
             postulacionSeleccionada.getCandidato().getUsuario(),     
             null,
-            new Date()
+            LocalDateTime.now()
         );
         
         return true;
@@ -533,7 +534,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
                 datosNotificacion, 
                 postulacion.getCandidato().getUsuario(),     
                 null,
-                new Date()
+                LocalDateTime.now()
             );
         }
         return true;
@@ -637,7 +638,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
             datosNotificacion, 
             postulacionOferta.getCandidato().getUsuario(),     
             null,
-            new Date()
+            LocalDateTime.now()
         );
         return postulacionSimplificada;
     }
@@ -707,4 +708,19 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         return etapaActualPostulacionDTO;
     }
     
+    @Override
+    @Transactional
+    public List<PostulacionOfertaEtapa> obtenerEtapasDePostulacion(Long idPostulacion) {
+        PostulacionOferta postulacion = postulacionOfertaRepository.findById(idPostulacion)
+            .orElseThrow(() -> new EntityNotFoundException("No se encontró la postulación con ID " + idPostulacion));
+
+        List<PostulacionOfertaEtapa> etapas = postulacion.getPostulacionOfertaEtapaList();
+
+        if (etapas == null || etapas.isEmpty()) {
+            throw new EntityNotFoundException("La postulación no tiene etapas asociadas");
+        }
+
+        return etapas;
+    }
+
 }

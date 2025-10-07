@@ -1,6 +1,6 @@
 package com.example.demo.entities.eventos;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import com.example.demo.entities.Base;
 import com.example.demo.entities.seguridad.Usuario;
@@ -33,7 +33,7 @@ public class Notificacion extends Base{
 
     @NotNull
     @Column(name = "fecha_hora_envio_notificacion")
-    private Date fechaHoraEnvioNotificacion;
+    private LocalDateTime fechaHoraEnvioNotificacion;
 
     @Column(name = "lectura_notificacion")
     private Boolean lecturaNotificacion;

@@ -1,6 +1,6 @@
 package com.example.demo.schedulers;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.scheduling.annotation.Scheduled;
@@ -20,7 +20,7 @@ public class NotificacionScheduler {
 
     @Scheduled(cron = "0 0 * * * *") // cada hora
     public void procesarNotificacionesPendientes() {
-        Date ahora = new Date();
+        LocalDateTime ahora = LocalDateTime.now();
 
         List<Notificacion> pendientes = notificacionRepository.findByFechaHoraEnvioNotificacionBeforeAndEnviadaFalse(ahora);
 

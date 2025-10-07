@@ -1,6 +1,6 @@
 package com.example.demo.dtos.eventos;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -23,9 +23,9 @@ public class EventoRequestDTO {
     private Long idTipoEvento;
 
     @NotBlank(message = "La fecha y hora de inicio del evento no puede estar vacío")
-    private Date fechaHoraInicioEvento; 
+    private LocalDateTime fechaHoraInicioEvento; 
 
-    private Date fechaHoraFinEvento; // opcional: puede ser null en Entregas
+    private LocalDateTime fechaHoraFinEvento; // opcional: puede ser null en Entregas
 
     @NotNull(message = "La postulaciónEtapa asociada es obligatoria")
     private Long idPostulacionOfertaEtapa; 

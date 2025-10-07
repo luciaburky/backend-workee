@@ -1,6 +1,6 @@
 package com.example.demo.entities.eventos;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import com.example.demo.entities.Base;
 import com.example.demo.entities.params.TipoEvento;
@@ -39,10 +39,10 @@ public class Evento extends Base{
     
     @NotNull
     @Column(name = "fecha_hora_inicio_evento")
-    private Date fechaHoraInicioEvento;
+    private LocalDateTime fechaHoraInicioEvento;
     
     @Column(name = "fecha_hora_fin_evento")
-    private Date fechaHoraFinEvento;
+    private LocalDateTime fechaHoraFinEvento;
 
     @NotNull
     @ManyToOne()

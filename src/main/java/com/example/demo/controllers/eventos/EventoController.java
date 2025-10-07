@@ -81,4 +81,12 @@ public class EventoController {
         List<Evento> listaEventos = eventoService.obtenerEventosPorEmpresa(idEmpresa);
         return ResponseEntity.ok().body(listaEventos);
     }    
+    @GetMapping("/postulacion/{idPostulacion}")
+    @PreAuthorize("hasAuthority('VER_EVENTOS')")
+    public ResponseEntity<List<Evento>> obtenerEventosPorPostulacion(@PathVariable Long idPostulacion) {
+        List<Evento> eventos = eventoService.obtenerEventosPorPostulacion(idPostulacion);
+        return ResponseEntity.ok(eventos);
+    }
+
+
 }

@@ -1,6 +1,6 @@
 package com.example.demo.repositories.eventos;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -10,7 +10,5 @@ import com.example.demo.repositories.BaseRepository;
 
 @Repository
 public interface NotificacionRepository extends BaseRepository<Notificacion, Long> {
-    List<Notificacion> findByUsuarioIdAndFechaHoraEnvioNotificacionBeforeOrderByFechaHoraEnvioNotificacionDesc(Long idUsuario,Date fechaActual);
-
-    List<Notificacion> findByFechaHoraEnvioNotificacionBeforeAndEnviadaFalse(Date fecha);
+    List<Notificacion> findByUsuarioIdAndFechaHoraEnvioNotificacionBeforeAndFechaHoraBajaIsNullOrderByFechaHoraEnvioNotificacionDesc(Long idUsuario,LocalDateTime fechaActual);
 }

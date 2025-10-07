@@ -55,7 +55,7 @@ public enum TipoNotificacion {
     ),
     RECORDATORIO_EVENTO_1_DIA_CANDIDATO(
         "Recordatorio de evento",
-        "Tu evento {titulo} con {empresa} esta programado para hoy a las {horas}."
+        "Tu evento {titulo} con {empresa} esta programado para mañana a las {horas}."
     ),
 
     RECORDATORIO_EVENTO_3_DIAS_EMPRESA(
@@ -65,7 +65,7 @@ public enum TipoNotificacion {
 
     RECORDATORIO_EVENTO_1_DIA_EMPRESA(
         "Recordatorio de evento",
-        "Tu evento {titulo} con {candidato} para el puesto {oferta} esta programado para hoy a las {horas}."
+        "Tu evento {titulo} con {candidato} para el puesto {oferta} esta programado para mañana a las {horas}."
     );
 
     private final String titulo;

@@ -1,5 +1,6 @@
 package com.example.demo.services.eventos;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -28,18 +29,18 @@ public class NotificacionServiceImpl extends BaseServiceImpl<Notificacion, Long>
 
     @Override
     @Transactional
-    public Notificacion crearNotificacion(TipoNotificacion tipo, Map<String, Object> datos, Usuario usuarioDestino, Evento eventoRelacionado, Date fechaProgramada) {
-        
-        System.out.println(">>> Tipo de mapa recibido en crearNotificacion: " + datos.getClass().getName());
+    public Notificacion crearNotificacion(TipoNotificacion tipo, Map<String, Object> datos, Usuario usuarioDestino, Evento eventoRelacionado, LocalDateTime fechaProgramada) {
         String descripcion = TemplateHelper.aplicarTemplate(tipo.getTemplate(), datos);
 
         Notificacion notificacion = new Notificacion();
         notificacion.setTituloNotificacion(tipo.getTitulo());
         notificacion.setDescripcionNotificacion(descripcion);
+        notificacion.setFechaHoraAlta(new Date());
         notificacion.setFechaHoraEnvioNotificacion(fechaProgramada);
         notificacion.setLecturaNotificacion(false);
         notificacion.setTipoNotificacion(tipo);
         notificacion.setUsuario(usuarioDestino);
+        notificacion.setEnviada(false);
 
         // si la notificación tiene que ver con un evento
         if (eventoRelacionado != null) {
@@ -51,7 +52,7 @@ public class NotificacionServiceImpl extends BaseServiceImpl<Notificacion, Long>
 
     @Override
     public List<Notificacion> obtenerNotificacionesPorUsuario(Long idUsuario) {
-        return notificacionRepository.findByUsuarioIdAndFechaHoraEnvioNotificacionBeforeOrderByFechaHoraEnvioNotificacionDesc(idUsuario, new Date());
+        return notificacionRepository.findByUsuarioIdAndFechaHoraEnvioNotificacionBeforeAndFechaHoraBajaIsNullOrderByFechaHoraEnvioNotificacionDesc(idUsuario, LocalDateTime.now());
     }
 
     @Override

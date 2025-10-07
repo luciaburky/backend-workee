@@ -1,7 +1,9 @@
 package com.example.demo.services.eventos;
 
-import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.HashMap;
@@ -24,6 +26,7 @@ import com.example.demo.repositories.postulaciones.PostulacionOfertaRepository;
 import com.example.demo.services.BaseServiceImpl;
 import com.example.demo.services.params.TipoEventoService;
 import com.example.demo.services.postulaciones.PostulacionOfertaEtapaService;
+import com.example.demo.services.postulaciones.PostulacionOfertaService;
 import com.example.demo.services.seguridad.UsuarioService;
 
 import jakarta.transaction.Transactional;
@@ -38,8 +41,9 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements 
     private final UsuarioService usuarioService;
     private final NotificacionService notificacionService;
     private final PostulacionOfertaRepository postulacionOfertaRepository;
+    private final PostulacionOfertaService postulacionOfertaService;
 
-    public EventoServiceImpl(EventoRepository eventoRepository, TipoEventoService tipoEventoService, PostulacionOfertaEtapaService postulacionOfertaEtapaService, UsuarioService usuarioService, NotificacionService notificacionService, PostulacionOfertaRepository postulacionOfertaRepository) {
+    public EventoServiceImpl(EventoRepository eventoRepository, TipoEventoService tipoEventoService, PostulacionOfertaEtapaService postulacionOfertaEtapaService, UsuarioService usuarioService, NotificacionService notificacionService, PostulacionOfertaRepository postulacionOfertaRepository, PostulacionOfertaService postulacionOfertaService) {
         super(eventoRepository);
         this.eventoRepository = eventoRepository;
         this.tipoEventoService = tipoEventoService;
@@ -47,6 +51,7 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements 
         this.usuarioService = usuarioService;
         this.notificacionService = notificacionService;
         this.postulacionOfertaRepository = postulacionOfertaRepository;
+        this.postulacionOfertaService = postulacionOfertaService;
     }
 
     @Override
@@ -99,69 +104,79 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements 
         datosNotificacion.put("empresa", postulacionOferta.getOferta().getEmpresa().getNombreEmpresa());
         datosNotificacion.put("candidato", postulacionOferta.getCandidato().getNombreCandidato());
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
-        Date fechaEvento = eventoGuardado.getFechaHoraInicioEvento();
-        datosNotificacion.put("fecha", dateFormat.format(fechaEvento));
-        datosNotificacion.put("horas", timeFormat.format(fechaEvento));
-       
+        LocalDateTime fechaEvento = eventoGuardado.getFechaHoraInicioEvento();
+        datosNotificacion.put("fecha", fechaEvento.format(dateFormatter));
+        datosNotificacion.put("horas", fechaEvento.format(timeFormatter));
+    
         // Notificación al candidato
-        if ("Videollamada".equalsIgnoreCase(tipoEvento.getNombreTipoEvento())) {
-            notificacionService.crearNotificacion(
-                TipoNotificacion.EVENTO_VIDEOLLAMADA,
-                datosNotificacion,
-                usuarioCandidato,
-                eventoGuardado,
-                new Date() // enviar inmediatamente
-            );
-        } else {
-            notificacionService.crearNotificacion(
-                TipoNotificacion.EVENTO_ENTREGA,
-                datosNotificacion,
-                usuarioCandidato,
-                eventoGuardado,
-                new Date() 
-            );
-        }
+        notificacionService.crearNotificacion(
+            "Videollamada".equalsIgnoreCase(tipoEvento.getNombreTipoEvento())
+                ? TipoNotificacion.EVENTO_VIDEOLLAMADA
+                : TipoNotificacion.EVENTO_ENTREGA,
+            datosNotificacion,
+            usuarioCandidato,
+            eventoGuardado,
+            LocalDateTime.now()
+        );
 
         // Programar recordatorios (para candidato y empleado)
-        Date fecha3DiasAntes = Date.from(
-            Instant.ofEpochMilli(eventoGuardado.getFechaHoraInicioEvento().getTime()).minus(3, ChronoUnit.DAYS));
-        Date fecha1DiaAntes = Date.from(
-            Instant.ofEpochMilli(eventoGuardado.getFechaHoraInicioEvento().getTime()).minus(1, ChronoUnit.DAYS));
+        LocalDateTime inicioEvento = fechaEvento;
+        LocalDateTime ahora = LocalDateTime.now();
 
+        long diasRestantes = ChronoUnit.DAYS.between(ahora, inicioEvento);
+
+        LocalDateTime tresDiasAntes = inicioEvento.minusDays(3);
+        LocalDateTime unDiaAntes = inicioEvento.minusDays(1);
+
+        //Recordatorios para el Candidato
         if (usuarioCandidato != null) {
-            notificacionService.crearNotificacion(
-                TipoNotificacion.RECORDATORIO_EVENTO_3_DIAS_CANDIDATO,
-                datosNotificacion,
-                usuarioCandidato,
-                eventoGuardado,
-                fecha3DiasAntes
-            );
-            notificacionService.crearNotificacion(
-                TipoNotificacion.RECORDATORIO_EVENTO_1_DIA_CANDIDATO,
-                datosNotificacion,
-                usuarioCandidato,
-                eventoGuardado,
-                fecha1DiaAntes
-            );
+            // Solo crear si FALTA más de 3 días
+            if (diasRestantes> 3) {
+                notificacionService.crearNotificacion(
+                    TipoNotificacion.RECORDATORIO_EVENTO_3_DIAS_CANDIDATO,
+                    datosNotificacion,
+                    usuarioCandidato,
+                    eventoGuardado,
+                    tresDiasAntes
+                );
+            }
+
+            // Solo crear si FALTA más de 1 día
+            if (diasRestantes > 1) {
+                notificacionService.crearNotificacion(
+                    TipoNotificacion.RECORDATORIO_EVENTO_1_DIA_CANDIDATO,
+                    datosNotificacion,
+                    usuarioCandidato,
+                    eventoGuardado,
+                    unDiaAntes
+                );
+            }
         }
+
+        //Recordatorios para el Empleado
         if (usuarioEmpleado != null) {
-            notificacionService.crearNotificacion(
-                TipoNotificacion.RECORDATORIO_EVENTO_3_DIAS_EMPRESA,
-                datosNotificacion,
-                usuarioEmpleado,
-                eventoGuardado,
-                fecha3DiasAntes
-            );
-            notificacionService.crearNotificacion(
-                TipoNotificacion.RECORDATORIO_EVENTO_1_DIA_EMPRESA,
-                datosNotificacion,
-                usuarioEmpleado,
-                eventoGuardado,
-                fecha1DiaAntes
-            );
+            if (diasRestantes > 3) {
+                notificacionService.crearNotificacion(
+                    TipoNotificacion.RECORDATORIO_EVENTO_3_DIAS_EMPRESA,
+                    datosNotificacion,
+                    usuarioEmpleado,
+                    eventoGuardado,
+                    tresDiasAntes
+                );
+            }
+
+            if (diasRestantes > 1) {
+                notificacionService.crearNotificacion(
+                    TipoNotificacion.RECORDATORIO_EVENTO_1_DIA_EMPRESA,
+                    datosNotificacion,
+                    usuarioEmpleado,
+                    eventoGuardado,
+                    unDiaAntes
+                );
+            }
         }
         return eventoGuardado;
     }
@@ -188,8 +203,13 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements 
             datosNotificacion.put("titulo", evento.getNombreEvento());
             datosNotificacion.put("oferta", postulacionOferta.getOferta().getTitulo()); 
             datosNotificacion.put("empresa", postulacionOferta.getOferta().getEmpresa().getNombreEmpresa());
-            datosNotificacion.put("fecha", eventoRequestDTO.getFechaHoraInicioEvento().toString().split(" ")[0]); // solo la fecha
-            datosNotificacion.put("horas", eventoRequestDTO.getFechaHoraInicioEvento().toString().split(" ")[1]); // solo la hora
+            
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
+            LocalDateTime inicio = eventoRequestDTO.getFechaHoraInicioEvento();
+            datosNotificacion.put("fecha", inicio.format(dateFormatter));
+            datosNotificacion.put("horas", inicio.format(timeFormatter));
 
             if (evento.getUsuarioCandidato() != null) {
                 notificacionService.crearNotificacion(
@@ -197,7 +217,7 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements 
                     datosNotificacion, 
                     evento.getUsuarioCandidato(),     
                     evento,
-                    new Date() 
+                    LocalDateTime.now()
                 );        
             }
 
@@ -232,7 +252,7 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements 
                 datosNotificacion, 
                 evento.getUsuarioCandidato(),     
                 evento, 
-                new Date() 
+                LocalDateTime.now() 
             );        
         }
 
@@ -246,7 +266,7 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements 
             throw new IllegalArgumentException("El ID del usuario no puede ser nulo");
         }
 
-        List<Evento> listaEventos = eventoRepository.findByUsuarioCandidatoIdOrUsuarioEmpleadoId(idUsuario, idUsuario);
+        List<Evento> listaEventos = eventoRepository.findEventosActivosPorUsuario(idUsuario);
 
         if (listaEventos.isEmpty()) {
             throw new EntityNotFoundException("No se encontraron Eventos para el Usuario con ID  " + idUsuario);
@@ -262,7 +282,7 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements 
             throw new IllegalArgumentException("El ID de la empresa no puede ser nulo");
         }
 
-        List<Evento> listaEventos = eventoRepository.findEventosByEmpresaId(idEmpresa);
+        List<Evento> listaEventos = eventoRepository.findEventosByEmpresaIdAndFechaHoraBajaIsNull(idEmpresa);
 
         if (listaEventos.isEmpty()) {
             throw new EntityNotFoundException("No se encontraron Eventos para la Empresa con ID  " + idEmpresa);
@@ -273,15 +293,15 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements 
 
     @Override
     @Transactional
-    public List<Evento> obtenerEventosEntreFechas(Date desde, Date hasta) {
+    public List<Evento> obtenerEventosEntreFechas(LocalDateTime desde, LocalDateTime hasta) {
         if(desde == null || hasta == null) {
             throw new IllegalArgumentException("Las fechas no pueden ser nulas");
         }
-        if(desde.after(hasta)) {
+        if(desde.isAfter(hasta)) {
             throw new IllegalArgumentException("La fecha 'desde' no puede ser posterior a la fecha 'hasta'");
         }
 
-        List<Evento> listaEventos = eventoRepository.findEventosEntreFechas(desde, hasta);
+        List<Evento> listaEventos = eventoRepository.findEventosEntreFechasAndFechaHoraBajaIsNull(desde, hasta);
 
         if (listaEventos.isEmpty()) {
             throw new EntityNotFoundException("No se encontraron Eventos entre las fechas proporcionadas");
@@ -289,4 +309,28 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements 
 
         return listaEventos;
     }
+
+    @Override
+    @Transactional
+    public List<Evento> obtenerEventosPorPostulacion(Long idPostulacion) {
+        if (idPostulacion == null) {
+            throw new IllegalArgumentException("El ID de la postulación no puede ser nulo");
+        }
+
+        List<PostulacionOfertaEtapa> etapas = postulacionOfertaService.obtenerEtapasDePostulacion(idPostulacion);
+
+        List<Long> idsEtapas = etapas.stream()
+            .map(PostulacionOfertaEtapa::getId)
+            .toList();
+
+        List<Evento> eventos = eventoRepository.findEventosActivosPorEtapas(idsEtapas);
+
+        if (eventos.isEmpty()) {
+            throw new EntityNotFoundException("No se encontraron eventos para la postulación con ID " + idPostulacion);
+        }
+
+        return eventos;
+    }
+
+
 }

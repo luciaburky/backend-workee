@@ -1,5 +1,6 @@
 package com.example.demo.repositories.eventos;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -10,16 +11,33 @@ import com.example.demo.entities.eventos.Evento;
 import com.example.demo.repositories.BaseRepository;
 
 public interface EventoRepository extends BaseRepository<Evento, Long>{
-    List<Evento> findByUsuarioCandidatoIdOrUsuarioEmpleadoId(Long idUsuarioCandidato, Long idUsuarioEmpleado);
+    @Query("""
+    SELECT e FROM Evento e
+    WHERE e.fechaHoraBaja IS NULL
+      AND (e.usuarioCandidato.id = :idUsuario OR e.usuarioEmpleado.id = :idUsuario)
+    """)
+    List<Evento> findEventosActivosPorUsuario(@Param("idUsuario") Long idUsuario);
 
     @Query("""
         SELECT e FROM Evento e
         JOIN EmpleadoEmpresa ee ON e.usuarioEmpleado.id = ee.usuario.id
         WHERE ee.empresa.id = :idEmpresa
+        AND e.fechaHoraBaja IS NULL
     """)
-    List<Evento> findEventosByEmpresaId(@Param("idEmpresa") Long idEmpresa);
+    List<Evento> findEventosByEmpresaIdAndFechaHoraBajaIsNull(@Param("idEmpresa") Long idEmpresa);
 
-    @Query("SELECT e FROM Evento e WHERE e.fechaHoraInicioEvento BETWEEN :desde AND :hasta")
-    List<Evento> findEventosEntreFechas(@Param("desde") Date desde, @Param("hasta") Date hasta);
+    @Query("""
+    SELECT e FROM Evento e
+    WHERE e.fechaHoraBaja IS NULL
+      AND e.fechaHoraInicioEvento BETWEEN :desde AND :hasta
+    """)
+    List<Evento> findEventosEntreFechasAndFechaHoraBajaIsNull(@Param("desde") LocalDateTime desde, @Param("hasta") LocalDateTime hasta);
+
+    @Query("""
+    SELECT e FROM Evento e
+    WHERE e.fechaHoraBaja IS NULL
+      AND e.postulacionOfertaEtapa.id IN :idsEtapas
+    """)
+    List<Evento> findEventosActivosPorEtapas(@Param("idsEtapas") List<Long> idsEtapas);
 
 }
