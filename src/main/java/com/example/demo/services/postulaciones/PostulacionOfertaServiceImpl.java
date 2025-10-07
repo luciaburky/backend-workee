@@ -710,6 +710,12 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
     
     @Override
     @Transactional
+    public Optional<PostulacionOferta> obtenerPorEtapaId(Long idEtapa) {
+        return postulacionOfertaRepository.findByEtapaId(idEtapa);
+    }
+    
+    @Override
+    @Transactional
     public List<PostulacionOfertaEtapa> obtenerEtapasDePostulacion(Long idPostulacion) {
         PostulacionOferta postulacion = postulacionOfertaRepository.findById(idPostulacion)
             .orElseThrow(() -> new EntityNotFoundException("No se encontró la postulación con ID " + idPostulacion));

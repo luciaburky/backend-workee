@@ -1,6 +1,7 @@
 package com.example.demo.services.postulaciones;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.example.demo.dtos.ofertas.CandidatoPostuladoDTO;
 import com.example.demo.dtos.postulaciones.CambioPostulacionDTO;
@@ -52,6 +53,8 @@ public interface PostulacionOfertaService extends BaseService<PostulacionOferta,
     public Boolean rechazarSolicitudDePostulacionDeEmpresa(Long idPostulacion);
 
     List<PostulacionOfertaEtapa> obtenerEtapasDePostulacion(Long idPostulacion);
+
+    Optional<PostulacionOferta> obtenerPorEtapaId(Long idEtapa);
 
 }
 
