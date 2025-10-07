@@ -1,5 +1,7 @@
 package com.example.demo.services.eventos;
 
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.HashMap;
@@ -96,9 +98,14 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements 
         datosNotificacion.put("oferta", postulacionOferta.getOferta().getTitulo()); 
         datosNotificacion.put("empresa", postulacionOferta.getOferta().getEmpresa().getNombreEmpresa());
         datosNotificacion.put("candidato", postulacionOferta.getCandidato().getNombreCandidato());
-        datosNotificacion.put("fecha", eventoGuardado.getFechaHoraInicioEvento().toString().split(" ")[0]);
-        datosNotificacion.put("horas", eventoGuardado.getFechaHoraInicioEvento().toString().split(" ")[1]);
 
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+
+        Date fechaEvento = eventoGuardado.getFechaHoraInicioEvento();
+        datosNotificacion.put("fecha", dateFormat.format(fechaEvento));
+        datosNotificacion.put("horas", timeFormat.format(fechaEvento));
+       
         // Notificación al candidato
         if ("Videollamada".equalsIgnoreCase(tipoEvento.getNombreTipoEvento())) {
             notificacionService.crearNotificacion(
@@ -119,9 +126,11 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements 
         }
 
         // Programar recordatorios (para candidato y empleado)
-        Date fecha3DiasAntes = Date.from(eventoGuardado.getFechaHoraInicioEvento().toInstant().minus(3, ChronoUnit.DAYS));
-        Date fecha1DiaAntes = Date.from(eventoGuardado.getFechaHoraInicioEvento().toInstant().minus(1, ChronoUnit.DAYS));
-        
+        Date fecha3DiasAntes = Date.from(
+            Instant.ofEpochMilli(eventoGuardado.getFechaHoraInicioEvento().getTime()).minus(3, ChronoUnit.DAYS));
+        Date fecha1DiaAntes = Date.from(
+            Instant.ofEpochMilli(eventoGuardado.getFechaHoraInicioEvento().getTime()).minus(1, ChronoUnit.DAYS));
+
         if (usuarioCandidato != null) {
             notificacionService.crearNotificacion(
                 TipoNotificacion.RECORDATORIO_EVENTO_3_DIAS_CANDIDATO,

@@ -39,7 +39,7 @@ public class Notificacion extends Base{
     private Boolean lecturaNotificacion;
 
     @NotNull
-    @Column(name = "tipo_notificacion")
+    @Column(name = "tipo_notificacion", length = 50)
     @Enumerated(EnumType.STRING)
     private TipoNotificacion tipoNotificacion;
 

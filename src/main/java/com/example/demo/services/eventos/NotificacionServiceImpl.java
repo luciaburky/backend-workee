@@ -29,7 +29,8 @@ public class NotificacionServiceImpl extends BaseServiceImpl<Notificacion, Long>
     @Override
     @Transactional
     public Notificacion crearNotificacion(TipoNotificacion tipo, Map<String, Object> datos, Usuario usuarioDestino, Evento eventoRelacionado, Date fechaProgramada) {
-
+        
+        System.out.println(">>> Tipo de mapa recibido en crearNotificacion: " + datos.getClass().getName());
         String descripcion = TemplateHelper.aplicarTemplate(tipo.getTemplate(), datos);
 
         Notificacion notificacion = new Notificacion();
