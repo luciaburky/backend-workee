@@ -47,7 +47,7 @@ public class MetricasController {
 
     //EMPRESAS
     @Operation(summary = "EMPRESA: Ver proporción de géneros postulados")
-    @PutMapping("/empresa/generosEnOfertas/{idEmpresa}")
+    @PutMapping("/empresa/{idEmpresa}")
     @PreAuthorize("hasAuthority('METRICAS_EMPRESA')")
     public ResponseEntity<?> verDistribucionGeneros(@PathVariable Long idEmpresa, @RequestBody FiltroFechasDTO filtroFechasDTO) {
         EstadisticasEmpresaDTO estadisticas = metricasService.verEstadisticasEmpresa(idEmpresa, filtroFechasDTO.getFechaDesde(), filtroFechasDTO.getFechaHasta());
