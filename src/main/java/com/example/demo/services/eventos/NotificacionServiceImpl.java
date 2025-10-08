@@ -52,7 +52,28 @@ public class NotificacionServiceImpl extends BaseServiceImpl<Notificacion, Long>
 
     @Override
     public List<Notificacion> obtenerNotificacionesPorUsuario(Long idUsuario) {
-        return notificacionRepository.findByUsuarioIdAndFechaHoraEnvioNotificacionBeforeAndFechaHoraBajaIsNullOrderByFechaHoraEnvioNotificacionDesc(idUsuario, LocalDateTime.now());
+        if (idUsuario == null) {
+            throw new IllegalArgumentException("El ID del usuario no puede ser nulo");
+        }
+        return notificacionRepository.findEnviadasPorUsuario(idUsuario, LocalDateTime.now());
+    }
+
+    @Override
+    @Transactional
+    public List<Notificacion> obtenerNotificacionesPendientesPorUsuario(Long idUsuario) {
+        if (idUsuario == null) {
+            throw new IllegalArgumentException("El ID del usuario no puede ser nulo");
+        }
+
+        LocalDateTime fechaActual = LocalDateTime.now();
+
+        List<Notificacion> pendientes = notificacionRepository.findByUsuarioIdAndEnviadaFalseAndFechaHoraEnvioNotificacionBeforeAndFechaHoraBajaIsNullOrderByFechaHoraEnvioNotificacionAsc(idUsuario, fechaActual);
+        
+        if(pendientes.isEmpty()) {
+            return List.of();
+        }
+        
+        return pendientes;
     }
 
     @Override
@@ -60,6 +81,14 @@ public class NotificacionServiceImpl extends BaseServiceImpl<Notificacion, Long>
     public void marcarComoLeida(Long idNotificacion) {
         Notificacion notificacion = this.findById(idNotificacion);
         notificacion.setLecturaNotificacion(true);
+        notificacionRepository.save(notificacion);
+    }
+
+    @Override
+    @Transactional
+    public void marcarComoEnviada(Long idNotificacion) {
+        Notificacion notificacion = this.findById(idNotificacion);
+        notificacion.setEnviada(true);
         notificacionRepository.save(notificacion);
     }
 }

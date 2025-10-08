@@ -1,7 +1,6 @@
 package com.example.demo.services.eventos;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +14,10 @@ public interface NotificacionService {
     Notificacion crearNotificacion(TipoNotificacion tipo, Map<String, Object> datos, Usuario usuarioDestino, Evento eventoRelacionado, LocalDateTime fechaProgramada);    
 
     List<Notificacion> obtenerNotificacionesPorUsuario(Long idUsuario);
+
+    List<Notificacion> obtenerNotificacionesPendientesPorUsuario(Long idUsuario);
     
     void marcarComoLeida(Long idNotificacion);
+
+    void marcarComoEnviada(Long idNotificacion);
 }

@@ -28,6 +28,15 @@ public class NotificacionController {
         this.notificacionService = notificacionService;
     }
 
+    //Obtener notificaciones pendientes (a mostrar en el Swal)
+    @Operation(summary = "Obtener notificaciones pendientes por usuario")
+    @GetMapping("/pendientes/usuario/{id}")
+    @PreAuthorize("hasAuthority('VER_NOTIFICACIONES')")
+    public ResponseEntity<List<Notificacion>> obtenerNotificacionesPendientesPorUsuario(@PathVariable Long id) {
+        return ResponseEntity.ok(notificacionService.obtenerNotificacionesPendientesPorUsuario(id));
+    }
+
+    //Obtener todas las notificaciones del usuario (para el listado de notificaciones)
     @Operation(summary = "Obtener notificaciones por usuario")
     @GetMapping("/usuario/{id}")
     @PreAuthorize("hasAuthority('VER_NOTIFICACIONES')")
@@ -35,13 +44,21 @@ public class NotificacionController {
         return ResponseEntity.ok(notificacionService.obtenerNotificacionesPorUsuario(id));
     }
     
+    //Marcar como leída (cuando se visualiza en la sección de Notificaciones)
     @Operation(summary = "Marcar notificación como leída")
-    @PutMapping("/{id}/leer")
+    @PutMapping("/leida/{id}")
     @PreAuthorize("hasAuthority('VER_NOTIFICACIONES')")
     public ResponseEntity<Void> marcarNotificacionComoLeida(@PathVariable Long id) {
         notificacionService.marcarComoLeida(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
-
     
+    //Marcar como enviada (despues que se muestra el Swal de la notificación)
+    @Operation(summary = "Marcar notificación como enviada")
+    @PutMapping("/enviada/{id}")
+    @PreAuthorize("hasAuthority('VER_NOTIFICACIONES')")
+    public ResponseEntity<Void> marcarNotificacionComoEnviada(@PathVariable Long id) {
+        notificacionService.marcarComoEnviada(id);
+        return ResponseEntity.ok().build();
+    }
 }
