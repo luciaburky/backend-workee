@@ -1,6 +1,6 @@
 package com.example.demo.entities.videollamadas;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.example.demo.entities.Base;
@@ -35,17 +35,17 @@ public class Videollamada extends Base{
     private String enlaceVideollamada; 
 
     @Column(name = "fecha_hora_fin_planif_videollamada")
-    private Date fechaHoraFinPlanifVideollamada ;
+    private LocalDateTime fechaHoraFinPlanifVideollamada ;
 
     @Column(name = "fecha_hora_fin_real_videollamada")
-    private Date fechaHoraFinRealVideollamada;
+    private LocalDateTime fechaHoraFinRealVideollamada;
 
     @NotNull
     @Column(name = "fecha_hora_inicio_planif_videollamada")
-    private Date fechaHoraInicioPlanifVideollamada;
+    private LocalDateTime fechaHoraInicioPlanifVideollamada;
 
     @Column(name = "fecha_hora_inicio_real_videollamada")
-    private Date fechaHoraInicioRealVideollamada;
+    private LocalDateTime fechaHoraInicioRealVideollamada;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "id_videollamada")

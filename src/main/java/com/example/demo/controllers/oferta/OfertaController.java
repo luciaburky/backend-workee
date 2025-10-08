@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.dtos.ofertas.CandidatoPostuladoDTO;
 import com.example.demo.dtos.ofertas.OfertaRequestDTO;
 import com.example.demo.dtos.params.OfertasEmpleadoDTO;
+import com.example.demo.dtos.postulaciones.EtapaActualPostulacionDTO;
 import com.example.demo.dtos.postulaciones.OfertasEtapasDTO;
 import com.example.demo.entities.oferta.CodigoEstadoOferta;
 import com.example.demo.entities.oferta.Oferta;
@@ -154,4 +155,17 @@ public class OfertaController {
         List<CandidatoPostuladoDTO> candidatos = postulacionOfertaService.traerCandidatosSeleccionados(idOferta);
         return ResponseEntity.ok().body(candidatos);
     }
+
+    @Operation(summary = "Devuelve etapa actual si el candidato ya estaba postulado a la oferta")
+    @GetMapping("/{idOferta}/{idCandidato}")
+    //@PreAuthorize("hasAuthority('GESTION_OFERTAS') or hasAuthority('GESTIONAR_POSTULACION') or hasAuthority('POSTULAR_OFERTA')")
+    @PreAuthorize("hasAnyAuthority('GESTION_OFERTAS', 'GESTIONAR_POSTULACION', 'POSTULAR_OFERTA', 'BUSCAR_OFERTAS')")
+    public ResponseEntity<?> getEtapaActualCandidato(@PathVariable Long idOferta, @PathVariable Long idCandidato) {
+        EtapaActualPostulacionDTO etapaActualPostulacionDTO = postulacionOfertaService.verEtapaActualDeUnaPostulacion(idCandidato, idOferta);
+        if(etapaActualPostulacionDTO == null){
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.ok().body(etapaActualPostulacionDTO.getNombreEtapa());
+    }
+
 }

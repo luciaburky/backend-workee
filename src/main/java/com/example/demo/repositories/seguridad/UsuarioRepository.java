@@ -21,6 +21,18 @@ public interface UsuarioRepository extends BaseRepository<Usuario, Long>{
         nativeQuery = true
     )
     public Optional<Usuario> buscarUsuarioPorCorreo(@Param("correo") String correo);
+
+
+    @Query(
+        """
+            SELECT COUNT(u) FROM Usuario u
+            JOIN u.usuarioEstadoList ue
+            JOIN ue.estadoUsuario e
+            WHERE u.fechaHoraBaja IS NULL
+            AND ue.fechaHoraBaja IS NULL AND e.codigoEstadoUsuario NOT IN ('PENDIENTE', 'RECHAZADO')
+        """
+    )
+    public Integer cantidadHistoricaUsuariosActivos();
     
 }
 

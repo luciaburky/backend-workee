@@ -59,7 +59,7 @@ public class TipoEventoController  {
 
     @Operation(summary = "Obtiene todos los TipoEvento ACTIVOS")
     @GetMapping("/activos")
-    @PreAuthorize("hasAuthority('GESTIONAR_TIPO_EVENTO')") //TODO: Ver que permiso le ponemos en base al modulo de calendario
+    @PreAuthorize("hasAuthority('GESTIONAR_TIPO_EVENTO')") 
     public ResponseEntity<?> obtenerEstadosUsuarioActivos(){
         List<TipoEvento> tiposEventosActivos = tipoEventoService.obtenerTiposEventosActivos();
         return ResponseEntity.status(HttpStatus.OK).body(tiposEventosActivos);

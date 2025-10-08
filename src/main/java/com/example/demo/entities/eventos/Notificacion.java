@@ -1,6 +1,6 @@
 package com.example.demo.entities.eventos;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import com.example.demo.entities.Base;
 import com.example.demo.entities.seguridad.Usuario;
@@ -33,13 +33,13 @@ public class Notificacion extends Base{
 
     @NotNull
     @Column(name = "fecha_hora_envio_notificacion")
-    private Date fechaHoraEnvioNotificacion;
+    private LocalDateTime fechaHoraEnvioNotificacion;
 
     @Column(name = "lectura_notificacion")
     private Boolean lecturaNotificacion;
 
     @NotNull
-    @Column(name = "tipo_notificacion")
+    @Column(name = "tipo_notificacion", length = 50)
     @Enumerated(EnumType.STRING)
     private TipoNotificacion tipoNotificacion;
 
@@ -54,4 +54,8 @@ public class Notificacion extends Base{
     @ManyToOne()
     @JoinColumn(name = "id_evento")
     private Evento evento;
+
+    @NotNull
+    @Column(name = "enviada")
+    private Boolean enviada = false;
 }

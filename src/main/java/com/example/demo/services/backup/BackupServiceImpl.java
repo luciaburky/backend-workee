@@ -26,7 +26,7 @@ public class BackupServiceImpl implements BackupService{
     @Value("${backup.folder.path.win}")
     private String backupFilePathWindows; 
 
-    @Value("${backup.folder.path.linux:${user.home}/backups-workee}") //TODO: Revisar
+    @Value("${backup.folder.path.linux:${user.home}/backups-workee}") 
     private String backupFilePathLinux;
 
     private String getBackupFolder() {

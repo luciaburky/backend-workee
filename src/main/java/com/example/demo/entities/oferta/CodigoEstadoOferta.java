@@ -1,4 +1,3 @@
-
 package com.example.demo.entities.oferta;
 
 public class CodigoEstadoOferta {

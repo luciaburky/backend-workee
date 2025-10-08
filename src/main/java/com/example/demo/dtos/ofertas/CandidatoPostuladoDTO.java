@@ -16,4 +16,5 @@ public class CandidatoPostuladoDTO {
     private Date fechaHoraPostulacion;
     private String codigoEtapa;
     private String nombreEtapa;
+    private String urlFotoPerfil;
 }

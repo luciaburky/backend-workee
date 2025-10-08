@@ -19,7 +19,6 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 public class DetalleVideollamada extends Base{
-//TODO: Preguntar si lo dejamos asi vacio o que hacemos
 
     @ManyToOne()
     @JoinColumn(name = "id_usuario")

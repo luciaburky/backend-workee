@@ -2,6 +2,7 @@ package com.example.demo.controllers.seguridad;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dtos.seguridad.ActualizarContraseniaDTO;
+import com.example.demo.entities.candidato.Candidato;
+import com.example.demo.entities.empresa.EmpleadoEmpresa;
+import com.example.demo.entities.empresa.Empresa;
 import com.example.demo.dtos.seguridad.FiltrosUsuariosRequestDTO;
 import com.example.demo.dtos.seguridad.UsuarioResponseDTO;
 import com.example.demo.entities.seguridad.Usuario;
@@ -36,15 +40,17 @@ public class UsuarioController {
     private final UsuarioService usuarioService;
     private final BajaOrquestadorService bajaOrquestadorService;
     private final EmpleadoEmpresaService empleadoEmpresaService;
+    private final EmpleadoEmpresaService empleadoService;
     private final EmpresaService empresaService;
     private final CandidatoService candidatoService;
 
-    public UsuarioController(UsuarioService usuarioService, BajaOrquestadorService bajaOrquestadorService, EmpleadoEmpresaService empleadoEmpresaService, EmpresaService empresaService, CandidatoService candidatoService){
+    public UsuarioController(UsuarioService usuarioService, BajaOrquestadorService bajaOrquestadorService, EmpleadoEmpresaService empleadoEmpresaService, EmpresaService empresaService, CandidatoService candidatoService, EmpleadoEmpresaService empleadoService){
         this.usuarioService = usuarioService;
         this.bajaOrquestadorService = bajaOrquestadorService;
         this.empleadoEmpresaService = empleadoEmpresaService;
         this.empresaService = empresaService;
         this.candidatoService = candidatoService;
+        this.empleadoService = empleadoService;
     }
 
     
@@ -129,6 +135,47 @@ public class UsuarioController {
     public ResponseEntity<?> obtenerIdPorCorreo(@PathVariable String correo){
         Long id = usuarioService.obtenerIdUsuarioPorCorreo(correo);
         return ResponseEntity.status(HttpStatus.OK).body(Map.of("id", id));
+    }
+
+
+    ///MAS METODOS QUE ME PIDE EL MAXI NO SE PARA QUE :D
+    @Operation(summary = "Obtener candidato por ID usuario")
+    @GetMapping("/candidatoPorIdUsuario/{idUsuario}")
+    //@PreAuthorize("hasAuthority('GESTIONAR_USUARIOS')") 
+    public ResponseEntity<?> obtenerCandidato(@PathVariable Long idUsuario){
+        Optional<Candidato> candidato = candidatoService.buscarCandidatoPorIdUsuario(idUsuario);
+        if(candidato.isPresent()){
+            return ResponseEntity.status(HttpStatus.OK).body(candidato.get());
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "No se encontró el candidato buscado por el ID usuario"));
+        }
+    }
+
+    @Operation(summary = "Obtener empresa por ID usuario")
+    @GetMapping("/empresaPorIdUsuario/{idUsuario}")
+    //@PreAuthorize("hasAuthority('GESTIONAR_USUARIOS')") 
+    public ResponseEntity<?> obtenerEmpresa(@PathVariable Long idUsuario){
+        Optional<Empresa> empresa = empresaService.buscarEmpresaPorIdUsuario(idUsuario);
+        if(empresa.isPresent()){
+            return ResponseEntity.status(HttpStatus.OK).body(empresa.get());
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "No se encontró la empresa buscada por el ID usuario"));
+        }
+    }
+
+    @Operation(summary = "Obtener empleado por ID usuario")
+    @GetMapping("/empleadoPorIdUsuario/{idUsuario}")
+    //@PreAuthorize("hasAuthority('GESTIONAR_USUARIOS')") 
+    public ResponseEntity<?> obtenerEmpleado(@PathVariable Long idUsuario){
+        Optional<EmpleadoEmpresa> empleado = empleadoService.buscarEmpleadoPorIdUsuario(idUsuario);
+        if(empleado.isPresent()){
+            return ResponseEntity.status(HttpStatus.OK).body(empleado.get());
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "No se encontró la empresa buscada por el ID usuario"));
+        }
     }
 
 }
