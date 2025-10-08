@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.example.demo.dtos.empresa.EmpleadoEmpresaRequestDTO;
 import com.example.demo.entities.empresa.EmpleadoEmpresa;
+import com.example.demo.entities.empresa.Empresa;
 import com.example.demo.services.BaseService;
 
 public interface EmpleadoEmpresaService extends BaseService<EmpleadoEmpresa, Long>{
@@ -27,4 +28,6 @@ public interface EmpleadoEmpresaService extends BaseService<EmpleadoEmpresa, Lon
     public List<EmpleadoEmpresa> visualizarTodosLosEmpleadosDeUnaEmpresa(Long idEmpresa);
 
     public Boolean existeEmpleadoPorUsuarioId(Long usuarioId);
+
+    public Optional<EmpleadoEmpresa> buscarEmpleadoPorIdUsuario(Long idUsuario);
 }

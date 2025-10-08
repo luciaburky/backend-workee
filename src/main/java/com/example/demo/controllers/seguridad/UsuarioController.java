@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dtos.seguridad.ActualizarContraseniaDTO;
 import com.example.demo.entities.candidato.Candidato;
+import com.example.demo.entities.empresa.EmpleadoEmpresa;
 import com.example.demo.entities.empresa.Empresa;
 import com.example.demo.dtos.seguridad.FiltrosUsuariosRequestDTO;
 import com.example.demo.dtos.seguridad.UsuarioResponseDTO;
@@ -39,15 +40,17 @@ public class UsuarioController {
     private final UsuarioService usuarioService;
     private final BajaOrquestadorService bajaOrquestadorService;
     private final EmpleadoEmpresaService empleadoEmpresaService;
+    private final EmpleadoEmpresaService empleadoService;
     private final EmpresaService empresaService;
     private final CandidatoService candidatoService;
 
-    public UsuarioController(UsuarioService usuarioService, BajaOrquestadorService bajaOrquestadorService, EmpleadoEmpresaService empleadoEmpresaService, EmpresaService empresaService, CandidatoService candidatoService){
+    public UsuarioController(UsuarioService usuarioService, BajaOrquestadorService bajaOrquestadorService, EmpleadoEmpresaService empleadoEmpresaService, EmpresaService empresaService, CandidatoService candidatoService, EmpleadoEmpresaService empleadoService){
         this.usuarioService = usuarioService;
         this.bajaOrquestadorService = bajaOrquestadorService;
         this.empleadoEmpresaService = empleadoEmpresaService;
         this.empresaService = empresaService;
         this.candidatoService = candidatoService;
+        this.empleadoService = empleadoService;
     }
 
     
@@ -156,6 +159,19 @@ public class UsuarioController {
         Optional<Empresa> empresa = empresaService.buscarEmpresaPorIdUsuario(idUsuario);
         if(empresa.isPresent()){
             return ResponseEntity.status(HttpStatus.OK).body(empresa.get());
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "No se encontró la empresa buscada por el ID usuario"));
+        }
+    }
+
+    @Operation(summary = "Obtener empleado por ID usuario")
+    @GetMapping("/empleadoPorIdUsuario/{idUsuario}")
+    //@PreAuthorize("hasAuthority('GESTIONAR_USUARIOS')") 
+    public ResponseEntity<?> obtenerEmpleado(@PathVariable Long idUsuario){
+        Optional<EmpleadoEmpresa> empleado = empleadoService.buscarEmpleadoPorIdUsuario(idUsuario);
+        if(empleado.isPresent()){
+            return ResponseEntity.status(HttpStatus.OK).body(empleado.get());
         }
         else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "No se encontró la empresa buscada por el ID usuario"));

@@ -153,6 +153,14 @@ public class EmpleadoEmpresaServiceImpl extends BaseServiceImpl<EmpleadoEmpresa,
     public Boolean existeEmpleadoPorUsuarioId(Long usuarioId){
         return empleadoEmpresaRepository.existsByUsuarioId(usuarioId);
     }
+
+    @Override
+    public Optional<EmpleadoEmpresa> buscarEmpleadoPorIdUsuario(Long idUsuario){
+        if(idUsuario == null){
+            throw new IllegalArgumentException("El id del usuario no puede estar vacío");
+        }
+        Optional<EmpleadoEmpresa> empleado = empleadoEmpresaRepository.findByUsuarioId(idUsuario);
+
+        return empleado;
+    }   
 }
-
-
