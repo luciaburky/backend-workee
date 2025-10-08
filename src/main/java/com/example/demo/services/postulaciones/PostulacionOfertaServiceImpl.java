@@ -1,6 +1,8 @@
 package com.example.demo.services.postulaciones;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -339,9 +341,16 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
 
         //Generar Notificación al candidato
         Map<String, Object> datosNotificacion = new HashMap<>();
-        datosNotificacion.put("fecha", postulacion.getFechaHoraAlta());
         datosNotificacion.put("oferta", oferta.getTitulo());
         datosNotificacion.put("empresa", oferta.getEmpresa().getNombreEmpresa());
+        
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDateTime fechaAlta = postulacion.getFechaHoraAlta()
+                .toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+
+        datosNotificacion.put("fecha", fechaAlta.format(dateFormatter));
 
         notificacionService.crearNotificacion(
             TipoNotificacion.SOLICITUD_POSTULACION_OFERTA_ACEPTADA,
