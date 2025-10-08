@@ -92,13 +92,13 @@ public class GlobalExceptionHandler {
     }
 
     // Manejo de excepciones no controladas
-    /*@ExceptionHandler(Exception.class)
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex) {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 "Un error inesperado ha ocurrido: " + ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-    }*/
+    }
 
     //Para el login
     @ExceptionHandler(BadCredentialsException.class)
@@ -108,19 +108,4 @@ public class GlobalExceptionHandler {
                 "Credenciales inválidas: " + ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handleException(Exception ex) {
-        // 👇 Logueamos la traza completa en la consola
-        ex.printStackTrace();
-
-        // Armamos el cuerpo de la respuesta JSON
-        Map<String, Object> body = new HashMap<>();
-        body.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-        body.put("message", "Un error inesperado ha ocurrido: " + ex.getMessage());
-        body.put("timestamp", LocalDateTime.now());
-
-        return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
 }
