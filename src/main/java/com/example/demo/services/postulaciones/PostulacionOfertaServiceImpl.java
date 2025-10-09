@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
-
+import com.example.demo.controllers.seguridad.AdministradorController;
 import com.example.demo.dtos.ofertas.CandidatoPostuladoDTO;
 import com.example.demo.dtos.postulaciones.CambioPostulacionDTO;
 import com.example.demo.dtos.postulaciones.EtapaActualPostulacionDTO;
@@ -41,6 +41,8 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOferta, Long> implements PostulacionOfertaService{
+
+    private final AdministradorController administradorController;
     private final PostulacionOfertaRepository postulacionOfertaRepository;
     private final NotificacionService notificacionService;
     
@@ -49,13 +51,14 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
     private final EtapaService etapaService;
 
     public PostulacionOfertaServiceImpl(PostulacionOfertaRepository postulacionOfertaRepository, CandidatoService candidatoService, 
-    OfertaService ofertaService, EtapaService etapaService, NotificacionService notificacionService) {
+    OfertaService ofertaService, EtapaService etapaService, NotificacionService notificacionService, AdministradorController administradorController) {
         super(postulacionOfertaRepository);
         this.postulacionOfertaRepository = postulacionOfertaRepository;
         this.candidatoService = candidatoService;
         this.ofertaService = ofertaService;
         this.etapaService = etapaService;
         this.notificacionService = notificacionService;
+        this.administradorController = administradorController;
     }
 
     @Override
@@ -202,7 +205,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
 
         PostulacionSimplificadaDTO postulacionActualizada = crearPostulacionSimplificada(postulacion);
 
-        //TODO: Construccion de Notificaciones
+        
         Map<String, Object> datosNotificacion = new HashMap<>();
         datosNotificacion.put("oferta", postulacion.getOferta().getTitulo());
         datosNotificacion.put("empresa", postulacion.getOferta().getEmpresa().getNombreEmpresa());
@@ -461,24 +464,49 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
                                                                 .findFirst()
                                                                 .orElseThrow(() -> new EntityNotValidException("No se encontró la etapa actual"));
         
+        String codigoEtapaActual = postulacionOfertaEtapaActual.getEtapa().getCodigoEtapa();
+        if(codigoEtapaActual.equals(CodigoEtapa.SELECCIONADO) || codigoEtapaActual.equals(CodigoEtapa.RECHAZADO) || codigoEtapaActual.equals(CodigoEtapa.ABANDONADO) || codigoEtapaActual.equals(CodigoEtapa.NO_ACEPTADO)){
+            throw new EntityNotValidException("No es posible seleccionar al candidato porque su estado actual es: " + codigoEtapaActual);
+        }
+
+
+
         // Finalizo la etapa actual de la postulacion
         postulacionOfertaEtapaActual.setFechaHoraBaja(new Date());
-        //postulacionOfertaEtapaActual.setRetroalimentacionEmpresa("¡Felicidades! Has sido seleccionado");
+        
         
         //Seteo de la etapa seleccionado de la postulacion
         Etapa etapaSeleccionado = etapaService.obtenerEtapaPorCodigo(CodigoEtapa.SELECCIONADO);
         PostulacionOfertaEtapa postulacionOfertaEtapaNueva = new PostulacionOfertaEtapa();
         postulacionOfertaEtapaNueva.setEtapa(etapaSeleccionado);
         postulacionOfertaEtapaNueva.setFechaHoraAlta(new Date());
+        
 
+        // Rellenar las otras etapas como finalizadas
+        List<OfertaEtapa> etapasOferta = postulacionSeleccionada.getOferta().getOfertaEtapas().stream()
+                                        .sorted((e1, e2) -> e1.getNumeroEtapa().compareTo(e2.getNumeroEtapa()))
+                                        .toList();
+
+        for (OfertaEtapa ofertaEtapa : etapasOferta) {
+            boolean yaExiste = postulacionSeleccionada.getPostulacionOfertaEtapaList()
+                                .stream()
+                                .anyMatch(poe -> poe.getEtapa().getId().equals(ofertaEtapa.getEtapa().getId()));
+            if(!yaExiste){
+                PostulacionOfertaEtapa etapaFicticia = new PostulacionOfertaEtapa();
+                etapaFicticia.setEtapa(ofertaEtapa.getEtapa());
+                etapaFicticia.setFechaHoraAlta(new Date());
+                etapaFicticia.setFechaHoraBaja(new Date()); 
+                postulacionSeleccionada.getPostulacionOfertaEtapaList().add(etapaFicticia);
+            }
+        }
+        
         postulacionSeleccionada.getPostulacionOfertaEtapaList().add(postulacionOfertaEtapaNueva);
         postulacionSeleccionada.setFechaHoraFinPostulacionOferta(new Date());
 
+
         //Indicar que la oferta ha finalizado con éxito
         Oferta oferta = ofertaService.findById(postulacionSeleccionada.getOferta().getId());
-
         oferta.setFinalizadaConExito(true); 
-        
         
         // En caso de que solo seleccione al candidato indicado, finalizar la oferta y rechazar a los que quedan
         if(soloEste){
