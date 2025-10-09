@@ -140,7 +140,7 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
     WHERE poe.id = :idEtapa
     """)
     Optional<PostulacionOferta> findByEtapaId(@Param("idEtapa") Long idEtapa);
-}
+
 
 
     @Query(
