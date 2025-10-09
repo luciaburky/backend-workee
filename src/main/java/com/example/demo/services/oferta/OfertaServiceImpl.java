@@ -65,17 +65,20 @@ public class OfertaServiceImpl extends BaseServiceImpl<Oferta, Long> implements 
         this.ofertaEtapaService = ofertaEtapaService;
     }
 
-    @Override
-    @Transactional
+    @Override //Indica que este método implementa el método definido en OfertaService
+    @Transactional //Asegura que todas las operaciones dentro del método se ejecuten 
+                   // en una misma transacción. Si algo falla, se hace rollback de todo
+                   // (se deshacen los cambios)
     public Oferta crearOferta(OfertaRequestDTO ofertaDTO) {
+        //Validación inicial: no se puede crear una oferta sin recibir el DTO
         if(ofertaDTO == null) {
             throw new IllegalArgumentException("El objeto ofertaDTO no puede ser nulo");
         }
         
-        //Campos simples
+        //Mapeo de campos simples del DTO a la entidad Oferta
         Oferta oferta = ofertaMapper.toEntity(ofertaDTO);
 
-        //Relaciones
+        //Setear las relaciones con empresa, modalidad oferta y tipo de contrato
         Empresa empresa = empresaService.findById(ofertaDTO.getIdEmpresa());
         ModalidadOferta modalidadOferta = modalidadOfertaService.findById(ofertaDTO.getIdModalidadOferta());
         TipoContratoOferta tipoContratoOferta = tipoContratoOfertaService.findById(ofertaDTO.getIdTipoContratoOferta());
@@ -83,24 +86,28 @@ public class OfertaServiceImpl extends BaseServiceImpl<Oferta, Long> implements 
         oferta.setModalidadOferta(modalidadOferta);
         oferta.setTipoContratoOferta(tipoContratoOferta);
 
-        //Crear EstadoOferta Incial: Abierta
+        //Inicializar estado de la oferta como "Abierta"
         OfertaEstadoOferta estadoInicial = ofertaEstadoOfertaService.abrirOferta();
         if (oferta.getEstadosOferta() == null) {
             oferta.setEstadosOferta(new ArrayList<>());
         }
         oferta.getEstadosOferta().add(estadoInicial);
 
-        //Habilidades Etapa
+        //Asociar habilidades si el DTO contiene IDs de habilidades
         if (ofertaDTO.getIdHabilidades() != null && !ofertaDTO.getIdHabilidades().isEmpty()) {
+            //Traer habilidades desde la BD según los IDs recibidos
             List<Habilidad> habilidadesDB = habilidadService.findAllById(ofertaDTO.getIdHabilidades());
             
+            //Eliminar IDs duplicados para evitar repetición de habilidades
             List<Long> idsDistintos = ofertaDTO.getIdHabilidades().stream()
                                                 .distinct()
                                                 .collect(Collectors.toList());
-
+            
+            //Mapeo rápido de habilidad (id -> habilidad)
             Map<Long, Habilidad> porId = habilidadesDB.stream()
                 .collect(Collectors.toMap(Habilidad::getId, Function.identity()));
 
+            //Construcción de la lista de OfertaHabilidad 
             List<OfertaHabilidad> habilidades = new ArrayList<>();
             for (Long idHab : idsDistintos) {
                 Habilidad hab = porId.get(idHab); 
@@ -110,20 +117,21 @@ public class OfertaServiceImpl extends BaseServiceImpl<Oferta, Long> implements 
                 habilidades.add(oh);
             }
             
+            //Asignar las habilidades a la oferta
             if (oferta.getHabilidades() == null) {
                 oferta.setHabilidades(new ArrayList<>());
             }
             oferta.getHabilidades().addAll(habilidades);
         }
         
-        //OfertaEtapas
+        //Configurar etapas del proceso de selección
         oferta.setOfertaEtapas(new ArrayList<>());
         int orden = 1;
         
-        // 1) PENDIENTE
+        // Etapa inicial: PENDIENTE
         oferta.getOfertaEtapas().add(ofertaEtapaService.crearEtapaPredeterminada(CodigoEtapa.PENDIENTE, orden++));
 
-        // 2) Etapas personalizadas Intermedias
+        // Etapas intermedias personalizadas (seleccionadas por el usuario)
         if (ofertaDTO.getOfertaEtapas() != null && !ofertaDTO.getOfertaEtapas().isEmpty()) {
             List<OfertaEtapa> intermedias = ofertaEtapaService.crearOfertaEtapasDesdeDto(
                 empresa.getId(), 
@@ -141,10 +149,12 @@ public class OfertaServiceImpl extends BaseServiceImpl<Oferta, Long> implements 
         // 4) Etapa SELECCIONADO
         oferta.getOfertaEtapas().add(ofertaEtapaService.crearEtapaPredeterminada(CodigoEtapa.SELECCIONADO, orden++));
         
+        //Métodos de creación
         oferta.setFechaHoraAlta(new Date());
         oferta.setFinalizadaConExito(null); 
         oferta.setFechaFinalizacion(null); 
 
+        //Guardado de la oferta en la base de datos y devolverla
         return ofertaRepository.save(oferta); 
     }
 

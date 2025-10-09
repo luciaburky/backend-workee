@@ -5,14 +5,15 @@ import org.mapstruct.*;
 import com.example.demo.dtos.ofertas.OfertaRequestDTO;
 import com.example.demo.entities.oferta.Oferta; 
 
-@Mapper(componentModel = "spring")
+//MapStruct genera automáticamente la implementación de este mapper en tiempo de compilación
+@Mapper(componentModel = "spring") //se registra como un bean de Spring
 public interface OfertaMapper {
      
-    @BeanMapping(ignoreByDefault = true)
-    @Mapping(target = "titulo", source = "titulo")
-    @Mapping(target = "descripcion", source = "descripcion")
-    @Mapping(target = "responsabilidades", source = "responsabilidades")
-    // Iniciales ignorados (se setean en el service)
+    @BeanMapping(ignoreByDefault = true) // Ignora todos los campos que no estén explícitamente configurados
+    @Mapping(target = "titulo", source = "titulo") // Copia el campo "titulo" del DTO al campo "titulo" 
+    @Mapping(target = "descripcion", source = "descripcion") // Copia "descripción"
+    @Mapping(target = "responsabilidades", source = "responsabilidades") // Copia "responsabilidades"
+    // // Relaciones y valores que se setean en el Service (no desde el DTO)
     @Mapping(target = "empresa", ignore = true)
     @Mapping(target = "modalidadOferta", ignore = true)
     @Mapping(target = "tipoContratoOferta", ignore = true)

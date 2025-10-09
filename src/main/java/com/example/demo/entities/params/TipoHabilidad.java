@@ -24,4 +24,9 @@ public class TipoHabilidad extends Base {
     @NotNull
     @Column(name = "nombre_tipo_habilidad")
     private String nombreTipoHabilidad; 
+
+    @NotNull
+    @Column(name = "codigo_tipo_habilidad", unique = true)
+    private String codigoTipoHabilidad;
+
 }

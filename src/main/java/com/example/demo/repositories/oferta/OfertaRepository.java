@@ -3,16 +3,23 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.example.demo.dtos.metricas.admin.EmpresasConMasOfertasDTO;
+import com.example.demo.dtos.metricas.candidato.TopHabilidadDTO;
 import com.example.demo.dtos.postulaciones.OfertasEtapasDTO;
 import com.example.demo.entities.oferta.Oferta;
 import com.example.demo.entities.params.Etapa;
 import com.example.demo.repositories.BaseRepository;
 
-@Repository
+@Repository //marca la clase como un componente de acceso a datos
+/*Hereda todos los métodos genéricos de BaseRepository, como save(), findById(),
+ findAll(), delete(), etc.
+ BaseRepository es un repositorio base que tiene métodos comunes
+ a todas las entidades de la aplicación*/
 public interface OfertaRepository extends BaseRepository<Oferta, Long> {  
 
   @Query("""
@@ -147,9 +154,11 @@ public interface OfertaRepository extends BaseRepository<Oferta, Long> {
       SELECT DISTINCT o FROM Oferta o
       JOIN o.estadosOferta eo
       JOIN eo.estadoOferta e
-      WHERE e.codigo = 'ABIERTA' AND eo.fechaHoraBaja IS NULL
+      JOIN o.empresa em
+      WHERE e.codigo = 'ABIERTA' AND eo.fechaHoraBaja IS NULL AND o.fechaFinalizacion IS NULL
+      AND em.id = :empresaId
       """)
-  List<Oferta> buscarOfertasAbiertas(Long empresaId);
+  List<Oferta> buscarOfertasAbiertas(@Param("empresaId") Long empresaId);
 
   @Query(value = "SELECT COUNT(DISTINCT po.id) " +
                     "FROM oferta o " +
@@ -174,5 +183,63 @@ public interface OfertaRepository extends BaseRepository<Oferta, Long> {
       """
     )
     public List<Etapa> traerEtapasDeUnaOferta(@Param("idOferta") Long idOferta);
+
+    @Query("""
+          SELECT COUNT(o)
+          FROM Oferta o
+          WHERE o.fechaFinalizacion BETWEEN :desde AND :hasta
+        """
+    )
+    public Long contarOfertasFinalizadas(@Param("desde") LocalDateTime desde, @Param("hasta") LocalDateTime hasta );
+
+    @Query("""
+          SELECT COUNT(o)
+          FROM Oferta o
+          WHERE o.fechaFinalizacion BETWEEN :desde AND :hasta
+          AND o.finalizadaConExito = true
+        """
+    )
+    public Long contarOfertasFinalizadasConExito(@Param("desde") LocalDateTime desde, @Param("hasta") LocalDateTime hasta);
+
+
+    @Query("""
+          SELECT new com.example.demo.dtos.metricas.admin.EmpresasConMasOfertasDTO(o.empresa.nombreEmpresa, COUNT(o))
+          FROM Oferta o
+          WHERE o.fechaHoraAlta BETWEEN :desde AND :hasta
+          GROUP BY o.empresa.nombreEmpresa
+          ORDER BY COUNT(o) DESC
+        """
+    )
+    public List<EmpresasConMasOfertasDTO> topEmpresasConMasOfertas(@Param("desde") LocalDateTime desde, @Param("hasta") LocalDateTime hasta, Pageable pageable);
+
+
+    @Query("""
+            SELECT new com.example.demo.dtos.metricas.candidato.TopHabilidadDTO(
+                h.nombreHabilidad,
+                COUNT(h)
+            )
+            FROM Oferta o
+            JOIN o.habilidades oh
+            JOIN oh.habilidad h
+            JOIN h.tipoHabilidad th
+            WHERE th.codigoTipoHabilidad = :habilidad
+            AND o.fechaHoraAlta BETWEEN :desde AND :hasta
+            GROUP BY h.nombreHabilidad
+            ORDER BY COUNT(h) DESC
+    """)
+    List<TopHabilidadDTO> topHabilidades(@Param("desde") LocalDateTime desde, @Param("hasta") LocalDateTime hasta, @Param("habilidad") String habilidad, Pageable pageable);
+
+
+    @Query("""
+      SELECT COUNT(DISTINCT o) FROM Oferta o
+      JOIN o.estadosOferta eo
+      JOIN eo.estadoOferta e
+      JOIN o.empresa em
+      WHERE e.codigo = 'ABIERTA' AND eo.fechaHoraBaja IS NULL AND o.fechaFinalizacion IS NULL
+      AND em.id = :empresaId
+      """)
+    public Long contarOfertasAbiertas(@Param("empresaId") Long empresaId);
 }
+
+
 

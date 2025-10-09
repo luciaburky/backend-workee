@@ -47,11 +47,20 @@ public class OfertaController {
         this.bajaOrquestadorService = bajaOrquestadorService;
     }
     
-    @Operation(summary = "Crear una nueva Oferta")
+    /******* Metodo para crear una nueva Oferta *******/
+    //Anotación de swagger para coumentar operación:
+    @Operation(summary = "Crear una nueva Oferta") 
+    //Este método responde a solicitudes HTTP POST:
     @PostMapping
-    @PreAuthorize("hasAuthority('GESTION_OFERTAS')")
-    public ResponseEntity<Oferta> crearOferta(@Valid @RequestBody OfertaRequestDTO ofertaDTO) {
+    //Se verifica que el usuario tenga el permiso necesario:
+    @PreAuthorize("hasAuthority('GESTION_OFERTAS')") 
+    public ResponseEntity<Oferta> crearOferta(@Valid @RequestBody OfertaRequestDTO ofertaDTO) { 
+        //Con @Valid se controla que los datos sean correctos (ver OfertaRequestDTO)
+        
+        //Llamado al servicio para crear la oferta usando los datos recibidos:
         Oferta nuevaOferta = ofertaService.crearOferta(ofertaDTO);
+
+        //Devuelve una respuesta HTTP con código 201 (CREATED) y el objeto oferta creado:
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevaOferta);
     }
    

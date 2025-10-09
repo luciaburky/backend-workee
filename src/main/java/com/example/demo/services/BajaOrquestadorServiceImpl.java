@@ -15,12 +15,10 @@ import com.example.demo.entities.oferta.Oferta;
 import com.example.demo.entities.postulaciones.PostulacionOferta;
 import com.example.demo.entities.seguridad.Usuario;
 import com.example.demo.exceptions.EntityAlreadyDisabledException;
-import com.example.demo.repositories.postulaciones.PostulacionOfertaRepository;
 import com.example.demo.services.candidato.CandidatoService;
 import com.example.demo.services.empresa.EmpleadoEmpresaService;
 import com.example.demo.services.empresa.EmpresaService;
 import com.example.demo.services.oferta.OfertaService;
-import com.example.demo.services.params.EtapaService;
 import com.example.demo.services.postulaciones.PostulacionOfertaService;
 import com.example.demo.services.seguridad.UsuarioService;
 
@@ -34,19 +32,15 @@ public class BajaOrquestadorServiceImpl implements BajaOrquestadorService{
     private final CandidatoService candidatoService;
     private final PostulacionOfertaService postulacionOfertaService;
     private final OfertaService ofertaService;
-    private final EtapaService etapaService;
-    private final PostulacionOfertaRepository postulacionOfertaRepository;
 
     public BajaOrquestadorServiceImpl(EmpresaService empresaService, EmpleadoEmpresaService empleadoEmpresaService, UsuarioService usuarioService, 
-    CandidatoService candidatoService, PostulacionOfertaService postulacionOfertaService, OfertaService ofertaService, EtapaService etapaService, PostulacionOfertaRepository postulacionOfertaRepository){
+    CandidatoService candidatoService, PostulacionOfertaService postulacionOfertaService, OfertaService ofertaService){
         this.empresaService = empresaService;
         this.empleadoEmpresaService = empleadoEmpresaService;
         this.usuarioService = usuarioService;
         this.candidatoService = candidatoService;
         this.postulacionOfertaService = postulacionOfertaService;
         this.ofertaService = ofertaService;
-        this.etapaService = etapaService;
-        this.postulacionOfertaRepository = postulacionOfertaRepository;
     }
 
     @Override
