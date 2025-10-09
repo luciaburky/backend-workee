@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import com.example.demo.dtos.empresa.EmpleadoEmpresaRequestDTO;
 import com.example.demo.entities.empresa.EmpleadoEmpresa;
-import com.example.demo.entities.empresa.Empresa;
 import com.example.demo.services.BaseService;
 
 public interface EmpleadoEmpresaService extends BaseService<EmpleadoEmpresa, Long>{

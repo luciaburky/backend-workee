@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.example.demo.entities.empresa.EmpleadoEmpresa;
-import com.example.demo.entities.empresa.Empresa;
 import com.example.demo.repositories.BaseRepository;
 
 @Repository
