@@ -72,12 +72,14 @@ public class RolServiceImpl extends BaseServiceImpl<Rol, Long> implements RolSer
         for(Long idPermiso: rolRequestDTO.getIdPermisos()){
             Permiso permiso = permisoService.findById(idPermiso);
             //Verificar que el permiso pertenece a la categoría
+            System.out.println("El id del permiso que se manda: " + idPermiso);
             boolean pertenece = categoriaRol.getCategoriaRolPermisoList().stream()
-                .anyMatch(crp -> crp.getFechaHoraBaja() != null && crp.getPermiso().getId().equals(idPermiso));
+                .anyMatch(crp -> crp.getFechaHoraBaja() == null && crp.getPermiso().getId().equals(idPermiso));
 
+            System.out.println("El permiso pertenece a la categoria? " + pertenece);
             if(!pertenece){
                 throw new EntityNotValidException(
-                    "El permiso con id " + idPermiso + " no pertenece a la categoría seleccionada"
+                    "El permiso " + permiso.getCodigoPermiso() + " no pertenece a la categoría seleccionada"
                 );
             }    
 
