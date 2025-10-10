@@ -57,7 +57,7 @@ public class VideollamadaServiceImpl extends BaseServiceImpl<Videollamada, Long>
         }
         videollamada.getDetalleVideollamadaList().add(detalleCandidato);
         videollamada.getDetalleVideollamadaList().add(detalleEmpleado);
-
+        //videollamadaRepository.save(videollamada);
         return videollamada;
     }
 
@@ -65,17 +65,21 @@ public class VideollamadaServiceImpl extends BaseServiceImpl<Videollamada, Long>
     @Transactional
     public Videollamada finalizarVideollamada(Long idVideollamada){
         Videollamada videollamada = findById(idVideollamada);
-        
+
+        if(videollamada.getFechaHoraFinRealVideollamada() != null){
+            throw new EntityNotValidException("La videollamada ya ha sido finalizada.");
+        }
+
         videollamada.setFechaHoraFinRealVideollamada(LocalDateTime.now());
         //videollamada.setFechaHoraBaja(new Date());
 
         if (videollamada.getFechaHoraInicioRealVideollamada() != null) {
-            long durationMinutes = java.time.Duration.between(
+            double durationMiliseg = java.time.Duration.between(
                 videollamada.getFechaHoraInicioRealVideollamada(), 
                 videollamada.getFechaHoraFinRealVideollamada()
-            ).toMinutes();
-                
-            videollamada.setDuracionVideollamada((double) durationMinutes); 
+            ).toMillis();
+            Double duracionMinutos =  durationMiliseg / 60000.0;  
+            videollamada.setDuracionVideollamada((double) duracionMinutos); 
         } else {
             throw new EntityNotValidException("La videollamada no ha sido iniciada aún.");
         }
@@ -91,10 +95,11 @@ public class VideollamadaServiceImpl extends BaseServiceImpl<Videollamada, Long>
     @Transactional
     public Videollamada iniciarVideollamada(Long videollamadaId) {
         Videollamada videollamada = findById(videollamadaId); 
+        
 
         if (videollamada.getFechaHoraInicioRealVideollamada() == null) {
             videollamada.setFechaHoraInicioRealVideollamada(LocalDateTime.now());
-        }
+        } 
         
         videollamadaRepository.save(videollamada);
         
