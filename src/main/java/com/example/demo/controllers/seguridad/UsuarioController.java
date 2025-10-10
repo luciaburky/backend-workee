@@ -26,6 +26,7 @@ import com.example.demo.services.BajaOrquestadorService;
 import com.example.demo.services.candidato.CandidatoService;
 import com.example.demo.services.empresa.EmpleadoEmpresaService;
 import com.example.demo.services.empresa.EmpresaService;
+import com.example.demo.services.postulaciones.PostulacionOfertaEtapaService;
 import com.example.demo.services.seguridad.UsuarioService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -43,14 +44,18 @@ public class UsuarioController {
     private final EmpleadoEmpresaService empleadoService;
     private final EmpresaService empresaService;
     private final CandidatoService candidatoService;
+    private final PostulacionOfertaEtapaService postulacionOfertaEtapaService;
 
-    public UsuarioController(UsuarioService usuarioService, BajaOrquestadorService bajaOrquestadorService, EmpleadoEmpresaService empleadoEmpresaService, EmpresaService empresaService, CandidatoService candidatoService, EmpleadoEmpresaService empleadoService){
+    public UsuarioController(UsuarioService usuarioService, BajaOrquestadorService bajaOrquestadorService, 
+    EmpleadoEmpresaService empleadoEmpresaService, EmpresaService empresaService, CandidatoService candidatoService, 
+    EmpleadoEmpresaService empleadoService, PostulacionOfertaEtapaService postulacionOfertaEtapaService){
         this.usuarioService = usuarioService;
         this.bajaOrquestadorService = bajaOrquestadorService;
         this.empleadoEmpresaService = empleadoEmpresaService;
         this.empresaService = empresaService;
         this.candidatoService = candidatoService;
         this.empleadoService = empleadoService;
+        this.postulacionOfertaEtapaService = postulacionOfertaEtapaService;
     }
 
     
@@ -178,4 +183,11 @@ public class UsuarioController {
         }
     }
 
+    @Operation(summary = "Obtener ID de usuario empleado por id de postulacionOfertaEtapa")
+    @GetMapping("/idUsuarioEmpleado/{IdPostulacionOfertaEtapa}")
+    @PreAuthorize("hasAuthority('VER_EVENTOS')") 
+    public ResponseEntity<?> obtenerIdPorCorreo(@PathVariable Long IdPostulacionOfertaEtapa){
+        Long id = postulacionOfertaEtapaService.getIdUsuarioEmpleadoFromIdPOE(IdPostulacionOfertaEtapa);
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of("id", id));
+    } //"/usuarios/idUsuarioEmpleado/**"
 }

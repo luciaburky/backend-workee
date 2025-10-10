@@ -5,4 +5,5 @@ import com.example.demo.services.BaseService;
 
 public interface PostulacionOfertaEtapaService extends BaseService<PostulacionOfertaEtapa, Long>{
     
+    public Long getIdUsuarioEmpleadoFromIdPOE(Long idPostulacionOfertaEtapa);
 }

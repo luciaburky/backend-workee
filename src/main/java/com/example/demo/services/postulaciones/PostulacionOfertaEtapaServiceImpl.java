@@ -8,9 +8,16 @@ import com.example.demo.services.BaseServiceImpl;
 
 @Service
 public class PostulacionOfertaEtapaServiceImpl extends BaseServiceImpl<PostulacionOfertaEtapa, Long> implements PostulacionOfertaEtapaService{
-
+    private final PostulacionOfertaEtapaRespository postulacionOfertaEtapaRespository;
     public PostulacionOfertaEtapaServiceImpl( PostulacionOfertaEtapaRespository postulacionOfertaEtapaRespository) {
         super(postulacionOfertaEtapaRespository);
+        this.postulacionOfertaEtapaRespository = postulacionOfertaEtapaRespository;
+    }
+
+    @Override
+    public Long getIdUsuarioEmpleadoFromIdPOE(Long idPostulacionOfertaEtapa){
+        Long idUsuarioEmpleado = postulacionOfertaEtapaRespository.getIdUsuarioEmpleadoFromPOE(idPostulacionOfertaEtapa);
+        return idUsuarioEmpleado;
     }
 
 }
