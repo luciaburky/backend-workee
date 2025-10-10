@@ -18,6 +18,7 @@ import com.example.demo.dtos.postulaciones.EtapaActualPostulacionDTO;
 import com.example.demo.dtos.postulaciones.PostulacionCandidatoRequestDTO;
 import com.example.demo.dtos.postulaciones.PostulacionSimplificadaDTO;
 import com.example.demo.dtos.postulaciones.RetroalimentacionDTO;
+import com.example.demo.dtos.postulaciones.SeleccionadoDTO;
 import com.example.demo.entities.candidato.Candidato;
 import com.example.demo.entities.eventos.TipoNotificacion;
 import com.example.demo.entities.oferta.CodigoEstadoOferta;
@@ -456,7 +457,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
 
     @Override
     @Transactional
-    public Boolean seleccionarCandidato(Long idPostulacion, Boolean soloEste){
+    public Boolean seleccionarCandidato(Long idPostulacion, SeleccionadoDTO seleccionadoDTO){
         PostulacionOferta postulacionSeleccionada = findById(idPostulacion);
 
         PostulacionOfertaEtapa postulacionOfertaEtapaActual = postulacionSeleccionada.getPostulacionOfertaEtapaList().stream()
@@ -480,12 +481,17 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         PostulacionOfertaEtapa postulacionOfertaEtapaNueva = new PostulacionOfertaEtapa();
         postulacionOfertaEtapaNueva.setEtapa(etapaSeleccionado);
         postulacionOfertaEtapaNueva.setFechaHoraAlta(new Date());
+        postulacionOfertaEtapaNueva.setRespuestaCandidato(seleccionadoDTO.getRetroalimenetacion());
         
 
         // Rellenar las otras etapas como finalizadas
         List<OfertaEtapa> etapasOferta = postulacionSeleccionada.getOferta().getOfertaEtapas().stream()
-                                        .sorted((e1, e2) -> e1.getNumeroEtapa().compareTo(e2.getNumeroEtapa()))
-                                        .toList();
+                                                    .filter(ofertaEtapa -> {
+                                                        String codigo = ofertaEtapa.getEtapa().getCodigoEtapa();
+                                                        return !(codigo.equals(CodigoEtapa.RECHAZADO) || codigo.equals(CodigoEtapa.SELECCIONADO));
+                                                    })
+                                                    .sorted((e1, e2) -> e1.getNumeroEtapa().compareTo(e2.getNumeroEtapa()))
+                                                    .toList();
 
         for (OfertaEtapa ofertaEtapa : etapasOferta) {
             boolean yaExiste = postulacionSeleccionada.getPostulacionOfertaEtapaList()
@@ -509,7 +515,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         oferta.setFinalizadaConExito(true); 
         
         // En caso de que solo seleccione al candidato indicado, finalizar la oferta y rechazar a los que quedan
-        if(soloEste){
+        if(seleccionadoDTO.getSoloEste()){
             ofertaService.cambiarEstado(oferta.getId(), CodigoEstadoOferta.FINALIZADA);
             
             //Rechazar a todos excepto a la que se seleccionó

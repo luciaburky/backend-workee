@@ -18,6 +18,7 @@ import com.example.demo.dtos.postulaciones.EtapaActualPostulacionDTO;
 import com.example.demo.dtos.postulaciones.PostulacionCandidatoRequestDTO;
 import com.example.demo.dtos.postulaciones.PostulacionSimplificadaDTO;
 import com.example.demo.dtos.postulaciones.RetroalimentacionDTO;
+import com.example.demo.dtos.postulaciones.SeleccionadoDTO;
 import com.example.demo.services.postulaciones.PostulacionOfertaService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -110,8 +111,8 @@ public class PostulacionOfertaController {
     @Operation(summary = "Seleccionar a un candidato")
     @PutMapping("/{idPostulacion}/seleccionar")
     @PreAuthorize("hasAuthority('GESTIONAR_POSTULACION')") 
-    public ResponseEntity<?> seleccionarCandidato(@PathVariable Long idPostulacion, @RequestBody Boolean soloEste) {
-        Boolean selecciono = postulacionOfertaService.seleccionarCandidato(idPostulacion, soloEste);
+    public ResponseEntity<?> seleccionarCandidato(@PathVariable Long idPostulacion, @RequestBody SeleccionadoDTO seleccionadoDTO) {
+        Boolean selecciono = postulacionOfertaService.seleccionarCandidato(idPostulacion, seleccionadoDTO);
         return ResponseEntity.status(HttpStatus.OK).body(selecciono);
     }
 
