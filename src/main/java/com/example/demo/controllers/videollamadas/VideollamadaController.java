@@ -3,13 +3,10 @@ package com.example.demo.controllers.videollamadas;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.dtos.eventos.EventoRequestDTO;
 import com.example.demo.entities.videollamadas.Videollamada;
 import com.example.demo.services.videollamadas.VideollamadaService;
 
@@ -27,13 +24,13 @@ public class VideollamadaController {
     }
    
     // ****** ESTE EN REALIDAD NO SE USA PQ LA VIDEOLLAMADA SE CREA DESDE EL EVENTO, PERO LO AGREGO PARA PODER HACER ALGUNAS PRUEBAS***********
-    @Operation(summary = "Crear una videollamada")
+    /*@Operation(summary = "Crear una videollamada")
     @PostMapping("")
     @PreAuthorize("hasAuthority('VER_EVENTOS') or hasAuthority('GESTIONAR_EVENTOS')")
     public ResponseEntity<?> crearVideollamada(@RequestBody EventoRequestDTO datosEvento) {
         Videollamada videollamada = videollamadaService.crearVideollamada(datosEvento);
         return ResponseEntity.ok().body(videollamada);
-    }
+    }*/
 
     @Operation(summary = "Finalizar una videollamada")
     @PutMapping("/finalizar/{idVideollamada}")
