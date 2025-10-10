@@ -129,6 +129,7 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
            JOIN poe.etapa e
            WHERE p.oferta.id = :idOferta AND p.candidato.id = :idCandidato
            AND poe.fechaHoraBaja IS NULL
+           AND P.fechaHoraFinPostulacionOferta IS NULL AND p.fechaHoraAbandonoOferta IS NULL
         """
     )
     Optional<Etapa> traerEtapaActualDePostulacionCandidato(@Param("idOferta") Long idOferta, @Param("idCandidato") Long idCandidato);
