@@ -29,6 +29,14 @@ public interface EmpleadoEmpresaRepository extends BaseRepository<EmpleadoEmpres
         nativeQuery = true
      )
      public List<EmpleadoEmpresa> traerEmpleadosActivos(@Param("idEmpresa") Long idEmpresa);
+
+      @Query(
+        value = "SELECT * FROM empleado_empresa e " + 
+                "WHERE e.id_empresa = :idEmpresa " + 
+                "ORDER BY e.fecha_hora_alta DESC",
+        nativeQuery = true
+     )
+     public List<EmpleadoEmpresa> traerTodosLosEmpleados(@Param("idEmpresa") Long idEmpresa);
      
      List<EmpleadoEmpresa> findAllByIdIn(Collection<Long> ids);
 

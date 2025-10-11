@@ -470,8 +470,6 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
             throw new EntityNotValidException("No es posible seleccionar al candidato porque su estado actual es: " + codigoEtapaActual);
         }
 
-
-
         // Finalizo la etapa actual de la postulacion
         postulacionOfertaEtapaActual.setFechaHoraBaja(new Date());
         
@@ -481,7 +479,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         PostulacionOfertaEtapa postulacionOfertaEtapaNueva = new PostulacionOfertaEtapa();
         postulacionOfertaEtapaNueva.setEtapa(etapaSeleccionado);
         postulacionOfertaEtapaNueva.setFechaHoraAlta(new Date());
-        postulacionOfertaEtapaNueva.setRespuestaCandidato(seleccionadoDTO.getRetroalimenetacion());
+        postulacionOfertaEtapaNueva.setRetroalimentacionEmpresa(seleccionadoDTO.getRetroalimenetacion());
         
 
         // Rellenar las otras etapas como finalizadas
