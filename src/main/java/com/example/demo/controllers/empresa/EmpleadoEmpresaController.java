@@ -66,6 +66,14 @@ public class EmpleadoEmpresaController {
         return ResponseEntity.status(HttpStatus.OK).body(empleados);
     }
 
+    @Operation(summary = "Trae todos los empleados (activos y no activos) de una empresa")
+    @GetMapping("/traerTodos/{id}")
+    @PreAuthorize("hasAuthority('GESTIONAR_EMPLEADOS') or hasAuthority('GESTION_OFERTAS')")
+    public ResponseEntity<?> visualizarEmpleados(@PathVariable Long id){
+        List<EmpleadoEmpresa> empleados = empleadoEmpresaService.visualizarTodosLosEmpleadosDeUnaEmpresa(id);
+        return ResponseEntity.status(HttpStatus.OK).body(empleados);
+    }
+
     @Operation(summary = "Dice la cantidad de empleados ACTIVOS que tiene una empresa")
     @GetMapping("/contarEmpleados/{id}")
     @PreAuthorize("hasAuthority('GESTIONAR_EMPLEADOS')")
