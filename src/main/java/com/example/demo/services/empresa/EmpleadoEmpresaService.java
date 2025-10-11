@@ -14,6 +14,7 @@ public interface EmpleadoEmpresaService extends BaseService<EmpleadoEmpresa, Lon
     public EmpleadoEmpresa modificarEmpleado(EmpleadoEmpresaRequestDTO empleadoEmpresaRequestDTO, boolean esEmpleadoModificandoseASiMismo, Long id);
 
     public Boolean darDeBajaEmpleadoEmpresa(Long id);
+    public Boolean habilitarEmpleadoEmpresa(Long id);
 
     public List<EmpleadoEmpresa> visualizarEmpleados(Long idEmpresa);
 

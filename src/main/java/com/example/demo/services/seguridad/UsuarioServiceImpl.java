@@ -205,6 +205,32 @@ public class UsuarioServiceImpl extends BaseServiceImpl<Usuario, Long> implement
 
     @Override
     @Transactional
+    public void habilitarUsuario(Long idUsuario){
+        Usuario usuario = findById(idUsuario);
+        usuario.setFechaHoraBaja(null);
+        
+        Optional<UsuarioEstadoUsuario> usuarioEstadoUsuarioOp = usuario.getUsuarioEstadoList().stream()
+            .filter(ue -> ue.getFechaHoraBaja() == null)
+            .findFirst();
+        
+        if(!usuarioEstadoUsuarioOp.isPresent()){
+            throw new EntityNotFoundException("El usuario no tiene un estado actual asignado");
+        }
+        
+        if(!usuarioEstadoUsuarioOp.get().getEstadoUsuario().getCodigoEstadoUsuario().equals(CodigoEstadoUsuario.HABILITADO)){
+            UsuarioEstadoUsuario usuarioEstadoUsuarioViejo = usuarioEstadoUsuarioOp.get();
+            usuarioEstadoUsuarioViejo.setFechaHoraBaja(new Date());
+            EstadoUsuario estadoNuevo = estadoUsuarioService.obtenerEstadoPorCodigo(CodigoEstadoUsuario.HABILITADO);
+            UsuarioEstadoUsuario usuarioEstadoUsuarioNuevo = new UsuarioEstadoUsuario();
+            usuarioEstadoUsuarioNuevo.setFechaHoraAlta(new Date());
+            usuarioEstadoUsuarioNuevo.setEstadoUsuario(estadoNuevo);
+            usuario.getUsuarioEstadoList().add(usuarioEstadoUsuarioNuevo);
+        }
+        usuarioRepository.save(usuario);
+    }
+
+    @Override
+    @Transactional
     public void solicitarRecuperarContrasenia(String correoUsuario){
         Optional<Usuario> usuario = usuarioRepository.buscarUsuarioPorCorreo(correoUsuario);
         

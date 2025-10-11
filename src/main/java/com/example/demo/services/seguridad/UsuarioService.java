@@ -17,6 +17,7 @@ public interface UsuarioService extends BaseService<Usuario, Long>{
     public void actualizarFotoPerfilUsuario(Long idUsuario, String urlFotoPerfil);
 
     public void darDeBajaUsuario(Long idUsuario);
+    public void habilitarUsuario(Long idUsuario);
 
     public void solicitarRecuperarContrasenia(String correoUsuario);
 

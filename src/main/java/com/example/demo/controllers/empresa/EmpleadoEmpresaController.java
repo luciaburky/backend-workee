@@ -59,7 +59,7 @@ public class EmpleadoEmpresaController {
 
 
     @Operation(summary = "Trae todos los empleados ACTIVOS de una empresa")
-    @GetMapping("/traerTodos/{id}")
+    @GetMapping("/traerActivos/{id}")
     @PreAuthorize("hasAuthority('GESTIONAR_EMPLEADOS') or hasAuthority('GESTION_OFERTAS')")
     public ResponseEntity<?> visualizarEmpleadosActivos(@PathVariable Long id){
         List<EmpleadoEmpresa> empleados = empleadoEmpresaService.visualizarEmpleados(id);
@@ -97,6 +97,14 @@ public class EmpleadoEmpresaController {
     public ResponseEntity<?> darDeBajaEmpleado(@PathVariable Long id){
         Boolean seDioBaja = empleadoEmpresaService.darDeBajaEmpleadoEmpresa(id);
         return ResponseEntity.status(HttpStatus.OK).body(seDioBaja);
+    }
+
+    @Operation(summary = "Administrador empresa da de alta un empelado empresa")
+    @PutMapping("/habilitar/{id}")
+    @PreAuthorize("hasAuthority('GESTIONAR_EMPLEADOS')") 
+    public ResponseEntity<?> habilitarEmpleadoEmpresa(@PathVariable Long id){
+        Boolean seDioAlta = empleadoEmpresaService.habilitarEmpleadoEmpresa(id);
+        return ResponseEntity.status(HttpStatus.OK).body(seDioAlta);
     }
 }
 

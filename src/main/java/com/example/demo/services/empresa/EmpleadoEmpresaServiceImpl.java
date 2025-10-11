@@ -117,6 +117,23 @@ public class EmpleadoEmpresaServiceImpl extends BaseServiceImpl<EmpleadoEmpresa,
     }
 
     @Override
+    @Transactional
+    public Boolean habilitarEmpleadoEmpresa(Long id){
+        EmpleadoEmpresa empleadoEmpresa = findById(id);
+
+        if(empleadoEmpresa.getFechaHoraBaja() == null){
+            throw new EntityNotValidException("El empleado ya se encuentra habilitado");
+        }
+        empleadoEmpresa.setFechaHoraBaja(null);
+
+        usuarioService.habilitarUsuario(empleadoEmpresa.getUsuario().getId());
+        
+        empleadoEmpresaRepository.save(empleadoEmpresa);
+        
+        return true;
+    }
+
+    @Override
     public List<EmpleadoEmpresa> visualizarEmpleados(Long idEmpresa){
         return empleadoEmpresaRepository.traerEmpleadosActivos(idEmpresa);
     }
