@@ -28,6 +28,15 @@ public class NotificacionController {
         this.notificacionService = notificacionService;
     }
 
+    //Obtener notificacion por ID
+    @Operation(summary = "Obtener notificación por ID")
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('VER_NOTIFICACIONES')")
+    public ResponseEntity<Notificacion> obtenerNotificacionPorId(@PathVariable Long id) {
+        Notificacion notificacion = notificacionService.findById(id);
+        return ResponseEntity.ok().body(notificacion);
+    }
+
     //Obtener notificaciones pendientes (a mostrar en el Swal)
     @Operation(summary = "Obtener notificaciones pendientes por usuario")
     @GetMapping("/pendientes/usuario/{id}")
