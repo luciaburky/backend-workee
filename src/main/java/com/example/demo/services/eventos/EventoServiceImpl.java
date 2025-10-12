@@ -25,6 +25,7 @@ import com.example.demo.services.params.TipoEventoService;
 import com.example.demo.services.postulaciones.PostulacionOfertaEtapaService;
 import com.example.demo.services.postulaciones.PostulacionOfertaService;
 import com.example.demo.services.seguridad.UsuarioService;
+import com.example.demo.services.videollamadas.VideollamadaService;
 
 import jakarta.transaction.Transactional;
 
@@ -38,8 +39,10 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements 
     private final UsuarioService usuarioService;
     private final NotificacionService notificacionService;
     private final PostulacionOfertaService postulacionOfertaService;
+    private final VideollamadaService videollamadaService;
 
-    public EventoServiceImpl(EventoRepository eventoRepository, TipoEventoService tipoEventoService, PostulacionOfertaEtapaService postulacionOfertaEtapaService, UsuarioService usuarioService, NotificacionService notificacionService, PostulacionOfertaService postulacionOfertaService) {
+    public EventoServiceImpl(EventoRepository eventoRepository, TipoEventoService tipoEventoService, PostulacionOfertaEtapaService postulacionOfertaEtapaService, 
+    UsuarioService usuarioService, NotificacionService notificacionService, PostulacionOfertaService postulacionOfertaService, VideollamadaService videollamadaService) {
         super(eventoRepository);
         this.eventoRepository = eventoRepository;
         this.tipoEventoService = tipoEventoService;
@@ -47,6 +50,7 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements 
         this.usuarioService = usuarioService;
         this.notificacionService = notificacionService;
         this.postulacionOfertaService = postulacionOfertaService;
+        this.videollamadaService = videollamadaService;
     }
 
     @Override
@@ -73,16 +77,7 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements 
         
         /// Si es videollamada, instanciar la relación
         if ("Videollamada".equalsIgnoreCase(tipoEvento.getNombreTipoEvento())) {
-            Videollamada videollamada = new Videollamada();
-            videollamada.setEnlaceVideollamada(evento.getEnlaceVideollamada());
-            videollamada.setFechaHoraInicioPlanifVideollamada(evento.getFechaHoraInicioEvento());
-            videollamada.setFechaHoraFinPlanifVideollamada(evento.getFechaHoraFinEvento());
-
-            // Inicializar campos vacíos
-            videollamada.setFechaHoraInicioRealVideollamada(null);
-            videollamada.setFechaHoraFinRealVideollamada(null);
-            videollamada.setDuracionVideollamada(null);
-
+            Videollamada videollamada = videollamadaService.crearVideollamada(evento);
             nuevoEvento.setVideollamada(videollamada);
         }
 
