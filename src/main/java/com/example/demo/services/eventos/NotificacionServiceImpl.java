@@ -11,6 +11,7 @@ import com.example.demo.entities.eventos.Evento;
 import com.example.demo.entities.eventos.Notificacion;
 import com.example.demo.entities.eventos.TemplateHelper;
 import com.example.demo.entities.eventos.TipoNotificacion;
+import com.example.demo.entities.postulaciones.PostulacionOferta;
 import com.example.demo.entities.seguridad.Usuario;
 import com.example.demo.repositories.eventos.NotificacionRepository;
 import com.example.demo.repositories.postulaciones.PostulacionOfertaRepository;
@@ -29,7 +30,7 @@ public class NotificacionServiceImpl extends BaseServiceImpl<Notificacion, Long>
 
     @Override
     @Transactional
-    public Notificacion crearNotificacion(TipoNotificacion tipo, Map<String, Object> datos, Usuario usuarioDestino, Evento eventoRelacionado, LocalDateTime fechaProgramada) {
+    public Notificacion crearNotificacion(TipoNotificacion tipo, Map<String, Object> datos, Usuario usuarioDestino, Evento eventoRelacionado, LocalDateTime fechaProgramada, PostulacionOferta postulacion) {
         String descripcion = TemplateHelper.aplicarTemplate(tipo.getTemplate(), datos);
 
         Notificacion notificacion = new Notificacion();
@@ -41,6 +42,7 @@ public class NotificacionServiceImpl extends BaseServiceImpl<Notificacion, Long>
         notificacion.setTipoNotificacion(tipo);
         notificacion.setUsuario(usuarioDestino);
         notificacion.setEnviada(false);
+        notificacion.setPostulacionOferta(postulacion);
 
         // si la notificación tiene que ver con un evento
         if (eventoRelacionado != null) {

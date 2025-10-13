@@ -108,7 +108,8 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements 
             datosNotificacion,
             usuarioCandidato,
             eventoGuardado,
-            LocalDateTime.now()
+            LocalDateTime.now(),
+            postulacionOferta
         );
 
         // Programar recordatorios (para candidato y empleado)
@@ -129,7 +130,8 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements 
                     datosNotificacion,
                     usuarioCandidato,
                     eventoGuardado,
-                    tresDiasAntes
+                    tresDiasAntes,
+                    postulacionOferta
                 );
             }
 
@@ -140,7 +142,8 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements 
                     datosNotificacion,
                     usuarioCandidato,
                     eventoGuardado,
-                    unDiaAntes
+                    unDiaAntes,
+                    postulacionOferta
                 );
             }
         }
@@ -153,7 +156,8 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements 
                     datosNotificacion,
                     usuarioEmpleado,
                     eventoGuardado,
-                    tresDiasAntes
+                    tresDiasAntes,
+                    postulacionOferta
                 );
             }
 
@@ -163,7 +167,8 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements 
                     datosNotificacion,
                     usuarioEmpleado,
                     eventoGuardado,
-                    unDiaAntes
+                    unDiaAntes,
+                    postulacionOferta
                 );
             }
         }
@@ -205,7 +210,8 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements 
                     datosNotificacion, 
                     evento.getUsuarioCandidato(),     
                     evento,
-                    LocalDateTime.now()
+                    LocalDateTime.now(),
+                    postulacionOferta
                 );        
             }
 
@@ -239,7 +245,8 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements 
                 datosNotificacion, 
                 evento.getUsuarioCandidato(),     
                 evento, 
-                LocalDateTime.now() 
+                LocalDateTime.now(),
+                postulacionOferta 
             );        
         }
 

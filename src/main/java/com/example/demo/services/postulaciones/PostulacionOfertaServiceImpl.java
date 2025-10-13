@@ -257,7 +257,8 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
                 datosNotificacion, 
                 postulacion.getCandidato().getUsuario(),     
                 null,
-                LocalDateTime.now()
+                LocalDateTime.now(),
+                postulacion
             );
         } else {
             datosNotificacion.put("etapa", nuevaEtapa.getNombreEtapa());
@@ -266,7 +267,8 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
                 datosNotificacion, 
                 postulacion.getCandidato().getUsuario(),     
                 null,
-                LocalDateTime.now()
+                LocalDateTime.now(),
+                postulacion
             );   
         }
         return postulacionActualizada;
@@ -409,7 +411,8 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
             datosNotificacion, 
             postulacion.getCandidato().getUsuario(),     
             null,
-            LocalDateTime.now()
+            LocalDateTime.now(),
+            postulacion
         );
 
         return true;
@@ -438,7 +441,8 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
             datosNotificacion, 
             postulacion.getCandidato().getUsuario(),     
             null,
-            LocalDateTime.now()
+            LocalDateTime.now(),
+            postulacion
         );
         return true;
     }
@@ -585,7 +589,8 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
             datosNotificacion, 
             postulacionSeleccionada.getCandidato().getUsuario(),     
             null,
-            LocalDateTime.now()
+            LocalDateTime.now(),
+            postulacionSeleccionada
         );
         
         return true;
@@ -623,7 +628,8 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
                 datosNotificacion, 
                 postulacion.getCandidato().getUsuario(),     
                 null,
-                LocalDateTime.now()
+                LocalDateTime.now(),
+                postulacion
             );
         }
         return true;
@@ -727,7 +733,8 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
             datosNotificacion, 
             postulacionOferta.getCandidato().getUsuario(),     
             null,
-            LocalDateTime.now()
+            LocalDateTime.now(),
+            postulacionOferta
         );
         return postulacionSimplificada;
     }
@@ -821,5 +828,10 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
     @Override
     public Long getIdPostulacionOfertaPorIdNotificacion(Long idNotificacion){
         return postulacionOfertaRepository.findPostulacionOfertaIdByNotificacionId(idNotificacion);
+    }
+
+    @Override
+    public Long getIdPostulacionOfertaPorIdNotificacion2(Long idNotificacion){
+        return postulacionOfertaRepository.findPostulacionOfertaIdByNotificacionId2(idNotificacion);
     }
 }

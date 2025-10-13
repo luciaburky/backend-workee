@@ -61,5 +61,7 @@ public interface PostulacionOfertaService extends BaseService<PostulacionOferta,
 
     public Long getIdPostulacionOfertaPorIdNotificacion(Long idNotificacion);
 
+    public Long getIdPostulacionOfertaPorIdNotificacion2(Long idNotificacion);
+
 }
 

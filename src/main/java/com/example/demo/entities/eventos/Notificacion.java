@@ -3,6 +3,7 @@ package com.example.demo.entities.eventos;
 import java.time.LocalDateTime;
 
 import com.example.demo.entities.Base;
+import com.example.demo.entities.postulaciones.PostulacionOferta;
 import com.example.demo.entities.seguridad.Usuario;
 
 import jakarta.persistence.Column;
@@ -58,4 +59,9 @@ public class Notificacion extends Base{
     @NotNull
     @Column(name = "enviada")
     private Boolean enviada = false;
+
+    /*PARA LO QUE NECESITA EL MAXI */
+    @ManyToOne()
+    @JoinColumn(name = "id_postulacion")
+    private PostulacionOferta postulacionOferta;
 }

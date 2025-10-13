@@ -145,7 +145,9 @@ public class PostulacionOfertaController {
     @GetMapping("/porIdNotif/{idNotificacion}")
     //@PreAuthorize("hasAuthority('POSTULAR_OFERTA') or hasAuthority('GESTIONAR_POSTULACION')")
     public ResponseEntity<?> getIdPostulacionPorIdNotificacion(@PathVariable Long idNotificacion) {
-        Long id = postulacionOfertaService.getIdPostulacionOfertaPorIdNotificacion(idNotificacion);
+        //Long id = postulacionOfertaService.getIdPostulacionOfertaPorIdNotificacion(idNotificacion);
+        Long id = postulacionOfertaService.getIdPostulacionOfertaPorIdNotificacion2(idNotificacion);
+        
         return ResponseEntity.status(HttpStatus.OK).body(Map.of("idPostulacionOferta", id));
     }
 }

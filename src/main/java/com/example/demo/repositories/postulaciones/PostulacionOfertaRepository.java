@@ -285,4 +285,12 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
     )
     Long findPostulacionOfertaIdByNotificacionId(@Param("notificacionId") Long notificacionId);
 
+    @Query(
+        value = "SELECT n.id_postulacion " +
+                "FROM notificacion n " +
+                "WHERE n.id = :notificacionId",
+        nativeQuery = true
+    )
+    Long findPostulacionOfertaIdByNotificacionId2(@Param("notificacionId") Long notificacionId);
+
 }
