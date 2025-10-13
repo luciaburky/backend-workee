@@ -4,7 +4,7 @@ public enum TipoNotificacion {
     // Postulaciones
     SOLICITUD_POSTULACION_OFERTA_ACEPTADA(
         "¡Tu solicitud de postulación ha sido aceptada!",
-        "Tu postulación solicitada el dia {fecha} ha sido aceptada. Ahora estas participando para el puesto {oferta} en {empresa}."
+        "Tu postulación solicitada el día {fecha} ha sido aceptada. Ahora estás participando para el puesto {oferta} en {empresa}."
     ),
 
     CAMBIO_ETAPA_POSTULACION(
@@ -15,7 +15,7 @@ public enum TipoNotificacion {
     // Invitaciones
     INVITACION_OFERTA(
         "¡Han solicitado tu participación en una oferta!",
-        "La {empresa} ha solicitado tu participación en la oferta de {oferta}."
+        "La empresa {empresa} ha solicitado tu participación en la oferta de {oferta}."
     ),
 
     CANDIDATO_SELECCIONADO(
@@ -46,26 +46,26 @@ public enum TipoNotificacion {
 
     EVENTO_MODIFICADO(
         "Tu evento ha sido modificado",
-        "El evento {titulo} para el puesto de {oferta} en {empresa} ha sido modificado. Esta programado para el dia {fecha} a las {horas}."
+        "El evento {titulo} para el puesto de {oferta} en {empresa} ha sido modificado. Está programado para el día {fecha} a las {horas}."
     ),
     
     RECORDATORIO_EVENTO_3_DIAS_CANDIDATO(
         "Recordatorio de evento",
-        "Tu evento {titulo} con {empresa} esta programado para el dia {fecha} a las {horas}."
+        "Tu evento {titulo} con {empresa} está programado para el día {fecha} a las {horas}."
     ),
     RECORDATORIO_EVENTO_1_DIA_CANDIDATO(
         "Recordatorio de evento",
-        "Tu evento {titulo} con {empresa} esta programado para mañana a las {horas}."
+        "Tu evento {titulo} con {empresa} está programado para mañana a las {horas}."
     ),
 
     RECORDATORIO_EVENTO_3_DIAS_EMPRESA(
         "Recordatorio de evento",
-        "Tu evento {titulo} con {candidato} para el puesto {oferta} esta programado para el dia {fecha} a las {horas}."
+        "Tu evento {titulo} con {candidato} para el puesto {oferta} está programado para el día {fecha} a las {horas}."
     ),
 
     RECORDATORIO_EVENTO_1_DIA_EMPRESA(
         "Recordatorio de evento",
-        "Tu evento {titulo} con {candidato} para el puesto {oferta} esta programado para mañana a las {horas}."
+        "Tu evento {titulo} con {candidato} para el puesto {oferta} está programado para mañana a las {horas}."
     );
 
     private final String titulo;

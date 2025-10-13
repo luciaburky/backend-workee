@@ -51,7 +51,7 @@ public class TipoEventoController  {
 
     @Operation(summary = "Obtiene todos los TipoEvento")
     @GetMapping("")
-    @PreAuthorize("hasAuthority('GESTIONAR_TIPO_EVENTO')")
+    @PreAuthorize("hasAuthority('GESTIONAR_TIPO_EVENTO') or hasAuthority('GESTIONAR_EVENTOS')")
     public ResponseEntity<?> TipoEvento(){
         List<TipoEvento> tiposEventos = tipoEventoService.obtenerTiposEventos();
         return ResponseEntity.status(HttpStatus.OK).body(tiposEventos);
@@ -59,7 +59,7 @@ public class TipoEventoController  {
 
     @Operation(summary = "Obtiene todos los TipoEvento ACTIVOS")
     @GetMapping("/activos")
-    @PreAuthorize("hasAuthority('GESTIONAR_TIPO_EVENTO')") 
+    @PreAuthorize("hasAuthority('GESTIONAR_TIPO_EVENTO') or hasAuthority('GESTIONAR_EVENTOS')") 
     public ResponseEntity<?> obtenerEstadosUsuarioActivos(){
         List<TipoEvento> tiposEventosActivos = tipoEventoService.obtenerTiposEventosActivos();
         return ResponseEntity.status(HttpStatus.OK).body(tiposEventosActivos);

@@ -54,7 +54,7 @@ public class Evento extends Base{
     @JoinColumn(name = "id_usuario_empleado", nullable = false)
     private Usuario usuarioEmpleado;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true) //TODO: Revisar si dejamos esto aca o si planteamos la relacion al reves, porque antes la teniamos asi pero creo que habiamos hablado de hacerla al reves...
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true) 
     @JoinColumn(name = "id_videollamada", nullable = true)
     private Videollamada videollamada; 
 

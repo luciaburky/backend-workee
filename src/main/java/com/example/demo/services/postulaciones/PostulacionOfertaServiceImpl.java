@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -188,13 +189,51 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         
         ofertaEtapaActual.setFechaHoraBaja(new Date());
 
-        //Seteo de la nueva etapa
+        // Seteo de la nueva etapa
         Etapa nuevaEtapa = etapaService.obtenerEtapaPorCodigo(cambioPostulacionDTO.getCodigoEtapaNueva());
-        
         PostulacionOfertaEtapa nuevaPostulacionOfertaEtapa = new PostulacionOfertaEtapa();
         nuevaPostulacionOfertaEtapa.setEtapa(nuevaEtapa);
         nuevaPostulacionOfertaEtapa.setFechaHoraAlta(new Date());
 
+        // Marcar como finalizadas las etapas intermedias si se saltean
+        Oferta oferta = postulacion.getOferta();
+
+        // Ordenar las etapas de la oferta por número
+        List<OfertaEtapa> etapasOrdenadas = oferta.getOfertaEtapas().stream()
+                .sorted(Comparator.comparing(OfertaEtapa::getNumeroEtapa))
+                .toList();
+
+        // Obtener el número de la etapa actual y la nueva
+        int nroEtapaActual = etapasOrdenadas.stream()
+                .filter(e -> e.getEtapa().getCodigoEtapa().equals(ofertaEtapaActual.getEtapa().getCodigoEtapa()))
+                .findFirst()
+                .map(OfertaEtapa::getNumeroEtapa)
+                .orElseThrow(() -> new EntityNotValidException("No se encontró la etapa actual en la oferta"));
+
+        int nroEtapaNueva = etapasOrdenadas.stream()
+                .filter(e -> e.getEtapa().getCodigoEtapa().equals(nuevaEtapa.getCodigoEtapa()))
+                .findFirst()
+                .map(OfertaEtapa::getNumeroEtapa)
+                .orElseThrow(() -> new EntityNotValidException("No se encontró la nueva etapa en la oferta"));
+
+        // Si se saltea más de una etapa, cerramos todas las intermedias
+        if (nroEtapaNueva > nroEtapaActual + 1) {
+            for (OfertaEtapa etapaIntermedia : etapasOrdenadas) {
+                int nro = etapaIntermedia.getNumeroEtapa();
+                if (nro > nroEtapaActual && nro < nroEtapaNueva) {
+                    boolean yaExiste = postulacion.getPostulacionOfertaEtapaList().stream()
+                            .anyMatch(poe -> poe.getEtapa().getId().equals(etapaIntermedia.getEtapa().getId()));
+                    if (!yaExiste) {
+                        PostulacionOfertaEtapa etapaFicticia = new PostulacionOfertaEtapa();
+                        etapaFicticia.setEtapa(etapaIntermedia.getEtapa());
+                        etapaFicticia.setFechaHoraAlta(new Date());
+                        etapaFicticia.setFechaHoraBaja(new Date());
+                        postulacion.getPostulacionOfertaEtapaList().add(etapaFicticia);
+                    }
+                }
+            }
+        }
+        
         //La retroalimentacion que se ingresa al momento de rechazar
         if(!cambioPostulacionDTO.getRetroalimentacion().isBlank()){
             ofertaEtapaActual.setRetroalimentacionEmpresa(cambioPostulacionDTO.getRetroalimentacion());

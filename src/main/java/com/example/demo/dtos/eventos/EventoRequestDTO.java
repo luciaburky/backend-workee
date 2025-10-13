@@ -37,5 +37,5 @@ public class EventoRequestDTO {
     private Long idUsuarioEmpleado;
 
     //Solo si es Videollamada
-    private String enlaceVideollamada; //no se si seria el id o el url de la videollamada
+    //private String enlaceVideollamada; //no se si seria el id o el url de la videollamada
 }
