@@ -137,7 +137,8 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
 
         postulacionOferta.getPostulacionOfertaEtapaList().add(postulacionOfertaEtapaAbandono);
         postulacionOferta.setFechaHoraAbandonoOferta(new Date());
-
+        postulacionOferta.setFechaHoraFinPostulacionOferta(new Date());
+        
         postulacionOfertaRepository.save(postulacionOferta);
     
         PostulacionSimplificadaDTO postulacionSimplificada = crearPostulacionSimplificada(postulacionOferta);
