@@ -59,5 +59,7 @@ public interface PostulacionOfertaService extends BaseService<PostulacionOferta,
 
     Optional<PostulacionOferta> obtenerPorEtapaId(Long idEtapa);
 
+    public Long getIdPostulacionOfertaPorIdNotificacion(Long idNotificacion);
+
 }
 

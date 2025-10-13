@@ -274,4 +274,15 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
     )
     public List<PostulacionesPorPaisDTO> localizacionCandidatos(@Param("idEmpresa") Long idEmpresa, @Param("desde") LocalDateTime desde, @Param("hasta") LocalDateTime hasta);
 
+    @Query(
+        value = "SELECT po.id " +
+                "FROM notificacion n " +
+                "JOIN evento e ON n.id_evento = e.id " +
+                "JOIN postulacion_oferta_etapa poe ON e.id_postulacion_oferta_etapa = poe.id " +
+                "JOIN postulacion_oferta po ON poe.id_postulacion_oferta = po.id " +
+                "WHERE n.id = :notificacionId",
+        nativeQuery = true
+    )
+    Long findPostulacionOfertaIdByNotificacionId(@Param("notificacionId") Long notificacionId);
+
 }

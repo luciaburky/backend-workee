@@ -1,6 +1,7 @@
 package com.example.demo.controllers.postulaciones;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -140,4 +141,11 @@ public class PostulacionOfertaController {
         return ResponseEntity.status(HttpStatus.OK).body(postulacionOferta);
     }
 
+    @Operation(summary = "Ver el detalle de la postulacion de un candidato")
+    @GetMapping("/porIdNotif/{idNotificacion}")
+    //@PreAuthorize("hasAuthority('POSTULAR_OFERTA') or hasAuthority('GESTIONAR_POSTULACION')")
+    public ResponseEntity<?> getIdPostulacionPorIdNotificacion(@PathVariable Long idNotificacion) {
+        Long id = postulacionOfertaService.getIdPostulacionOfertaPorIdNotificacion(idNotificacion);
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of("idPostulacionOferta", id));
+    }
 }

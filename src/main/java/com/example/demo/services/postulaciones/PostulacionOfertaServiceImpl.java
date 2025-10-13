@@ -818,4 +818,8 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         return etapas;
     }
 
+    @Override
+    public Long getIdPostulacionOfertaPorIdNotificacion(Long idNotificacion){
+        return postulacionOfertaRepository.findPostulacionOfertaIdByNotificacionId(idNotificacion);
+    }
 }
