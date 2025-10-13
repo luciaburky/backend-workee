@@ -342,6 +342,14 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
     }
 
     @Override
+    public List<CandidatoPostuladoDTO> traerCandidatosEnviadaPostulacionAOferta(Long idOferta){
+        Oferta oferta = ofertaService.findById(idOferta);
+        Long idEmpresa = oferta.getEmpresa().getId();
+
+        return postulacionOfertaRepository.traerCandidatosSolicitadaSuParticipacionPendientes(idOferta, idEmpresa);
+    }
+
+    @Override
     @Transactional
     public Boolean aceptarSolicitudDePostulacionCandidato(Long idPostulacion){
         PostulacionOferta postulacion = this.findById(idPostulacion);

@@ -89,6 +89,25 @@ public interface PostulacionOfertaRepository extends BaseRepository<PostulacionO
     """)
     List<CandidatoPostuladoDTO> traerCandidatosPostuladosPendientes(@Param("idOferta") Long idOferta, @Param("idEmpresa") Long idEmpresa); //Trae solo los postulados pendientes
 
+    @Query("""
+        SELECT DISTINCT new com.example.demo.dtos.ofertas.CandidatoPostuladoDTO(
+            po.id,
+            po.candidato.id, po.candidato.nombreCandidato, 
+            po.candidato.apellidoCandidato, po.fechaHoraAlta, 
+            e.codigoEtapa, e.nombreEtapa,
+            u.urlFotoUsuario
+        )
+        FROM PostulacionOferta po
+        JOIN po.postulacionOfertaEtapaList poe
+        JOIN poe.etapa e
+        JOIN po.candidato c
+        JOIN c.usuario u
+        WHERE po.oferta.id = :idOferta
+        AND poe.fechaHoraBaja IS NULL
+        AND e.codigoEtapa LIKE '%PENDIENTE%'
+        AND po.idIniciadorPostulacion = :idEmpresa
+    """)
+    List<CandidatoPostuladoDTO> traerCandidatosSolicitadaSuParticipacionPendientes(@Param("idOferta") Long idOferta, @Param("idEmpresa") Long idEmpresa); //Trae solo los postulados pendientes
 
     @Query("""
         SELECT DISTINCT po

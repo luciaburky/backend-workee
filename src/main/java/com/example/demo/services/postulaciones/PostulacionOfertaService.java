@@ -31,6 +31,8 @@ public interface PostulacionOfertaService extends BaseService<PostulacionOferta,
 
     public List<CandidatoPostuladoDTO> traerCandidatosPendientesPostuladosAOferta(Long idOferta);
 
+    public List<CandidatoPostuladoDTO> traerCandidatosEnviadaPostulacionAOferta(Long idOferta);
+
     public Boolean aceptarSolicitudDePostulacionCandidato(Long idPostulacion);
 
     public Boolean rechazarSolicitudDePostulacionDeCandidatoPendiente(Long idPostulacion);
