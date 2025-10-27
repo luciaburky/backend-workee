@@ -252,6 +252,7 @@ public class PostulacionOfertaServiceImpl extends BaseServiceImpl<PostulacionOfe
         datosNotificacion.put("empresa", postulacion.getOferta().getEmpresa().getNombreEmpresa());
 
         if (nuevaEtapa.getCodigoEtapa().equals(CodigoEtapa.RECHAZADO)) {
+            postulacion.setFechaHoraFinPostulacionOferta(new Date());
             notificacionService.crearNotificacion(
                 TipoNotificacion.CANDIDATO_RECHAZADO,
                 datosNotificacion, 
