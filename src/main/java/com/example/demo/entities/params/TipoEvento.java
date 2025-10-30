@@ -25,4 +25,7 @@ public class TipoEvento extends Base {
     @Column(name = "nombre_tipo_evento")
     private String nombreTipoEvento;
 
+    @NotNull
+    @Column(name = "codigo_tipo_evento", unique = true)
+    private String codigoTipoEvento;
 }

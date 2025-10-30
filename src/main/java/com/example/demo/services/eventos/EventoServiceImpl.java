@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.dtos.eventos.EventoRequestDTO;
 import com.example.demo.entities.eventos.Evento;
 import com.example.demo.entities.eventos.TipoNotificacion;
+import com.example.demo.entities.params.CodigoTipoEvento;
 import com.example.demo.entities.params.TipoEvento;
 import com.example.demo.entities.postulaciones.PostulacionOferta;
 import com.example.demo.entities.postulaciones.PostulacionOfertaEtapa;
@@ -76,7 +77,7 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements 
         nuevoEvento.setUsuarioEmpleado(usuarioEmpleado);
         
         /// Si es videollamada, instanciar la relación
-        if ("Videollamada".equalsIgnoreCase(tipoEvento.getNombreTipoEvento())) {
+        if (CodigoTipoEvento.VIDEOLLAMADA.equalsIgnoreCase(tipoEvento.getCodigoTipoEvento())) {
             Videollamada videollamada = videollamadaService.crearVideollamada(evento);
             nuevoEvento.setVideollamada(videollamada);
         }
@@ -102,7 +103,7 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements 
     
         // Notificación al candidato
         notificacionService.crearNotificacion(
-            "Videollamada".equalsIgnoreCase(tipoEvento.getNombreTipoEvento())
+            CodigoTipoEvento.VIDEOLLAMADA.equalsIgnoreCase(tipoEvento.getCodigoTipoEvento())
                 ? TipoNotificacion.EVENTO_VIDEOLLAMADA
                 : TipoNotificacion.EVENTO_ENTREGA,
             datosNotificacion,

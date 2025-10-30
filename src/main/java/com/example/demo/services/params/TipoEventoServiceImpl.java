@@ -1,5 +1,6 @@
 package com.example.demo.services.params;
 
+import java.text.Normalizer;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +36,30 @@ public class TipoEventoServiceImpl extends BaseServiceImpl<TipoEvento,Long> impl
         TipoEvento nuevTipoEvento = new TipoEvento();
         nuevTipoEvento.setNombreTipoEvento(tipoEventoRequestDTO.getNombreTipoEvento());
         nuevTipoEvento.setFechaHoraAlta(new Date());
+
+        //Generar código para identificarla
+        String codigoTipoEvento = generarCodigoUnico(tipoEventoRequestDTO.getNombreTipoEvento());
+        nuevTipoEvento.setCodigoTipoEvento(codigoTipoEvento);
+
         return tipoEventoRepository.save(nuevTipoEvento);
+    }
+
+    private String generarCodigoUnico(String nombreTipoEvento){
+        String base = normalizar(nombreTipoEvento);
+        String codigoTipoEvento = base;
+        int contador = 1;
+
+        while(tipoEventoRepository.existsByCodigoTipoEvento(codigoTipoEvento)){
+            codigoTipoEvento = base + "_" + contador;
+            contador++;
+        }
+        return codigoTipoEvento;
+    }
+
+    private String normalizar(String texto){
+        String sinAcentos = Normalizer.normalize(texto, Normalizer.Form.NFD)
+            .replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+        return sinAcentos.trim().toUpperCase().replaceAll("[^A-Z0-9]", "_");
     }
 
     @Override

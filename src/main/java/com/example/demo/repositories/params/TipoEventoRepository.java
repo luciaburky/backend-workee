@@ -17,6 +17,8 @@ public interface TipoEventoRepository extends BaseRepository<TipoEvento, Long> {
             )
     List<TipoEvento> buscarTiposEventosActivos();
 
+    boolean existsByCodigoTipoEvento(String codigoTipoEvento);
+
     Optional<TipoEvento> findByNombreTipoEventoIgnoreCase(String NombreTipoEvento);
 
     List<TipoEvento> findAllByOrderByNombreTipoEventoAsc();
