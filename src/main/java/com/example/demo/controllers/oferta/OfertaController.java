@@ -125,6 +125,14 @@ public class OfertaController {
         return ResponseEntity.ok().body(ofertas);
     }
 
+    @Operation(summary = "Obtener todas las Ofertas ABIERTAS de una Empresa para enviar a un candidato")
+    @GetMapping("/empresa/{empresaId}/enviarACandidato/{candidatoId}")
+    @PreAuthorize("hasAuthority('GESTION_OFERTAS') or hasAuthority('POSTULAR_OFERTA')")
+    public ResponseEntity<List<Oferta>> getOfertasParaEnviar(@PathVariable Long empresaId, @PathVariable Long candidatoId) {
+        List<Oferta> ofertas = ofertaService.buscarOfertasAbiertasParaEnviar(empresaId, candidatoId);
+        return ResponseEntity.ok().body(ofertas);
+    }
+
     @Operation(summary = "Obtener cantidad total de postulados (en curso)")
     @GetMapping("/{idOferta}/postulados")
     @PreAuthorize("hasAuthority('GESTION_OFERTAS') ")

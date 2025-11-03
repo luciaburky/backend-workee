@@ -307,6 +307,14 @@ public class OfertaServiceImpl extends BaseServiceImpl<Oferta, Long> implements 
     }
 
     @Override
+    public List<Oferta> buscarOfertasAbiertasParaEnviar(Long idEmpresa, Long candidatoId) {
+        if (idEmpresa == null || candidatoId == null) {
+            throw new IllegalArgumentException("El ID de la empresa no puede ser nulo");
+        }
+        return ofertaRepository.buscarOfertasAbiertasParaCandidato(idEmpresa, candidatoId);
+    }
+
+    @Override
     public Integer obtenerCantidadDePostulados(Long idOferta){
         return ofertaRepository.obtenerCantidadDeCandidatosPostulados(idOferta);
     }

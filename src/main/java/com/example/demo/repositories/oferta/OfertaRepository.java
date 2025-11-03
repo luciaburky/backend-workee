@@ -160,6 +160,28 @@ public interface OfertaRepository extends BaseRepository<Oferta, Long> {
       """)
   List<Oferta> buscarOfertasAbiertas(@Param("empresaId") Long empresaId);
 
+   @Query("""
+      SELECT DISTINCT o FROM Oferta o
+      JOIN o.estadosOferta eo
+      JOIN eo.estadoOferta e
+      JOIN o.empresa em
+      WHERE e.codigo = 'ABIERTA'
+        AND eo.fechaHoraBaja IS NULL
+        AND o.fechaFinalizacion IS NULL
+        AND em.id = :empresaId
+        AND NOT EXISTS (
+          SELECT po FROM PostulacionOferta po
+          JOIN po.postulacionOfertaEtapaList pe
+          JOIN pe.etapa et
+          WHERE po.oferta = o
+            AND po.candidato.id = :candidatoId
+            AND pe.fechaHoraBaja IS NULL
+            AND et.codigoEtapa NOT IN ('ABANDONADO', 'RECHAZADO', 'SELECCIONADO', 'NO_ACEPTADO')
+      )
+      """)
+  List<Oferta> buscarOfertasAbiertasParaCandidato(@Param("empresaId") Long empresaId, @Param("candidatoId") Long candidatoId);
+
+
   @Query(value = "SELECT COUNT(DISTINCT po.id) " +
                     "FROM oferta o " +
                     "INNER JOIN postulacion_oferta AS po ON o.id = po.id_oferta " +
