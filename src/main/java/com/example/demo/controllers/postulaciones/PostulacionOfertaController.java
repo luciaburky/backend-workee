@@ -24,6 +24,7 @@ import com.example.demo.services.postulaciones.PostulacionOfertaService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path ="/postulaciones")
@@ -120,7 +121,7 @@ public class PostulacionOfertaController {
     @Operation(summary = "Enviar retroalimentación")
     @PutMapping("/retroalimentacion")
     @PreAuthorize("hasAuthority('GESTIONAR_POSTULACION')") 
-    public ResponseEntity<?> enviarRetroalimentacion(@RequestBody RetroalimentacionDTO retroalimentacionDTO) {
+    public ResponseEntity<?> enviarRetroalimentacion(@Valid @RequestBody RetroalimentacionDTO retroalimentacionDTO) {
         PostulacionSimplificadaDTO postulacion = postulacionOfertaService.enviarRetroalimentacion(retroalimentacionDTO);
         return ResponseEntity.status(HttpStatus.OK).body(postulacion);
     }

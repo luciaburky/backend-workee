@@ -9,6 +9,7 @@ import com.example.demo.services.eventos.EventoService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class EventoController {
     @Operation(summary = "Crear un nuevo evento")
     @PostMapping("")
     @PreAuthorize("hasAuthority('GESTIONAR_EVENTOS')")
-    public ResponseEntity<Evento> crearEvento(@RequestBody EventoRequestDTO eventoDTO) {
+    public ResponseEntity<Evento> crearEvento(@Valid @RequestBody EventoRequestDTO eventoDTO) {
         Evento nuevoEvento = eventoService.crearEvento(eventoDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoEvento);
     }
