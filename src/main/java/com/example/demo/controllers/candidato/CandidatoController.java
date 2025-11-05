@@ -59,7 +59,7 @@ public class CandidatoController {
 
     @Operation(summary = "Obtener un Candidato por su ID")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('BUSCAR_CANDIDATOS') or hasAuthority('GESTIONAR_MI_PERFIL')")
+    @PreAuthorize("hasAuthority('BUSCAR_CANDIDATOS') or hasAuthority('GESTIONAR_MI_PERFIL') or hasAuthority('GESTIONAR_POSTULACION')")
     public ResponseEntity<Candidato> obtenerCandidatoPorId(@PathVariable("id") Long idCandidato) {
         Candidato candidato = candidatoService.findById(idCandidato);
         return ResponseEntity.ok().body(candidato);
