@@ -38,7 +38,7 @@ public class EventoController {
     @Operation(summary = "Crear un nuevo evento")
     @PostMapping("")
     @PreAuthorize("hasAuthority('GESTIONAR_EVENTOS')")
-    public ResponseEntity<Evento> crearEvento(@Valid @RequestBody EventoRequestDTO eventoDTO) {
+    public ResponseEntity<Evento> crearEvento(/*@Valid*/ @RequestBody EventoRequestDTO eventoDTO) {
         Evento nuevoEvento = eventoService.crearEvento(eventoDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoEvento);
     }

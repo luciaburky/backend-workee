@@ -52,7 +52,7 @@ public interface OfertaRepository extends BaseRepository<Oferta, Long> {
         AND eo.fechaHoraBaja IS NULL
         AND o.fechaFinalizacion IS NULL
         AND estado.codigo IN ('ABIERTA')
-        ORDER BY o.fechaHoraAlta DESC
+        ORDER BY o.titulo ASC
     """)
     public List<Oferta> buscarOfertasPorNombre(@Param("nombreOferta") String nombreOferta);
 
@@ -73,7 +73,7 @@ public interface OfertaRepository extends BaseRepository<Oferta, Long> {
           AND eo.fechaHoraBaja IS NULL
           AND o.fechaFinalizacion IS NULL
           AND estado.codigo IN ('ABIERTA') 
-          ORDER BY o.fechaHoraAlta DESC
+          ORDER BY o.titulo ASC
     """)
     public List<Oferta> buscarOfertasSegunFiltros(@Param("nombreOferta") String nombreOferta,
                                                   @Param("idsProvincia") List<Long> idsProvincia,
